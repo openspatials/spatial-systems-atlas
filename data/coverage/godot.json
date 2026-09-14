@@ -1,0 +1,2259 @@
+{
+  "subject_id": "godot",
+  "summary": "Godot is a free and open source game engine published under the MIT licence; the current stable release is 4.7.2, announced on 18 August 2026, in the 4.7 feature line released on 18 June 2026. It covers the build side of a world well: rendering on Vulkan, Direct3D 12, Metal or OpenGL, rigid and soft body physics, positioned audio, animation and skeletons, its own scripting language, and packaging for desktop, mobile, browsers and headsets. Its distinctive idea is that everything is a node in a tree, any tree can be saved as a scene, and any saved scene can be placed inside another scene as though it were a single node, with per-instance property changes layered on top. It reads and writes the common model transfer format from Khronos, but the files it actually authors in are its own text and binary scene files, which no other runtime reads. Unusually among open engines it ships a working multiplayer layer with property replication, spawned-object replication and per-object authority, and it reaches headsets through the cross-vendor immersive runtime interface built into the engine core, plus the browser immersive interface on web builds; it has nothing for identity, rights, world naming, portals between worlds or anchors shared between devices. The point a standards audience should hold on to is that almost every subsystem sits behind a public server or extension interface, so a gap in Godot is usually a gap in the default build rather than a locked door: the physics engine, the model-format extension set, and extra rendering passes can all be replaced or added from outside without forking the engine.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "native",
+      "note": "Three rendering methods ship in the engine: Forward+ using clustered lighting for desktop, Mobile using traditional single-pass forward lighting, and Compatibility using non-clustered forward. All three are forward renderers; the documentation has a section explaining why deferred rendering is not used. There is no public render graph interface, though one exists internally.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/rendering/renderers.html",
+          "title": "Overview of renderers - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Godot 4 includes three renderers:"
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/engine_details/architecture/internal_rendering_architecture.html",
+          "title": "Internal rendering architecture - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This is a forward renderer that uses a clustered approach to lighting."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "native",
+      "note": "Forward+ and Mobile go through RenderingDevice onto Vulkan, Direct3D 12 or Metal; Compatibility uses OpenGL, meaning OpenGL ES 3.0, desktop OpenGL 3.3, or WebGL 2.0 in the browser. Two details matter for a standards audience: the Direct3D 12 driver is still documented as experimental in 4.7, while the Metal driver is native and now uses Metal 4; and there is no WebGPU backend, which is the reason the advanced renderers cannot run on the web at all.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/engine_details/architecture/internal_rendering_architecture.html",
+          "title": "Internal rendering architecture - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Godot's renderers are built entirely on OpenGL and RenderingDevice, which is our abstraction over Vulkan/Direct3D 12/Metal."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_renderingdevice.html",
+          "title": "RenderingDevice - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "RenderingDevice is not available when running in headless mode or when using the Compatibility rendering method."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_web.html",
+          "title": "Exporting for the Web - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Godot currently does not support WebGPU, which is a prerequisite for allowing Forward+/Mobile to run on the web platform."
+        },
+        {
+          "url": "https://github.com/godotengine/godot-proposals/issues/6646",
+          "title": "Add WebGPU support - godotengine/godot-proposals",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "native",
+      "note": "StandardMaterial3D is a physically based, energy-conserving material on a metallic-roughness workflow; ORMMaterial3D is the same thing reading occlusion, roughness and metallic from one packed texture. Custom looks are written in the engine's own shading language, which is close to OpenGL ES 3.0 shading language, or built as node graphs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_standardmaterial3d.html",
+          "title": "StandardMaterial3D - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A PBR (Physically Based Rendering) material to be used on 3D objects."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/3d/standard_material_3d.html",
+          "title": "Standard Material 3D and ORM Material 3D - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Godot uses a metallic model over competing models due to its simplicity."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/shading_language.html",
+          "title": "Shading language - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Godot uses a shading language similar to GLSL ES 3.0."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "native",
+      "note": "Directional, omni and spot lights with shadow maps, cascaded shadows for the sun and optional contact-hardening soft shadows. Indirect light has four routes: baked lightmaps and reflection probes work in every renderer, while voxel global illumination, signed distance field global illumination and screen-space indirect lighting need the Forward+ renderer.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/3d/global_illumination/introduction_to_global_illumination.html",
+          "title": "Introduction to global illumination - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Not available when using the Mobile or Compatibility renderers"
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/3d/lights_and_shadows.html",
+          "title": "3D lights and shadows - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "There are three types of light nodes: DirectionalLight3D, OmniLight3D and SpotLight3D."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/3d/global_illumination/using_sdfgi.html",
+          "title": "Signed distance field global illumination (SDFGI) - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "It provides semi-real-time global illumination that scales to any world size"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.post",
+      "level": "native",
+      "note": "One WorldEnvironment per scene carries glow, tone mapping, screen-space reflections, ambient occlusion and indirect lighting, fog and colour adjustment, with exposure and depth of field moved onto a separate camera attributes resource. Anti-aliasing and upscaling are viewport settings. For custom work the compositor lets a project insert its own passes at named stages, though that class is marked experimental and works only on Forward+ and Mobile.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/3d/environment_and_post_processing.html",
+          "title": "Environment and post-processing - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The WorldEnvironment node can be added to any scene, but only one can exist per active scene tree."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/rendering/compositor.html",
+          "title": "The Compositor - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The compositor is a new feature in Godot 4 that allows control over the rendering pipeline when rendering the contents of a Viewport"
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_compositoreffect.html",
+          "title": "CompositorEffect - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This resource defines a custom rendering effect that can be applied to Viewport"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "partial",
+      "note": "Detail selection is covered: meshes get automatically simplified versions at import using the meshoptimizer library, chosen by a screen-space metric, with hand-authored visibility ranges and software occlusion culling alongside. The interoperability half is absent. Godot loads whole resources, and mesh streaming, texture streaming and level streaming are all still open proposals in the engine's own tracker, so there is no streaming order to interoperate with.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/3d/mesh_lod.html",
+          "title": "Mesh level of detail (LOD) - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The meshoptimizer library is used for LOD mesh generation behind the scenes."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/3d/occlusion_culling.html",
+          "title": "Occlusion culling - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "occlusion culling works by rasterizing the scene's occluder geometry to a low-resolution buffer on the CPU"
+        },
+        {
+          "url": "https://github.com/godotengine/godot-proposals/issues/6109",
+          "title": "Implement Mesh streaming - godotengine/godot-proposals",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Mesh streaming aims to solve this."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "none",
+      "note": "Nothing in core, and nothing in the official asset library either. The words splat, splatting and radiance field do not appear anywhere in the documentation index, there are no issues or proposals for it in the engine's trackers, and a search of the official asset library returns no results. Community projects exist on code hosting outside official channels, typically hooking in through the compositor.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/searchindex.js",
+          "title": "Godot Engine (stable) documentation search index",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        },
+        {
+          "url": "https://godotengine.org/asset-library/api/asset?filter=splat",
+          "title": "Godot Asset Library search - splat",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "partial",
+      "note": "Volumetric fog with local fog volumes is built in, but only on the Forward+ renderer. Point clouds are not first class: there is a points primitive type on meshes and a single-point mesh resource for billboarded sprites, but no point cloud node, importer or volumetric video path.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/3d/volumetric_fog.html",
+          "title": "Volumetric fog and fog volumes - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Volumetric fog is only supported in the Forward+ renderer, not the Mobile or Compatibility renderers."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_mesh.html",
+          "title": "Mesh - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Render array as points (one vertex equals one point)."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_pointmesh.html",
+          "title": "PointMesh - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Mesh with a single point primitive."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "native",
+      "note": "Two routes: Label3D draws text on textured quads and can face the camera, and TextMesh extrudes real geometry from vector glyph outlines. Both share the engine's font resources, including multi-channel signed distance field rendering for crisp text at any size, over a text server that uses HarfBuzz, ICU and Graphite for bidirectional and complex scripts.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/3d/3d_text.html",
+          "title": "3D text - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Godot provides 2 methods to do this: the Label3D node and the TextMesh resource for a MeshInstance3D node."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_textserveradvanced.html",
+          "title": "TextServerAdvanced - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "An implementation of TextServer that uses HarfBuzz, ICU and SIL Graphite to support BiDi, complex text layouts and contextual OpenType features."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/ui/gui_using_fonts.html",
+          "title": "Using Fonts - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Multi-channel signed distance field (MSDF) font rendering allows rendering fonts at any size"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "native",
+      "note": "Cameras register themselves with the nearest viewport and exactly one is current at a time, with perspective, orthogonal and offset-frustum projections. In an immersive session the pose comes from the headset instead: XRCamera3D positions itself from tracking data under a tracking-space origin node, and most of its properties are then overridden by the active immersive interface.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_camera3d.html",
+          "title": "Camera3D - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Cameras register themselves in the nearest Viewport node (when ascending the tree). Only one camera can be active per viewport."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_xrcamera3d.html",
+          "title": "XRCamera3D - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A camera node which automatically positions itself based on XR tracking data."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "native",
+      "note": "The whole engine is built on it: nodes form a tree, a tree with a single root is a scene, and a saved scene can be instantiated inside another scene and then behaves like one node. This is Godot's central idea and the reason it has no separate prefab concept.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/getting_started/step_by_step/nodes_and_scenes.html",
+          "title": "Nodes and Scenes - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Together, nodes form a tree, which is a powerful feature to organize projects."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/getting_started/step_by_step/instancing.html",
+          "title": "Creating instances - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Once you have saved a scene, it works as a blueprint: you can reproduce it in other scenes as many times as you'd like."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "native",
+      "note": "Right-handed, Y up, minus Z forward, following the OpenGL convention; transforms are a Transform3D made of a Basis of three vectors plus an origin.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/3d/using_transforms.html",
+          "title": "Using 3D transforms - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Following the OpenGL convention, X is the Right axis, Y is the Up axis and Z is the Forward axis."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "native",
+      "note": "Two answers that must not be confused. For transfer, Godot reads glTF 2.0 in both text and binary form and can export a scene back out as glTF from the editor. For authoring it uses its own formats, tscn and scn for scenes and tres and res for resources, and no other runtime reads those.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_3d_scenes/available_formats.html",
+          "title": "Available 3D formats - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Godot has support for both text (.gltf) and binary (.glb) formats."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/exporting_3d_scenes.html",
+          "title": "Exporting 3D scenes - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "To export a scene in the editor go to Scene > Export As... > glTF 2.0 Scene..."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_gltfdocument.html",
+          "title": "GLTFDocument - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "GLTFDocument supports reading data from a glTF file, buffer, or Godot scene."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "partial",
+      "note": "Meshes are read and written through glTF and the engine's own ArrayMesh, but Godot does not implement the Draco mesh compression extension, so compressed models from common web pipelines fail to import. An open proposal in the engine's own tracker asks for hooks so an outside extension could add it.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://github.com/godotengine/godot-proposals/issues/8576",
+          "title": "Add additional hooks to GLTFDocument to support draco decompression via GDExtension",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Godot doesn't support the KHR_draco_mesh_compression extension"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "native",
+      "note": "Import-time compression covers S3TC and BPTC on desktop and ETC2 or ASTC on mobile and web, with a Basis Universal mode that transcodes to whatever the device wants at load time.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_images.html",
+          "title": "Importing images - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This alternative VRAM compression mode encodes the texture to a format that can be transcoded to most GPU-compressed formats at load-time."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "none",
+      "note": "Standard metallic-roughness materials survive a glTF round trip, but there is no MaterialX or OpenPBR support in the engine, and anything written as a custom shader is dropped on export, so hand-authored looks do not travel. A third-party module and open proposals exist; nothing ships.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/exporting_3d_scenes.html",
+          "title": "Exporting 3D scenes - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "ShaderMaterials cannot be exported."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "native",
+      "note": "Animations are keyframe tracks in an Animation resource held by an AnimationPlayer, grouped into animation libraries; almost any property of any node can be a track, including script variables and function calls.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/animation/introduction.html",
+          "title": "Introduction to the animation features - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A keyframe defines the value of a property at a point in time."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "native",
+      "note": "Skeleton3D holds the bone hierarchy, a Skin binds a mesh to it, and BoneAttachment3D hangs other nodes off a named bone; skeletons come in through glTF import.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_boneattachment3d.html",
+          "title": "BoneAttachment3D - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A node that dynamically copies or overrides the 3D transform of a bone in its parent Skeleton3D."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "native",
+      "note": "Meshes carry blend shapes, imported from glTF morph targets, and each shape's weight can be read and set at runtime on the mesh instance.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_meshinstance3d.html",
+          "title": "MeshInstance3D - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Sets the value of the blend shape at blend_shape_idx to value."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "native",
+      "note": "MultiMesh with MultiMeshInstance3D draws many copies of one mesh cheaply with per-instance data; the level of detail system works with it, though every copy uses the same detail level at a given moment.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_multimeshinstance3d.html",
+          "title": "MultiMeshInstance3D - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "useful to optimize the rendering of a high number of instances of a given mesh"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "partial",
+      "note": "Layering by reference works: an instanced scene keeps a live link to its source file, per-instance property changes override the source, and Editable Children opens the instance's inner nodes for local edits. What is missing against the definition is composition from several sources at once with declared strength ordering, the way a layered scene description format does it; a Godot node has exactly one source scene.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/getting_started/step_by_step/instancing.html",
+          "title": "Creating instances - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Changing a property on an instance always overrides values from the corresponding packed scene."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "native",
+      "note": "One unit is one metre and the engine states plainly that physics and everything else are tuned for that scale.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/3d/introduction_to_3d.html",
+          "title": "Introduction to 3D - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Godot uses the metric system for everything in 3D, with 1 unit being equal to 1 meter."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "none",
+      "note": "The glTF exporter carries exactly one asset-header field bearing on rights: a free-text copyright string, written on export when it is non-empty and read back on import. That states who claims an asset; it does not state what a recipient may do with it, and nothing reads it at the point of use. Import metadata otherwise records import settings only. Correction: an earlier version of this row said nothing survives a glTF export. That was wrong - the copyright string does.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_gltfstate.html",
+          "title": "GLTFState - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-25",
+          "kind": "primary",
+          "quote": "The copyright string in the asset header of the glTF file. This is set during import if present and export if non-empty."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "none",
+      "note": "The only authorship-adjacent field anywhere in the transfer path is the free-text copyright string in the glTF asset header. It is unsigned, so it records a claim rather than proving one. There is no signing, no key material and no content credential in the asset pipeline.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_gltfstate.html",
+          "title": "GLTFState - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-25",
+          "kind": "primary",
+          "quote": "The copyright string in the asset header of the glTF file. This is set during import if present and export if non-empty."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "via-extension",
+      "note": "Nothing in the engine core. The VRM add-on maintained outside the Godot Foundation, and listed in Godot's own asset library, imports VRM 0.0 and 1.0 and exports VRM 1.0, and brings the MToon shader with it. Treat this as a community route, not an engine feature.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://github.com/V-Sekai/godot-vrm",
+          "title": "V-Sekai/godot-vrm - Importer/Exporter for VRM avatars and MToon shader",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This Godot addon fully implements an importer and exporter for models with the VRM specification."
+        },
+        {
+          "url": "https://godotengine.org/asset-library/asset/2031",
+          "title": "VRM Importer for 3D Avatars and MToon Shader - Godot Asset Library",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "partial",
+      "note": "SkeletonProfileHumanoid defines a fixed 56-bone humanoid layout in four groups and exists, in the engine's own words, for standardization. But it is Godot's naming, not an agreed cross-vendor one, so it standardises inside Godot and needs a bone map at the boundary. The hand tracking system also standardises on this humanoid skeleton.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_skeletonprofilehumanoid.html",
+          "title": "SkeletonProfileHumanoid - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A SkeletonProfile as a preset that is optimized for the human form. This exists for standardization"
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/xr/openxr_hand_tracking.html",
+          "title": "OpenXR hand tracking - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "the hand tracking implementation in Godot has been standardized around the Godot Humanoid Skeleton"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "partial",
+      "note": "XRFaceTracker carries named expression weights taken from the Unified Expressions set, including eye and eyelid shapes, so tracked expression has an agreed vocabulary on the input side. There is no expression or viseme format for an avatar asset itself in core, and the class is marked experimental.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_xrfacetracker.html",
+          "title": "XRFaceTracker - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The blend shapes come from the Unified Expressions standard"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "native",
+      "note": "The import pipeline has a retarget section: a bone map onto a skeleton profile, a bone renamer, and a rest fixer that can overwrite bone rest axes and force a reference silhouette, so animation authored for one body plays on another. The docs are candid that it cannot fix silhouettes that are too different.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/retargeting_3d_skeletons.html",
+          "title": "Retargeting 3D Skeletons - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "cannot fix silhouettes which are too different"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "partial",
+      "note": "BoneAttachment3D gives a real attachment point on a named bone, so a held or worn item follows the body. There is no portable description of that attachment: the binding lives in the Godot scene and does not travel with an exported asset.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_boneattachment3d.html",
+          "title": "BoneAttachment3D - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This node selects a bone in a Skeleton3D and attaches to it."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "partial",
+      "note": "Generic mesh level of detail and visibility ranges apply to avatar meshes like any other, but there is no avatar-aware reduction, no crowd imposter and no agreed reduced avatar representation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/3d/mesh_lod.html",
+          "title": "Mesh level of detail (LOD) - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Mesh LOD works with any node that draws 3D meshes."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "native",
+      "note": "RigidBody3D, StaticBody3D, AnimatableBody3D and CharacterBody3D cover the usual cases. Two engines ship: the built-in Godot Physics and Jolt Physics, added in 4.4, which new projects use by default and which is chosen with one project setting. A third engine can be substituted entirely from outside, because PhysicsServer3D is a public interface with an extension point.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/physics/using_jolt_physics.html",
+          "title": "Using Jolt Physics - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "By default, new projects will use it as the physics engine."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_physicsserver3dextension.html",
+          "title": "PhysicsServer3DExtension - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Intended for use with GDExtension to create custom implementations of PhysicsServer3D."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "native",
+      "note": "Collision shapes are separate child nodes from the visible mesh, covering box, sphere, capsule, cylinder, convex hull and concave triangle mesh, with documented advice on the cost of each.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/physics/collision_shapes_3d.html",
+          "title": "Collision shapes (3D) - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Concave shapes are the slowest option but are also the most accurate in Godot."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "partial",
+      "note": "Pin, hinge, slider, cone twist and generic six-degree-of-freedom joints all exist. The gap is between the two engines: under Jolt a number of joint properties, mainly the soft limit settings, are not supported, so the same scene can behave differently depending on which engine is selected.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/physics/using_jolt_physics.html",
+          "title": "Using Jolt Physics - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "there are a number of joint properties that are not supported, mainly ones related to configuring the joint's soft limits"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.material",
+      "level": "native",
+      "note": "PhysicsMaterial carries friction and bounce with rough and absorbent flags controlling how two surfaces combine.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_physicsmaterial.html",
+          "title": "PhysicsMaterial - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Holds physics-related properties of a surface, namely its roughness and bounciness."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.determinism",
+      "level": "none",
+      "note": "There is a fixed physics tick rate, but no claim anywhere in the documentation that the same inputs give the same result on two machines, and the engine states that ordinary floating point maths is not guaranteed to be exact. Anyone planning lockstep or rollback networking on Godot has to prove determinism themselves.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_float.html",
+          "title": "float - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Math done using the float type is not guaranteed to be exact and will often result in small errors."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "native",
+      "note": "SoftBody3D simulates cloth and other deformable meshes; the class documentation recommends running it on Jolt rather than the built-in engine because that implementation is faster and more reliable.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_softbody3d.html",
+          "title": "SoftBody3D - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A deformable 3D physics mesh. Used to create elastic or deformable objects such as cloth, rubber"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "native",
+      "note": "Area3D is a region that reports bodies and other areas entering and leaving, and can also override gravity, damping and the audio bus inside itself.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_area3d.html",
+          "title": "Area3D - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Emitted when the received body enters this area."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "native",
+      "note": "AudioStreamPlayer3D places a sound in the world with a choice of inverse, inverse square, logarithmic or no distance attenuation, plus unit size and maximum distance.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_audiostreamplayer3d.html",
+          "title": "AudioStreamPlayer3D - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Plays audio with positional sound effects, based on the relative position of the audio listener."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "partial",
+      "note": "Direction is rendered by panning between output channels, with a per-node panning strength over a project-wide setting. There is no head-related transfer function and no ambisonic path in the engine, so binaural rendering has to come from an add-on or the platform.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_audiostreamplayer3d.html",
+          "title": "AudioStreamPlayer3D - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Scales the panning strength for this node"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "partial",
+      "note": "Reverb is real and routable: buses carry effects in order, and an Area3D can send the sounds inside it to a named reverb bus with an amount and a uniformity. What is missing is any acoustic model of the room itself; the reverb is authored, not derived from geometry.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_area3d.html",
+          "title": "Area3D - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The name of the reverb bus to use for this area's associated audio."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/audio/audio_buses.html",
+          "title": "Audio buses - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Audio buses can contain all sorts of effects. These effects modify the sound in one way or another and are applied in order."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "none",
+      "note": "There is a low-pass attenuation filter on each 3D sound, but it is driven by distance and by area masks, not by geometry between source and listener. Real occlusion has to be scripted with ray casts that drive that filter.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_audiostreamplayer3d.html",
+          "title": "AudioStreamPlayer3D - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The cutoff frequency of the attenuation low-pass filter, in Hz."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "none",
+      "note": "Audio streams are local resources loaded from the project or from disk. Nothing in the engine delivers audio over a network at scale; on web builds the playback type setting only chooses between browser samples and streaming inside the page.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/audio/audio_streams.html",
+          "title": "Audio streams - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "It exists so Web exports use Web Audio-API based samples instead of streaming all sounds to the browser."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "none",
+      "note": "No voice transport ships. AudioEffectCapture hands a project raw samples off a bus and the documentation names network transmission as a use for it, but the codec, the jitter buffer and the transport are all the developer's problem.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_audioeffectcapture.html",
+          "title": "AudioEffectCapture - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Exposes audio samples from an audio bus in real-time, such that it can be accessed as data."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "native",
+      "note": "This is the part that is unusual for an open engine. MultiplayerSynchronizer replicates a declared list of properties from the authority to remote peers on a configurable interval or on change, and MultiplayerSpawner replicates the creation and removal of nodes. Remote procedure calls with reliability and ordering modes sit alongside it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_multiplayersynchronizer.html",
+          "title": "MultiplayerSynchronizer - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Synchronizes properties from the multiplayer authority to the remote peers."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_multiplayerspawner.html",
+          "title": "MultiplayerSpawner - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "automatically replicates spawnable nodes from the authority to other multiplayer peers"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "native",
+      "note": "Every node has a multiplayer authority, the server by default, settable per node; remote calls can be restricted to the authority or opened to any peer.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/networking/high_level_multiplayer.html",
+          "title": "High-level multiplayer - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Only the multiplayer authority can call remotely. The authority is the server by default"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "partial",
+      "note": "Per-synchronizer visibility can be set for a peer directly or computed by visibility filter callbacks, which is the mechanism for sending each client only what it needs. The policy is entirely the developer's: there is no spatial partition, no area of interest and no automatic culling by distance.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_multiplayersynchronizer.html",
+          "title": "MultiplayerSynchronizer - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Adds a peer visibility filter for this synchronizer"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.prediction",
+      "level": "none",
+      "note": "No client-side prediction, reconciliation or rollback in the engine. Replication is authority to peer; hiding latency is left to the project.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/networking/high_level_multiplayer.html",
+          "title": "High-level multiplayer - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "native",
+      "note": "Three peers ship behind one interface: ENet over UDP for native builds, WebSocket, and WebRTC data channels. A project can add its own peer implementation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/networking/high_level_multiplayer.html",
+          "title": "High-level multiplayer - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "ENetMultiplayerPeer, one based on WebRTC (WebRTCMultiplayerPeer), and one based on WebSocket (WebSocketMultiplayerPeer)"
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_enetmultiplayerpeer.html",
+          "title": "ENetMultiplayerPeer - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "ENet only uses UDP, not TCP."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.media",
+      "level": "none",
+      "note": "The WebRTC integration exposes data channels only; there is no audio or video track handling, and no media transport of any kind in the engine.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_webrtcpeerconnection.html",
+          "title": "WebRTCPeerConnection - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A WebRTC connection between the local computer and a remote peer."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "partial",
+      "note": "Joining is covered inside one application: a peer connects, an optional authentication callback can hold it in an authenticating state until the project completes or times out the handshake, and spawners bring the joiner up to date. There is no standard for what that handshake contains and no cross-operator session concept.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_scenemultiplayer.html",
+          "title": "SceneMultiplayer - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The callback to execute when receiving authentication data sent via send_auth()."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "none",
+      "note": "Nothing for leaving one world and arriving in another with state intact. Changing scene inside one application is not the same thing and does not cross an operator boundary: the outgoing scene is removed from the tree and then freed, so nothing carries across unless the project saves and reloads it by hand.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_scenetree.html",
+          "title": "SceneTree - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-25",
+          "kind": "primary",
+          "quote": "The current scene node is immediately removed from the tree."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "partial",
+      "note": "Inside one session the server can notify clients of other peers connecting and disconnecting, which gives a roster. Across operators there is nothing.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_scenemultiplayer.html",
+          "title": "SceneMultiplayer - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "notifies clients of other peers' connection/disconnection, and relays messages between them"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "none",
+      "note": "A client connects to a host address and port. There is no name for a place, and no resolution step between a name and a reachable destination.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_enetmultiplayerpeer.html",
+          "title": "ENetMultiplayerPeer - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "create_client()"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "none",
+      "note": "No lobby, matchmaking or service discovery in the engine; projects hand-roll it or buy it. A client must already hold the server's address and port before it can connect, which is the opposite of finding a world without knowing it in advance.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_enetmultiplayerpeer.html",
+          "title": "ENetMultiplayerPeer - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-25",
+          "kind": "primary",
+          "quote": "Create client that connects to a server at address using specified port."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "none",
+      "note": "There is a fixed physics tick and a Time singleton, but the singleton reads the local machine's own clock and converts between formats. There is no shared clock, no offset estimation and no agreed event ordering across peers, so two peers can disagree and nothing in the engine reconciles them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_time.html",
+          "title": "Time - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-25",
+          "kind": "primary",
+          "quote": "The Time singleton allows converting time between various formats and also getting time information from the system."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "out-of-scope",
+      "note": "A game engine, not an identity provider. The only identifier the engine issues is a peer number handed out at connection time: the server is always 1 and every client gets a random positive integer. It is scoped to one session and means nothing outside it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/networking/high_level_multiplayer.html",
+          "title": "High-level multiplayer - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-25",
+          "kind": "primary",
+          "quote": "Every peer is assigned a unique ID. The server's ID is always 1, and clients are assigned a random positive integer."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "none",
+      "note": "The multiplayer authentication callback is a bring-your-own hook where a project could carry a credential exchange, but the engine defines no protocol, no message shape and no verification.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_scenemultiplayer.html",
+          "title": "SceneMultiplayer - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "If the Callable is empty (default), peers will be automatically accepted as soon as they connect."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "none",
+      "note": "No Earth-referenced position or orientation. Large world coordinates can be enabled to give double precision for big scenes, which helps a geospatial project, but the engine defines no Earth frame.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/physics/index.html",
+          "title": "Physics - Godot Engine (4.7) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Large world coordinates"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "native",
+      "note": "The core OpenXR module exposes spatial entities: spatial anchors that the runtime keeps registered to a real place, plane tracking for walls, floors, ceilings and tables, and marker tracking for QR codes, micro QR codes, Aruco codes and April tags.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/xr/openxr_spatial_entities.html",
+          "title": "OpenXR spatial entities - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Spatial anchors allow us to map real world locations in our virtual world"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "partial",
+      "note": "Half of the definition is met and the engine says so plainly. Anchors can be made persistent so they come back in the right place next time the application starts, if the runtime supports it. Sharing anchors between devices is stated as not supported, which the docs attribute to the spatial entities specification rather than to Godot.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/xr/openxr_spatial_entities.html",
+          "title": "OpenXR spatial entities - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Sharing of anchors is currently not supported in the spatial entities specification."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.vps",
+      "level": "none",
+      "note": "No visual positioning in the engine. Where a runtime does it, the result reaches Godot already resolved, as an anchor the AR platform identified and placed, not as a pose service the engine exposes or a query a project can make.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_xranchor3d.html",
+          "title": "XRAnchor3D - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-25",
+          "kind": "primary",
+          "quote": "The XRAnchor3D point is an XRNode3D that maps a real world location identified by the AR platform to a position within the game world."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.indoor",
+      "level": "partial",
+      "note": "Plane tracking through the OpenXR spatial entities support recovers walls, floors, ceilings and tables as tracked surfaces, which is a runtime view of an interior. There is no structured indoor map format, no rooms, no doors and no navigation description.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/xr/openxr_spatial_entities.html",
+          "title": "OpenXR spatial entities - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Plane tracking allows us to detect surfaces such as walls, floors, ceilings, and tables"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "native",
+      "note": "OpenXR is a core interface, not a plug-in: it is switched on in project settings and the engine says the Vulkan renderer is tightly integrated with it. Web builds get the browser immersive interface instead, through WebXRInterface, which is only available in web exports. Both sit behind the same XRInterface abstraction.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/xr/setting_up_xr.html",
+          "title": "Setting up XR - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This was one of the main deciding factors to include OpenXR as a core interface."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_webxrinterface.html",
+          "title": "WebXRInterface - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "As such, this interface is only available when running in Web exports."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "native",
+      "note": "The action map implements the OpenXR action and interaction profile system almost exactly as specified, binding device inputs to named actions that fire signals on controller nodes, with profiles for controllers, trackers, remotes and tracked pens.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/xr/xr_action_map.html",
+          "title": "The XR action map - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "implements the built-in action map system of OpenXR mostly exactly as it is offered"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "native",
+      "note": "Articulated hand poses come from the runtime as an XRHandTracker resource with all joint data, and XRHandModifier3D drives a rigged hand mesh from it; the implementation is standardised on the engine's humanoid skeleton, and pinch and poke poses are exposed for pointing.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/xr/openxr_hand_tracking.html",
+          "title": "OpenXR hand tracking - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This resource provides access to all the joint information for the given hand."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.eye",
+      "level": "partial",
+      "note": "The OpenXR interface reports whether the eye gaze interaction extension is available, so gaze can be used as a pointing source, and the experimental face tracker carries eye direction, closure and pupil shapes. The documentation says nothing about the privacy handling the definition asks for.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_openxrinterface.html",
+          "title": "OpenXRInterface - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Returns the capabilities of the eye gaze interaction extension."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "native",
+      "note": "Haptics are an output type in the same action map as the inputs, with intensity set through the action, and modifiers that can fire haptics automatically when a threshold is crossed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/xr/xr_action_map.html",
+          "title": "The XR action map - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "the only output type is Haptic and it allows us to set the intensity of haptic feedback"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "partial",
+      "note": "Capability queries exist per feature: whether hand tracking, foveation or eye gaze interaction are supported, and on the web whether a session mode is supported by the browser. There is no single device capability description a project can read up front, and several queries only return a valid answer after the interface has started.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_openxrinterface.html",
+          "title": "OpenXRInterface - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This only returns a valid value after OpenXR has been initialized."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_webxrinterface.html",
+          "title": "WebXRInterface - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Checks if the given session_mode is supported by the user's browser"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "native",
+      "note": "GDScript is the engine's own gradually typed language, built for it and shipped with it. C# is supported through a separate .NET build of the editor on desktop, Android and iOS but cannot be exported to the web. Native languages attach through GDExtension.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html",
+          "title": "GDScript reference - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "GDScript is a high-level, object-oriented, imperative, and gradually typed programming language built for Godot."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/scripting/c_sharp/index.html",
+          "title": "C# - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Currently, projects written in C# cannot be exported to the web platform."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_gdextension.html",
+          "title": "GDExtension - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "represents a shared library which can expand the functionality of the engine"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "none",
+      "note": "There is no declarative interactivity that travels with an asset. Animation state machines and visual shaders are authoring tools inside Godot scenes; the engine implements no interactivity extension for the model transfer format, so behaviour stops at the export boundary.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/exporting_3d_scenes.html",
+          "title": "Exporting 3D scenes - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "ShaderMaterials cannot be exported."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "none",
+      "note": "Godot has no sandbox for untrusted content, and its own documentation treats loading third-party content as a security problem rather than a supported mode: mounting an outside content pack is called out as a vulnerability, and object decoding in remote calls is dangerous with untrusted senders. Community sandbox extensions exist; nothing ships.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/export/exporting_pcks.html",
+          "title": "Exporting packs, patches, and mods - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This is a security vulnerability in three scenarios."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_scenemultiplayer.html",
+          "title": "SceneMultiplayer - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "If true, the MultiplayerAPI will allow encoding and decoding of object during RPCs."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "out-of-scope",
+      "note": "The engine's navigation agents are pathfinding and obstacle-avoidance helpers that hand a movement suggestion back to the parent node; they are not autonomous actors with their own interface into a world. There is no agent integration surface.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_navigationagent3d.html",
+          "title": "NavigationAgent3D - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-25",
+          "kind": "primary",
+          "quote": "A 3D agent used to pathfind to a position while avoiding static and dynamic obstacles."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "none",
+      "note": "Saving is a pattern, not a service: open a file under the user path, serialise your own state, write it. The documentation says outright that where that logic goes is up to the project.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/io/saving_games.html",
+          "title": "Saving games - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "It's ultimately up to the project creator where much of this logic goes."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "none",
+      "note": "Settings can be stored per user with the engine's own configuration file class, but the format is Godot's own and is not guaranteed to match what any other program writes. Nothing is portable to another application, and there is no agreed accessibility preference set that would follow a user to another world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_configfile.html",
+          "title": "ConfigFile - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-25",
+          "kind": "primary",
+          "quote": "Since neither .cfg nor .ini are standardized, Godot's ConfigFile formatting may differ from files written by other programs."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "none",
+      "note": "Worth stating carefully because it is easy to misread. Godot has location-independent resource identifiers using a uid scheme, so references survive files being moved or renamed, but the identifier is randomly generated and is not a hash of the content. It solves refactoring, not content addressing.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_resourceuid.html",
+          "title": "ResourceUID - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Generates a random resource UID which is guaranteed to be unique"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "native",
+      "note": "A project exports through platform templates into a runnable build, or into a standalone pack in either an uncompressed or a compressed archive form, which the running application can mount later for patches, extra content or mods.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/export/exporting_projects.html",
+          "title": "Exporting projects - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Export the project resources as a PCK or ZIP package."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/export/exporting_pcks.html",
+          "title": "Exporting packs, patches, and mods - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Now one can use the assets as if they had them in the project from the start."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "partial",
+      "note": "The pieces for delivery exist, a runtime-mountable pack and a static web build, but the engine ships no delivery system: no chunking policy, no manifest, no signing, and the documentation tells projects to build their own patch flow and add asymmetric cryptography themselves.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/export/exporting_pcks.html",
+          "title": "Exporting packs, patches, and mods - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "consider using asymmetric cryptography"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "partial",
+      "note": "There is a stated release policy: patch releases are backwards compatible and safe to take, while minor releases add features without breaking compatibility in a major way but still need the project to be tested. So content is not guaranteed to survive a minor upgrade untouched, and there is no per-asset versioning at all.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/about/release_policy.html",
+          "title": "Godot release policy - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Upgrading to a new minor version is recommended for all users, but some testing is necessary"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "none",
+      "note": "Godot tests itself with an internal unit test suite run from the binary, but there is no specification for anyone else to conform to and no conformance suite a third-party implementation could pass. This is the structural difference between an engine and a standard.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/engine_details/architecture/unit_testing.html",
+          "title": "Unit testing - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The engine integrates the doctest unit testing framework"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "Godot is a general engine whose whole surface is core plus an asset library, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_3d_scenes/available_formats.html",
+          "title": "Available 3D scene formats - Godot Engine documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Godot supports the following 3D scene file formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "Godot is a general engine whose whole surface is core plus an asset library, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_3d_scenes/available_formats.html",
+          "title": "Available 3D scene formats - Godot Engine documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Godot supports the following 3D scene file formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "Godot is a general engine whose whole surface is core plus an asset library, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_3d_scenes/available_formats.html",
+          "title": "Available 3D scene formats - Godot Engine documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Godot supports the following 3D scene file formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "none",
+      "note": "Nothing in core and nothing in the official asset library. The engine's own list of the 3D scene formats it imports holds glTF, Blender, COLLADA, Wavefront and Filmbox and no splat container; the words splat, splatting and radiance field do not appear in the documentation index, there are no issues or proposals in the engine's trackers, and a search of the asset library returns nothing.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_3d_scenes/available_formats.html",
+          "title": "Available 3D scene formats - Godot Engine documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Godot supports the following 3D scene file formats"
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/searchindex.js",
+          "title": "Godot Engine documentation search index",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "out-of-scope",
+      "note": "Godot is a general engine whose whole surface is core plus an asset library, and it delivers no captured scene, progressively by region and detail or otherwise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_3d_scenes/available_formats.html",
+          "title": "Available 3D scene formats - Godot Engine documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Godot supports the following 3D scene file formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "Godot is a general engine whose whole surface is core plus an asset library, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_3d_scenes/available_formats.html",
+          "title": "Available 3D scene formats - Godot Engine documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Godot supports the following 3D scene file formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "none",
+      "note": "Points are a drawing primitive rather than a kind of content: an array can be rendered as points, and there is a mesh resource holding a single point for billboarded sprites. There is no point cloud node, no importer for any scanner format and no compression.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_mesh.html",
+          "title": "Mesh - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Render array as points (one vertex equals one point)."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_pointmesh.html",
+          "title": "PointMesh - Godot Engine (stable) documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Mesh with a single point primitive."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "Godot is a general engine whose whole surface is core plus an asset library, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_3d_scenes/available_formats.html",
+          "title": "Available 3D scene formats - Godot Engine documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Godot supports the following 3D scene file formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "out-of-scope",
+      "note": "Godot is a general engine whose whole surface is core plus an asset library, and it produces no image from a viewing position that no capture camera occupied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_3d_scenes/available_formats.html",
+          "title": "Available 3D scene formats - Godot Engine documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Godot supports the following 3D scene file formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "Godot is a general engine whose whole surface is core plus an asset library, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_3d_scenes/available_formats.html",
+          "title": "Available 3D scene formats - Godot Engine documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Godot supports the following 3D scene file formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "Godot is a general engine whose whole surface is core plus an asset library, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_3d_scenes/available_formats.html",
+          "title": "Available 3D scene formats - Godot Engine documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Godot supports the following 3D scene file formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "Godot is a general engine whose whole surface is core plus an asset library, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_3d_scenes/available_formats.html",
+          "title": "Available 3D scene formats - Godot Engine documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Godot supports the following 3D scene file formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "Godot is a general engine whose whole surface is core plus an asset library, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_3d_scenes/available_formats.html",
+          "title": "Available 3D scene formats - Godot Engine documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Godot supports the following 3D scene file formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "Godot is a general engine whose whole surface is core plus an asset library, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_3d_scenes/available_formats.html",
+          "title": "Available 3D scene formats - Godot Engine documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Godot supports the following 3D scene file formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "Godot is a general engine whose whole surface is core plus an asset library, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_3d_scenes/available_formats.html",
+          "title": "Available 3D scene formats - Godot Engine documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Godot supports the following 3D scene file formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "Godot is a general engine whose whole surface is core plus an asset library, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_3d_scenes/available_formats.html",
+          "title": "Available 3D scene formats - Godot Engine documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Godot supports the following 3D scene file formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "native",
+      "note": "The sky material takes an equirectangular map rather than a cube, which the documentation states as the deliberate difference from other engines, and it recommends a high-dynamic-range panorama so the same image also drives reflections. Projection stated, used as backdrop and as light.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_panoramaskymaterial.html",
+          "title": "PanoramaSkyMaterial - Godot Engine documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Using an HDR panorama is strongly recommended for accurate, high-quality reflections."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "partial",
+      "note": "Godot's own OpenXR layer carries the spatial entities system, and plane tracking is a project setting that detects floors, walls, ceilings and tables. Each plane can carry a 2D mesh or a polygon that gives its shape. What is missing is the room itself: there is no environment mesh in core, and the manual says any further capability has to arrive as a vendor extension.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/xr/openxr_spatial_entities.html",
+          "title": "Godot Engine manual, OpenXR spatial entities",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "For any sort of augmented reality application you need to access real world information, and be able to track real world locations."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/xr/openxr_spatial_entities.html",
+          "title": "Godot Engine manual, OpenXR spatial entities",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Enables the plane tracking capability that allows detection of surfaces such as floors, walls, ceilings, and tables."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/xr/openxr_spatial_entities.html",
+          "title": "Godot Engine manual, OpenXR spatial entities",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Provides us with a 2D mesh that shapes each plane"
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/xr/openxr_spatial_entities.html",
+          "title": "Godot Engine manual, OpenXR spatial entities",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Vendors have the ability to implement and expose additional capabilities and component types that can be used with the core API. For Godot these can be implemented in extensions."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "partial",
+      "note": "A plane semantic label component gives a type identification for each detected plane, held on the plane tracker object, so a game can tell a floor from a table without vendor code. It is plane-level only; there is no per-pixel class channel and no object detection in core.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/xr/openxr_spatial_entities.html",
+          "title": "Godot Engine manual, OpenXR spatial entities",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Provides us with a type identification of each plane"
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/xr/openxr_spatial_entities.html",
+          "title": "Godot Engine manual, OpenXR spatial entities",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Enables the plane tracking capability that allows detection of surfaces such as floors, walls, ceilings, and tables."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "none",
+      "note": "Nothing in core Godot delivers a depth map of the real world. The spatial entities system covers anchors, planes and markers, and the manual points at vendor extensions for anything beyond that, so a Godot project reaching for environment depth leaves the engine's own surface.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/xr/openxr_spatial_entities.html",
+          "title": "Godot Engine manual, OpenXR spatial entities",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Vendors have the ability to implement and expose additional capabilities and component types that can be used with the core API. For Godot these can be implemented in extensions."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/xr/openxr_spatial_entities.html",
+          "title": "Godot Engine manual, OpenXR spatial entities",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Enables the plane tracking capability that allows detection of surfaces such as floors, walls, ceilings, and tables."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "none",
+      "note": "With no environment depth and no room mesh in core, there is nothing for the engine to occlude against. Godot's occlusion culling works on authored occluder geometry inside the virtual scene and says nothing about real surfaces.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/xr/openxr_spatial_entities.html",
+          "title": "Godot Engine manual, OpenXR spatial entities",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Vendors have the ability to implement and expose additional capabilities and component types that can be used with the core API. For Godot these can be implemented in extensions."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "native",
+      "note": "Godot puts the blend in the engine's own interface: the XR interface carries an environment blend mode property with the runtime's supported modes enumerable at start-up, and the older start and stop passthrough calls are now deprecated in favour of setting that mode. The documentation says what the mode means — camera images blended in by the compositor on passthrough devices — and the viewport must be transparent for it to show. No hole cutting, no styling of the camera image.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_xrinterface.html",
+          "title": "XRInterface, Godot Engine (stable) documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Specify how XR should blend in the environment. This is specific to certain AR and passthrough devices where camera images are blended in by the XR compositor."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_xrinterface.html",
+          "title": "XRInterface, Godot Engine (stable) documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Note: Not all runtimes support all environment blend modes, so it is important to check this at startup."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.face",
+      "level": "native",
+      "note": "A tracked face is a first-class object in the engine: XRFaceTracker represents one face and its blend shape weights, and Godot ties the vocabulary to the Unified Expressions standard and documents how that relates to other standards, which is more than most runtimes do. The stream still comes from whatever runtime or add-on feeds the tracker, and the privacy terms come with that source rather than from Godot.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_xrfacetracker.html",
+          "title": "XRFaceTracker, Godot Engine (stable) documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "An instance of this object represents a tracked face and its corresponding blend shapes. The blend shapes come from the Unified Expressions standard, and contain extended details and visuals for each blend shape."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_xrfacetracker.html",
+          "title": "XRFaceTracker, Godot Engine (stable) documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The array of face blend shape weights with indices corresponding to the BlendShapeEntry enum."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "native",
+      "note": "The walkable surface is a resource on a node in the scene tree: a navigation region holds a navigation mesh, which can be baked from the scene's geometry on a background thread and is then saved with the scene. That answers the carrying half of the row inside Godot; the declaration is Godot's own resource format, and arrival points remain whatever the project decides to call a spawn node.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_navigationregion3d.html",
+          "title": "NavigationRegion3D, Godot Engine (stable) documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The NavigationMesh resource to use."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_navigationregion3d.html",
+          "title": "NavigationRegion3D, Godot Engine (stable) documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "bake_navigation_mesh (on_thread: bool = true)"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "none",
+      "note": "Scripts can register a global class name, which makes the name visible everywhere inside one project and nowhere outside it. Godot operates no registry that keeps a published add-on's name resolving to the same code forever, and nothing stops two authors shipping different things under the same class name.",
+      "confidence": "unverified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html",
+          "title": "GDScript reference, Godot Engine (stable) documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Script classes declared with the class_name keyword."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "out-of-scope",
+      "note": "Godot exports an application and hands it over. Any review between that application and its players belongs to the store it ships through, not to the engine.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "The engine has no map of a real place: it has anchors from whichever XR runtime is underneath and no lifecycle or alignment for maps.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "Godot declares no geographic area over which anything applies.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.extension",
+      "level": "partial",
+      "note": "GLTFDocumentExtension permits custom data import and export; this captured class does not settle unknown-extension handling for recipients.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_gltfdocument.html",
+          "title": "GLTFDocument — Godot Engine (stable) documentation in English",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "This allows for custom data to be imported and exported."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.color",
+      "level": "partial",
+      "note": "Color supplies explicit sRGB and linear conversion; this class alone does not establish rendering-surface output range declarations.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_color.html",
+          "title": "Color — Godot Engine (stable) documentation in English",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "use srgb_to_linear() to convert it to linear encoding first."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.metadata",
+      "level": "partial",
+      "note": "Objects expose named metadata entries; the captured API does not define a shared domain vocabulary or typed exchange schema.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_object.html",
+          "title": "Object — Godot Engine (stable) documentation in English",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Returns the object's metadata entry names"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "native",
+      "note": "Control nodes define rectangles, anchors and offsets relative to their parent or viewport.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_control.html",
+          "title": "Control — Godot Engine (stable) documentation in English",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Base class for all UI-related nodes."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "native",
+      "note": "The built-in OpenXR spatial-entity marker-tracking capability exposes recognized physical markers and their poses; the underlying runtime must support the required OpenXR extensions.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/xr/openxr_spatial_entities.html",
+          "title": "OpenXR spatial entities — Godot Engine (stable) documentation in English",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "marker tracking, plane tracking, and anchors."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.resolve",
+      "level": "native",
+      "note": "ResourceLoader resolves engine resource files through registered format loaders, with import prerequisites stated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_resourceloader.html",
+          "title": "ResourceLoader — Godot Engine (stable) documentation in English",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "A singleton for loading resource files."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "native",
+      "note": "RayCast3D reports the closest collision object along a ray with layer and exception filtering.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_raycast3d.html",
+          "title": "RayCast3D — Godot Engine (stable) documentation in English",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "finds the closest object along its path"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.text",
+      "level": "native",
+      "note": "LineEdit provides a documented interface for single-line character and string entry.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_lineedit.html",
+          "title": "LineEdit — Godot Engine (stable) documentation in English",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "An input field for single-line text."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "native",
+      "note": "OpenXRCompositionLayer nodes submit viewport images through supported compositor shapes, with a mesh fallback when the runtime lacks support.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_openxrcompositionlayer.html",
+          "title": "OpenXRCompositionLayer — Godot Engine (stable) documentation in English",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Composition layers allow 2D viewports to be displayed"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.bounds",
+      "level": "partial",
+      "note": "AABB supplies bounding volumes and overlap tests; the captured type does not establish pre-load spatial traversal.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_aabb.html",
+          "title": "AABB — Godot Engine (stable) documentation in English",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "A 3D axis-aligned bounding box."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.collection",
+      "level": "native",
+      "note": "Node groups define named sets with retrieval and operations through SceneTree.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_node.html",
+          "title": "Node — Godot Engine (stable) documentation in English",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Nodes can be added to as many groups as you want"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "native",
+      "note": "BoneConstraint3D-derived components copy reference-bone transforms with explicit relative, additive and masking rules.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_copytransformmodifier3d.html",
+          "title": "CopyTransformModifier3D — Godot Engine (stable) documentation in English",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Apply the copied transform of the bone"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "partial",
+      "note": "VideoStreamPlayer plays referenced video resources with audio controls; a wider scene synchronization contract is not established by this class.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_videostreamplayer.html",
+          "title": "VideoStreamPlayer — Godot Engine (stable) documentation in English",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "A control used for video playback."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "partial",
+      "note": "AudioStreamGenerator accepts samples generated by a script; that local generator interface does not itself exchange a synthesis model and controls.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_audiostreamgenerator.html",
+          "title": "AudioStreamGenerator — Godot Engine (stable) documentation in English",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "An audio stream with utilities for procedural sound generation."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "native",
+      "note": "Compute shaders use GLSL on RenderingDevice-based renderers; the documented compatibility backend is outside that route.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/shaders/compute_shaders.html",
+          "title": "Using compute shaders — Godot Engine (stable) documentation in English",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "you write them in GLSL directly."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "native",
+      "note": "Godot RenderingDevice compute shaders are written directly in GLSL. This native route is restricted to RenderingDevice-based renderers; the separate Godot material shading language is only GLSL-like, and cross-driver execution was not tested.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/shaders/compute_shaders.html",
+          "title": "Using compute shaders — Godot Engine (stable) documentation in English",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "When you write compute shaders in Godot, you write them in GLSL directly."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.parametric",
+      "level": "partial",
+      "note": "Curve3D holds a sampleable Bezier curve as a Resource; the captured class does not establish the receiver-side interchange representation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_curve3d.html",
+          "title": "Curve3D — Godot Engine (stable) documentation in English",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Describes a Bézier curve in 3D space."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "partial",
+      "note": "GPUParticles3D evaluates emitters with material parameters; the captured class does not establish exchanged particle descriptions.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_gpuparticles3d.html",
+          "title": "GPUParticles3D — Godot Engine (stable) documentation in English",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "A 3D particle emitter."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "partial",
+      "note": "The stable feature list explicitly documents MIDI input and no MIDI output; the captured overview does not itself define the typed event fields required by this row.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/about/list_of_features.html",
+          "title": "List of features — Godot Engine (stable) documentation in English",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "MIDI input. No support for MIDI output yet."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "partial",
+      "confidence": "verified",
+      "note": "XRInterface reports a convex physical play-area polygon and reference origin. This source does not establish floor-relative origin behavior across providers.",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_xrinterface.html",
+          "title": "XRInterface — Godot Engine (stable) documentation in English",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Returns an array of vectors that represent the physical play area mapped to the virtual space around the XROrigin3D point."
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "native",
+      "confidence": "verified",
+      "note": "Animation resources bind timed position and quaternion-rotation keys to nodes; track interpolation is configured separately through InterpolationType.",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_animation.html",
+          "title": "Animation — Godot Engine (stable) documentation in English",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "using the dedicated TYPE_POSITION_3D , TYPE_ROTATION_3D and TYPE_SCALE_3D track types"
+        }
+      ],
+      "direction": "both"
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "native",
+      "confidence": "verified",
+      "note": "Node3D defines parent-relative transform composition and its top_level exception. PackedScene serializes owned node hierarchies for loading/instantiation, so the linked transforms can be reconstructed in Godot.",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_node3d.html",
+          "title": "Node3D — Godot Engine (stable) documentation in English",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Affine operations (translation, rotation, scale) are calculated in the coordinate system relative to the parent"
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_packedscene.html",
+          "title": "PackedScene — Godot Engine (stable) documentation in English",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "When saving, the node as well as all the nodes it owns get saved"
+        }
+      ],
+      "direction": "both"
+    },
+    {
+      "capability_id": "scene.style",
+      "level": "native",
+      "confidence": "verified",
+      "note": "Godot Theme resources separately assign display properties to controls by their declared type and hierarchy. These metadata selectors determine supported GUI styling.",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_theme.html",
+          "title": "Theme — Godot Engine (stable) documentation in English",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "store and apply the same settings across all controls sharing the same type"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.variant",
+      "level": "native",
+      "confidence": "verified",
+      "note": "Godot Theme resources define named type variations selected through Control.theme_type_variation. Those are alternative authored configurations of the theme asset with a defined selector.",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_theme.html",
+          "title": "Theme — Godot Engine (stable) documentation in English",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Marks theme_type as a variation of base_type"
+        }
+      ]
+    }
+  ]
+}

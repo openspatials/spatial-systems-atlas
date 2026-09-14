@@ -1,0 +1,1150 @@
+{
+  "subject_id": "3dtiles",
+  "summary": "Streaming very large three-dimensional geospatial data by tile, and the only thing on this map that solves that problem in a ratified document. Two facts about its standing are easy to get wrong. It is an OGC Community Standard, not an OGC Implementation Standard, submitted by a single company and approved on that basis; and it was approved 2022-12-17 and published 2023-01-12, not in 2025. Its document address lives under the community-standard path, and the implementation-standard path returns nothing. What it actually specifies is a tree of tiles with an error measure and a refinement rule, a coordinate reference frame, structured metadata and a small styling language. What it deliberately does not specify is the model itself: since version 1.1 the tile payload is the common asset format, and its own four original tile formats are deprecated. Two traps. Its up axis is not the same as that format's, so a transform is applied on every tile. And its security section reads, in full, that no security considerations have been made.",
+  "coverage": [
+    {
+      "capability_id": "geo.tiles",
+      "level": "native",
+      "note": "This is the whole point of the standard, and it says so in its own abstract.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1, Abstract",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This document describes the specification for 3D Tiles, an open standard for streaming massive heterogeneous 3D geospatial datasets."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "native",
+      "note": "Each tile carries an error measured in metres, and a rule saying whether children replace the parent or add to it. That pair is what lets a client decide what to draw and what to fetch next.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1, clause 4.7 and 6.7.1.3",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Permitted refinement types are replacement ( \"REPLACE\" ) and additive ( \"ADD\" )."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "native",
+      "note": "Right-handed with the vertical axis up for local frames, usually an Earth-centred Earth-fixed frame at the root, and the frame may be named explicitly through a metadata property carrying a geodetic dataset identifier. Note the up axis differs from the common asset format's.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1, clause 6.6 Coordinate reference system",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "3D Tiles uses a right-handed Cartesian coordinate system; that is, the cross product of x and y yields z . 3D Tiles defines the z axis as up for local Cartesian coordinate systems."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "native",
+      "note": "Fixed at metres, with no way for a tileset to declare anything else. This matches the common asset format and removes one class of scale error.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1, clause 6.5 Units",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The unit for all linear distances is meters. All angles are in radians."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "native",
+      "note": "Point clouds are a named content type in the scope, and the styling language can size individual points and read their position, colour and normal. The dedicated point cloud tile format is deprecated in this version in favour of point primitives in the common asset format. Voxels are not here; they are listed as a feature of the in-development next version.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1, clause 1 Scope and clause 10.4 Point Cloud",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A Point Cloud is a collection of points that may be styled like other features. In addition to evaluating a point's color and show properties, a Point Cloud style may evaluate pointSize , or the size of each point in pixels."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "native",
+      "note": "Every tileset must state the version it targets, and that version fixes both the schema and the permitted tile formats. A second optional field lets a publisher version their own data separately, which is used to defeat caches.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1, Annex A.1.1 asset.version",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The 3D Tiles version. The version defines the JSON schema for the tileset JSON and the base set of tile formats."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "partial",
+      "note": "It defines the container for the tree, not for the model. Since this version the model payload is simply the common asset format, and the four original tile formats are deprecated and may be removed. The missing half is a real interoperability cost: an implementation must apply an up-axis correction to every tile, which the specification spells out as a step in the transform chain.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1, clause 7 Tile Formats and clause 6.7.1.6",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The primary tile format in 3D Tiles 1.1 is the glTF Tile Format . It is built on glTF 2.0"
+        },
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1, clause 7.1 Legacy Tile Formats",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "These formats were deprecated in 3D Tiles 1.1 and may be removed in a future version of 3D Tiles."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "via-extension",
+      "note": "Repeated objects such as trees and signs are now carried by a ratified extension of the common asset format rather than by this standard's own instanced tile format, which is deprecated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1, clause 7.1 Legacy Tile Formats",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Instanced 3D Model ( i3dm ) 3D model instances"
+        },
+        {
+          "url": "https://github.com/KhronosGroup/glTF/blob/main/extensions/2.0/Vendor/EXT_mesh_gpu_instancing/README.md",
+          "title": "EXT_mesh_gpu_instancing",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This extension is specfically designed to enable GPU instancing, rendering many copies of a single mesh at once using a small number of draw calls."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "partial",
+      "note": "A tile's content may be another tileset, so datasets nest, and one tile may hold several contents that can be grouped and given metadata. What is missing is override: nothing lets one source change a value inside another, and there is no layering with a strength order.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1, clause 6.7 Concepts",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "refers to the tile's content in one of the tile formats that are defined in the Tile format specifications ), or another tileset JSON to create a tileset of tilesets"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "partial",
+      "note": "Implicit tiling lets a client work out a tile's address by arithmetic from a template rather than reading a manifest, which is what makes planet-scale datasets fetchable at all. What is missing is everything about delivery itself: no caching rules, no compression negotiation, no failure or retry behaviour.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1, clause 8 Implicit Tiling",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "8.5. Template URIs 8.6. Subtrees"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "partial",
+      "note": "There is a real expression language, but only for appearance: it decides whether a feature is shown, what colour it is and how big a point is drawn. It cannot change state, move anything or respond to input, and comments are not supported.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1, clause 6.9 Declarative styling specification",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "3D Tiles includes concise declarative styling defined with JSON and expressions written in a small subset of JavaScript augmented for styling."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "partial",
+      "note": "There is a conformance clause, and it is unusually candid about its own limits: conformance is measured against one annex of objects and properties, and the machine-readable schema covers only part of that. There are no conformance classes and no test suite in the document.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1, clause 2 Conformance",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Conformance is relative to these elements and as partly expressed via the associated 3D Tiles JSON Schema ."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "partial",
+      "note": "A tile carries a four-by-four transform to its parent's frame and the root sits in an Earth-fixed frame, so position and orientation against the Earth are expressible. What is missing is a shared record: this is a matrix in a tileset file, not a portable pose, and the specification never once mentions the pose standard published by the same consortium. Two standards from one body with no link between them is the kind of thing a working group can fix.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1, clause 6.6 Coordinate reference system",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "An additional tile transform may be applied to transform a tile's local coordinate system to the parent tile's coordinate system."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "none",
+      "note": "The published version does not mention splats or radiance fields anywhere. The specification's own repository lists gaussian splatting as a feature of a next version that is in development and not published, and that version is built on a newer version of the common asset format that is itself not ratified.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/CesiumGS/3d-tiles/blob/main/next/2.0/README.md",
+          "title": "3D Tiles 2.0, in development",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "3D Tiles 2.0 uses glTF 2.1, together with a set of geospatial extensions, as the foundation for spatial subdivision."
+        },
+        {
+          "url": "https://github.com/CesiumGS/3d-tiles/blob/main/README.md",
+          "title": "3D Tiles repository, Version History",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "[3D Tiles 2.0](./next/2.0/) - Currently in development."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "none",
+      "note": "A standard whose whole job is fetching content from remote servers and evaluating expressions in it states outright that no security considerations have been made. Quote that sentence rather than paraphrasing it; it is short, it is in the published text, and it will be checked.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1, clause IV Security considerations",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "No security considerations have been made for this document."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.indoor",
+      "level": "out-of-scope",
+      "note": "Building models are named as content it can carry, but it never describes the inside of a building: no rooms, no doors, no connections between spaces. That belongs to the indoor and building information standards.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1, clause 1 Scope",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "3D Tiles does not define explicit rules for visualization of the content; a client may visualize 3D Tiles data however it sees fit."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "out-of-scope",
+      "note": "A delivery structure for geographic data. It never describes how anything moves.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1, clause 1 Scope",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It defines a hierarchical data structure and a set of tile formats which deliver renderable content."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "out-of-scope",
+      "note": "Nothing about sound. The scope is renderable geometry and its metadata.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1, clause 1 Scope",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It defines a hierarchical data structure and a set of tile formats which deliver renderable content."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "out-of-scope",
+      "note": "A one-way stream from a server to a viewer. There are no sessions, no participants and no shared state; a time-varying form of tiles is listed as future work in the in-development next version.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1, clause 1 Scope",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "3D Tiles is designed for streaming and rendering massive 3D geospatial content such as Photogrammetry, 3D Buildings, BIM/CAD, Instanced Features, and Point Clouds."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "OGC 3D Tiles is a hierarchical structure and a set of tile formats for streaming large geospatial content, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It defines a hierarchical data structure and a set of tile formats which deliver renderable content."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "OGC 3D Tiles is a hierarchical structure and a set of tile formats for streaming large geospatial content, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It defines a hierarchical data structure and a set of tile formats which deliver renderable content."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "Photogrammetry is named in the scope as a thing this standard delivers, not a thing it performs. It takes the model a photogrammetry pipeline already produced and tiles it; nothing here turns photographs into geometry.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "3D Tiles is designed for streaming and rendering massive 3D geospatial content such as Photogrammetry, 3D Buildings, BIM/CAD, Instanced Features, and Point Clouds."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "none",
+      "note": "The published version does not mention splats or radiance fields anywhere. The specification's own repository lists Gaussian splatting as a feature of a next version that is in development and unpublished, built on a glTF edition that is itself not final.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/CesiumGS/3d-tiles/blob/main/next/2.0/README.md",
+          "title": "3D Tiles 2.0, in development",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "3D Tiles 2.0 uses glTF 2.1, together with a set of geospatial extensions, as the foundation for spatial subdivision."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "native",
+      "note": "This is the row 3D Tiles owns. Photogrammetry and point clouds are named in its own statement of what it is for; a tile carries a geometric error in metres and a refinement rule saying whether children replace the parent or add to it, which is exactly the pair a client needs to decide what to fetch next and what to draw now. A captured scene delivered this way starts before it has all arrived.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "3D Tiles is designed for streaming and rendering massive 3D geospatial content such as Photogrammetry, 3D Buildings, BIM/CAD, Instanced Features, and Point Clouds."
+        },
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This document describes the specification for 3D Tiles, an open standard for streaming massive heterogeneous 3D geospatial datasets."
+        },
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Permitted refinement types are replacement ( \"REPLACE\" ) and additive ( \"ADD\" )."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "OGC 3D Tiles is a hierarchical structure and a set of tile formats for streaming large geospatial content, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It defines a hierarchical data structure and a set of tile formats which deliver renderable content."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "partial",
+      "note": "Point clouds are a named content type with their own styling, and points can be sized and read for position, colour and normal. The encoding itself is not defined here: the dedicated point tile format is deprecated in this version in favour of point primitives in glTF, so how the points are compressed is that format's answer, not this one's.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A Point Cloud is a collection of points that may be styled like other features. In addition to evaluating a point's color and show properties, a Point Cloud style may evaluate pointSize , or the size of each point in pixels."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "OGC 3D Tiles is a hierarchical structure and a set of tile formats for streaming large geospatial content, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It defines a hierarchical data structure and a set of tile formats which deliver renderable content."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "out-of-scope",
+      "note": "OGC 3D Tiles is a hierarchical structure and a set of tile formats for streaming large geospatial content, and it produces no image from a viewing position that no capture camera occupied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It defines a hierarchical data structure and a set of tile formats which deliver renderable content."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "none",
+      "note": "A tileset is one state of a place. Time-varying tiles are listed as future work in the in-development next version, so a capture that moves has to be handed over as separate tilesets with nothing stating the rate.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/CesiumGS/3d-tiles/blob/main/next/2.0/README.md",
+          "title": "3D Tiles 2.0, in development",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "3D Tiles 2.0 uses glTF 2.1, together with a set of geospatial extensions, as the foundation for spatial subdivision."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "OGC 3D Tiles is a hierarchical structure and a set of tile formats for streaming large geospatial content, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It defines a hierarchical data structure and a set of tile formats which deliver renderable content."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "OGC 3D Tiles is a hierarchical structure and a set of tile formats for streaming large geospatial content, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It defines a hierarchical data structure and a set of tile formats which deliver renderable content."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "OGC 3D Tiles is a hierarchical structure and a set of tile formats for streaming large geospatial content, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It defines a hierarchical data structure and a set of tile formats which deliver renderable content."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "OGC 3D Tiles is a hierarchical structure and a set of tile formats for streaming large geospatial content, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It defines a hierarchical data structure and a set of tile formats which deliver renderable content."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "OGC 3D Tiles is a hierarchical structure and a set of tile formats for streaming large geospatial content, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It defines a hierarchical data structure and a set of tile formats which deliver renderable content."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "OGC 3D Tiles is a hierarchical structure and a set of tile formats for streaming large geospatial content, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It defines a hierarchical data structure and a set of tile formats which deliver renderable content."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "out-of-scope",
+      "note": "OGC 3D Tiles is a hierarchical structure and a set of tile formats for streaming large geospatial content, and it carries no full 360-degree view of a place as an image with its projection stated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It defines a hierarchical data structure and a set of tile formats which deliver renderable content."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "out-of-scope",
+      "note": "An open standard for streaming large heterogeneous 3D geospatial datasets. The geometry it delivers was prepared and tiled ahead of time; it is not a device's live reading of the room it is in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1, Abstract",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This document describes the specification for 3D Tiles, an open standard for streaming massive heterogeneous 3D geospatial datasets."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "Its metadata describes features in prepared tiles. There is no channel for classes assigned to real surfaces during a session.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1, Abstract",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This document describes the specification for 3D Tiles, an open standard for streaming massive heterogeneous 3D geospatial datasets."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "out-of-scope",
+      "note": "No depth image of the real world is carried; the format delivers renderable tiles.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1, Abstract",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This document describes the specification for 3D Tiles, an open standard for streaming massive heterogeneous 3D geospatial datasets."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "The standard deliberately leaves visualisation to the client, so composing tiles against a real view is outside it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1, Abstract",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This document describes the specification for 3D Tiles, an open standard for streaming massive heterogeneous 3D geospatial datasets."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "out-of-scope",
+      "note": "3D Tiles streams geometry to a client. Whether that client blends its drawing with a camera view of the room is the client's own presentation and is nowhere in the standard.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.face",
+      "level": "out-of-scope",
+      "note": "A tiled delivery format has no input model and reads nothing about the person looking at it.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "none",
+      "note": "Tiles carry renderable content and metadata under bounding volumes, with a subdivision scheme and geometric error to decide what to draw. Nothing in the tileset says which surface is walkable, where the bounds of a body's movement are, or where a visitor arrives — a client that wants to walk a city has to work that out from the geometry.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "In 3D Tiles, a subset of a tileset containing a reference to renderable content and the metadata, such as the content's bounding volume, which is used by a client to determine if the content is rendered."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "out-of-scope",
+      "note": "A tileset publishes geometry, not units of logic; its declarative styling is expressions evaluated in place, under no published name.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "out-of-scope",
+      "note": "The standard defines how tiles are structured and fetched. It has no publishing service where a review could stand and no field saying what review content has had.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "partial",
+      "note": "Every tile may carry a 4x4 affine transform that puts its local coordinates into its parent's, and a root tileset is commonly placed in an Earth-centred frame, so a building inside a city inside the Earth all line up. That is alignment inside one tree; the standard declares no map of a place with a version and a lifecycle, and publishes no transform relating its tileset to a second map of the same place.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The transform property is a 4×4 affine transformation matrix, stored in column-major order, that transforms from the tile's local coordinate system to the parent tile's coordinate system—​or the tileset's coordinate system in the case of the root tile."
+        },
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A tileset's global coordinate system will often be in a WGS 84 Earth-centered, Earth-fixed (ECEF) reference frame ( EPSG 4978 ), but it doesn't have to be"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "native",
+      "note": "Coverage is the backbone of the format. Every tile declares a bounding volume that completely encloses its content, and the region form states those bounds in a named geographic frame — latitude, longitude and height in EPSG 4979 — so a client can test whether a tileset is relevant where it is standing before fetching anything.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The region bounding volume specifies bounds using a geographic coordinate system (latitude, longitude, height), specifically, EPSG 4979 ."
+        },
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Each tile has a bounding volume , an object defining a spatial extent completely enclosing its content."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.extension",
+      "level": "native",
+      "note": "Tilesets declare extensionsUsed and extensionsRequired, distinguishing ignorable additions from the named extensions needed to load content.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles 1.1 Community Standard",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "Names of 3D Tiles extensions required to properly load this tileset."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.metadata",
+      "level": "native",
+      "note": "3D Tiles 1.1 defines typed metadata classes and properties at tileset, tile, content and feature granularity, with external or embedded schemas.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles 1.1 Community Standard",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "Metadata conforms to a well-defined type system described by the 3D Metadata Specification"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: 3D Tiles 1.1 specifies spatially indexed tile content and metadata. This row requires evidence and assurance information accompanying a claim, enabling the relying party to assess how the claim was established. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles 1.1 Community Standard",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "a tileset is a set of tiles organized in a spatial data structure, the tree."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: 3D Tiles 1.1 specifies spatially indexed tile content and metadata. This row requires declaring the vocabulary, types, and validation schemas needed to interpret and check the structure of a claim. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles 1.1 Community Standard",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "a tileset is a set of tiles organized in a spatial data structure, the tree."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: 3D Tiles 1.1 specifies spatially indexed tile content and metadata. This row requires pairwise identifiers and presentation mechanisms that reduce correlation across relationships, with their remaining correlation risks stated. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles 1.1 Community Standard",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "a tileset is a set of tiles organized in a spatial data structure, the tree."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.encryption",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: 3D Tiles 1.1 specifies spatially indexed tile content and metadata. This row requires identifying recipient key material and algorithms that permit confidential communication or encrypted content for an intended subject. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles 1.1 Community Standard",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "a tileset is a set of tiles organized in a spatial data structure, the tree."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.key-lifecycle",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: 3D Tiles 1.1 specifies spatially indexed tile content and metadata. This row requires rules for changing, revoking, or recovering identity-control keys and for discovering the applicable verification material. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles 1.1 Community Standard",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "a tileset is a set of tiles organized in a spatial data structure, the tree."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: 3D Tiles 1.1 specifies spatially indexed tile content and metadata. This row requires a defined mechanism to discover the suspension, revocation, or other status of a credential after issuance. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles 1.1 Community Standard",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "a tileset is a set of tiles organized in a spatial data structure, the tree."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: 3D Tiles 1.1 specifies spatially indexed tile content and metadata. This row requires runtime estimates of environmental illumination made available to content for lighting or reflections. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles 1.1 Community Standard",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "a tileset is a set of tiles organized in a spatial data structure, the tree."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: 3D Tiles 1.1 specifies spatially indexed tile content and metadata. This row requires detecting recognized physical markers or images and reporting their tracked pose relative to a runtime reference space. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles 1.1 Community Standard",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "a tileset is a set of tiles organized in a spatial data structure, the tree."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.resolve",
+      "level": "native",
+      "note": "The URI contract defines referring-tileset context, relative references and embedded resources; client support for additional schemes is optional.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles 1.1 Community Standard",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "When the URI is relative, its base is always relative to the referring tileset JSON file."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.text",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: 3D Tiles 1.1 specifies spatially indexed tile content and metadata. This row requires receiving character or string entry through a defined input interface, separate from interpreting physical controller actions. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles 1.1 Community Standard",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "a tileset is a set of tiles organized in a spatial data structure, the tree."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: 3D Tiles 1.1 specifies spatially indexed tile content and metadata. This row requires submitting distinct shaped image layers to a display compositor with their placement and composition properties. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles 1.1 Community Standard",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "a tileset is a set of tiles organized in a spatial data structure, the tree."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.bounds",
+      "level": "native",
+      "note": "Tiles and content have bounding volumes in explicit or implicit spatial hierarchies, enabling traversal and rejection before detailed tile geometry is loaded.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles 1.1 Community Standard",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "a tileset is a set of tiles organized in a spatial data structure, the tree."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: 3D Tiles 1.1 specifies spatially indexed tile content and metadata. This row requires runtime-reported physical play-area bounds and floor-relative reference information available to an application. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles 1.1 Community Standard",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "a tileset is a set of tiles organized in a spatial data structure, the tree."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: 3D Tiles 1.1 specifies spatially indexed tile content and metadata. This row requires generating audio during playback from an exchanged synthesis model, supporting data, and changing control parameters. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles 1.1 Community Standard",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "a tileset is a set of tiles organized in a spatial data structure, the tree."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: 3D Tiles 1.1 specifies spatially indexed tile content and metadata. This row requires interchanging identified spatial zones, typed events scoped to them, and summaries with defined spatial and temporal meaning. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles 1.1 Community Standard",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "a tileset is a set of tiles organized in a spatial data structure, the tree."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: 3D Tiles 1.1 specifies spatially indexed tile content and metadata. This row requires a machine-readable account of a recipient's evaluation and action, with any signature or integrity proof explicitly identified. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles 1.1 Community Standard",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "a tileset is a set of tiles organized in a spatial data structure, the tree."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: 3D Tiles 1.1 specifies spatially indexed tile content and metadata. This row requires a destination's pre-arrival approval or refusal response, including any validity limit and optional explanatory information. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles 1.1 Community Standard",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "a tileset is a set of tiles organized in a spatial data structure, the tree."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: 3D Tiles 1.1 specifies spatially indexed tile content and metadata. This row requires dispatching programmable non-raster GPU workloads against resources available through the graphics-compute API. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles 1.1 Community Standard",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "a tileset is a set of tiles organized in a spatial data structure, the tree."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.frame-timing",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: 3D Tiles 1.1 specifies spatially indexed tile content and metadata. This row requires coordinating frame submission with predicted display timing and the view poses associated with that time. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles 1.1 Community Standard",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "a tileset is a set of tiles organized in a spatial data structure, the tree."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.style",
+      "level": "native",
+      "note": "The 3D Tiles Style specification separately expresses feature show/color rules over metadata, allowing display choices to travel apart from geometry.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles 1.1 Community Standard",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "A style defines expressions to be evaluated which modify how each feature is displayed."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: 3D Tiles 1.1 specifies spatially indexed tile content and metadata. This row requires asking a sensing runtime for ray intersections with its estimate of physical surroundings and receiving hit poses. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles 1.1 Community Standard",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "a tileset is a set of tiles organized in a spatial data structure, the tree."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.privacy",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: 3D Tiles 1.1 specifies spatially indexed tile content and metadata. This row requires sensed-data disclosure controls such as spatial coarsening, payload use/retention declarations, and restricted or pseudonymous pose publication. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles 1.1 Community Standard",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "a tileset is a set of tiles organized in a spatial data structure, the tree."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: 3D Tiles 1.1 specifies spatially indexed tile content and metadata. This row requires receiving typed musical instrument events with channel, note or control identifiers and values through a documented device or recorded-event input interface. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles 1.1 Community Standard",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "a tileset is a set of tiles organized in a spatial data structure, the tree."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: 3D Tiles 1.1 specifies spatially indexed tile content and metadata. This row requires reconstructing a radiance field or Gaussian representation from observed images and camera information, including optimization controls and a trained scene usable for subsequent view synthesis. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles 1.1 Community Standard",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "a tileset is a set of tiles organized in a spatial data structure, the tree."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.objectgen",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: 3D Tiles 1.1 specifies spatially indexed tile content and metadata. This row requires producing an individual three-dimensional object from a text or image prompt, with geometry or another renderable representation available for placement in a separately authored scene. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles 1.1 Community Standard",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "a tileset is a set of tiles organized in a spatial data structure, the tree."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "native",
+      "note": "3D Tiles 1.1 section 6.7.1.6 defines local-to-parent affine transforms and top-down composition to a common tileset frame, including ordered glTF frame conversion. This directly interchanges a hierarchy of linked frames; the claim does not depend on borrowing an optional embedded-content extension.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles 1.1 Community Standard",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "by post-multiplying a child’s transform with its parent’s transform"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,879 @@
+{
+  "subject_id": "mpeg-arf",
+  "summary": "A draft international standard for carrying a person's avatar between applications. It is not finished. The standards catalogue still lists it as a draft that reached the stage where the draft ballot passed on 2026-07-31, its own group calls that the move to the final draft stage, and the group expects publication at the beginning of 2027. Nothing here should be described as settled behaviour. What it defines is a data model, several containers, a sample format for animation, a stream format, a way to sit inside the group's own scene description, and mechanisms meant to show that an avatar is genuine. Two points matter for a standards audience. First, it does not name its own bones or expressions: it points at outside animation frameworks by name, and the worked examples point at one headset maker's body and face tracking, so the agreement that makes an avatar portable is borrowed rather than made here. Second, it is not the first formal standard to claim avatar portability. A 2016 international standard from the same committee already says its job is letting a virtual object or its characteristics move from one virtual world to another. Note the evidence limit: the normative text is sold, not published, and we did not read it, so every row is marked reported.",
+  "coverage": [
+    {
+      "capability_id": "avatar.body",
+      "level": "native",
+      "note": "This is its declared job: one portable description of an avatar that different systems can write and read. Do not call it the first, though. The same committee published a standard in 2016 whose stated job is moving a virtual object or its characteristics from one virtual world to another, and that earlier work is the prior art any working group will be asked about.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/155th-meeting-of-mpeg/",
+          "title": "155th meeting of MPEG, official MPEG meeting press release, 2026-08-12",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This specification enables interoperable exchange and animation of 3D avatars across various systems and platforms"
+        },
+        {
+          "url": "https://www.mpeg.org/standards/MPEG-V/4/",
+          "title": "MPEG-V Part 4: Virtual World Object Characteristics, official MPEG standard page",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Standard for a set of types used to characterize metadata of virtual world objects (avatars) to make it possible to migrate a virtual object or its characteristics from one virtual world to another"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "native",
+      "note": "It defines more than one container for carrying an avatar, and the entry point is a readable document listing the parts and where the binary data sits. This is an avatar container, not a general scene container.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/155th-meeting-of-mpeg/",
+          "title": "155th meeting of MPEG, official MPEG meeting press release, 2026-08-12",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "several container formats for carriage, animation sample formats for transmission of animation parameters, and a binary format for the streaming of the Avatar Representation Format"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "native",
+      "note": "A skeleton is a root plus a list of joints, each joint a node with a parent, children, a local transform and a bind matrix; a skin ties one mesh to one skeleton with a weight per vertex per joint. The structure is fully specified. Whether the joints mean the same thing in two files is a separate question, covered in the avatar skeleton row.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/155_Geneva/w26550.zip",
+          "title": "Implementation guidelines for MPEG-I Avatar representation formats, ISO/IEC JTC 1/SC 29/WG 3 N1881, 2026-07-21",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Each skin definition provides three main pieces of information: the mesh and skeleton to connect, and the skinning weights."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "native",
+      "note": "Face and detail shapes are carried as blendshape sets. One trap for anyone writing a converter: a shape here is a whole replacement mesh with the same topology, not the per-vertex offsets the common asset format uses, so a straight copy across will be wrong.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/155_Geneva/w26550.zip",
+          "title": "Implementation guidelines for MPEG-I Avatar representation formats, ISO/IEC JTC 1/SC 29/WG 3 N1881, 2026-07-21",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Note that this is another mesh and not vertex displacements (e.g., this is not like morph targets in glTF)."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "native",
+      "note": "Animation is split off from the avatar itself into a stream of timed units, each one either stream setup, face weights, joint transforms, landmark positions or texture weights, every unit carrying its own time stamp. It can come from a file or straight off a tracking device.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/155_Geneva/w26550.zip",
+          "title": "Implementation guidelines for MPEG-I Avatar representation formats, ISO/IEC JTC 1/SC 29/WG 3 N1881, 2026-07-21",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The animation stream is therefore not the mesh itself. It is the stream of timed commands that tell a receiver how to move the avatar over time."
+        },
+        {
+          "url": "https://www.mpeg.org/155th-meeting-of-mpeg/",
+          "title": "155th meeting of MPEG, official MPEG meeting press release, 2026-08-12",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "animation sample formats for transmission of animation parameters"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "native",
+      "note": "An avatar asset can carry several detail levels, each a full alternative description of the same asset at a different rendering quality, each with an identifier a receiver can name in the animation stream.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/155_Geneva/w26550.zip",
+          "title": "Implementation guidelines for MPEG-I Avatar representation formats, ISO/IEC JTC 1/SC 29/WG 3 N1881, 2026-07-21",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Each asset object can have one or more Level of Details (LoD). Each LoD in an asset is another definition of the same asset, but with a different quality of rendering."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "partial",
+      "note": "This is the load-bearing gap. It gives the structure but not the agreement: joint identifiers must match an outside animation framework, named by a reference string in the file header, and the group's own worked example names one headset maker's full body tracking. So the naming that would make an avatar move correctly somewhere else is borrowed from elsewhere, and two files can both conform while agreeing on nothing.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/155_Geneva/w26550.zip",
+          "title": "Implementation guidelines for MPEG-I Avatar representation formats, ISO/IEC JTC 1/SC 29/WG 3 N1881, 2026-07-21",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The ids of nodes of a skeleton shall be consistent with an animation framework."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "partial",
+      "note": "Same pattern as the skeleton. Named face shapes exist, but their meaning comes from an outside face animation framework named in the file header, and the worked examples name one headset maker's face tracking and one phone maker's landmark set. The standard carries the shapes; it does not settle what a smile is called.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/155_Geneva/w26550.zip",
+          "title": "Implementation guidelines for MPEG-I Avatar representation formats, ISO/IEC JTC 1/SC 29/WG 3 N1881, 2026-07-21",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "each animatable component is related to an animation framework"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "partial",
+      "note": "An avatar can be animated by a framework it was not built for, if the file carries a mapping: weighted sums for the simple case and a controller-style mapping for the harder one. What is missing is the body problem. This maps parameter to parameter between tracking frameworks, not motion between bodies of different proportions, and the mapping has to be authored into the file in advance rather than worked out on arrival.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/155_Geneva/w26550.zip",
+          "title": "Implementation guidelines for MPEG-I Avatar representation formats, ISO/IEC JTC 1/SC 29/WG 3 N1881, 2026-07-21",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "An animatable component is always defined for a specific animation framework. However, another one can be used if a mapping is provided."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "partial",
+      "note": "Clothing and similar items ride as separate assets that an application may switch on or off, sharing the avatar's skeleton. What is missing is attachment: there are no named attachment points, and nothing describes how an item authored for one avatar should sit on another.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/155_Geneva/w26550.zip",
+          "title": "Implementation guidelines for MPEG-I Avatar representation formats, ISO/IEC JTC 1/SC 29/WG 3 N1881, 2026-07-21",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "different garments can be defined as different assets: the application can then choose what assets to use and thus present the avatar with different clothes"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "partial",
+      "note": "The group states that the draft carries means to check an avatar is genuine and to stop someone passing themselves off as another. Read that narrowly: the public announcement names the mechanism without describing it, and says nothing about tying an avatar to an identifier or a credential issued by anyone else. The text that would settle this is behind a paywall we did not cross.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/155th-meeting-of-mpeg/",
+          "title": "155th meeting of MPEG, official MPEG meeting press release, 2026-08-12",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "security and authentication mechanisms to verify avatar authenticity and prevent impersonation"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "partial",
+      "note": "It defines how geometry is referenced and grouped but not how it is encoded: in the group's own worked examples every mesh is a binary file in the common asset format, readable by ordinary tooling for that format. So this draft sits on top of that format rather than replacing it, which is worth knowing before anyone treats the two as rivals.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/155_Geneva/w26550.zip",
+          "title": "Implementation guidelines for MPEG-I Avatar representation formats, ISO/IEC JTC 1/SC 29/WG 3 N1881, 2026-07-21",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This GLB contains single mesh and associated materials (no animations, skins, morph targets, etc.) and can be loaded with any conformant glTF software."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "conflicts",
+      "note": "Node transforms are four by four matrices written the other way round from the common asset format, so the row that holds the position in one is the column that holds it in the other. A converter that copies the sixteen numbers straight across loads without error and puts the avatar in the wrong place. The same document flags a second clash: what this draft calls a skeleton is what the common format calls a skin. Both traps come from the group's own guidance, not from outside criticism.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/155_Geneva/w26550.zip",
+          "title": "Implementation guidelines for MPEG-I Avatar representation formats, ISO/IEC JTC 1/SC 29/WG 3 N1881, 2026-07-21",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Compared to glTF, these matrices are transposed."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "partial",
+      "note": "The one piece of live shared state a formal standard now defines for avatars: a wire form for the moving parts, sent as timed units a receiver applies at the stated time. Everything around it is absent. There is no session, no rule for who owns an avatar, no way to send each viewer only what it needs, and no correction after a late packet.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/155th-meeting-of-mpeg/",
+          "title": "155th meeting of MPEG, official MPEG meeting press release, 2026-08-12",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "a binary format for the streaming of the Avatar Representation Format"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "none",
+      "note": "It carries the avatar and nothing else. There is no session, no arrival protocol, no possessions and no world-to-world state. Moving an appearance between two services is not the same as walking from one world into another, and this draft only does the first.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/155th-meeting-of-mpeg/",
+          "title": "155th meeting of MPEG, official MPEG meeting press release, 2026-08-12",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This specification enables interoperable exchange and animation of 3D avatars across various systems and platforms"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "The MPEG-I Avatar Representation Format is a draft standard for exchanging and animating one avatar, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/155th-meeting-of-mpeg/",
+          "title": "155th meeting of MPEG, official MPEG meeting press release, 2026-08-12",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This specification enables interoperable exchange and animation of 3D avatars across various systems and platforms"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "The MPEG-I Avatar Representation Format is a draft standard for exchanging and animating one avatar, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/155th-meeting-of-mpeg/",
+          "title": "155th meeting of MPEG, official MPEG meeting press release, 2026-08-12",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This specification enables interoperable exchange and animation of 3D avatars across various systems and platforms"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "The MPEG-I Avatar Representation Format is a draft standard for exchanging and animating one avatar, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/155th-meeting-of-mpeg/",
+          "title": "155th meeting of MPEG, official MPEG meeting press release, 2026-08-12",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This specification enables interoperable exchange and animation of 3D avatars across various systems and platforms"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "out-of-scope",
+      "note": "The MPEG-I Avatar Representation Format is a draft standard for exchanging and animating one avatar, and it names no Gaussian splat interchange format and carries no splat data.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/155th-meeting-of-mpeg/",
+          "title": "155th meeting of MPEG, official MPEG meeting press release, 2026-08-12",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This specification enables interoperable exchange and animation of 3D avatars across various systems and platforms"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "out-of-scope",
+      "note": "The MPEG-I Avatar Representation Format is a draft standard for exchanging and animating one avatar, and it delivers no captured scene, progressively by region and detail or otherwise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/155th-meeting-of-mpeg/",
+          "title": "155th meeting of MPEG, official MPEG meeting press release, 2026-08-12",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This specification enables interoperable exchange and animation of 3D avatars across various systems and platforms"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "The MPEG-I Avatar Representation Format is a draft standard for exchanging and animating one avatar, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/155th-meeting-of-mpeg/",
+          "title": "155th meeting of MPEG, official MPEG meeting press release, 2026-08-12",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This specification enables interoperable exchange and animation of 3D avatars across various systems and platforms"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "out-of-scope",
+      "note": "The MPEG-I Avatar Representation Format is a draft standard for exchanging and animating one avatar, and it defines no encoding or compression for a set of points with attributes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/155th-meeting-of-mpeg/",
+          "title": "155th meeting of MPEG, official MPEG meeting press release, 2026-08-12",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This specification enables interoperable exchange and animation of 3D avatars across various systems and platforms"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "The MPEG-I Avatar Representation Format is a draft standard for exchanging and animating one avatar, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/155th-meeting-of-mpeg/",
+          "title": "155th meeting of MPEG, official MPEG meeting press release, 2026-08-12",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This specification enables interoperable exchange and animation of 3D avatars across various systems and platforms"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "out-of-scope",
+      "note": "The MPEG-I Avatar Representation Format is a draft standard for exchanging and animating one avatar, and it produces no image from a viewing position that no capture camera occupied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/155th-meeting-of-mpeg/",
+          "title": "155th meeting of MPEG, official MPEG meeting press release, 2026-08-12",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This specification enables interoperable exchange and animation of 3D avatars across various systems and platforms"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "The MPEG-I Avatar Representation Format is a draft standard for exchanging and animating one avatar, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/155th-meeting-of-mpeg/",
+          "title": "155th meeting of MPEG, official MPEG meeting press release, 2026-08-12",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This specification enables interoperable exchange and animation of 3D avatars across various systems and platforms"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "The MPEG-I Avatar Representation Format is a draft standard for exchanging and animating one avatar, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/155th-meeting-of-mpeg/",
+          "title": "155th meeting of MPEG, official MPEG meeting press release, 2026-08-12",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This specification enables interoperable exchange and animation of 3D avatars across various systems and platforms"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "The MPEG-I Avatar Representation Format is a draft standard for exchanging and animating one avatar, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/155th-meeting-of-mpeg/",
+          "title": "155th meeting of MPEG, official MPEG meeting press release, 2026-08-12",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This specification enables interoperable exchange and animation of 3D avatars across various systems and platforms"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "The MPEG-I Avatar Representation Format is a draft standard for exchanging and animating one avatar, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/155th-meeting-of-mpeg/",
+          "title": "155th meeting of MPEG, official MPEG meeting press release, 2026-08-12",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This specification enables interoperable exchange and animation of 3D avatars across various systems and platforms"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "The MPEG-I Avatar Representation Format is a draft standard for exchanging and animating one avatar, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/155th-meeting-of-mpeg/",
+          "title": "155th meeting of MPEG, official MPEG meeting press release, 2026-08-12",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This specification enables interoperable exchange and animation of 3D avatars across various systems and platforms"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "The MPEG-I Avatar Representation Format is a draft standard for exchanging and animating one avatar, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/155th-meeting-of-mpeg/",
+          "title": "155th meeting of MPEG, official MPEG meeting press release, 2026-08-12",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This specification enables interoperable exchange and animation of 3D avatars across various systems and platforms"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "The MPEG-I Avatar Representation Format is a draft standard for exchanging and animating one avatar, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/155th-meeting-of-mpeg/",
+          "title": "155th meeting of MPEG, official MPEG meeting press release, 2026-08-12",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This specification enables interoperable exchange and animation of 3D avatars across various systems and platforms"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "out-of-scope",
+      "note": "The MPEG-I Avatar Representation Format is a draft standard for exchanging and animating one avatar, and it carries no full 360-degree view of a place as an image with its projection stated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/155th-meeting-of-mpeg/",
+          "title": "155th meeting of MPEG, official MPEG meeting press release, 2026-08-12",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This specification enables interoperable exchange and animation of 3D avatars across various systems and platforms"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "out-of-scope",
+      "note": "An avatar representation format for exchanging and animating 3D avatars across systems. It carries a character and its animation, not a reading of the real room.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/155th-meeting-of-mpeg/",
+          "title": "155th meeting of MPEG, official MPEG meeting press release, 2026-08-12",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This specification enables interoperable exchange and animation of 3D avatars across various systems and platforms"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "Its semantics describe avatar parts and animation parameters, not classes of real-world surface.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/155th-meeting-of-mpeg/",
+          "title": "155th meeting of MPEG, official MPEG meeting press release, 2026-08-12",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This specification enables interoperable exchange and animation of 3D avatars across various systems and platforms"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "out-of-scope",
+      "note": "No real-world depth channel is part of an avatar format.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/155th-meeting-of-mpeg/",
+          "title": "155th meeting of MPEG, official MPEG meeting press release, 2026-08-12",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This specification enables interoperable exchange and animation of 3D avatars across various systems and platforms"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "How an avatar is composed against a physical view is left to the player, not the representation format.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/155th-meeting-of-mpeg/",
+          "title": "155th meeting of MPEG, official MPEG meeting press release, 2026-08-12",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This specification enables interoperable exchange and animation of 3D avatars across various systems and platforms"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "out-of-scope",
+      "note": "The Avatar Representation Format specifies how an avatar is written down. Presentation, including any mixing with a camera view, is left to whatever renders the avatar.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.face",
+      "level": "out-of-scope",
+      "note": "The draft standardises the stored shape of an avatar's face, which is avatar.expression. The live sensor stream that drives it comes from a device runtime and is outside the format.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "out-of-scope",
+      "note": "An avatar format holds no place, so it cannot say where a body may stand, walk or arrive.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "out-of-scope",
+      "note": "No published units of logic are named by this format.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "out-of-scope",
+      "note": "No content passes through the format on its way to an audience, so there is nowhere for a review to stand and nothing to record about one.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "No geographic frame and no map, so nothing to align.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "An avatar file is not bound to a geographic area and declares none.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the retrieved MPEG Avatar Representation Format Committee Draft specifies avatar storage, carriage and animation. This row requires runtime estimates of environmental illumination made available to content for lighting or reflections. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/149_Geneva/w24753.zip",
+          "title": "ISO/IEC CD 23090-39 Avatar representation formats",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "an interoperable exchange format for the storage, carriage and animation of 3D avatars."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the retrieved MPEG Avatar Representation Format Committee Draft specifies avatar storage, carriage and animation. This row requires detecting recognized physical markers or images and reporting their tracked pose relative to a runtime reference space. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/149_Geneva/w24753.zip",
+          "title": "ISO/IEC CD 23090-39 Avatar representation formats",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "an interoperable exchange format for the storage, carriage and animation of 3D avatars."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.text",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the retrieved MPEG Avatar Representation Format Committee Draft specifies avatar storage, carriage and animation. This row requires receiving character or string entry through a defined input interface, separate from interpreting physical controller actions. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/149_Geneva/w24753.zip",
+          "title": "ISO/IEC CD 23090-39 Avatar representation formats",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "an interoperable exchange format for the storage, carriage and animation of 3D avatars."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the retrieved MPEG Avatar Representation Format Committee Draft specifies avatar storage, carriage and animation. This row requires submitting distinct shaped image layers to a display compositor with their placement and composition properties. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/149_Geneva/w24753.zip",
+          "title": "ISO/IEC CD 23090-39 Avatar representation formats",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "an interoperable exchange format for the storage, carriage and animation of 3D avatars."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the retrieved MPEG Avatar Representation Format Committee Draft specifies avatar storage, carriage and animation. This row requires runtime-reported physical play-area bounds and floor-relative reference information available to an application. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/149_Geneva/w24753.zip",
+          "title": "ISO/IEC CD 23090-39 Avatar representation formats",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "an interoperable exchange format for the storage, carriage and animation of 3D avatars."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the retrieved MPEG Avatar Representation Format Committee Draft specifies avatar storage, carriage and animation. This row requires interchanging identified spatial zones, typed events scoped to them, and summaries with defined spatial and temporal meaning. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/149_Geneva/w24753.zip",
+          "title": "ISO/IEC CD 23090-39 Avatar representation formats",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "an interoperable exchange format for the storage, carriage and animation of 3D avatars."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the retrieved MPEG Avatar Representation Format Committee Draft specifies avatar storage, carriage and animation. This row requires a destination's pre-arrival approval or refusal response, including any validity limit and optional explanatory information. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/149_Geneva/w24753.zip",
+          "title": "ISO/IEC CD 23090-39 Avatar representation formats",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "an interoperable exchange format for the storage, carriage and animation of 3D avatars."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the retrieved MPEG Avatar Representation Format Committee Draft specifies avatar storage, carriage and animation. This row requires dispatching programmable non-raster GPU workloads against resources available through the graphics-compute API. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/149_Geneva/w24753.zip",
+          "title": "ISO/IEC CD 23090-39 Avatar representation formats",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "an interoperable exchange format for the storage, carriage and animation of 3D avatars."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.frame-timing",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the retrieved MPEG Avatar Representation Format Committee Draft specifies avatar storage, carriage and animation. This row requires coordinating frame submission with predicted display timing and the view poses associated with that time. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/149_Geneva/w24753.zip",
+          "title": "ISO/IEC CD 23090-39 Avatar representation formats",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "an interoperable exchange format for the storage, carriage and animation of 3D avatars."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the retrieved MPEG Avatar Representation Format Committee Draft specifies avatar storage, carriage and animation. This row requires asking a sensing runtime for ray intersections with its estimate of physical surroundings and receiving hit poses. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/149_Geneva/w24753.zip",
+          "title": "ISO/IEC CD 23090-39 Avatar representation formats",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "an interoperable exchange format for the storage, carriage and animation of 3D avatars."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.privacy",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the retrieved MPEG Avatar Representation Format Committee Draft specifies avatar storage, carriage and animation. This row requires sensed-data disclosure controls such as spatial coarsening, payload use/retention declarations, and restricted or pseudonymous pose publication. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/149_Geneva/w24753.zip",
+          "title": "ISO/IEC CD 23090-39 Avatar representation formats",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "an interoperable exchange format for the storage, carriage and animation of 3D avatars."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the retrieved MPEG Avatar Representation Format Committee Draft specifies avatar storage, carriage and animation. This row requires receiving typed musical instrument events with channel, note or control identifiers and values through a documented device or recorded-event input interface. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/149_Geneva/w24753.zip",
+          "title": "ISO/IEC CD 23090-39 Avatar representation formats",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "an interoperable exchange format for the storage, carriage and animation of 3D avatars."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the retrieved MPEG Avatar Representation Format Committee Draft specifies avatar storage, carriage and animation. This row requires reconstructing a radiance field or Gaussian representation from observed images and camera information, including optimization controls and a trained scene usable for subsequent view synthesis. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/149_Geneva/w24753.zip",
+          "title": "ISO/IEC CD 23090-39 Avatar representation formats",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "an interoperable exchange format for the storage, carriage and animation of 3D avatars."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.objectgen",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the retrieved MPEG Avatar Representation Format Committee Draft specifies avatar storage, carriage and animation. This row requires producing an individual three-dimensional object from a text or image prompt, with geometry or another renderable representation available for placement in a separately authored scene. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/149_Geneva/w24753.zip",
+          "title": "ISO/IEC CD 23090-39 Avatar representation formats",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "an interoperable exchange format for the storage, carriage and animation of 3D avatars."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "out-of-scope",
+      "note": "The frozen subject is an avatar representation exchange format. Layout and presentation of 2D interface regions belongs to the consuming renderer/runtime rather than that representation format.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/91745.html",
+          "title": "ISO/IEC DIS 23090-39 catalogue scope",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The Avatar Representation Format offers an exchange format for avatars"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "out-of-scope",
+      "note": "The frozen subject is an avatar representation exchange format. Input pointing and hit-event behavior belongs to the consuming renderer/runtime rather than that representation format.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/91745.html",
+          "title": "ISO/IEC DIS 23090-39 catalogue scope",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The Avatar Representation Format offers an exchange format for avatars"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "out-of-scope",
+      "note": "The frozen subject is an avatar representation exchange format. An exchanged procedural audio synthesis model belongs to the consuming renderer/runtime rather than that representation format.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/91745.html",
+          "title": "ISO/IEC DIS 23090-39 catalogue scope",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The Avatar Representation Format offers an exchange format for avatars"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "out-of-scope",
+      "note": "The frozen subject is an avatar representation exchange format. A programmable GPU shader-language contract belongs to the consuming renderer/runtime rather than that representation format.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/91745.html",
+          "title": "ISO/IEC DIS 23090-39 catalogue scope",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The Avatar Representation Format offers an exchange format for avatars"
+        }
+      ]
+    }
+  ]
+}

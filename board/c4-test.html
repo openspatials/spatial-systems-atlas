@@ -1,0 +1,214 @@
+<meta charset="utf-8">
+<title>C4 view — bench</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:,">
+
+<!--
+  A bench for the C4 renderer module, kept apart from matrix.html so the module can be worked on
+  while the live page is being changed. It fetches territory.json from this folder, so it needs
+  to be served rather than opened from disk:
+
+      python3 -m http.server 8765 --directory infrastructure-wg/board
+      http://127.0.0.1:8765/c4-test.html
+
+  The last render result is left on window.__c4 for a headless check to read.
+-->
+
+<style>
+:root{
+  --paper:#ECEBE4; --paper-raised:#F7F6F1; --paper-sunk:#E2E1D8;
+  --ink:#1B1D1A; --ink-soft:#55584E; --ink-faint:#7E8177;
+  --rule:#C7C5B8; --rule-strong:#A9A79A;
+  --chart:#2C5F6B; --survey:#A33328;
+  --f-label:ui-sans-serif,system-ui,sans-serif;
+  --f-mono:ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+     font:14px/1.5 ui-sans-serif,system-ui,sans-serif}
+.wrap{padding:16px max(12px,2vw) 48px;display:flex;flex-direction:column;gap:12px}
+h1{margin:0;font-size:20px;letter-spacing:-.01em}
+.lede{margin:0;color:var(--ink-soft);max-width:80ch}
+.bar{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;
+     border-bottom:1px solid var(--rule);padding-bottom:10px}
+label.f{display:flex;flex-direction:column;gap:3px;font-size:11px;letter-spacing:.12em;
+        text-transform:uppercase;color:var(--ink-faint)}
+select,button{font:inherit;color:inherit;background:var(--paper-raised);
+              border:1px solid var(--rule-strong);border-radius:2px;padding:4px 6px}
+button{cursor:pointer}
+.tick{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-soft)}
+.sgroups{display:flex;flex-direction:column;gap:6px}
+.sgroup{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;
+        border-top:1px dotted var(--rule);padding-top:5px}
+.ghead{min-width:20ch;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+       font-weight:700;color:var(--ink-soft)}
+.ghead button{padding:2px 6px;font-size:11px}
+.chk{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;white-space:nowrap}
+.chk.unscored{opacity:.45}
+#stat{font-family:var(--f-mono);font-size:12px;color:var(--ink-faint)}
+#stage{background:var(--paper-raised);border:1px solid var(--rule);border-radius:2px;
+       padding:10px;overflow:auto}
+#stage svg{max-width:100%;height:auto}
+.c4-wait{color:var(--ink-faint);font-style:italic}
+.c4-fallback{color:var(--survey);max-width:80ch}
+.c4-dsl{color:var(--chart)}
+.c4-source{font-family:var(--f-mono);font-size:11px;background:var(--paper-sunk);
+           border:1px solid var(--rule);padding:8px;overflow:auto;max-height:60vh;
+           white-space:pre-wrap}
+</style>
+
+<div class="wrap">
+  <h1>C4 view — bench</h1>
+  <p class="lede">The renderer module on its own, with the same subject and filter controls the
+  matrix carries. Nothing here is published; this page exists so the module can be exercised
+  without touching <code>matrix.html</code>.</p>
+
+  <div class="bar">
+    <label class="f">View
+      <select id="view"></select>
+    </label>
+    <label class="f">Show only
+      <select id="filter">
+        <option value="all">Everything</option>
+        <option value="overlap">Contested — 2 or more reach it</option>
+        <option value="thin">Only one reaches it</option>
+        <option value="gap">Gaps — nothing reaches it</option>
+        <option value="conflict">Recorded conflicts</option>
+        <option value="connect">Protocol rows</option>
+      </select>
+    </label>
+    <label class="tick"><input type="checkbox" id="entry"> Only rows with an entry</label>
+    <button type="button" id="allon">All subjects on</button>
+    <button type="button" id="alloff">All subjects off</button>
+    <span id="stat"></span>
+  </div>
+
+  <div class="sgroups" id="subs"></div>
+  <div id="stage">Loading the data…</div>
+</div>
+
+<script src="predicates.js"></script>
+<script src="c4.js"></script>
+<script>
+(function () {
+  "use strict";
+  var D = null, on = {};
+  var viewEl = document.getElementById("view"),
+      filterEl = document.getElementById("filter"),
+      entryEl = document.getElementById("entry"),
+      subsEl = document.getElementById("subs"),
+      stageEl = document.getElementById("stage"),
+      statEl = document.getElementById("stat");
+
+  function state() {
+    var set = new Set();
+    Object.keys(on).forEach(function (id) { if (on[id]) set.add(id); });
+    return { subjectsOn: set, filter: filterEl.value, entryOnly: entryEl.checked };
+  }
+
+  function draw() {
+    var s = state(), view = viewEl.value;
+    statEl.textContent = s.subjectsOn.size + " of " + D.subjects.length + " subjects · " +
+                         view + " · " + s.filter + (s.entryOnly ? " · entries only" : "");
+    window.__c4 = null;
+    window.__c4pending = true;
+    C4.render(stageEl, D, s, view).then(function (r) {
+      window.__c4 = r;
+      window.__c4pending = false;
+    });
+  }
+
+  function sync() {
+    Array.prototype.forEach.call(subsEl.querySelectorAll("input[data-s]"), function (b) {
+      b.checked = !!on[b.getAttribute("data-s")];
+    });
+  }
+
+  function setAll(value) {
+    D.subjects.forEach(function (s) { on[s.id] = value; });
+    sync(); draw();
+  }
+
+  function build() {
+    C4.views(D).forEach(function (v) {
+      var o = document.createElement("option");
+      o.value = v.id; o.textContent = v.label + (v.kind === "group" ? " (group)" : "");
+      viewEl.appendChild(o);
+    });
+
+    var byId = {};
+    D.subjects.forEach(function (s) { byId[s.id] = s; on[s.id] = s.scored > 0; });
+
+    var groups = D.display_groups || [];
+    var html = "";
+    groups.forEach(function (g) {
+      html += '<div class="sgroup"><span class="ghead">' + g.name +
+              ' <button type="button" data-g="' + g.id + '">flip</button></span>';
+      g.subjects.forEach(function (id) {
+        var s = byId[id];
+        if (!s) return;
+        html += '<label class="chk' + (s.scored > 0 ? "" : " unscored") +
+                '"><input type="checkbox" data-s="' + s.id + '"> ' + s.name + "</label>";
+      });
+      html += "</div>";
+    });
+    subsEl.innerHTML = html;
+    sync();
+
+    subsEl.addEventListener("change", function (e) {
+      var b = e.target.closest("input[data-s]");
+      if (!b) return;
+      on[b.getAttribute("data-s")] = b.checked;
+      draw();
+    });
+    subsEl.addEventListener("click", function (e) {
+      var b = e.target.closest("button[data-g]");
+      if (!b) return;
+      var g = groups.filter(function (x) { return x.id === b.getAttribute("data-g"); })[0];
+      if (!g) return;
+      var allOn = g.subjects.every(function (id) { return on[id]; });
+      g.subjects.forEach(function (id) { on[id] = !allOn; });
+      sync(); draw();
+    });
+
+    viewEl.addEventListener("change", draw);
+    filterEl.addEventListener("change", draw);
+    entryEl.addEventListener("change", draw);
+    document.getElementById("allon").addEventListener("click", function () { setAll(true); });
+    document.getElementById("alloff").addEventListener("click", function () { setAll(false); });
+
+    // A headless check drives the page through this: set the controls, then read window.__c4.
+    window.__bench = {
+      data: function () { return D; },
+      set: function (opts) {
+        if (opts.view) viewEl.value = opts.view;
+        if (opts.filter) filterEl.value = opts.filter;
+        if (opts.entryOnly !== undefined) entryEl.checked = !!opts.entryOnly;
+        if (opts.subjects) {
+          D.subjects.forEach(function (s) { on[s.id] = false; });
+          opts.subjects.forEach(function (id) { on[id] = true; });
+          sync();
+        }
+        if (opts.allSubjects) D.subjects.forEach(function (s) { on[s.id] = true; });
+        if (opts.allSubjects) sync();
+        draw();
+        return true;
+      },
+      displayGroup: function (name) {
+        var g = groups.filter(function (x) { return x.name === name || x.id === name; })[0];
+        return g ? g.subjects.slice() : [];
+      }
+    };
+
+    draw();
+  }
+
+  fetch("territory.json")
+    .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+    .then(function (d) { D = d; build(); })
+    .catch(function (err) {
+      stageEl.textContent = "Could not load territory.json next to this page (" + err.message +
+        "). Serve this folder over http rather than opening the file from disk.";
+    });
+})();
+</script>

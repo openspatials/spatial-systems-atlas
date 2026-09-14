@@ -1,0 +1,3269 @@
+{
+  "gltf": {
+    "render.passthrough": {
+      "level": "out-of-scope",
+      "note": "glTF is a transmission format for models and scenes. It says what to draw; how a runtime mixes that drawing with a live camera view of the room is the runtime's own presentation and no glTF property touches it.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "input.face": {
+      "level": "out-of-scope",
+      "note": "A face and body stream comes off a device's sensors at run time. glTF carries no input model at all, and the face data it can hold is a stored morph target, which is scene.morph.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "scene.navmesh": {
+      "level": "none",
+      "note": "A scene format is exactly the kind of thing that could carry walkable surface, bounds and spawn points, and glTF carries none. The core specification has meshes, nodes, cameras, skins and animations, and no ratified Khronos extension in the registry declares navigable space or an arrival point. Whoever opens the file works it out again.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/KhronosGroup/glTF/blob/main/extensions/README.md",
+          "title": "glTF 2.0 Extension Registry",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The following extensions have been ratified by the Khronos Group:"
+        }
+      ]
+    },
+    "logic.namespace": {
+      "level": "out-of-scope",
+      "note": "glTF publishes no units of logic to name. It registers extension name prefixes so two vendors cannot collide on a property name, which is a naming rule for the format, not an address for code somebody else can depend on.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "No finished content passes through Khronos on its way to an audience. glTF is a file format, so there is no place in it where a review could stand, and it carries no field saying what review an asset has had.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "glTF has no geographic frame of any kind, so it can neither declare a map of a place nor publish a transform between two maps. It is placed in the world by whatever loads it.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "A glTF file is content, not a service bound to a place, and it declares no geographic area it applies to. Its bounds are in its own local axes.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "gltf21": {
+    "render.passthrough": {
+      "level": "out-of-scope",
+      "note": "glTF 2.1 keeps its predecessor's job: describe what to draw and how to stream it. Blending the drawing with a camera view of the real room stays with the runtime that presents it.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "input.face": {
+      "level": "out-of-scope",
+      "note": "No input model, no sensors. The draft adds complex scenes and progressive delivery, not a live reading of the person looking at the scene.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "scene.navmesh": {
+      "level": "none",
+      "note": "The 2.1 draft's new ground is spatial subdivision, availability maps, level of detail and streaming hints — everything about getting a large scene in fast, and nothing about where a body may stand or where a visitor arrives.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.khronos.org/blog/introducing-gltf-2.1-with-complex-scenes",
+          "title": "Introducing glTF 2.1 with complex scenes, Khronos",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "can build on complex scenes as the foundation for progressive delivery, including the spatial subdivision, availability maps, LOD and quality metrics, and streaming hints"
+        }
+      ]
+    },
+    "logic.namespace": {
+      "level": "out-of-scope",
+      "note": "Same as glTF 2.0: nothing is published as a reusable unit of world logic under a name that has to keep resolving, so there is no namespace for the draft to operate.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "A format in development has no publishing path and no audience standing behind it, so no review can sit in that path.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "The draft's spatial subdivision is inside one scene's own coordinates. There is no map of a real place to declare and no second map to align to.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "Availability maps in the draft say which parts of a scene are available at which detail, not which part of the Earth the content applies to.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "usd": {
+    "render.passthrough": {
+      "level": "out-of-scope",
+      "note": "OpenUSD authors, composes and streams scene description. What a headset does with the camera view of the room when it draws that scene is the renderer's business and is nowhere in USD.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "input.face": {
+      "level": "out-of-scope",
+      "note": "USD has no input or sensor model. It can store the shapes a face makes, which is scene.morph, but not a live reading of the person in the room.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "scene.navmesh": {
+      "level": "none",
+      "note": "USD is a scene description with schema domains for geometry, shading, physics, lighting and composition, and none of them declares walkable surface, bounds or spawn points. A place delivered as USD arrives without saying where a body may stand or where a visitor lands.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/PixarAnimationStudios/OpenUSD/release/README.md",
+          "title": "OpenUSD repository README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Universal Scene Description (USD) is an efficient, scalable system for authoring, reading, and streaming time-sampled scene description for interchange between graphics applications."
+        }
+      ]
+    },
+    "logic.namespace": {
+      "level": "out-of-scope",
+      "note": "USD carries no published units of logic. Prim paths name things inside one composed stage, and asset resolution finds files; neither is a permanent public address for code.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "Nothing is published to an audience through USD itself, so there is no point in it where a review could stand or be recorded.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "USD scenes sit in their own coordinates. Declaring a map of a real place, its version and its transform to another map is a positioning service's job, not a scene description's.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "A USD stage is content, not a service bound to a place; it states no geographic area of application in any stated frame.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "x3d": {
+    "render.passthrough": {
+      "level": "none",
+      "note": "X3D 4.0 is a runtime standard with a defined presentation model, so this row is in scope for it, and the model is entirely virtual. The browser draws the scene against a Background node; no node introduces a live camera view of the room and no field controls a blend with one. Checked in the navigation and concepts clauses of the ratified text.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/components/navigation.html",
+          "title": "X3D 4.0 (ISO/IEC 19775-1) Part 1, Navigation component",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The NavigationInfo node contains information describing the physical characteristics of the viewer's avatar and viewing model."
+        }
+      ]
+    },
+    "input.face": {
+      "level": "none",
+      "note": "X3D's sensors read pointing devices, keys, time, proximity and collision. The viewer is described to the browser as a size and a speed, not read as a face or a body pose, and there is no live sensor stream of the person to hand to the scene.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/components/navigation.html",
+          "title": "X3D 4.0 (ISO/IEC 19775-1) Part 1, Navigation component",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The NavigationInfo node contains information describing the physical characteristics of the viewer's avatar and viewing model."
+        }
+      ]
+    },
+    "scene.navmesh": {
+      "level": "partial",
+      "note": "The strongest declaration of navigable space in any file format on this map, and still only half the row. NavigationInfo carries the avatar's size and the navigation paradigm the browser must present, WALK among them, and Viewpoint nodes give named places a visitor can be put down at, all of it inside the file. What is missing is the walkable surface itself: X3D has no navigation mesh, and the ground a body may stand on is worked out by the browser from Collision and geometry.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/components/navigation.html",
+          "title": "X3D 4.0 (ISO/IEC 19775-1) Part 1, Navigation component",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "MFFloat [in,out] avatarSize [0.25 1.6 0.75] [0,∞)"
+        },
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/components/navigation.html",
+          "title": "X3D 4.0 (ISO/IEC 19775-1) Part 1, Navigation component",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "if the currently bound NavigationInfo node's type is \" WALK \", the X3D browser shall present a \" WALK \" navigation user interface paradigm"
+        }
+      ]
+    },
+    "logic.namespace": {
+      "level": "partial",
+      "note": "EXTERNPROTO names a unit of behaviour that lives somewhere else and pulls it in by URL, so an X3D scene really does depend on code published under a name. The name is a web address, not a permanent identity: whoever controls the URL controls what resolves there, and nothing stops a second author reusing a node type name in their own file.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/concepts.html",
+          "title": "X3D 4.0 (ISO/IEC 19775-1) Part 1, Concepts",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The EXTERNPROTO statement defines a new node type."
+        },
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/concepts.html",
+          "title": "X3D 4.0 (ISO/IEC 19775-1) Part 1, Concepts",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The semantics of the EXTERNPROTO are exactly the same as for a PROTO statement,"
+        }
+      ]
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "X3D describes a scene and how a browser runs it. It has no publishing service, so there is no path between finished content and an audience for a review to stand in.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "X3D's geospatial component places scene content in a geographic frame. It never declares that a map of a place exists, gives it a version, or publishes a transform to a second map of the same place.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "An X3D scene is content, not a service that answers for an area. Its geospatial nodes fix where content sits, not which region a service or dataset applies to.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "openxr": {
+    "render.passthrough": {
+      "level": "partial",
+      "note": "The core has the coarse control and nothing finer. An application asks which environment blend modes the system supports and then picks one — opaque, additive or alpha blend — on every frame, which is how much of the room shows through at all. Cutting a hole in a virtual environment, styling the passthrough image or placing it as its own layer needs vendor extensions, and not one of them is in the ratified set.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.63 Specification (with all ratified extensions)",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Applications select their environment blend mode each frame as part of their call to xrEndFrame ."
+        },
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.63 Specification (with all ratified extensions)",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "a VR headset may not support the XR_ENVIRONMENT_BLEND_MODE_ADDITIVE or XR_ENVIRONMENT_BLEND_MODE_ALPHA_BLEND modes unless it has video passthrough"
+        }
+      ]
+    },
+    "input.face": {
+      "level": "none",
+      "note": "Nothing in the specification with all ratified extensions tracks a face or a body: searching the ratified text for face tracking returns no result. The face and body tracking extensions in the registry are single-vendor and unratified, so a portable application cannot count on them, and eye gaze — the one ratified piece of the person's own state — is an interaction path, not an expression stream.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.63 Specification (with all ratified extensions)",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The OpenXR™ 1.1.63 Specification (with all ratified extensions)"
+        }
+      ]
+    },
+    "scene.navmesh": {
+      "level": "out-of-scope",
+      "note": "OpenXR hands an application tracked spaces, views and input. It carries no scene, so there is no place description in which a walkable surface or an arrival point could travel.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "logic.namespace": {
+      "level": "out-of-scope",
+      "note": "OpenXR runs no code on anyone's behalf and publishes no units of logic. Its own extension names are registered with Khronos, which is a naming rule for the API, not an address for world logic.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "A device runtime interface has no publishing path: no content passes through OpenXR on its way to an audience, so no review can stand in that path.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "none",
+      "note": "The ratified spatial entity extensions give an application anchors, planes, markers and persistence keyed by a UUID that survives between sessions, which is as close as OpenXR comes. There is still no map object with a version and a lifecycle, and no transform published between two maps of the same place, so two devices cannot be told they are in the same map.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.63 Specification (with all ratified extensions)",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "This extension allows applications to discover and correlate spatial entities across application sessions, OpenXR sessions and multiple OpenXR spatial contexts within a session."
+        }
+      ]
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "OpenXR speaks about the space around one device, not about the Earth. It has no geographic frame in which a coverage area could be stated.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "webxr": {
+    "render.passthrough": {
+      "level": "partial",
+      "note": "The page is told the blend, it does not choose it. The AR module exposes environmentBlendMode as a read-only report of what the compositor is doing, and the technique itself is fixed by the session mode and the display: alpha blend must be used on a pass-through display in immersive-ar. Nothing lets the page dial the amount, style the camera image or cut a hole through a virtual environment.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr-ar-module-1/",
+          "title": "WebXR Augmented Reality Module - Level 1, W3C",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The environmentBlendMode attribute MUST report the XREnvironmentBlendMode value that matches blend technique currently being performed by the XR Compositor ."
+        },
+        {
+          "url": "https://www.w3.org/TR/webxr-ar-module-1/",
+          "title": "WebXR Augmented Reality Module - Level 1, W3C",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "This technique MUST be applied on pass-through displays when the mode is set \"immersive-ar\" ."
+        }
+      ]
+    },
+    "input.face": {
+      "level": "none",
+      "note": "The Device API has no face stream and no body stream. Body tracking exists only as an incubation draft outside the standards track, and the specification's own instinct about reading the user's face is to stop exposing that data rather than to hand it over.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr-ar-module-1/",
+          "title": "WebXR Augmented Reality Module - Level 1, W3C",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Compared to the WebXR Device API it extends, the AR module only provides some additional details about the nature of the device it is running on via the environmentBlendMode and interactionMode attributes."
+        }
+      ]
+    },
+    "scene.navmesh": {
+      "level": "out-of-scope",
+      "note": "WebXR is a device API, not a scene format. It gives a page poses, frames and input; where a body may stand in a place is decided by whatever content the page loaded.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "logic.namespace": {
+      "level": "out-of-scope",
+      "note": "WebXR publishes no units of logic. Script identity on the web is the URL and the package registry, neither of which is part of this specification.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "No content is published through the Device API. Review, if any, sits with the site and the browser's own safety machinery, outside this specification.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "none",
+      "note": "The anchors module keeps content stuck to a place across a session and the AR module reports what the device is. Neither declares that a map of a place exists, versions it, or publishes a transform to another map, so two browsers cannot be told they are looking at the same map.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr-ar-module-1/",
+          "title": "WebXR Augmented Reality Module - Level 1, W3C",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Compared to the WebXR Device API it extends, the AR module only provides some additional details about the nature of the device it is running on via the environmentBlendMode and interactionMode attributes."
+        }
+      ]
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "WebXR has no geographic frame; where on Earth the user is standing comes from the separate Geolocation API, so there is nothing here to declare a coverage area against.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "webgpu": {
+    "render.passthrough": {
+      "level": "out-of-scope",
+      "note": "WebGPU draws into a texture. It never sees a camera image of the room and has no compositor, so the blend with the real world happens somewhere else entirely.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "input.face": {
+      "level": "out-of-scope",
+      "note": "A graphics interface has no sensors and no user model; nothing about the person in front of the screen reaches it.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "scene.navmesh": {
+      "level": "out-of-scope",
+      "note": "WebGPU has no scene: it takes buffers, pipelines and draw calls. Walkable surface and spawn points belong to a place description, which it does not have.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "logic.namespace": {
+      "level": "out-of-scope",
+      "note": "Shader modules are created from source at run time inside one page. There is no published unit of logic anyone else depends on by name.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "No content is delivered to an audience through a graphics API, so there is no path for a review to stand in.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "WebGPU has no notion of place at all, so no map and no alignment between maps.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "No geographic frame and no service boundary; the row has nothing to attach to.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "vrm": {
+    "render.passthrough": {
+      "level": "out-of-scope",
+      "note": "VRM describes a humanoid avatar file. It never presents anything, so how a runtime blends its drawing with a camera view of the room cannot be its business.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "input.face": {
+      "level": "out-of-scope",
+      "note": "This row is the sensor, VRM is the file. VRM defines the expressions an avatar can hold, which is avatar.expression; it reads no face and delivers no live stream.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "scene.navmesh": {
+      "level": "out-of-scope",
+      "note": "VRM carries a character, not a place. There is no floor in it for anyone to stand on and no arrival point to declare.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "logic.namespace": {
+      "level": "out-of-scope",
+      "note": "An avatar file publishes no units of logic. Its expression names are fixed vocabulary inside one document, not addresses other authors depend on.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "VRM carries author-set usage permissions with the avatar, which is identity.rights. It describes no review of finished content and no publishing path where one could stand.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "No geographic frame in an avatar format, so no map to declare and nothing to align it to.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "An avatar is not a service bound to a place and states no area where it applies.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "mpeg-arf": {
+    "render.passthrough": {
+      "level": "out-of-scope",
+      "note": "The Avatar Representation Format specifies how an avatar is written down. Presentation, including any mixing with a camera view, is left to whatever renders the avatar.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "input.face": {
+      "level": "out-of-scope",
+      "note": "The draft standardises the stored shape of an avatar's face, which is avatar.expression. The live sensor stream that drives it comes from a device runtime and is outside the format.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "scene.navmesh": {
+      "level": "out-of-scope",
+      "note": "An avatar format holds no place, so it cannot say where a body may stand, walk or arrive.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "logic.namespace": {
+      "level": "out-of-scope",
+      "note": "No published units of logic are named by this format.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "No content passes through the format on its way to an audience, so there is nowhere for a review to stand and nothing to record about one.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "No geographic frame and no map, so nothing to align.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "An avatar file is not bound to a geographic area and declares none.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "mpeg-audio": {
+    "render.passthrough": {
+      "level": "out-of-scope",
+      "note": "Immersive Audio is about what the listener hears. Mixing a camera view of the room into the picture is not part of an audio standard.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "input.face": {
+      "level": "out-of-scope",
+      "note": "The standard takes a listener's head pose to render sound; it neither reads nor delivers a face or body stream as input to an application.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "scene.navmesh": {
+      "level": "out-of-scope",
+      "note": "The acoustic scene describes sources, rooms and materials, not walkable ground or arrival points for a body.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "logic.namespace": {
+      "level": "out-of-scope",
+      "note": "No published units of logic to name.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "An audio coding standard has no publishing path in which a review of finished content could stand.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "No map of a real place appears anywhere in the standard.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "No geographic area of application is declared; the standard's frame is the listening space.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "mpeg-scene": {
+    "render.passthrough": {
+      "level": "out-of-scope",
+      "note": "Scene Description extends glTF to carry timed media into a scene. How the presentation engine blends that scene with a camera view of the room is the runtime's, and no extension in the standard controls it.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "input.face": {
+      "level": "out-of-scope",
+      "note": "The standard's input surface is the media access function and the anchors that place content. A live face and body stream from the user is not among the media it carries.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "scene.navmesh": {
+      "level": "none",
+      "note": "The standard's real-world hook is anchoring: content is fixed to anchor points associated with XR spaces and tracked through the experience. That says where content sits, never where a body may stand, walk or arrive, and there is no walkable surface or spawn point in the extensions.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/140_Mainz/w22138.zip",
+          "title": "White paper on MPEG-I Scene Description, MPEG output document w22138",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The virtual content is anchored to the real world through anchor points that can be associated with XR spaces and tracked throughout the whole experience."
+        }
+      ]
+    },
+    "logic.namespace": {
+      "level": "out-of-scope",
+      "note": "The standard names its own glTF extensions under the MPEG_ prefix. It publishes no units of world logic for other authors to depend on by name.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "Scene Description defines carriage and access of media, with no publishing service in the path, so no review can stand there and none is recorded.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "Anchoring binds content to a tracked XR space. The standard never declares a map of a place with a version, and publishes no transform between two maps of the same place.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "A scene is content, not a service answering for a region, and the standard states no geographic area of application.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "geopose": {
+    "render.passthrough": {
+      "level": "out-of-scope",
+      "note": "GeoPose says where something is and which way it faces. Nothing about drawing, and nothing about a camera view of the room.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "input.face": {
+      "level": "out-of-scope",
+      "note": "A pose standard reads no sensors and carries no stream of the user's face or body.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "scene.navmesh": {
+      "level": "out-of-scope",
+      "note": "GeoPose positions one thing in a frame. It has no scene in which walkable surface or arrival points could be declared.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "logic.namespace": {
+      "level": "out-of-scope",
+      "note": "No published units of logic are named by a pose standard.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "No content is published through GeoPose, so no review can stand in that path.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "partial",
+      "note": "GeoPose is exactly the transform half of this row and none of the rest. A pose is a frame transform relating an outer frame to an inner one, which is the very thing two maps of one place need between them, and the standard even packages sequenced and linked transforms. What it never does is declare that a map exists, give it a version and a lifecycle, or name the two maps a transform is between.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "representation of a frame transform ( Clause 4.2.6 ) mapping the space of an outer frame ( Clause 4.2.7 ) to the space of an inner frame ( Clause 4.2.8 )"
+        },
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The Composite Targets offer approaches to packaging sequenced or linked Frame Transforms."
+        }
+      ]
+    },
+    "geo.coverage": {
+      "level": "none",
+      "note": "A GeoPose is a point and an orientation, not an area. There is no way in the standard to say which region a service, dataset or piece of content applies to, so a client cannot test relevance against it; the eight standardization targets are all about how one pose is written down.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "There are eight independent standardization targets."
+        }
+      ]
+    }
+  },
+  "3dtiles": {
+    "render.passthrough": {
+      "level": "out-of-scope",
+      "note": "3D Tiles streams geometry to a client. Whether that client blends its drawing with a camera view of the room is the client's own presentation and is nowhere in the standard.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "input.face": {
+      "level": "out-of-scope",
+      "note": "A tiled delivery format has no input model and reads nothing about the person looking at it.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "scene.navmesh": {
+      "level": "none",
+      "note": "Tiles carry renderable content and metadata under bounding volumes, with a subdivision scheme and geometric error to decide what to draw. Nothing in the tileset says which surface is walkable, where the bounds of a body's movement are, or where a visitor arrives — a client that wants to walk a city has to work that out from the geometry.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "In 3D Tiles, a subset of a tileset containing a reference to renderable content and the metadata, such as the content's bounding volume, which is used by a client to determine if the content is rendered."
+        }
+      ]
+    },
+    "logic.namespace": {
+      "level": "out-of-scope",
+      "note": "A tileset publishes geometry, not units of logic; its declarative styling is expressions evaluated in place, under no published name.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "The standard defines how tiles are structured and fetched. It has no publishing service where a review could stand and no field saying what review content has had.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "partial",
+      "note": "Every tile may carry a 4x4 affine transform that puts its local coordinates into its parent's, and a root tileset is commonly placed in an Earth-centred frame, so a building inside a city inside the Earth all line up. That is alignment inside one tree; the standard declares no map of a place with a version and a lifecycle, and publishes no transform relating its tileset to a second map of the same place.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The transform property is a 4×4 affine transformation matrix, stored in column-major order, that transforms from the tile's local coordinate system to the parent tile's coordinate system—​or the tileset's coordinate system in the case of the root tile."
+        },
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A tileset's global coordinate system will often be in a WGS 84 Earth-centered, Earth-fixed (ECEF) reference frame ( EPSG 4978 ), but it doesn't have to be"
+        }
+      ]
+    },
+    "geo.coverage": {
+      "level": "native",
+      "note": "Coverage is the backbone of the format. Every tile declares a bounding volume that completely encloses its content, and the region form states those bounds in a named geographic frame — latitude, longitude and height in EPSG 4979 — so a client can test whether a tileset is relevant where it is standing before fetching anything.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The region bounding volume specifies bounds using a geographic coordinate system (latitude, longitude, height), specifically, EPSG 4979 ."
+        },
+        {
+          "url": "https://docs.ogc.org/cs/22-025r4/22-025r4.html",
+          "title": "OGC 3D Tiles Specification 1.1",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Each tile has a bounding volume , an object defining a spatial extent completely enclosing its content."
+        }
+      ]
+    }
+  },
+  "did": {
+    "render.passthrough": {
+      "level": "out-of-scope",
+      "note": "An identifier standard draws nothing and presents nothing.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "input.face": {
+      "level": "out-of-scope",
+      "note": "DIDs name subjects. They read no sensors and carry no live stream of anybody's face or body.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "scene.navmesh": {
+      "level": "out-of-scope",
+      "note": "No scene, no floor, no arrival point: a DID says who or what something is, not where a body may stand.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "logic.namespace": {
+      "level": "partial",
+      "note": "This is the only standard on the map that gives the permanence half of the row outright: a decentralized identifier is a globally unique persistent identifier that needs no central registration authority, so a name, once taken, keeps resolving to the same controller and nobody else can claim it. What it does not do is name a published unit of logic or say anything about versions, dependencies or code, so a world-logic namespace could be built on DIDs but is not one of them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/did-core/",
+          "title": "Decentralized Identifiers (DIDs) v1.0, W3C",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A globally unique persistent identifier that does not require a centralized registration authority"
+        }
+      ]
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "No content passes through a DID on its way to an audience, so there is no review in that path and nothing to record about one.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "DIDs carry no geometry and no place, so there is no map to declare or align.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "An identifier states no geographic area where it applies.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "vc": {
+    "render.passthrough": {
+      "level": "out-of-scope",
+      "note": "A credential data model presents nothing and has no compositor.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "input.face": {
+      "level": "out-of-scope",
+      "note": "Credentials are signed statements, not sensor streams; nothing in the model reads a face or a body pose.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "scene.navmesh": {
+      "level": "out-of-scope",
+      "note": "No scene and no place, so no walkable surface or arrival point.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "logic.namespace": {
+      "level": "out-of-scope",
+      "note": "The model names claims about subjects, not published units of logic; a credential type is a vocabulary term, not an address for code.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "A moderation decision could be carried as a credential, but the standard defines no review, no reviewer and no path from finished content to an audience, so the row is not what this specification is for.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "No maps and no geometry in a credential data model.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "No geographic area of application is expressed by the model itself.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "c2pa": {
+    "render.passthrough": {
+      "level": "out-of-scope",
+      "note": "Content Credentials travel with an asset. They say nothing about how a runtime blends its drawing with a camera view of the room.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "input.face": {
+      "level": "out-of-scope",
+      "note": "C2PA records what a camera or tool did to an asset. It delivers no live face or body stream to an application.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "scene.navmesh": {
+      "level": "out-of-scope",
+      "note": "Provenance data has no scene in it, so no walkable surface, bounds or arrival points.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "logic.namespace": {
+      "level": "out-of-scope",
+      "note": "Assertion labels are a registered vocabulary for describing an asset, not names for published units of world logic.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "deliver.moderation": {
+      "level": "partial",
+      "note": "C2PA answers the interoperable half of this row and none of the rest. A receiving system can read a manifest, check the signature and the credential behind it, check each assertion, and show a person what has been asserted about the content — which is exactly the machinery a world would need to tell what an arriving asset has already been through. What C2PA never does is perform a review or name a reviewer: it carries claims, and whether a claim means the content was reviewed is left to whoever wrote the assertion.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.2/specs/C2PA_Specification.html",
+          "title": "C2PA Specification 2.2",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A Manifest Consumer, such as a C2PA validator, helps users to establish the trustworthiness of the asset by first validating the digital signature and its associated credential."
+        },
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.2/specs/C2PA_Specification.html",
+          "title": "C2PA Specification 2.2",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "An assertion is labelled data, typically (though not required to be) in a CBOR-based structure which represents a declaration about an asset."
+        }
+      ]
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "No map of a place is declared by a provenance manifest, and no transform between maps.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "An asset's credentials say where it was captured at most; they declare no area over which a service or dataset applies.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "ieee2874": {
+    "render.passthrough": {
+      "level": "out-of-scope",
+      "note": "The Spatial Web standard is a modelling and transaction layer. Presentation, including any blend with a camera view of the room, is left entirely to the client.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "input.face": {
+      "level": "out-of-scope",
+      "note": "The standard models entities, activities and their governance. Reading the user's own face and body as a live stream is a device runtime's job and is not part of it.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "scene.navmesh": {
+      "level": "out-of-scope",
+      "note": "The standard describes a graph of entities and their relations, not a place description in which a walkable surface or an arrival point would travel.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "logic.namespace": {
+      "level": "partial",
+      "note": "The standard does publish executable meaning — a contracting language whose statements are meant to be read by machines and carried out — and it hangs that on decentralized identifiers, so the pieces of a permanent naming scheme are present. It stops short of the row: nothing in it operates a namespace for published units of world logic, versions them, or guarantees that a name keeps resolving to the same code.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://standards.ieee.org/ieee/2874/11717/",
+          "title": "IEEE 2874-2025 catalogue entry, IEEE Standards Association",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "a human and machine-readable contracting language that enables the expression and automated execution of legal, financial, and physical activities"
+        }
+      ]
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "Governance in this standard is expressed as rules and permissions on activities, not as a review that stands between finished content and its audience, and there is no publishing service in it to hold one.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "The standard places entities in domains. It declares no map of a place with a version and a lifecycle, and publishes no transform between two maps.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "Its spatial range query asks what is inside a volume, which is discovery, not a service declaring the area it answers for.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "um": {
+    "render.passthrough": {
+      "level": "out-of-scope",
+      "note": "The manifest is evaluated before anything is shown. It carries no presentation control, so how a viewer blends a camera view of the room is outside it.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "input.face": {
+      "level": "out-of-scope",
+      "note": "Universal Manifest speaks about consent for sensor-derived data rather than delivering a stream: no face or body pose reaches an application through it.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "scene.navmesh": {
+      "level": "out-of-scope",
+      "note": "The manifest describes trust, consent and policy for a piece of content, not the shape of a place, so walkable surface and arrival points are outside it.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "logic.namespace": {
+      "level": "none",
+      "note": "The only permanent name in the specification is its own: a versioned namespace URI that says which version of the manifest schema a document conforms to. Nothing names a published unit of world logic, so no author can depend on a name here and no name is protected from a second claimant.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4, core specification",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Manifest namespace for the specification version being implemented"
+        }
+      ]
+    },
+    "deliver.moderation": {
+      "level": "partial",
+      "note": "This is the closest thing on the map to the interoperable half of the row: content arrives with a manifest, and a six-stage evaluation — arrive, verify, project, consent, compose, receipt — runs before it is composed into the receiving surface, leaving a receipt behind. It is a trust and consent gate rather than a content review: nothing in it says who looked at the content, what they judged, or that a review happened at all.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4, core specification",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "which established the evaluation contract, the six-stage evaluation"
+        }
+      ]
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "The specification's only geographic idea is a candidate profile carrying GeoPose values, and even that is drafted rather than on the wire. It declares no map of a place and no transform between two maps.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "A manifest travels with content and describes its trust conditions, not an area of the Earth where a service or dataset applies.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "iwps": {
+    "render.passthrough": {
+      "level": "out-of-scope",
+      "note": "IWPS negotiates a move between two clients. What either client does with the camera view of the room is its own presentation.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "input.face": {
+      "level": "out-of-scope",
+      "note": "The portaling APIs pass a user and a destination between services; they carry no sensor stream of the user's face or body.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "scene.navmesh": {
+      "level": "partial",
+      "note": "The arrival half of this row is genuinely here and nothing else is. A Portal URI may carry the landing location in the destination world, so a portal can put a visitor somewhere chosen rather than wherever the world starts everyone. There is no walkable surface, no bounds and no list of spawn points travelling with a place, and nothing tells the source client whether the landing location it names is somewhere a body may actually stand.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, OMA3",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Portal URI | URI that the User uses to create a Portal, optionally including parameters such as the landing location in the Destination World."
+        }
+      ]
+    },
+    "logic.namespace": {
+      "level": "out-of-scope",
+      "note": "The specification names worlds and clients so a teleport can be addressed. It publishes no units of logic and operates no namespace for them.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "deliver.moderation": {
+      "level": "none",
+      "note": "A destination takes an arriving user and, in the wider OMA3 work, arriving assets, and this is exactly where a receiving world would want to know what review something has had. The base specification defines two calls, Query and Teleport, and neither carries a review record, a content rating or any statement of what the source has already checked.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, OMA3",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The document defines two API calls—Query API and Teleport API,—which together facilitate the process of setting up and executing a teleportation between clients and their corresponding cloud services."
+        }
+      ]
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "Teleporting is between virtual worlds. No map of a real place is declared and no transform between two maps is published.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "A destination world is not a service bound to a region of the Earth, and the specification states no coverage area for one.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "wow": {
+    "render.passthrough": {
+      "level": "out-of-scope",
+      "note": "Web of Worlds describes worlds and the ways in and out of them. How a client presents a world against a camera view of the room is the client's own affair and the API says nothing about it.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "input.face": {
+      "level": "out-of-scope",
+      "note": "The API is about a world's description and a visitor's session, not about reading the visitor's face or body from a sensor.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "scene.navmesh": {
+      "level": "none",
+      "note": "A world advertises how it is moved through as one free-text string beside its avatar and gravity settings. That is a hint for a person choosing a world, not a declaration a client can act on: no walkable surface, no bounds, no spawn points, nothing that tells an arriving client where a body may stand.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "Web of Worlds OpenSpatialWorld API specification",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "presence: type: object properties: avatar: type: string navigation: type: string gravity: type: string"
+        }
+      ]
+    },
+    "logic.namespace": {
+      "level": "none",
+      "note": "Worlds are addressed by URL and described by a manifest of aspects. Nothing is published as a reusable unit of logic under a name that has to keep resolving, so there is no namespace here and no protection against a second author reusing a name.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "Web of Worlds OpenSpatialWorld API specification",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "presence: type: object properties: avatar: type: string navigation: type: string gravity: type: string"
+        }
+      ]
+    },
+    "deliver.moderation": {
+      "level": "none",
+      "note": "The API is where a receiving client would learn what a world is before entering it, and the description it gets covers cost, version, duration, technology and presence. There is no content rating, no review record and no statement of who has checked the world or its contents.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "Web of Worlds OpenSpatialWorld API specification",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "technology: type: object properties: webXR-immersive: type: string description: \"WebXR session profile\""
+        }
+      ]
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "A world may carry a GeoPose that puts it somewhere on Earth. That is a placement, not a declared map with a version, and the API publishes no transform between two maps of a place.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "none",
+      "note": "The geographic hook is a single GeoPose: one latitude, longitude and height with angles. A point is not an area, so a client cannot test whether a world applies where the client is; it can only be told where the world claims to be.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "Web of Worlds OpenSpatialWorld API specification",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "geoPose: type: object properties: position: type: object properties: lat: type: number lan: type: number h: type: number"
+        }
+      ]
+    }
+  },
+  "rp1": {
+    "render.passthrough": {
+      "level": "out-of-scope",
+      "note": "RP1's published work is the spatial fabric format and the server that serves it. The client decides what to do with a camera view of the room and nothing in the fabric addresses it.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "input.face": {
+      "level": "out-of-scope",
+      "note": "The fabric carries scene nodes and modules. There is no input model in it that would deliver a live reading of the user's face or body to a running module.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "scene.navmesh": {
+      "level": "none",
+      "note": "A fabric is a signed tree of nodes with attachment points and modules, and it is opened by a client that then has to work out the floor for itself. Nothing in the format declares walkable surface, bounds or a spawn point, so two clients opening the same fabric may put a person in different places.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/Sneeze/blob/main/src/context/scene/Scene.md",
+          "title": "Sneeze scene note, RP1 spatial fabric",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A NODE recognizes it's an attachment point (bSubtype == 255) and calls"
+        }
+      ]
+    },
+    "logic.namespace": {
+      "level": "none",
+      "note": "Modules are named inside the fabric document and fetched from an endpoint written beside the name. The name has meaning only within that document, so it resolves to whatever the endpoint serves today and any other author may use the same name in their own fabric.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeDoc/blob/main/docs/systems/msf.md",
+          "title": "Sneeze documentation, MSF system",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "each a `{ name, type, endpoint, modules }` record"
+        }
+      ]
+    },
+    "deliver.moderation": {
+      "level": "none",
+      "note": "A fabric is signed and its signature chain is verified before it is parsed, which answers who sent it, not what review it has had. There is no field for a review record and no service in the path that performs one, so a receiving client learns nothing about whether anybody looked at the content.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/Sneeze/blob/main/src/context/scene/Scene.md",
+          "title": "Sneeze scene note, RP1 spatial fabric",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "On success, SCENE parses the MSF, verifies signature and chain."
+        }
+      ]
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "The fabric has no geographic frame; the project's own material records earth-scale coordinate ownership as unresolved. There is no map to declare and none to align to.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "none",
+      "note": "Finding content is by address today, not by where the client is standing, so nothing declares an area a fabric or a server applies to and a client cannot test relevance by place.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/Rubidium/blob/main/RELEASE",
+          "title": "Rubidium release notes",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Discovery is *address-based* for now"
+        }
+      ]
+    }
+  },
+  "teleportxr": {
+    "render.passthrough": {
+      "level": "none",
+      "note": "The server renders and streams a cubemap to the client, with the scene's depth packed into the alpha channel so the client can reproject it. Depth in alpha is what a compositor would need to blend with a camera view, and the protocol never takes that step: there is no blend mode, no passthrough layer and no way for the server to say how much of the room should show.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/teleportxr/Teleport/main/docs/protocol/video.rst",
+          "title": "TeleportXR protocol documentation: Video",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The alpha channel will store the depth of the rendered scene on the server."
+        }
+      ]
+    },
+    "input.face": {
+      "level": "none",
+      "note": "Input travels the other way as named control paths matched against the client's own controls, which is a controller and hand model. There is no face or body stream in the input protocol and no privacy terms for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/teleportxr/Teleport/blob/main/docs/protocol/input.rst",
+          "title": "TeleportXR protocol documentation: Input",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "``path`` is a regular expression matched against the client-side control path (e.g. ``\"/user/hand/left/input/trigger/value\"`` on OpenXR)."
+        }
+      ]
+    },
+    "scene.navmesh": {
+      "level": "out-of-scope",
+      "note": "The client receives a rendered stream and a geometry payload for what it draws locally. Where a body may stand is decided on the server, inside whichever engine is running the world, and never crosses the protocol.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "logic.namespace": {
+      "level": "out-of-scope",
+      "note": "Logic stays on the server; the client is given geometry and video. Nothing is published as a unit of logic under a name that another author would depend on.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "A remote rendering protocol carries frames between one server and one client it has already connected to. There is no publishing path to an audience in which a review could stand.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "The protocol has no geographic frame and no map of a real place.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "A server is found by an out-of-band address, not by the region it covers, and it declares no area of application.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "omb": {
+    "render.passthrough": {
+      "level": "out-of-scope",
+      "note": "The browser's preview target is a flat or headset display of the fabric it opens. Nothing in its architecture notes mixes a camera view of the room into that picture.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "input.face": {
+      "level": "out-of-scope",
+      "note": "The browser passes device input to modules. There is no face or body sensing surface in its published interface for a module to read.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "scene.navmesh": {
+      "level": "none",
+      "note": "The browser walks a fabric of nodes and attachment points and works out its own view of the scene. No node type declares walkable surface, bounds or an arrival point, so where a person stands when a fabric opens is the browser's guess rather than the author's statement.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/context/scene/Scene.md",
+          "title": "Sneeze scene note, Open Metaverse Browser",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A NODE recognizes it's an attachment point (bSubtype == 255) and calls"
+        }
+      ]
+    },
+    "logic.namespace": {
+      "level": "none",
+      "note": "Modules are addressed by a name and an endpoint inside one manifest, and the browser loads what that endpoint serves. There is no registry making the name permanent and nothing preventing another author from using it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeDoc/blob/main/docs/systems/msf.md",
+          "title": "Sneeze documentation, MSF system",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "each a `{ name, type, endpoint, modules }` record"
+        }
+      ]
+    },
+    "deliver.moderation": {
+      "level": "none",
+      "note": "The browser verifies the signature and the chain on a manifest before parsing it, which establishes who published the content and not what review it has had. Nothing arriving tells the browser whether anybody has looked at the content, and the browser performs no review of its own.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/context/scene/Scene.md",
+          "title": "Sneeze scene note, Open Metaverse Browser",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "On success, SCENE parses the MSF, verifies signature and chain."
+        }
+      ]
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "The browser has no geographic model: content is fetched by address, not placed on Earth, so there is no map to declare or align.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "none",
+      "note": "Discovery is by address, so a client never asks what is relevant where it is standing and nothing published for the browser declares an area of application.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/Rubidium/blob/main/RELEASE",
+          "title": "Rubidium release notes",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Discovery is *address-based* for now"
+        }
+      ]
+    }
+  },
+  "threejs": {
+    "render.passthrough": {
+      "level": "partial",
+      "note": "three.js reads the blend and leaves the choosing to the session. Its WebXR manager exposes the environment blend mode the runtime reports — opaque, additive or alpha blend — so an application can branch on whether the real room is showing, and the library draws with a transparent clear colour when it is. There is no control over the amount, no styling of the camera image and no way to cut a hole through a virtual environment.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/mrdoob/three.js/dev/src/renderers/webxr/WebXRManager.js",
+          "title": "three.js WebXRManager source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "@return {'opaque'|'additive'|'alpha-blend'|undefined} The environment blend mode. Returns `undefined` when used outside of a XR session."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/mrdoob/three.js/dev/src/renderers/webxr/WebXRManager.js",
+          "title": "three.js WebXRManager source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "this.getEnvironmentBlendMode = function () {"
+        }
+      ]
+    },
+    "input.face": {
+      "level": "none",
+      "note": "three.js wraps what the WebXR Device API offers, and the Device API offers no face or body stream, so nothing reaches a three.js application. Face data in three.js is a stored morph target on a mesh, which is a different row.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/mrdoob/three.js/dev/src/renderers/webxr/WebXRManager.js",
+          "title": "three.js WebXRManager source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "@return {'opaque'|'additive'|'alpha-blend'|undefined} The environment blend mode. Returns `undefined` when used outside of a XR session."
+        }
+      ]
+    },
+    "scene.navmesh": {
+      "level": "none",
+      "note": "The library has an object graph, cameras, lights and animation, and no notion of navigable space anywhere in it: no walkable surface, no bounds for a body, no spawn point. Applications that need pathfinding reach for a third-party package outside the library.",
+      "confidence": "unverified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/mrdoob/three.js/dev/src/renderers/webxr/WebXRManager.js",
+          "title": "three.js WebXRManager source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "this.getEnvironmentBlendMode = function () {"
+        }
+      ]
+    },
+    "logic.namespace": {
+      "level": "out-of-scope",
+      "note": "three.js is a drawing library. Naming a published unit of logic so it resolves forever is the package registry's business, not the renderer's, and three.js operates none.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "The library draws what the page already loaded. Nothing is published to an audience through it, so no review can stand in that path.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "No geographic frame in the library, so no map of a place to declare and nothing to align it to.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "three.js is not a service bound to a place and declares no area where anything applies.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "babylonjs": {
+    "render.passthrough": {
+      "level": "partial",
+      "note": "Babylon.js is the one web engine that acts on the blend rather than only reporting it. Its background remover feature takes the environment away when an augmented reality session starts — the whole background by default, or just the skybox or just the ground when flags are set, plus any further meshes the application names — which is how the real room is let through. It is removal of virtual content, not control of the camera image: nothing dials the blend amount or styles the passthrough.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/BabylonJS/Babylon.js/master/packages/dev/core/src/XR/features/WebXRBackgroundRemover.pure.ts",
+          "title": "Babylon.js WebXRBackgroundRemover source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Further background meshes to disable when entering AR"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/BabylonJS/Babylon.js/master/packages/dev/core/src/XR/features/WebXRBackgroundRemover.pure.ts",
+          "title": "Babylon.js WebXRBackgroundRemover source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "If not set, the entire background will be removed. If set, flags should be set as well."
+        }
+      ]
+    },
+    "input.face": {
+      "level": "none",
+      "note": "Babylon's WebXR feature set follows what the Device API exposes, and no face or body stream is among it. The engine can drive blend shapes on a mesh from data an application supplies, which is a stored-expression row, not a sensor.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/BabylonJS/Babylon.js/master/packages/dev/core/src/XR/features/WebXRBackgroundRemover.pure.ts",
+          "title": "Babylon.js WebXRBackgroundRemover source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Options interface for the background remover plugin"
+        }
+      ]
+    },
+    "scene.navmesh": {
+      "level": "via-extension",
+      "note": "The Recast navigation plugin computes a navigation mesh from the scene's own geometry, and — the part that matters for this row — it can hand that mesh back as bytes and rebuild it from a saved state, so a walkable surface can be baked once and shipped with the scene instead of recomputed by whoever opens it. It is an optional plugin over a third-party library, and nothing in it declares bounds or spawn points.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/BabylonJS/Babylon.js/master/packages/dev/core/src/Navigation/Plugins/recastJSPlugin.ts",
+          "title": "Babylon.js RecastJSPlugin source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Creates a navigation mesh"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/BabylonJS/Babylon.js/master/packages/dev/core/src/Navigation/Plugins/recastJSPlugin.ts",
+          "title": "Babylon.js RecastJSPlugin source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "build the navmesh from a previously saved state using getNavmeshData"
+        }
+      ]
+    },
+    "logic.namespace": {
+      "level": "out-of-scope",
+      "note": "The engine runs the application's own code. Publishing a unit of logic under a permanent name happens in the package registry, which Babylon.js does not operate.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "Nothing reaches an audience through the engine itself, so there is no path in which a review could stand.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "No geographic frame and no map of a real place in the engine.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "The engine is not a service bound to a place and declares no area of application.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "playcanvas": {
+    "render.passthrough": {
+      "level": "partial",
+      "note": "PlayCanvas starts an immersive augmented reality session and says plainly that its content is meant to be blended with the real-world environment, and it wires up the sensing features that go with such a session — hit test, light estimation, plane and mesh detection, anchors. The blend itself is the user agent's: the engine exposes no environment blend mode, no control over how much of the room shows and no way to cut a hole through a virtual environment.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/framework/xr/xr-manager.js",
+          "title": "PlayCanvas engine XrManager source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Immersive AR - session that provides exclusive access to VR/AR device"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/framework/xr/xr-manager.js",
+          "title": "PlayCanvas engine XrManager source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "that is intended to be blended with real-world environment."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/framework/xr/xr-manager.js",
+          "title": "PlayCanvas engine XrManager source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "if (this._type === XRTYPE_AR) {"
+        }
+      ]
+    },
+    "input.face": {
+      "level": "none",
+      "note": "The engine wraps the WebXR features that exist — hit test, light estimation, image tracking, anchors, plane detection, mesh detection — and a face or body stream is not one of them, because the Device API has none to wrap.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/framework/xr/xr-manager.js",
+          "title": "PlayCanvas engine XrManager source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "if (this.planeDetection.supported) {"
+        }
+      ]
+    },
+    "scene.navmesh": {
+      "level": "none",
+      "note": "PlayCanvas has no navigable-space concept: nothing in the engine declares walkable surface, bounds or spawn points, and nothing carries such a declaration in a scene it loads. Where a body may stand is left to the application's own code.",
+      "confidence": "unverified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/framework/xr/xr-manager.js",
+          "title": "PlayCanvas engine XrManager source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "if (this.meshDetection.supported) {"
+        }
+      ]
+    },
+    "logic.namespace": {
+      "level": "out-of-scope",
+      "note": "Scripts belong to the project that ships them. The engine operates no namespace for logic published to other authors.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "The engine draws and runs a project; no content passes through it on the way to an audience for a review to stand in.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "No geographic frame, no map of a place, nothing to align.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "Not a service bound to a place, and no area of application is declared.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "cesiumjs": {
+    "render.passthrough": {
+      "level": "out-of-scope",
+      "note": "CesiumJS draws a virtual globe in a browser canvas. It has no augmented reality session and never sees a camera view of the room, so there is no blend for it to control.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "input.face": {
+      "level": "out-of-scope",
+      "note": "The library takes mouse, touch and keyboard input for moving a camera over a globe. No sensor reading of the user's face or body reaches it.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "scene.navmesh": {
+      "level": "out-of-scope",
+      "note": "The camera flies over terrain and tilesets; there is no embodied visitor in CesiumJS, so walkable surface, bounds and arrival points are not something it carries or consumes.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "logic.namespace": {
+      "level": "out-of-scope",
+      "note": "The library runs the application's own code and publishes no units of logic under names other authors depend on.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "Data is fetched and drawn; nothing is published to an audience through the library, so no review stands in that path.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "partial",
+      "note": "CesiumJS consumes the alignment 3D Tiles gives it and lets an application override it: a tileset is placed by the transform in its own root and by a model matrix the application can set, which is how a scanned building is put on a globe. That is content placement, not map lifecycle: nothing declares that a map of a place exists, versions it, or publishes a transform relating it to a second map of the same place.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/CesiumGS/cesium/main/packages/engine/Source/Scene/Cesium3DTileset.js",
+          "title": "CesiumJS Cesium3DTileset source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A {@link https://github.com/CesiumGS/3d-tiles/tree/main/specification|3D Tiles tileset},"
+        }
+      ]
+    },
+    "geo.coverage": {
+      "level": "partial",
+      "note": "The whole renderer runs on declared extents: every tile's bounding volume is read, tested against the view and used to decide what to fetch and draw, and those volumes can be drawn for debugging. CesiumJS reads coverage rather than declaring it — it publishes no statement of the area any service of its own applies to.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/CesiumGS/cesium/main/packages/engine/Source/Scene/Cesium3DTileset.js",
+          "title": "CesiumJS Cesium3DTileset source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "For debugging only. When true, renders the bounding volume for each tile."
+        }
+      ]
+    }
+  },
+  "unity": {
+    "render.passthrough": {
+      "level": "via-extension",
+      "note": "The engine itself draws nothing of the real room; the AR Foundation package does. Its camera background component renders the device camera video behind the scene and can be switched off, given a custom material and shader, and ordered before or after opaque geometry so that only the pixels virtual content does not cover are drawn. Headset passthrough on top of that comes through further vendor packages, not through AR Foundation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.xr.arfoundation@6.2/manual/features/camera/camera-components.html",
+          "title": "Camera components, AR Foundation 6.2 manual",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The ARCameraBackground component renders video from the device camera as the background of the scene."
+        },
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.xr.arfoundation@6.2/manual/features/camera/camera-components.html",
+          "title": "Camera components, AR Foundation 6.2 manual",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "After Opaques: Selectively render the camera background after opaque geometry, rendering only pixels that are not occluded by opaque geometry in the scene."
+        }
+      ]
+    },
+    "input.face": {
+      "level": "via-extension",
+      "note": "Face tracking is an AR Foundation subsystem, not part of the engine: a face manager component creates a trackable for each detected face, and the platform behind it decides what arrives. Which devices support it and what the stream contains varies by provider, and the privacy terms come from the platform rather than from Unity.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.xr.arfoundation@6.2/manual/features/face-tracking.html",
+          "title": "Face tracking, AR Foundation 6.2 manual",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Face tracking functionality allows your app to detect and track human faces in mixed reality scenes. The AR Face Manager component controls face tracking functionality in your app, and creates ARFace trackables for each detected face."
+        }
+      ]
+    },
+    "scene.navmesh": {
+      "level": "via-extension",
+      "note": "Navigation left the engine core and lives in the AI Navigation package, where navigation meshes are created from the scene's own geometry and baked into it, with links and dynamic obstacles on top. The walkable surface really does travel with the scene inside Unity's own format, which is what this row asks; what does not travel is any of it to another engine, and spawn points remain the project's own convention.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.ai.navigation@2.0/manual/index.html",
+          "title": "AI Navigation 2.0 package documentation, Unity",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "These characters use navigation meshes that are created automatically from your Scene geometry."
+        }
+      ]
+    },
+    "logic.namespace": {
+      "level": "partial",
+      "note": "Unity has the shape of the row without the guarantee. A package is named with a unique multi-part identifier in reverse domain notation, and a registry refuses a package whose manifest does not carry one, so within a registry two packages cannot collide. Nothing makes the name permanent or unclaimable outside that registry: the same identifier can be published to a different registry by somebody else, and a private registry can serve anything under it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/upm-manifestPkg.html",
+          "title": "Package manifest, Unity Manual",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A unique multi-part identifier that conforms to the Unity Package Manager naming convention, which uses reverse domain name notation."
+        },
+        {
+          "url": "https://docs.unity3d.com/Manual/upm-manifestPkg.html",
+          "title": "Package manifest, Unity Manual",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "If these properties aren't present, either the registry refuses the package when it's published, or the Package Manager can't fetch or load the package."
+        }
+      ]
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "Unity is an engine and an editor. Finished content leaves it as a built application, and any review that stands between that application and its audience belongs to the store it ships through, not to Unity.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "AR Foundation gives an application anchors and tracked features from whichever device provider is underneath. Declaring a map of a place with a version, or a transform to another map, is the provider's business and not the engine's.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "via-extension",
+      "note": "Coverage reaches a Unity application only through a provider package: with the ARCore extensions in place, an application asks whether the visual positioning service is available at a given horizontal position before the session starts, and can hide its own entry point where it is not. Unity declares no coverage of its own and offers no common shape for it across providers.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/unity-arf/geospatial/check-vps-availability",
+          "title": "Check VPS availability at the device's current location, ARCore",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Enabling the ARCore API and using AREarthManager.CheckVpsAvailabilityAsync() are necessary to check VPS availability in your app."
+        }
+      ]
+    }
+  },
+  "unreal": {
+    "render.passthrough": {
+      "level": "via-extension",
+      "note": "Unreal's OpenXR plugin gives the standard's own blend modes and nothing beyond them; everything a mixed reality application actually wants — a passthrough layer, alpha masking, styling — arrives as a vendor extension plugin, and Epic says plainly that those are the device vendor's to build and support, obtainable from Fab. The engine ships extension plugins for hand tracking, eye tracking and visualisation, and none for passthrough.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/developing-for-head-mounted-experiences-with-openxr-in-unreal-engine",
+          "title": "Developing for Head-Mounted Experiences with OpenXR in Unreal Engine",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "For device specific features provided through OpenXR Vendor Extensions , device vendors are responsible for development and support. You can find vendor plugins for XR devices on Fab."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/developing-for-head-mounted-experiences-with-openxr-in-unreal-engine",
+          "title": "Developing for Head-Mounted Experiences with OpenXR in Unreal Engine",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The OpenXR plugin in Unreal Engine supports extension plugins so you can add functionality to OpenXR without relying on engine releases."
+        }
+      ]
+    },
+    "input.face": {
+      "level": "via-extension",
+      "note": "The path is Live Link: a common interface for streaming animation data into the engine from outside, extensible through plugins, which is how a phone's face capture or a headset's face tracker drives a character in Unreal. The engine core reads no face itself, the source decides what the stream contains, and the privacy terms belong to the device that captured it.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/live-link-in-unreal-engine",
+          "title": "Live Link in Unreal Engine",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The purpose of Live Link is to provide a common interface for streaming and consuming animation data from external sources (for example, DDC tools or Mocap Servers) into Unreal Engine."
+        }
+      ]
+    },
+    "scene.navmesh": {
+      "level": "native",
+      "note": "A navigation mesh is generated from the level's own collision geometry inside a bounds volume the author places, stored in the level as a RecastNavMesh actor and tiled so parts of it can be rebuilt. The walkable surface is therefore authored and carried with the level rather than recomputed by whoever opens it — inside Unreal. Nothing of it survives export to another engine or a neutral format, and arrival points are the project's own actors.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/basic-navigation-in-unreal-engine",
+          "title": "Basic Navigation in Unreal Engine",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "To make it possible to find a path between a start location and a destination, a Navigation Mesh is generated from the world's collision geometry. This simplified polygon mesh represents the navigable space in the Level."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/basic-navigation-in-unreal-engine",
+          "title": "Basic Navigation in Unreal Engine",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Unreal Engine automatically generates the Navigation Mesh as soon as a Nav Mesh Bounds Volume Actor is added to the Level or is resized."
+        }
+      ]
+    },
+    "logic.namespace": {
+      "level": "none",
+      "note": "Plugins and modules are found by scanning the disk for descriptor files, and a module's name has to be unique only within the build it is loaded into. There is no registry that makes a published plugin's name permanent, nothing stops a second author using the same name, and a project that takes a plugin from a stranger cannot tell from the name what it will get.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/plugins-in-unreal-engine",
+          "title": "Plugins in Unreal Engine",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Unreal Engine finds your Plugin by searching for .uplugin files on disk. We call these files Plugin Descriptors ."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/plugins-in-unreal-engine",
+          "title": "Plugins in Unreal Engine",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "\"Name\" is the unique name of the Plugin Module that will be loaded with the Plugin."
+        }
+      ]
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "The engine builds an application; the review that stands between that application and its players belongs to the store or platform it ships through. Epic runs such a review for Fortnite islands, which is scored on that subject, not on the engine.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "Unreal can georeference a level so its origin sits at a known place on Earth. It declares no map of a place with a version and a lifecycle, and publishes no transform between two maps.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "The engine states no area over which anything applies; a georeferenced level is content placed on Earth, not a service declaring where it answers.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "godot": {
+    "render.passthrough": {
+      "level": "native",
+      "note": "Godot puts the blend in the engine's own interface: the XR interface carries an environment blend mode property with the runtime's supported modes enumerable at start-up, and the older start and stop passthrough calls are now deprecated in favour of setting that mode. The documentation says what the mode means — camera images blended in by the compositor on passthrough devices — and the viewport must be transparent for it to show. No hole cutting, no styling of the camera image.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_xrinterface.html",
+          "title": "XRInterface, Godot Engine (stable) documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Specify how XR should blend in the environment. This is specific to certain AR and passthrough devices where camera images are blended in by the XR compositor."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_xrinterface.html",
+          "title": "XRInterface, Godot Engine (stable) documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Note: Not all runtimes support all environment blend modes, so it is important to check this at startup."
+        }
+      ]
+    },
+    "input.face": {
+      "level": "native",
+      "note": "A tracked face is a first-class object in the engine: XRFaceTracker represents one face and its blend shape weights, and Godot ties the vocabulary to the Unified Expressions standard and documents how that relates to other standards, which is more than most runtimes do. The stream still comes from whatever runtime or add-on feeds the tracker, and the privacy terms come with that source rather than from Godot.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_xrfacetracker.html",
+          "title": "XRFaceTracker, Godot Engine (stable) documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "An instance of this object represents a tracked face and its corresponding blend shapes. The blend shapes come from the Unified Expressions standard, and contain extended details and visuals for each blend shape."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_xrfacetracker.html",
+          "title": "XRFaceTracker, Godot Engine (stable) documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The array of face blend shape weights with indices corresponding to the BlendShapeEntry enum."
+        }
+      ]
+    },
+    "scene.navmesh": {
+      "level": "native",
+      "note": "The walkable surface is a resource on a node in the scene tree: a navigation region holds a navigation mesh, which can be baked from the scene's geometry on a background thread and is then saved with the scene. That answers the carrying half of the row inside Godot; the declaration is Godot's own resource format, and arrival points remain whatever the project decides to call a spawn node.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_navigationregion3d.html",
+          "title": "NavigationRegion3D, Godot Engine (stable) documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The NavigationMesh resource to use."
+        },
+        {
+          "url": "https://docs.godotengine.org/en/stable/classes/class_navigationregion3d.html",
+          "title": "NavigationRegion3D, Godot Engine (stable) documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "bake_navigation_mesh (on_thread: bool = true)"
+        }
+      ]
+    },
+    "logic.namespace": {
+      "level": "none",
+      "note": "Scripts can register a global class name, which makes the name visible everywhere inside one project and nowhere outside it. Godot operates no registry that keeps a published add-on's name resolving to the same code forever, and nothing stops two authors shipping different things under the same class name.",
+      "confidence": "unverified",
+      "sources": [
+        {
+          "url": "https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html",
+          "title": "GDScript reference, Godot Engine (stable) documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Script classes declared with the class_name keyword."
+        }
+      ]
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "Godot exports an application and hands it over. Any review between that application and its players belongs to the store it ships through, not to the engine.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "The engine has no map of a real place: it has anchors from whichever XR runtime is underneath and no lifecycle or alignment for maps.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "Godot declares no geographic area over which anything applies.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "vrchat": {
+    "render.passthrough": {
+      "level": "none",
+      "note": "What a world author can set about presentation is spawn points, spawn order, camera reference and the layers interaction may pass through — the word passthrough in VRChat's documentation means interaction passing through a layer, not the camera view of the room. No published world setting or component blends a live camera image with the world. Absence read off the world documentation rather than a statement by VRChat, so it is recorded unverified.",
+      "confidence": "unverified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/components/vrc_scenedescriptor",
+          "title": "VRC Scene Descriptor, VRChat Creation documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "An array of transforms used as reference for spawn points of the world."
+        }
+      ]
+    },
+    "input.face": {
+      "level": "partial",
+      "note": "The person's own movement does arrive as a live stream, over Open Sound Control rather than from a headset driver: gaze at documented addresses, and tracker positions and rotations fed into the full body inverse kinematics. It is half the row — body pose and eyes yes, a full facial expression stream only as far as an outside program chooses to send avatar parameters — and the privacy terms are a notification that an application is sending data, not an agreed constraint.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://docs.vrchat.com/docs/osc-trackers",
+          "title": "OSC Trackers, VRChat documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "VRChat now offers support for receiving tracker data over OSC for use with our existing calibrated full body IK system."
+        },
+        {
+          "url": "https://docs.vrchat.com/docs/osc-eye-tracking",
+          "title": "OSC Eye Tracking, VRChat documentation",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Positive numbers for pitch and yaw will rotate down and to the right respectively. For vectors, it's the standard Unity format of +x right, +y up, and +z forward"
+        }
+      ]
+    },
+    "scene.navmesh": {
+      "level": "partial",
+      "note": "Arrival is carried with the world and the walkable surface is not. The scene descriptor holds an array of spawn transforms with a radius and an order, so a world says where visitors land; the navigable surface is a Unity navigation mesh built by the author and now buildable at run time, which stays inside VRChat's own Unity project and never travels as a declaration anyone else could read.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/components/vrc_scenedescriptor",
+          "title": "VRC Scene Descriptor, VRChat Creation documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "An array of transforms used as reference for spawn points of the world."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/ai-navigation",
+          "title": "AI Navigation, VRChat Creation documentation",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "You can now create and update your navigation meshes at runtime in the VRChat client."
+        }
+      ]
+    },
+    "logic.namespace": {
+      "level": "none",
+      "note": "World logic is compiled into the world's own build. Nothing is published as a unit of logic under a name another author resolves, so there is no namespace to be permanent and no claim to protect.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/submitting-a-world-to-be-made-public/",
+          "title": "World Creation, Optimization, and Community Labs Tips, VRChat Creation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can submit your world to Community Labs on VRChat.com (Edit World Info -> Danger Zone -> World Visibility -> Publish) or whenever you upload a new version in Unity."
+        }
+      ]
+    },
+    "deliver.moderation": {
+      "level": "partial",
+      "note": "There is a real gate and it is a staged audience rather than a review: a world made public goes first to Community Labs, immediately visible to the users who opt into it, and reaches everyone later. Judgement is after the fact — content violating the guidelines costs the author the ability to submit and can bring moderation action — and nothing about what review a world or its assets have had travels with them to another system.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/submitting-a-world-to-be-made-public/",
+          "title": "World Creation, Optimization, and Community Labs Tips, VRChat Creation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Want to make your world public? You've come to the right place! You need to submit your world to Community Labs ."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/submitting-a-world-to-be-made-public/",
+          "title": "World Creation, Optimization, and Community Labs Tips, VRChat Creation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Publishing your world will make it immediately available to all users that opt-in for Community Labs."
+        }
+      ]
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "VRChat worlds are entirely virtual. There is no map of a real place to declare and nothing to align it to.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "A world is not bound to a region of the Earth and declares no area where it applies.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "resonite": {
+    "render.passthrough": {
+      "level": "none",
+      "note": "Resonite's published feature list is about headsets, tracking systems and platforms it runs on; no component or world setting mixes a live camera view of the room into the render, and the wiki's uses of the word passthrough are about interaction and teleport targets. Read off the feature and component documentation rather than stated by the project, so recorded unverified.",
+      "confidence": "unverified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Supported_Features",
+          "title": "Supported Features, Resonite Wiki",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Windows Mixed Reality"
+        }
+      ]
+    },
+    "input.face": {
+      "level": "native",
+      "note": "Among the strongest on this row. Resonite supports a range of face and eye tracking systems through native integration as well as plug-ins and mods, and the eye model it exposes is detailed enough to include pupil size, which is a genuine live sensor stream of the person rather than a stored expression. The privacy terms are the platform's own, and a session's participants see the result on the avatar.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Face_and_Eye_Tracking_(Setup)",
+          "title": "Face and Eye Tracking (Setup), Resonite Wiki",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Resonite supports a number of Face and Eye Tracking systems, via native integration, plugins or mods:"
+        }
+      ]
+    },
+    "scene.navmesh": {
+      "level": "partial",
+      "note": "Arrival is declared and the floor is not. A component in the world creation set spawns a user where the author wants them, so a world says where a visitor appears; nothing declares walkable surface or bounds, and a body's movement is decided by the physics of whatever geometry is there.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/World_Creation_Hub",
+          "title": "World Creation Hub, Resonite Wiki",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A component used to spawn a user where you want them to in the world."
+        }
+      ]
+    },
+    "logic.namespace": {
+      "level": "partial",
+      "note": "Every item is a record with its own durable address, and those addresses are registered with the operating system so a link spawns the item in the session — a real permanent name for a published thing, including one that carries logic. It is ownership by account and folder rather than a namespace: names are not reserved to an author across the platform, and nothing guarantees the record behind an address is unchanged.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Record",
+          "title": "Record, Resonite Wiki",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "These links are also associated with Resonite on the operating system level, so clicking a recrec:/// URL in a browser will spawn out the item in-game."
+        }
+      ]
+    },
+    "deliver.moderation": {
+      "level": "partial",
+      "note": "Review happens after publication and by hand: the Resonite team reviews copyright claims manually, and nothing stands between an item leaving a creator's folder and another person spawning it. A receiving session learns nothing about what review an arriving item has had.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/DMCA",
+          "title": "DMCA, Resonite Wiki",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Resonite Team, reviews DMCA claims manually."
+        }
+      ]
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "Resonite worlds are virtual. There is no map of a real place, so nothing to version or align.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "No world or service in Resonite declares a region of the Earth where it applies.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "roblox": {
+    "render.passthrough": {
+      "level": "none",
+      "note": "Roblox renders a wholly virtual place. The only camera capture on the platform exists to drive avatar facial animation and is reserved to Roblox's own scripts, so no experience can obtain the camera image, let alone blend it with the scene or cut a hole through the world for a real object.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/VideoCaptureService",
+          "title": "Roblox Creator Documentation: VideoCaptureService",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Service that manages camera capture for features such as avatar facial-animation tracking. Requires `RobloxScript` security; not callable from experience scripts."
+        }
+      ]
+    },
+    "input.face": {
+      "level": "partial",
+      "note": "The sensing exists and the stream does not reach the developer. Roblox captures camera video to animate a player's avatar face, and the platform exposes a face controls object whose properties follow the Facial Action Coding System, so an experience sees the resulting expression weights on an avatar. The capture service itself requires Roblox's own security level and cannot be called from an experience, so the live sensor stream and its privacy terms stay with the platform.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/VideoCaptureService",
+          "title": "Roblox Creator Documentation: VideoCaptureService",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Service that manages camera capture for features such as avatar facial-animation tracking. Requires `RobloxScript` security; not callable from experience scripts."
+        },
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/FaceControls",
+          "title": "Roblox Creator Documentation: FaceControls",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The FaceControls properties are based on the Facial Action Coding System (FACS), a comprehensive system for describing all visually discernible facial movement based on anatomy."
+        }
+      ]
+    },
+    "scene.navmesh": {
+      "level": "partial",
+      "note": "Arrival is a first-class object in the place: spawn locations decide where a player appears and can be restricted to particular players, and they are saved with the place like any other part. The walkable surface is not declared anywhere — paths are computed at run time from the geometry by the pathfinding service — and none of it leaves Roblox's own format.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/Roblox/creator-docs/main/content/en-us/reference/engine/classes/SpawnLocation.yaml",
+          "title": "Roblox Creator Documentation source: SpawnLocation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "SpawnLocations, or \"spawns\" determine where a `Class.Player` respawns when they die."
+        }
+      ]
+    },
+    "logic.namespace": {
+      "level": "none",
+      "note": "Code is distributed as store assets — plugins and models — identified by a numeric asset identifier that Roblox issues and controls. There is no name an author claims and holds, no namespace anybody owns, and a listing's title is a title rather than an address, so nothing here is a permanent public name for a unit of logic.",
+      "confidence": "unverified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/Roblox/creator-docs/main/content/en-us/production/creator-store.md",
+          "title": "Roblox Creator Documentation source: Creator Store",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The **Plugins** category features Studio extensions that enhance workflows and speed up the creative process."
+        }
+      ]
+    },
+    "deliver.moderation": {
+      "level": "native",
+      "note": "The strongest example of this row on the map. Every asset uploaded for sale is reviewed by a moderation team before it can be sold, review continues after approval and can remove an item already bought, and experiences carry maturity labels and content descriptors that decide which accounts may enter — a machine-readable statement of what the content is, attached to it. All of it is Roblox's own judgement inside Roblox: nothing about the review travels with an asset to another platform.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/Roblox/creator-docs/main/content/en-us/marketplace/moderation.md",
+          "title": "Roblox Creator Documentation source: Marketplace moderation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "When uploading an asset to the Marketplace, the Moderation team reviews the item before you can sell the item."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/Roblox/creator-docs/main/content/en-us/production/promotion/content-maturity.md",
+          "title": "Roblox Creator Documentation source: Content maturity and compliance",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Content maturity labels determine which Roblox account types can access your experience:"
+        }
+      ]
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "Roblox places are virtual and have no relation to a map of the real world.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "An experience is not a service bound to a region of the Earth and declares no such area.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "horizon": {
+    "render.passthrough": {
+      "level": "none",
+      "note": "Not settled. Meta's Horizon Worlds documentation now requires a sign-in and could not be read for this lane, and the capture of it in this project's database — the creator-facing pages on cameras, navigation meshes and publishing — contains no passthrough or environment blend control for world authors. Recorded unverified rather than proven absent; a reader with account access should settle it.",
+      "confidence": "unverified",
+      "sources": []
+    },
+    "input.face": {
+      "level": "none",
+      "note": "Not settled, for the same reason: the Horizon Worlds documentation is behind a sign-in and this project's capture of it shows no face or body stream delivered to a world's scripts. Meta's avatars animate from the headset's own sensing, but that is the platform's, not something a creator receives. Recorded unverified.",
+      "confidence": "unverified",
+      "sources": []
+    },
+    "scene.navmesh": {
+      "level": "partial",
+      "note": "Horizon carries a real walkable surface with the world: navigation meshes are described as polygonal meshes representing the predetermined walkable spaces of a world, generated in the desktop editor from volumes and agent profiles, and used by the world's characters. They are built for non-player characters rather than declared for visitors, the spawn point is a script setting on the player rather than a listed arrival, and none of it leaves Horizon.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/desktop-editor/npcs/navigation-mesh-generation",
+          "title": "Navigation mesh generation, Meta Horizon Worlds documentation",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Navigation meshes are 3D polygonal meshes representing the predetermined walkable spaces of a world."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/create-for-web-and-mobile/setting-up-worlds-for-web-and-mobile-compatibility",
+          "title": "Setting up worlds for mobile and web, Meta Horizon Worlds documentation",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Set the player camera (1st or 3rd person) on spawning the player"
+        }
+      ]
+    },
+    "logic.namespace": {
+      "level": "none",
+      "note": "Scripts belong to the world they are written in and assets are versioned inside Meta's own asset system. Nothing is published as a unit of logic under a name another author resolves, so there is no namespace to keep permanent. The documentation could not be re-read for this lane, so this is recorded unverified.",
+      "confidence": "unverified",
+      "sources": []
+    },
+    "deliver.moderation": {
+      "level": "none",
+      "note": "Not settled. A platform of this kind plainly reviews and rates what is published, but the creator documentation that would say who reviews, when, and what a receiving system can learn is behind a sign-in and this project's capture of it carries no such statement. Recorded unverified rather than claimed either way.",
+      "confidence": "unverified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "Horizon worlds are virtual. There is no map of a real place to declare, version or align.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "A world is not a service bound to a region of the Earth and declares no coverage area.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "recroom": {
+    "render.passthrough": {
+      "level": "none",
+      "note": "Rec Room closed on 1 June 2026 and its creator documentation went offline with it, so this row cannot be verified against a live source. What was published — the Circuits reference and the creator pages captured in this project's database — describes a wholly virtual room and no blend with a camera view. Recorded unverified.",
+      "confidence": "unverified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data, Rec Room blog",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "But without the Rec Room servers operational that is not possible."
+        }
+      ]
+    },
+    "input.face": {
+      "level": "none",
+      "note": "Nothing in the published creator material described a face or body stream reaching a room's logic; the platform is shut down and the documentation is offline, so absence could not be confirmed against a live source. Recorded unverified.",
+      "confidence": "unverified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data, Rec Room blog",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "But without the Rec Room servers operational that is not possible."
+        }
+      ]
+    },
+    "scene.navmesh": {
+      "level": "none",
+      "note": "Rooms had autonomous characters that could be told to path to a destination, so navigation existed inside the platform, but nothing published declared a walkable surface, bounds or arrival points as part of a room, and the rooms themselves can no longer be opened or exported. Recorded unverified against a live source.",
+      "confidence": "unverified",
+      "sources": [
+        {
+          "url": "https://recroom.com/cv2",
+          "title": "Rec Room Circuits V2 reference",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Commands the AI to path to the input target destination."
+        },
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data, Rec Room blog",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Unfortunately, you cannot download a working copy of your rooms."
+        }
+      ]
+    },
+    "logic.namespace": {
+      "level": "none",
+      "note": "Circuits programs and inventions lived inside the platform's own account and room structure. No name was published that another author could resolve, and with the service gone nothing resolves at all — the clearest demonstration on this map of what a name with no permanence is worth.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data, Rec Room blog",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Unfortunately, you cannot download a working copy of your rooms."
+        }
+      ]
+    },
+    "deliver.moderation": {
+      "level": "none",
+      "note": "Rec Room ran moderation as an operator, but nothing published to creators described a review standing between finished content and players or a record of it that travelled with content, and the documentation is now offline. Recorded unverified.",
+      "confidence": "unverified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data, Rec Room blog",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "But without the Rec Room servers operational that is not possible."
+        }
+      ]
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "Rec Room rooms were virtual; no map of a real place was ever declared or aligned.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "A room was not a service bound to a region of the Earth and declared no coverage area.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "arkit": {
+    "render.passthrough": {
+      "level": "native",
+      "note": "Blending with the room is a first-class choice on this platform, made by picking an immersion style: the mixed style displays unbounded content intermixed with the app's other content along with passthrough video, and virtual objects and windows occlude each other correctly within it. On the phone side the session's own job description includes camera passthrough. What an application does not get is a dial for the amount or a hole cut through a virtual environment under its own control; it picks a style and the system composites.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/swiftui/immersionstyle/mixed",
+          "title": "Apple Developer Documentation: ImmersionStyle.mixed",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "An immersion style that displays unbounded content intermixed with other app content, along with passthrough video."
+        }
+      ]
+    },
+    "input.face": {
+      "level": "native",
+      "note": "The user's own face arrives as tracked data an application can act on frame by frame: a face anchor carries blend shape coefficients meant for driving a character or avatar, and body tracking names the joints it reports. Apple's own privacy terms sit around the camera permission that makes it possible, so the constraint travels with the capability.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/arkit/arfaceanchor",
+          "title": "Apple Developer Documentation: ARFaceAnchor",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "You can use blend shape coefficients to animate 2D or 3D content, such as a character or avatar, in ways that follow the user's facial expressions."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/arkit/arskeletondefinition",
+          "title": "Apple Developer Documentation: ARSkeletonDefinition",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "ARKit names particular joints that are crucial to body tracking."
+        }
+      ]
+    },
+    "scene.navmesh": {
+      "level": "partial",
+      "note": "A navigation mesh is a component on an entity in a RealityKit scene, authored in Reality Composer Pro and saved with the scene, so the walkable surface really is carried rather than recomputed by the runtime. It is built for characters finding paths: bounds for a person and declared arrival points are not part of it, and the declaration is Apple's own scene format.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/navigationmeshcomponent",
+          "title": "Apple Developer Documentation: NavigationMeshComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A component that provides the navigation meshes an entity uses to find paths through a scene."
+        }
+      ]
+    },
+    "logic.namespace": {
+      "level": "out-of-scope",
+      "note": "ARKit and RealityKit run an application's own code inside one app. Publishing a unit of logic under a name others resolve is the app store and the package manager's business, not the framework's.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "The frameworks draw and sense; the review that stands between an application and its users is App Review, a property of the store rather than of ARKit, and nothing in the frameworks records what review content has had.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "partial",
+      "note": "ARKit has a map object and stops there. A world map holds the session's awareness of the physical space, can be saved when the app quits, restored on the next launch and sent to another device so both place content the same way. There is no version or lifecycle declared for it, no identity a second party could name, and no transform published between two maps of the same place.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/arkit/arworldmap",
+          "title": "Apple Developer Documentation: ARWorldMap",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The session state in a world map includes ARKit's awareness of the physical space in which the user moves the device."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/arkit/arworldmap",
+          "title": "Apple Developer Documentation: ARWorldMap",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can use anchors from a resumed world map to place the same virtual content at the same positions from the saved session, if the app launches in the same physical environment."
+        }
+      ]
+    },
+    "geo.coverage": {
+      "level": "native",
+      "note": "Geotracking coverage is a question an application can ask before it commits: one call reports whether geotracking supports the user's current location and another whether it supports a particular location, with the reasons for a negative answer named — no localization imagery, no network, no GPS. That is exactly the relevance test this row asks for, in a stated geographic frame, though the area itself is Apple's list rather than a published boundary.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/arkit/argeotrackingconfiguration/checkavailability(completionhandler:)",
+          "title": "Apple Developer Documentation: ARGeoTrackingConfiguration.checkAvailability",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Determines if geotracking supports the user's current location."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/arkit/argeotrackingconfiguration/checkavailability(completionhandler:)",
+          "title": "Apple Developer Documentation: ARGeoTrackingConfiguration.checkAvailability",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "ARKit lacks localization imagery for the user's geographic position."
+        }
+      ]
+    }
+  },
+  "arcore": {
+    "render.passthrough": {
+      "level": "native",
+      "note": "Android XR gives the application a dial rather than a switch: passthrough opacity runs from zero, where the virtual environment is whole, to full, where the room hides it, and anything between is a genuine mix. The preference is granted only when the device is in a state where it can be changed and the app holds the passthrough control capability, and setting it to nothing hands control back to the system.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-environments",
+          "title": "Add spatial environments to your app, Android XR for Jetpack XR SDK",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The values for passthrough opacity preference range from 0.0f (zero opacity, where the passthrough surface is not visible) to 1.0f (full opacity, where the passthrough surface hides the spatial environment)."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-environments",
+          "title": "Add spatial environments to your app, Android XR for Jetpack XR SDK",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A mixed configuration, where the passthrough surface is not at full opacity, nor is it at zero opacity."
+        }
+      ]
+    },
+    "input.face": {
+      "level": "native",
+      "note": "A tracked face arrives as a live stream with a defined vocabulary — sixty-eight blend shape values making up an expression — on top of the older augmented faces work on phones. It is the sensor side of the row: the application reads the person, and the platform's camera permission carries the privacy terms.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/face",
+          "title": "Face tracking, Android XR for Jetpack XR SDK",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A face's possible expressions are a combination of 68 blend shape values"
+        }
+      ]
+    },
+    "scene.navmesh": {
+      "level": "none",
+      "note": "The platform senses the room — planes, depth, meshes — and hands the results to the application, which has to decide for itself what any of it means for standing and walking. Nothing declares a walkable surface, bounds or an arrival point, and nothing of the sort travels with content.",
+      "confidence": "unverified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/face",
+          "title": "Face tracking, Android XR for Jetpack XR SDK",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A face's possible expressions are a combination of 68 blend shape values"
+        }
+      ]
+    },
+    "logic.namespace": {
+      "level": "out-of-scope",
+      "note": "ARCore and the Jetpack XR SDK are libraries inside one Android application. Naming published units of logic is the package manager and the store's business, not theirs.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "The SDK senses and renders; review of what an application ships belongs to Play, not to ARCore, and nothing in the SDK records what review content has had.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "partial",
+      "note": "The alignment is real and the map is Google's alone. A device's camera images are matched against a localization model behind Google's visual positioning system to get a precise pose, which puts every user of the Geospatial API into one shared frame — the strongest de facto alignment on this map. Nothing declares that a map exists, gives it a version or a lifecycle, or publishes a transform to anyone else's map of the same street.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/geospatial",
+          "title": "ARCore Geospatial API overview",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "matches the recognizable parts of that environment to a localization model provided by Google's Visual Positioning System (VPS) to determine the precise location of a user's device"
+        }
+      ]
+    },
+    "geo.coverage": {
+      "level": "native",
+      "note": "An application can ask whether the visual positioning service is available at a horizontal position before a session even starts, and Google's own guidance is to use the answer to shape the experience — showing an entry point only where it will work. The area is queried rather than published: there is no boundary a client can hold and reason about offline.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/unity-arf/geospatial/check-vps-availability",
+          "title": "Check VPS availability at the device's current location, ARCore",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can determine VPS availability at a given horizontal position before the AR session starts and use it to create more specific experiences — for example, to present an \"Enter AR\" button only when VPS is available."
+        }
+      ]
+    }
+  },
+  "lightship": {
+    "render.passthrough": {
+      "level": "partial",
+      "note": "On a phone the camera image is the background of every session, and what Niantic adds is the part that makes the mix convincing: depth-driven occlusion so virtual content is hidden behind real objects, on devices with and without lidar, with dynamic and mesh-based modes to choose between. The compositing of camera and render is AR Foundation's underneath, and nothing here controls a blend amount or a passthrough layer on a headset.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/nsdk/features/occlusion/",
+          "title": "Occlusion, Niantic Spatial Platform documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Occlusion ensures virtual content appears correctly behind real-world objects."
+        },
+        {
+          "url": "https://www.nianticspatial.com/docs/nsdk/features/occlusion/",
+          "title": "Occlusion, Niantic Spatial Platform documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "NSDK occlusion works on devices with and without LiDAR, and provides consistent behavior across supported platforms."
+        }
+      ]
+    },
+    "input.face": {
+      "level": "none",
+      "note": "The platform's sensing points outward at the world — positioning, meshing, depth, semantics — and not at the person holding the device. No face or body stream is offered anywhere in the feature set.",
+      "confidence": "unverified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/nsdk/features/occlusion/",
+          "title": "Occlusion, Niantic Spatial Platform documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Occlusion is powered by depth sensing, and applications can choose which type of occlusion to use."
+        }
+      ]
+    },
+    "scene.navmesh": {
+      "level": "out-of-scope",
+      "note": "The platform hands an application a mesh of the real room and leaves every judgement about it to the application. There is no place description here to carry walkable surface or arrival points, and virtual content is authored in Unity or a native app instead.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "logic.namespace": {
+      "level": "out-of-scope",
+      "note": "The SDK is a library inside somebody's app. It publishes no units of logic and operates no namespace for them.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "deliver.moderation": {
+      "level": "partial",
+      "note": "There is a gate and it is about what may go live rather than about content decency: assets created for a location start in a preview state and are not available to live applications until they are activated, and the coverage query now returns only locations created or activated through Niantic's own browser. That is a review of what enters the shared map; nothing records who checked it, and nothing travels with content to tell another system.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/nsdk/first_localization/",
+          "title": "First localization, Niantic Spatial Platform documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "By default, these assets are in a preview state and are not available to live applications."
+        },
+        {
+          "url": "https://www.nianticspatial.com/docs/nsdk/features/vps2_migration/",
+          "title": "Migrate from VPS to VPS2, Niantic Spatial Platform documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "However, it only returns locations that were created or activated through GSB."
+        }
+      ]
+    },
+    "geo.map-align": {
+      "level": "partial",
+      "note": "Niantic runs the maps and keeps them to itself. A device localizes against a cloud-held map to know where it is relative to Niantic's own model of the place, sites and their assets have a lifecycle — created, activated, decommissioned on a published date — which is more map lifecycle than anyone else on this map publishes. What is missing is the interoperable half: no transform is published between a Niantic map and anybody else's map of the same street.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/nsdk/features/lightship_vps/",
+          "title": "Lightship VPS, Niantic Spatial Platform documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Niantic Spatial's Visual Positioning System (VPS) is a cloud-based system that allows devices to know where they are relative to Niantic Spatial's map."
+        },
+        {
+          "url": "https://www.nianticspatial.com/docs/nsdk/features/sites/",
+          "title": "Sites, Niantic Spatial Platform documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This feature allows you to query what spatial content is available to users and how it's structured within your organization."
+        }
+      ]
+    },
+    "geo.coverage": {
+      "level": "native",
+      "note": "A coverage query is part of the platform: an application asks which mapped locations and anchors are near the user at run time and gets an answer it can act on before trying to localize. The declaration narrowed with the platform's latest release — only locations created or activated through Niantic's own browser come back — so it is coverage of Niantic's estate, answered by Niantic.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/nsdk/features/vps2_migration/",
+          "title": "Migrate from VPS to VPS2, Niantic Spatial Platform documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The VPS Coverage API remains available for querying VPS locations and anchors near the user at runtime."
+        }
+      ]
+    }
+  },
+  "oarc": {
+    "render.passthrough": {
+      "level": "out-of-scope",
+      "note": "Open AR Cloud's work is a data bus and a discovery layer for real-world spatial data. Nothing in it presents a picture, so blending with a camera view is not its business.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "input.face": {
+      "level": "out-of-scope",
+      "note": "The sensing profiles carry readings of the world — radar, lidar, vision, mapping — from a device to whoever subscribes. The user's own face and body are not among the streams and no privacy terms for such a stream are defined.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "scene.navmesh": {
+      "level": "out-of-scope",
+      "note": "The specification moves geometry tiles, anchors and semantics between systems rather than describing an authored place, so declaring walkable surface and arrival points sits outside it.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "logic.namespace": {
+      "level": "partial",
+      "note": "Every significant resource — an anchor, a service, a content bundle, a tileset — has a stable URI that resolves through a defined chain to a manifest, so naming that keeps resolving is a designed property of this system. It names resources rather than units of logic: no module, behaviour or program is published under one of these addresses, and nothing versions code behind a name.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification, Open AR Cloud",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Every significant resource — an anchor, a service, a content bundle, a tileset — has a stable SpatialDDS URI (e.g., `spatialdds://museum.example.org/hall1/anchor/main-entrance`)."
+        }
+      ]
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "The bus carries live spatial data between participants that have already found each other. There is no publishing path from finished content to an audience in which a review could stand, and no review record in the manifests.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "native",
+      "note": "The only subject on this map that does the whole row. The mapping profile carries map lifecycle descriptors, lifecycle events for multi-agent map exchange, and an explicit inter-map alignment transform published as its own latched topic, so one participant can tell another that its map and their map are the same place and how to get between them.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification, Open AR Cloud",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "**Mapping Profile**: Map lifecycle descriptors (`MapMeta`), extended multi-source edge types, inter-map alignment transforms (`MapAlignment`), and lifecycle events for multi-agent map exchange."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification, Open AR Cloud",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "| `map_alignment` | Inter-map transform | Latched; TRANSIENT_LOCAL — `mapping::MapAlignment`; QoS `MAP_META` |"
+        }
+      ]
+    },
+    "geo.coverage": {
+      "level": "native",
+      "note": "Coverage is normative here, not an afterthought: a manifest describes what a node or dataset provides as capabilities, coverage and assets, the coverage model has its own normative clause, and a bounding box is stated in a named coordinate reference system with the ordering pinned down. A client can ask what is available near it over the bus or over an HTTP search endpoint and test relevance before joining anything.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification, Open AR Cloud",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Manifests describe what a SpatialDDS node or dataset provides: **capabilities**, **coverage**, and **assets**."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification, Open AR Cloud",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "**Geographic CRS (WGS84):** `bbox` arrays MUST use GeoJSON ordering: `[lon_min, lat_min, lon_max, lat_max]` (2D)"
+        }
+      ]
+    }
+  },
+  "v3c": {
+    "render.passthrough": {
+      "level": "out-of-scope",
+      "note": "V3C codes volumetric video into video substreams. Presentation, including any mix with a camera view of the room, belongs to whatever plays the decoded result.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "input.face": {
+      "level": "out-of-scope",
+      "note": "The standard encodes captured volumetric content. It defines no input path by which a live reading of the viewer's own face or body would reach an application.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "scene.navmesh": {
+      "level": "out-of-scope",
+      "note": "A coded volumetric bitstream carries samples of a captured subject, not an authored place with walkable ground and arrival points.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "logic.namespace": {
+      "level": "out-of-scope",
+      "note": "No units of logic are published or named by a codec.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "Coding and carriage only; there is no publishing service in the standard where a review could stand and no field recording one.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "No geographic frame, no map of a place, nothing to align.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "A bitstream declares no region of the Earth over which it applies.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "4dgs": {
+    "render.passthrough": {
+      "level": "out-of-scope",
+      "note": "Gaussian splatting is a way of representing and drawing a captured scene. Whether the drawing is mixed with a camera view of the room is decided by the application that uses it.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "input.face": {
+      "level": "out-of-scope",
+      "note": "The technique reconstructs a scene from images. It delivers no live stream of the viewer's own face or body to anybody.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "scene.navmesh": {
+      "level": "out-of-scope",
+      "note": "A splat cloud is appearance, not an authored place: there is no floor declared in it and no arrival point, which is exactly why runtimes bolt a collider on separately.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "logic.namespace": {
+      "level": "out-of-scope",
+      "note": "A representation technique publishes no units of logic to name.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "There is no publishing service here, so no review stands between a splat scene and whoever opens it.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "A reconstruction sits in its own coordinates; the technique declares no map of a place and no transform to another one.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "A captured scene is content, not a service that answers for an area.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "verse": {
+    "render.passthrough": {
+      "level": "out-of-scope",
+      "note": "Verse is a programming language. Drawing, and any blend with a camera view of the room, is done by the host it runs inside.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "input.face": {
+      "level": "out-of-scope",
+      "note": "The language defines types, effects and concurrency. Reading a person's face is a device runtime's job, exposed to Verse through whatever host APIs the platform provides.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "scene.navmesh": {
+      "level": "out-of-scope",
+      "note": "The language carries no place description, so walkable surface and arrival points are the host's to declare.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "logic.namespace": {
+      "level": "native",
+      "note": "This is the row's definition made into a language feature. Every module has a globally unique path shaped like a web address, and once a module is published at a path that path belongs to it forever with no other module able to claim it, so a dependency always resolves to the code it named. The domain part says who maintains it, an email-shaped identifier lets an individual hold a namespace without owning a domain, and strict backward compatibility rules keep the code behind a path usable as its author improves it.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://verselang.github.io/book/16_modules/",
+          "title": "Book of Verse: Modules and Paths",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Persistent and unique identification : Once a module is published at a particular path, that path belongs to it forever. No other module can ever claim the same path, ensuring that dependencies always resolve to the correct code."
+        },
+        {
+          "url": "https://verselang.github.io/book/16_modules/",
+          "title": "Book of Verse: Modules and Paths",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The module system is designed to support the vision of a persistent, shared Metaverse where code can be published once and used by anyone, anywhere, with confidence that it will continue to work even as the original author updates and improves it."
+        }
+      ]
+    },
+    "deliver.moderation": {
+      "level": "out-of-scope",
+      "note": "A language has no publishing path to an audience. The review that stands in front of Verse code shipping to players belongs to the platform, which is scored on Fortnite.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "No geographic frame in the language, so no map to declare or align.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "The language declares no area of the Earth where anything applies.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "fortnite": {
+    "render.passthrough": {
+      "level": "out-of-scope",
+      "note": "Fortnite is played on a screen or in virtual reality against a wholly virtual island. No camera view of the player's room enters the picture, so there is no blend to control.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "input.face": {
+      "level": "none",
+      "note": "Faces are animated from data prepared beforehand, not read live: MetaHuman animation is baked onto a control rig in the editor and imported as an asset. No stream of the player's own face or body reaches an island's code, and none is offered.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/importing-metahuman-animations-in-unreal-editor-for-fortnite",
+          "title": "Importing MetaHuman Animations in Unreal Editor for Fortnite",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Right-click on the Face track and select Bake to Control Rig > Face_ControlBoard_CtrlRig. This bakes the MetaHuman animation to the UE Control Rig."
+        }
+      ]
+    },
+    "scene.navmesh": {
+      "level": "partial",
+      "note": "The walkable surface is carried with the island and used continuously: characters make their route choices from the world's navigation mesh and update them as the world changes around them, and arrival is a placed device — a spawner that puts a character into the world. It is built for the island's own characters inside Epic's format; nothing is declared for a visitor arriving from elsewhere and none of it travels.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/understanding-npc-behavior-in-unreal-editor-for-fortnite",
+          "title": "Understanding NPC Behavior in Unreal Editor for Fortnite",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "NPCs make these decisions based on the world's navigation mesh . NPCs use the navigation mesh to make pathfinding decisions and update their choices as the world updates around them."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/understanding-npc-behavior-in-unreal-editor-for-fortnite",
+          "title": "Understanding NPC Behavior in Unreal Editor for Fortnite",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The NPC Spawner Device facilitates a lot of NPC and AI interactions."
+        }
+      ]
+    },
+    "logic.namespace": {
+      "level": "native",
+      "note": "Islands are written in Verse, and Verse's permanent path system is what names their code: a creator defines classes and modules in the editor and they live under a path whose domain part says who owns it. The permanence and the no-second-claimant guarantee are the language's, operated by Epic for its own platform, so it is a real namespace with exactly one owner.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/programming-with-verse-in-unreal-editor-for-fortnite",
+          "title": "Programming with Verse in Unreal Editor for Fortnite",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Create an empty Verse file by selecting Create Empty in Verse Explorer and define your own classes, modules, anything you can think of!"
+        },
+        {
+          "url": "https://verselang.github.io/book/16_modules/",
+          "title": "Book of Verse: Modules and Paths",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Persistent and unique identification : Once a module is published at a particular path, that path belongs to it forever."
+        }
+      ]
+    },
+    "deliver.moderation": {
+      "level": "native",
+      "note": "Nothing reaches players without passing Epic: publishing a project means submitting it for moderation, an island that passes gets a code, and what happens afterwards is shaped by Epic too — islands too similar to an existing experience are shown less often in Discover. The review is thorough and entirely Epic's; no record of it travels with content to another system.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/publishing-projects-in-unreal-editor-for-fortnite",
+          "title": "Publishing Projects in Unreal Editor for Fortnite",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Submit your project for moderation."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/how-discover-works-in-fortnite",
+          "title": "How Discover Works in Fortnite",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Islands, including their metadata, that are highly similar to an existing experience, whether published by you or by another developer, are shown less frequently in Discover."
+        }
+      ]
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "Islands are virtual places with no relation to a map of the real world.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "An island is not a service bound to a region of the Earth and declares no such area.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "cosmos": {
+    "render.passthrough": {
+      "level": "out-of-scope",
+      "note": "Cosmos generates video and world states. It never presents to a headset, so mixing with a camera view of the room is not something it does.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "input.face": {
+      "level": "out-of-scope",
+      "note": "The model takes prompts, images and video as conditioning. It reads no live sensor stream of a user's own face or body, and describes faces only as text in a prompt schema.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "scene.navmesh": {
+      "level": "out-of-scope",
+      "note": "What comes out is generated imagery and world state rather than an authored place, so there is no walkable surface or arrival point to carry with it.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "logic.namespace": {
+      "level": "out-of-scope",
+      "note": "Model weights and pipelines are distributed as repositories and checkpoints. Nothing here is a published unit of world logic that another author names and depends on.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "deliver.moderation": {
+      "level": "native",
+      "note": "A review really does stand between the generated content and the person who asked for it, and it is a machine: the guardrail is integrated into the generation pipelines, enabled by default, with a prompt blocklist, a video content safety classifier and a face blur on the output. It is content safety rather than editorial review, it names no reviewer, and later releases let a caller switch it off with a flag.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://docs.nvidia.com/cosmos/latest/guardrail.html",
+          "title": "Cosmos Guardrail, NVIDIA Cosmos documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The Cosmos-1.0-Guardrail model is integrated into the diffusion and autoregressive world generation pipelines and cannot be disabled."
+        },
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/docs/inference.md",
+          "title": "Cosmos Framework inference guide",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Inference ships with guardrails enabled by default, sourced from [nvidia/Cosmos-Guardrail1](https://huggingface.co/nvidia/Cosmos-Guardrail1)."
+        }
+      ]
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "The model has no map of a real place and publishes no transform to one.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "Generated worlds are not bound to a region of the Earth and no coverage area is declared.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "marble": {
+    "render.passthrough": {
+      "level": "out-of-scope",
+      "note": "Marble makes a world and exports it. How a runtime later blends that world with a camera view of a room is the runtime's business.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "input.face": {
+      "level": "out-of-scope",
+      "note": "The service takes text, images and panoramas as input. It reads no live stream of the user's face or body.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "scene.navmesh": {
+      "level": "none",
+      "note": "An exported world is appearance and shape — splats, meshes, and a collider mesh for physics — and physics is as far as it goes. Nothing in the export declares which surface is walkable, where the bounds of a visitor's movement are, or where somebody arrives, so every runtime opening a Marble world decides that for itself.",
+      "confidence": "unverified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs",
+          "title": "Export file specs, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "You can only generate high quality mesh on worlds you own"
+        }
+      ]
+    },
+    "logic.namespace": {
+      "level": "out-of-scope",
+      "note": "Worlds are content with a shareable link. No unit of logic is published under a name another author resolves.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "deliver.moderation": {
+      "level": "partial",
+      "note": "The gate is contractual rather than a review: a user must ensure that their access and their content comply with an acceptable use policy and a copyright policy, and World Labs keeps the right to act. No review is described as standing between a finished world and the people who open its link, and nothing about review travels with an exported world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.worldlabs.ai/terms-of-service",
+          "title": "World Labs Terms of Service",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Ensure that your access to and use of the Services, and any User Content, complies with the AUP and DMCA Policy"
+        }
+      ]
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "A generated world is not a map of a real place and carries no transform to one.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "Nothing declares a region of the Earth where a generated world applies.",
+      "confidence": "verified",
+      "sources": []
+    }
+  },
+  "hyworld": {
+    "render.passthrough": {
+      "level": "out-of-scope",
+      "note": "The system generates a world from panoramas and prompts. Presentation, and any blend with a camera view of a room, belongs to whatever opens the result.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "input.face": {
+      "level": "out-of-scope",
+      "note": "Input is images, panoramas and text. No live reading of a user's face or body is taken or delivered.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "scene.navmesh": {
+      "level": "partial",
+      "note": "The pipeline really does compute walkable space, and keeps it. Scene parsing turns panoramas into point clouds, meshes, semantic masks and navigation meshes, with a navmesh stage using a third-party navigation library for path planning — all of it in service of planning camera trajectories inside the generator. It is used internally and not published with the world, so whoever opens the output gets geometry and has to work the floor out again.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/html/2604.14268v1",
+          "title": "HY-World 2.0 technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Given the panoramas, we first employ scene parsing to obtain panoramic point clouds, meshes, semantic masks, and navigation meshes for the subsequent trajectory planning"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "`third_party/navmesh` needs [recastnavigation](https://github.com/recastnavigation/recastnavigation) (cloned via `--recursive`) for NavMesh-based path planning."
+        }
+      ]
+    },
+    "logic.namespace": {
+      "level": "out-of-scope",
+      "note": "The project publishes model code and weights as a repository. Nothing in it is a published unit of world logic named for other authors to depend on.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "deliver.moderation": {
+      "level": "none",
+      "note": "The generator returns its output to whoever ran it and describes no gate in between: the published module documentation covers the generation stages and their dependencies, with no safety classifier, prompt filter or review step in the pipeline and nothing recording what review an output has had. Source-available code makes any such gate the operator's to add.",
+      "confidence": "unverified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "├── navmesh/                            # Stage 1: NavMesh & trajectory planning"
+        }
+      ]
+    },
+    "geo.map-align": {
+      "level": "out-of-scope",
+      "note": "A generated interior is not a map of a real place and carries no transform to one.",
+      "confidence": "verified",
+      "sources": []
+    },
+    "geo.coverage": {
+      "level": "out-of-scope",
+      "note": "Nothing declares a region of the Earth over which a generated world applies.",
+      "confidence": "verified",
+      "sources": []
+    }
+  }
+}

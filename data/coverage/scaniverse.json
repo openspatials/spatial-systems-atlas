@@ -1,0 +1,2311 @@
+{
+  "subject_id": "scaniverse",
+  "summary": "Scaniverse is Niantic Spatial's phone scanner, free on iOS and Android and now paired with a cloud service and a web application. It is the most complete free path from a phone in a pocket to a splat that other tools can read, and in 2026 it is two products under one name: 'Scaniverse Classic', which scans, trains and exports entirely on the device with no account needed for the scanning itself, and the new Scaniverse, where scans upload to Niantic Spatial's servers, several people's scans of one site are combined, and the result comes back as a Gaussian splat, a mesh, or a positioning map for the company's visual positioning service. It matters to this map for three reasons. It writes SPZ, the openly licensed splat container the rest of the industry has adopted, whose fourth version arrived in May 2026 with a plaintext header, parallel compression streams and a vendor extension chain — the only splat format scored here with an extension mechanism at all. It exports a USDZ package that carries a splat and an automatically aligned mesh together, aimed at robot simulation, which is the clearest example anywhere in this map of captured content reaching a conventional scene container without being thrown away. And it georeferences: a capture can be dragged onto a map until it sits where it really is, then serve as a positioning map. What it does not do is time — nothing here captures or carries a moving scene — and nothing it writes states a licence or an author.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "partial",
+      "note": "The application draws splats and meshes on a phone and in a web browser, well enough to inspect a capture for holes and distortion. Nothing about that pipeline is described or exposed; it is a viewer inside a product.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, inspecting assets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can inspect meshes and splats in the Scaniverse Web to evaluate scan quality and identify coverage gaps."
+        },
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture product page, processing",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Photorealistic results: Generate Gaussian Splats and meshes processed efficiently on-device."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "out-of-scope",
+      "note": "No graphics interface is named or offered to anybody. The application uses whatever the phone and the browser provide.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture product page, processing",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Photorealistic results: Generate Gaussian Splats and meshes processed efficiently on-device."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "out-of-scope",
+      "note": "No material model. A splat carries view-dependent colour coefficients and a mesh carries a texture, and neither is described as a material anywhere.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, advanced scan review tools",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supported exports include .ply , .spz , .glb , .fbx , and .usdz ."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "out-of-scope",
+      "note": "Lighting is baked into the capture. Nothing models lights or writes them out.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture product page, processing",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Photorealistic results: Generate Gaussian Splats and meshes processed efficiently on-device."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.post",
+      "level": "out-of-scope",
+      "note": "No post-processing stage is offered or described.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, inspecting assets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can inspect meshes and splats in the Scaniverse Web to evaluate scan quality and identify coverage gaps."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "out-of-scope",
+      "note": "No level structure is exposed. What ships is a whole asset in the chosen format.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, advanced scan review tools",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supported exports include .ply , .spz , .glb , .fbx , and .usdz ."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "native",
+      "note": "Capturing, training and drawing Gaussian splats is the product, and on the Classic path all three happen on the phone itself.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture product page, processing",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Photorealistic results: Generate Gaussian Splats and meshes processed efficiently on-device."
+        },
+        {
+          "url": "https://apps.apple.com/us/app/scaniverse-3d-scanner/id1541433223",
+          "title": "Scaniverse on the App Store, version 5.2.7 of 17 August 2026, developer description",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The classic Scaniverse experience you know is still here — unlimited on-device Gaussian splat capture and processing, several export formats including SPZ, and the shared global map."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "partial",
+      "note": "Splats and meshes are drawn; point clouds are an internal step and volumetric video does not exist here. Time never enters the product at any point.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, inspecting assets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can inspect meshes and splats in the Scaniverse Web to evaluate scan quality and identify coverage gaps."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "out-of-scope",
+      "note": "No text rendering in three dimensions; the only text is the application's own interface.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, inspecting assets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can inspect meshes and splats in the Scaniverse Web to evaluate scan quality and identify coverage gaps."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "out-of-scope",
+      "note": "Viewpoints are interface gestures. No camera or viewpoint description is carried in or out, except the orbit bounds an SPZ extension can now record.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nianticlabs/spz/blob/main/extensions/README.md",
+          "title": "SPZ extensions README, record format",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Extensions allow vendor-specific or application-specific data to be stored in SPZ files alongside the core Gaussian splat data."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "out-of-scope",
+      "note": "A capture is one asset. There is no node hierarchy in a splat, and the exported mesh is a single object.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, advanced scan review tools",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supported exports include .ply , .spz , .glb , .fbx , and .usdz ."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "partial",
+      "note": "The transform question is settled inside SPZ and nowhere else: the format states a default right, up, back frame with sixteen named alternatives and warns that an unspecified frame is written through unconverted. A GLB, FBX or USDZ export lands in that format's own convention, and the application does not describe the mapping.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nianticlabs/spz/blob/main/README.md",
+          "title": "SPZ README, coordinate systems",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "By default, SPZ stores data in an RUB coordinate system following the OpenGL and three.js convention."
+        },
+        {
+          "url": "https://github.com/nianticlabs/spz/blob/main/README.md",
+          "title": "SPZ README, unspecified coordinate systems",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "If the coordinate system is `UNSPECIFIED`, data will be saved and loaded without conversion, which may harm interoperability."
+        },
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, advanced scan review tools",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supported exports include .ply , .spz , .glb , .fbx , and .usdz ."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "partial",
+      "note": "Five containers come out — PLY, SPZ, GLB, FBX and USDZ — which is the widest export list of any capture tool scored here. Nothing is read back in: a Scaniverse capture leaves and never returns.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, advanced scan review tools",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supported exports include .ply , .spz , .glb , .fbx , and .usdz ."
+        },
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture product page, key capabilities",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Export or integrate seamlessly: Export scans in standard 3D formats - including our open-source SPZ format, reducing file size by 90%."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "partial",
+      "note": "Meshes are produced and exported, described by the vendor as precise enough for robot simulation and collision geometry, and derived with the help of their own depth model. The encoding is whatever GLB, FBX or USDZ carries; nothing about compression or geometry encoding is stated.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/scaniverse-3d-scanner/id1541433223",
+          "title": "Scaniverse on the App Store, Reconstruct section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Precise meshes for robotics simulation and collision geometry"
+        },
+        {
+          "url": "https://www.nianticspatial.com/blog/usdz-scaniverse",
+          "title": "Niantic Spatial blog, depth model behind the meshes",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We’re already using one of our models – our depth model – to produce these reconstructions with much smoother, more accurate surfaces."
+        },
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, advanced scan review tools",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supported exports include .ply , .spz , .glb , .fbx , and .usdz ."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "partial",
+      "note": "Exported meshes carry texture in the ordinary way for GLB, FBX and USDZ. No texture encoding choice, compression option or target-device profile is offered or described.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, advanced scan review tools",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supported exports include .ply , .spz , .glb , .fbx , and .usdz ."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "out-of-scope",
+      "note": "No material definitions are authored, so there is nothing to exchange between renderers.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, advanced scan review tools",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supported exports include .ply , .spz , .glb , .fbx , and .usdz ."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "out-of-scope",
+      "note": "Nothing animated is captured, stored or exported. A capture is one moment.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, advanced scan review tools",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supported exports include .ply , .spz , .glb , .fbx , and .usdz ."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "out-of-scope",
+      "note": "No skeletons; the product reconstructs places and objects.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, advanced scan review tools",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supported exports include .ply , .spz , .glb , .fbx , and .usdz ."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "out-of-scope",
+      "note": "No morph targets or blend shapes are produced.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, advanced scan review tools",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supported exports include .ply , .spz , .glb , .fbx , and .usdz ."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "out-of-scope",
+      "note": "No instancing concept exists in a capture.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, advanced scan review tools",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supported exports include .ply , .spz , .glb , .fbx , and .usdz ."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "partial",
+      "note": "Several people's scans of one site are combined into a single generated asset, which is composition of a kind. It happens once, in the service, before generation; there is no layering or override that survives into the exported file.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, how the cloud workflow runs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Scans are uploaded, then processed in the cloud to generate 3D assets of the site. Multiple team members’ scans can be combined before generation to create a more complete result."
+        },
+        {
+          "url": "https://apps.apple.com/us/app/scaniverse-3d-scanner/id1541433223",
+          "title": "Scaniverse on the App Store, Capture section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Combine scans from multiple users and devices into one unified site project"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "partial",
+      "note": "Because the capture comes from a phone with sensors and can be georeferenced onto a map, the scale is real rather than arbitrary, and the vendor is careful about how accurate it claims to be. No unit is stated in any exported file except by the receiving format's own convention.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture page FAQ on accuracy",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "These qualifications matter: “centimeter-level” describes the documented on-demand enterprise workflow, not every scan captured in every condition."
+        },
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, the Georeference tool",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can use the Georeference tool to ensure the asset's location matches its real-world position."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "none",
+      "note": "No licence or permission travels with an exported capture. Sharing controls exist inside the service and stop at its boundary.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, advanced scan review tools",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supported exports include .ply , .spz , .glb , .fbx , and .usdz ."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "none",
+      "note": "No authorship record or signature is written into any of the five export formats, even though the service knows which account and which devices produced every scan.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/scaniverse-3d-scanner/id1541433223",
+          "title": "Scaniverse on the App Store, Capture section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Combine scans from multiple users and devices into one unified site project"
+        },
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, advanced scan review tools",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supported exports include .ply , .spz , .glb , .fbx , and .usdz ."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "out-of-scope",
+      "note": "No avatar representation of any kind. People are asked to keep out of captures rather than be captured.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, inspecting assets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can inspect meshes and splats in the Scaniverse Web to evaluate scan quality and identify coverage gaps."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "out-of-scope",
+      "note": "No bones or rigs are produced by any part of the product.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, advanced scan review tools",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supported exports include .ply , .spz , .glb , .fbx , and .usdz ."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "out-of-scope",
+      "note": "No expression model exists.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, advanced scan review tools",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supported exports include .ply , .spz , .glb , .fbx , and .usdz ."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "out-of-scope",
+      "note": "Nothing is rigged, so there is nothing to retarget.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, advanced scan review tools",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supported exports include .ply , .spz , .glb , .fbx , and .usdz ."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "out-of-scope",
+      "note": "No attachment points and no worn items.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, advanced scan review tools",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supported exports include .ply , .spz , .glb , .fbx , and .usdz ."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "out-of-scope",
+      "note": "No avatar exists to reduce.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, advanced scan review tools",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supported exports include .ply , .spz , .glb , .fbx , and .usdz ."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "out-of-scope",
+      "note": "Accounts identify people to the service; no avatar is bound to any identity.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, free plan",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Yes. All new users start on the Free Plan, which gives you access to core platform features and a monthly credit allowance so you can explore cloud-based services before committing to a paid plan."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "out-of-scope",
+      "note": "Nothing is simulated in the product. Simulation is what the exported USDZ is for, in somebody else's engine.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture page FAQ on outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "USDZ is a simulation-oriented package that can combine a Gaussian splat with a mesh for workflows such as NVIDIA Isaac Sim."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "partial",
+      "note": "The meshes are made for collision use and the vendor says so plainly, which is a real contribution to the physics problem. No collision shapes, materials or physics settings are authored; a mesh is handed over and the receiving simulator decides.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/scaniverse-3d-scanner/id1541433223",
+          "title": "Scaniverse on the App Store, Reconstruct section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Precise meshes for robotics simulation and collision geometry"
+        },
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture page FAQ on outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "USDZ is a simulation-oriented package that can combine a Gaussian splat with a mesh for workflows such as NVIDIA Isaac Sim."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "out-of-scope",
+      "note": "No bodies and therefore no joints.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture page FAQ on outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "USDZ is a simulation-oriented package that can combine a Gaussian splat with a mesh for workflows such as NVIDIA Isaac Sim."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.material",
+      "level": "out-of-scope",
+      "note": "No friction or restitution is estimated or carried with a surface.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/scaniverse-3d-scanner/id1541433223",
+          "title": "Scaniverse on the App Store, Reconstruct section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Precise meshes for robotics simulation and collision geometry"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.determinism",
+      "level": "out-of-scope",
+      "note": "There is no simulation here to reproduce.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture page FAQ on outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "USDZ is a simulation-oriented package that can combine a Gaussian splat with a mesh for workflows such as NVIDIA Isaac Sim."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "out-of-scope",
+      "note": "Nothing deformable is modelled.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture page FAQ on outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "USDZ is a simulation-oriented package that can combine a Gaussian splat with a mesh for workflows such as NVIDIA Isaac Sim."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "out-of-scope",
+      "note": "No event regions are authored or exported.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, advanced scan review tools",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supported exports include .ply , .spz , .glb , .fbx , and .usdz ."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "out-of-scope",
+      "note": "A scan records images and sensor data. No audio is captured or carried.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture product page, capture sources",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "High-fidelity 3D scanning: Capture detailed 3D scans from iOS and Android devices today plus data from 360° cameras and drones."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "out-of-scope",
+      "note": "No spatialisation model, because there is no audio.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture product page, capture sources",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "High-fidelity 3D scanning: Capture detailed 3D scans from iOS and Android devices today plus data from 360° cameras and drones."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "out-of-scope",
+      "note": "Rooms are captured visually with nothing said about how they sound.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture product page, capture sources",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "High-fidelity 3D scanning: Capture detailed 3D scans from iOS and Android devices today plus data from 360° cameras and drones."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "out-of-scope",
+      "note": "No acoustic model exists to occlude.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture product page, capture sources",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "High-fidelity 3D scanning: Capture detailed 3D scans from iOS and Android devices today plus data from 360° cameras and drones."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "out-of-scope",
+      "note": "No audio is delivered at any point.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture product page, capture sources",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "High-fidelity 3D scanning: Capture detailed 3D scans from iOS and Android devices today plus data from 360° cameras and drones."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "out-of-scope",
+      "note": "No live session and no voice transport.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, how the cloud workflow runs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Scans are uploaded, then processed in the cloud to generate 3D assets of the site. Multiple team members’ scans can be combined before generation to create a more complete result."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "out-of-scope",
+      "note": "Nothing is replicated live. Collaboration is several people uploading scans that are merged in a batch.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, how the cloud workflow runs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Scans are uploaded, then processed in the cloud to generate 3D assets of the site. Multiple team members’ scans can be combined before generation to create a more complete result."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "out-of-scope",
+      "note": "No shared live state and no authority model.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, how the cloud workflow runs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Scans are uploaded, then processed in the cloud to generate 3D assets of the site. Multiple team members’ scans can be combined before generation to create a more complete result."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "out-of-scope",
+      "note": "No live clients to filter content for.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, how the cloud workflow runs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Scans are uploaded, then processed in the cloud to generate 3D assets of the site. Multiple team members’ scans can be combined before generation to create a more complete result."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.prediction",
+      "level": "out-of-scope",
+      "note": "No session traffic and no latency to hide.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, how the cloud workflow runs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Scans are uploaded, then processed in the cloud to generate 3D assets of the site. Multiple team members’ scans can be combined before generation to create a more complete result."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "out-of-scope",
+      "note": "Uploads and downloads over the ordinary web. That is service access, not session traffic.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, how the cloud workflow runs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Scans are uploaded, then processed in the cloud to generate 3D assets of the site. Multiple team members’ scans can be combined before generation to create a more complete result."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.media",
+      "level": "out-of-scope",
+      "note": "No live media is carried; a 360 video is uploaded as a file for processing.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, 360 camera uploads",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Scaniverse Web supports raw .insv files natively, but only from the Insta360 X5 and X4 cameras."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "out-of-scope",
+      "note": "There is no world to join. Signing in authenticates a person to a service.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, free plan",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Yes. All new users start on the Free Plan, which gives you access to core platform features and a monthly credit allowance so you can explore cloud-based services before committing to a paid plan."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "out-of-scope",
+      "note": "No portals and no arrival with state.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, how the cloud workflow runs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Scans are uploaded, then processed in the cloud to generate 3D assets of the site. Multiple team members’ scans can be combined before generation to create a more complete result."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "out-of-scope",
+      "note": "Nothing tracks who is where inside a capture.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, how the cloud workflow runs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Scans are uploaded, then processed in the cloud to generate 3D assets of the site. Multiple team members’ scans can be combined before generation to create a more complete result."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "partial",
+      "note": "A capture has an identity inside the service — a site, a scan, an asset version, reachable in the web application — and the Classic path publishes to a shared global map. Neither is an addressing scheme anyone outside can resolve.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, inspecting assets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can inspect meshes and splats in the Scaniverse Web to evaluate scan quality and identify coverage gaps."
+        },
+        {
+          "url": "https://apps.apple.com/us/app/scaniverse-3d-scanner/id1541433223",
+          "title": "Scaniverse on the App Store, version 5.2.7 of 17 August 2026, developer description",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The classic Scaniverse experience you know is still here — unlimited on-device Gaussian splat capture and processing, several export formats including SPZ, and the shared global map."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "partial",
+      "note": "The shared global map is a real discovery surface for captures, and the site and scan lists are one for a team. Both stop at the operator's boundary, and nothing outside can search them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/scaniverse-3d-scanner/id1541433223",
+          "title": "Scaniverse on the App Store, version 5.2.7 of 17 August 2026, developer description",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The classic Scaniverse experience you know is still here — unlimited on-device Gaussian splat capture and processing, several export formats including SPZ, and the shared global map."
+        },
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, inspecting assets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can inspect meshes and splats in the Scaniverse Web to evaluate scan quality and identify coverage gaps."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "out-of-scope",
+      "note": "No shared clock and no ordering problem; scans are uploaded and processed as jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, how the cloud workflow runs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Scans are uploaded, then processed in the cloud to generate 3D assets of the site. Multiple team members’ scans can be combined before generation to create a more complete result."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "out-of-scope",
+      "note": "Identity is a service account. No identifier is defined that another party could use.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, free plan",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Yes. All new users start on the Free Plan, which gives you access to core platform features and a monthly credit allowance so you can explore cloud-based services before committing to a paid plan."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "out-of-scope",
+      "note": "No verifiable claims are issued or consumed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, free plan",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Yes. All new users start on the Free Plan, which gives you access to core platform features and a monthly credit allowance so you can explore cloud-based services before committing to a paid plan."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "out-of-scope",
+      "note": "No credential exchange protocol; access is by account and by key into the company's own platform.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, free plan",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Yes. All new users start on the Free Plan, which gives you access to core platform features and a monthly credit allowance so you can explore cloud-based services before committing to a paid plan."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "partial",
+      "note": "There is a real permission model — organisations, up to a stated number of members on the free tier, sites shared with team mates — and it is entirely internal. Nothing a recipient of an exported file can read says what they may do.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, free plan",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Yes. All new users start on the Free Plan, which gives you access to core platform features and a monthly credit allowance so you can explore cloud-based services before committing to a paid plan."
+        },
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, how the cloud workflow runs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Scans are uploaded, then processed in the cloud to generate 3D assets of the site. Multiple team members’ scans can be combined before generation to create a more complete result."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "out-of-scope",
+      "note": "Nothing is selectively disclosed; a file is handed over whole or not at all.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, advanced scan review tools",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supported exports include .ply , .spz , .glb , .fbx , and .usdz ."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.social",
+      "level": "out-of-scope",
+      "note": "No relationships or standing are represented beyond membership of an organisation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, how the cloud workflow runs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Scans are uploaded, then processed in the cloud to generate 3D assets of the site. Multiple team members’ scans can be combined before generation to create a more complete result."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "out-of-scope",
+      "note": "No terms travel with the asset, so nothing can be enforced where it is used.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, advanced scan review tools",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supported exports include .ply , .spz , .glb , .fbx , and .usdz ."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "partial",
+      "note": "This is the one capture tool in the group that puts a scan on the Earth: the Georeference tool moves an asset over a map until it matches its real position, and the result feeds the company's positioning service. What is missing is any statement of that pose in the exported file, in any of the five formats.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, the Georeference tool",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can use the Georeference tool to ensure the asset's location matches its real-world position."
+        },
+        {
+          "url": "https://apps.apple.com/us/app/scaniverse-3d-scanner/id1541433223",
+          "title": "Scaniverse on the App Store, Localize section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Localize: Test Niantic VPS 2.0 in app, deploy with NSDK."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "none",
+      "note": "No coordinate reference system is named anywhere the user can see. A georeferenced asset knows where it is inside the service and says nothing about the frame when it leaves.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, the Georeference tool",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can use the Georeference tool to ensure the asset's location matches its real-world position."
+        },
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, advanced scan review tools",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supported exports include .ply , .spz , .glb , .fbx , and .usdz ."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "out-of-scope",
+      "note": "Anchoring content to a place is the positioning service's job, and that service is scored as Niantic Lightship; the scanner produces the map it uses.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/scaniverse-3d-scanner/id1541433223",
+          "title": "Scaniverse on the App Store, Localize section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Localize: Test Niantic VPS 2.0 in app, deploy with NSDK."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "partial",
+      "note": "A capture becomes a positioning map that any device running the company's kit can localise against, which is a shared anchor in effect. The anchor lives in one operator's service and no anchor description is exported.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/scaniverse-3d-scanner/id1541433223",
+          "title": "Scaniverse on the App Store, Localize section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Localize: Test Niantic VPS 2.0 in app, deploy with NSDK."
+        },
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, how the cloud workflow runs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Scans are uploaded, then processed in the cloud to generate 3D assets of the site. Multiple team members’ scans can be combined before generation to create a more complete result."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.vps",
+      "level": "partial",
+      "note": "Visual positioning is what the captures are for — the application can test it directly — but the positioning itself belongs to the platform kit rather than to the scanner. Scaniverse makes the map; the runtime does the recovery.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/scaniverse-3d-scanner/id1541433223",
+          "title": "Scaniverse on the App Store, Localize section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Localize: Test Niantic VPS 2.0 in app, deploy with NSDK."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "out-of-scope",
+      "note": "No tiled streaming scheme is offered; an asset downloads as one file.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, advanced scan review tools",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supported exports include .ply , .spz , .glb , .fbx , and .usdz ."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.indoor",
+      "level": "partial",
+      "note": "Indoor spaces are a stated target, from a room to a warehouse, and indoor positioning is claimed where mapping has been done. What comes out is appearance and geometry, not a structured description of rooms, doors or floors.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/scaniverse-3d-scanner/id1541433223",
+          "title": "Scaniverse on the App Store, version 5.2.7 of 17 August 2026, developer description",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The classic Scaniverse experience you know is still here — unlimited on-device Gaussian splat capture and processing, several export formats including SPZ, and the shared global map."
+        },
+        {
+          "url": "https://apps.apple.com/us/app/scaniverse-3d-scanner/id1541433223",
+          "title": "Scaniverse on the App Store, Localize section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Localize: Test Niantic VPS 2.0 in app, deploy with NSDK."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "out-of-scope",
+      "note": "No immersive session lifecycle; scanning is an ordinary application on a phone.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, supported platforms",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "iOS: Supported. We recommend iPhone 13 or newer. Devices with LiDAR provide the best results."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "out-of-scope",
+      "note": "No controller input; the phone is the instrument.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, supported platforms",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "iOS: Supported. We recommend iPhone 13 or newer. Devices with LiDAR provide the best results."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "out-of-scope",
+      "note": "No hand tracking is used or offered.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, supported platforms",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "iOS: Supported. We recommend iPhone 13 or newer. Devices with LiDAR provide the best results."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.eye",
+      "level": "out-of-scope",
+      "note": "No gaze input and no eye data at any stage.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, supported platforms",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "iOS: Supported. We recommend iPhone 13 or newer. Devices with LiDAR provide the best results."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "out-of-scope",
+      "note": "No haptic feedback beyond whatever the operating system does for the interface.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, supported platforms",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "iOS: Supported. We recommend iPhone 13 or newer. Devices with LiDAR provide the best results."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "partial",
+      "note": "Device capability decides the result and the documentation says so: iPhone 13 or newer is recommended, lidar devices do best, and Android performance varies by hardware. This is guidance to a person, not a capability description a program can read.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, supported platforms",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "iOS: Supported. We recommend iPhone 13 or newer. Devices with LiDAR provide the best results."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "out-of-scope",
+      "note": "No scripting; the product is an application and a web interface.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, inspecting assets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can inspect meshes and splats in the Scaniverse Web to evaluate scan quality and identify coverage gaps."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "out-of-scope",
+      "note": "No interactivity travels with a capture.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, advanced scan review tools",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supported exports include .ply , .spz , .glb , .fbx , and .usdz ."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "out-of-scope",
+      "note": "There is no guest content to isolate.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, inspecting assets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can inspect meshes and splats in the Scaniverse Web to evaluate scan quality and identify coverage gaps."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "out-of-scope",
+      "note": "No agents act inside a capture. Robots use the exported USDZ elsewhere.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture page FAQ on outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "USDZ is a simulation-oriented package that can combine a Gaussian splat with a mesh for workflows such as NVIDIA Isaac Sim."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "out-of-scope",
+      "note": "No budgets for guest content; the limits here are on cloud processing, which is a commercial matter.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, free plan",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Yes. All new users start on the Free Plan, which gives you access to core platform features and a monthly credit allowance so you can explore cloud-based services before committing to a paid plan."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "partial",
+      "note": "Sites, scans, asset versions and playback sessions persist in the service and can be re-generated later, so there is durable state. It is a project archive rather than a world that restarts.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, inspecting assets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can inspect meshes and splats in the Scaniverse Web to evaluate scan quality and identify coverage gaps."
+        },
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, how the cloud workflow runs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Scans are uploaded, then processed in the cloud to generate 3D assets of the site. Multiple team members’ scans can be combined before generation to create a more complete result."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "out-of-scope",
+      "note": "No items and no holders.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, how the cloud workflow runs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Scans are uploaded, then processed in the cloud to generate 3D assets of the site. Multiple team members’ scans can be combined before generation to create a more complete result."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "out-of-scope",
+      "note": "No portable preferences or accessibility settings follow a user anywhere.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, supported platforms",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "iOS: Supported. We recommend iPhone 13 or newer. Devices with LiDAR provide the best results."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "out-of-scope",
+      "note": "Assets are named by site, scan and version inside the service; no content addressing by hash is offered.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, inspecting assets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can inspect meshes and splats in the Scaniverse Web to evaluate scan quality and identify coverage gaps."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "partial",
+      "note": "USDZ is the closest thing to a bundle: one package carrying a splat with an aligned mesh, aimed at a named simulator. It packages an asset, not a runnable experience.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture page FAQ on outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "USDZ is a simulation-oriented package that can combine a Gaussian splat with a mesh for workflows such as NVIDIA Isaac Sim."
+        },
+        {
+          "url": "https://www.nianticspatial.com/blog/usdz-scaniverse",
+          "title": "Niantic Spatial blog, USDZ export in Scaniverse, 6 July 2026",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Scaniverse can now turn a 360 video capture into a simulation-ready USDZ file for NVIDIA Isaac Sim by combining a Gaussian splat with an automatically generated and aligned mesh."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "out-of-scope",
+      "note": "Delivery of a downloaded file is left to whoever receives it. The service moves data to and from its own storage.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, inspecting assets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can inspect meshes and splats in the Scaniverse Web to evaluate scan quality and identify coverage gaps."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "partial",
+      "note": "Asset versions are a real concept in the product: scans are selected and an asset version is regenerated, and the two can be compared. Nothing versions the file after it leaves.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, inspecting assets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can inspect meshes and splats in the Scaniverse Web to evaluate scan quality and identify coverage gaps."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "none",
+      "note": "No conformance test is published for anything Scaniverse writes. SPZ has a reference implementation and an extension registry convention, which is not the same as a suite that proves a second implementation agrees.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nianticlabs/spz/blob/main/extensions/README.md",
+          "title": "SPZ extensions README, record format",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Extensions allow vendor-specific or application-specific data to be stored in SPZ files alongside the core Gaussian splat data."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "Nothing is generated. Every asset is reconstructed from data somebody captured.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture product page, capture sources",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "High-fidelity 3D scanning: Capture detailed 3D scans from iOS and Android devices today plus data from 360° cameras and drones."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "No learned world model continues a scene; the depth model is a reconstruction aid.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/blog/usdz-scaniverse",
+          "title": "Niantic Spatial blog, depth model behind the meshes",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We’re already using one of our models – our depth model – to produce these reconstructions with much smoother, more accurate surfaces."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "native",
+      "note": "A phone, a 360 camera or a drone goes in and a textured mesh and a splat come out, with camera work, pose solving and reconstruction all handled by the product. On the Classic path the whole of it happens on the device.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture product page, capture sources",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "High-fidelity 3D scanning: Capture detailed 3D scans from iOS and Android devices today plus data from 360° cameras and drones."
+        },
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture product page, processing",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Photorealistic results: Generate Gaussian Splats and meshes processed efficiently on-device."
+        },
+        {
+          "url": "https://apps.apple.com/us/app/scaniverse-3d-scanner/id1541433223",
+          "title": "Scaniverse on the App Store, Reconstruct section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Precise meshes for robotics simulation and collision geometry"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "native",
+      "note": "SPZ is Scaniverse's own container, openly licensed and now in its fourth version with a plaintext header, six parallel compression streams and a vendor extension chain, and PLY is written beside it. Reading other people's splats is not part of the product.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture product page, key capabilities",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Export or integrate seamlessly: Export scans in standard 3D formats - including our open-source SPZ format, reducing file size by 90%."
+        },
+        {
+          "url": "https://www.nianticspatial.com/blog/spz4",
+          "title": "Niantic Spatial blog, SPZ 4, 5 May 2026",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "SPZ 4 puts the 32-byte file header in plaintext at a fixed offset , outside the compressed region."
+        },
+        {
+          "url": "https://www.nianticspatial.com/blog/spz4",
+          "title": "Niantic Spatial blog, SPZ 4 compression",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "SPZ 4 replaces GZip with six parallel ZSTD streams , one per attribute (positions, colors, scales, rotations, alphas, spherical harmonics)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "none",
+      "note": "Nothing is delivered progressively by region or detail. A capture is generated, then downloaded whole, and the file size claim is about the download being smaller rather than about it arriving in pieces.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture product page, key capabilities",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Export or integrate seamlessly: Export scans in standard 3D formats - including our open-source SPZ format, reducing file size by 90%."
+        },
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, advanced scan review tools",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supported exports include .ply , .spz , .glb , .fbx , and .usdz ."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "none",
+      "note": "No time-varying capture exists anywhere in the product, on the device or in the cloud. Video is an input to reconstruction and never an output.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, 360 camera uploads",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Scaniverse Web supports raw .insv files natively, but only from the Insta360 X5 and X4 cameras."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "partial",
+      "note": "Lidar and photogrammetry produce points internally and the enterprise workflows accept lidar datasets, but no point cloud is offered as an export format in the documented list.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture product page, capture sources",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "High-fidelity 3D scanning: Capture detailed 3D scans from iOS and Android devices today plus data from 360° cameras and drones."
+        },
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, advanced scan review tools",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supported exports include .ply , .spz , .glb , .fbx , and .usdz ."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "partial",
+      "note": "Depth is central and internal: a depth model produces the surfaces, and lidar depth improves results on the phones that have it. Nothing carries calibrated views plus depth in or out as an interchange.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/blog/usdz-scaniverse",
+          "title": "Niantic Spatial blog, depth model behind the meshes",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We’re already using one of our models – our depth model – to produce these reconstructions with much smoother, more accurate surfaces."
+        },
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, supported platforms",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "iOS: Supported. We recommend iPhone 13 or newer. Devices with LiDAR provide the best results."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "native",
+      "note": "The splat renders the captured place from viewpoints no camera occupied, on the phone that captured it and in a browser afterwards.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture product page, processing",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Photorealistic results: Generate Gaussian Splats and meshes processed efficiently on-device."
+        },
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, inspecting assets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can inspect meshes and splats in the Scaniverse Web to evaluate scan quality and identify coverage gaps."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "none",
+      "note": "There is no time axis. Neither the on-device path nor the cloud path captures, stores or replays a scene that changes, and no export format offered carries one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, advanced scan review tools",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supported exports include .ply , .spz , .glb , .fbx , and .usdz ."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "none",
+      "note": "A capture keeps the light it was taken in. Nothing separates lighting from material, and the exported mesh carries baked appearance.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/scaniverse-3d-scanner/id1541433223",
+          "title": "Scaniverse on the App Store, Reconstruct section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Precise meshes for robotics simulation and collision geometry"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "partial",
+      "note": "Editing is inspection and correction rather than authoring: quality review in the web application, targeted rescans to fill gaps, replacing a bad scan, and moving the asset on a map. There is no way to crop, delete or recolour parts of a splat and have the change survive export.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, inspecting assets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can inspect meshes and splats in the Scaniverse Web to evaluate scan quality and identify coverage gaps."
+        },
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, the Georeference tool",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can use the Georeference tool to ensure the asset's location matches its real-world position."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "Nothing is generated, so there is nothing to change by description.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture product page, capture sources",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "High-fidelity 3D scanning: Capture detailed 3D scans from iOS and Android devices today plus data from 360° cameras and drones."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "There is no generating system to specify a world to.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture product page, capture sources",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "High-fidelity 3D scanning: Capture detailed 3D scans from iOS and Android devices today plus data from 360° cameras and drones."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "native",
+      "note": "This is the strongest row in the record. A capture yields a mesh aligned to the splat, exported together in a USDZ package for a named simulator, with the mesh explicitly intended as collision geometry. Captured content reaches a conventional pipeline without being thrown away.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/blog/usdz-scaniverse",
+          "title": "Niantic Spatial blog, USDZ export in Scaniverse, 6 July 2026",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Scaniverse can now turn a 360 video capture into a simulation-ready USDZ file for NVIDIA Isaac Sim by combining a Gaussian splat with an automatically generated and aligned mesh."
+        },
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture page FAQ on outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "USDZ is a simulation-oriented package that can combine a Gaussian splat with a mesh for workflows such as NVIDIA Isaac Sim."
+        },
+        {
+          "url": "https://apps.apple.com/us/app/scaniverse-3d-scanner/id1541433223",
+          "title": "Scaniverse on the App Store, Reconstruct section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Precise meshes for robotics simulation and collision geometry"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "No agent actions or control signals pass through the product; the robot work happens in the simulator that receives the file.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture page FAQ on outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "USDZ is a simulation-oriented package that can combine a Gaussian splat with a mesh for workflows such as NVIDIA Isaac Sim."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "partial",
+      "note": "Panoramic capture is a first-class input: raw files from two named 360 cameras, or stitched equirectangular video from anything else, and a five-minute pass can cover a street. Nothing panoramic is produced as an output.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, 360 camera uploads",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Scaniverse Web supports raw .insv files natively, but only from the Insta360 X5 and X4 cameras."
+        },
+        {
+          "url": "https://www.nianticspatial.com/blog/usdz-scaniverse",
+          "title": "Niantic Spatial blog, USDZ export in Scaniverse, 6 July 2026",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Scaniverse can now turn a 360 video capture into a simulation-ready USDZ file for NVIDIA Isaac Sim by combining a Gaussian splat with an automatically generated and aligned mesh."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "partial",
+      "note": "A geometric description of a real space is produced from a device's own cameras and sensors, which is the definition met. It is not live: the Classic path processes on the device after the scan, and the cloud path takes as long as it takes.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture product page, processing",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Photorealistic results: Generate Gaussian Splats and meshes processed efficiently on-device."
+        },
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, how the cloud workflow runs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Scans are uploaded, then processed in the cloud to generate 3D assets of the site. Multiple team members’ scans can be combined before generation to create a more complete result."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "Nothing captured is labelled. Semantic understanding is a separate Niantic Spatial product and no part of the scanner's output.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture product page, capture sources",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "High-fidelity 3D scanning: Capture detailed 3D scans from iOS and Android devices today plus data from 360° cameras and drones."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "partial",
+      "note": "Depth from the phone's own sensor is used where it exists, and a learned depth model supplies the rest. No depth map is exposed as an output or an interchange.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse",
+          "title": "Scaniverse FAQ, supported platforms",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "iOS: Supported. We recommend iPhone 13 or newer. Devices with LiDAR provide the best results."
+        },
+        {
+          "url": "https://www.nianticspatial.com/blog/usdz-scaniverse",
+          "title": "Niantic Spatial blog, depth model behind the meshes",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We’re already using one of our models – our depth model – to produce these reconstructions with much smoother, more accurate surfaces."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "No live view is mixed with rendered content, so nothing occludes anything.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, inspecting assets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can inspect meshes and splats in the Scaniverse Web to evaluate scan quality and identify coverage gaps."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "out-of-scope",
+      "note": "There is no passthrough mode. Scanning shows the camera feed as a guide, not as a blended view.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture product page, capture sources",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "High-fidelity 3D scanning: Capture detailed 3D scans from iOS and Android devices today plus data from 360° cameras and drones."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.face",
+      "level": "out-of-scope",
+      "note": "No face or body tracking; the guidance is to keep people out of captures.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture product page, capture sources",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "High-fidelity 3D scanning: Capture detailed 3D scans from iOS and Android devices today plus data from 360° cameras and drones."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "out-of-scope",
+      "note": "Nothing states where a body may stand in a captured place, though the mesh is offered as collision geometry for whoever wants to work that out.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/scaniverse-3d-scanner/id1541433223",
+          "title": "Scaniverse on the App Store, Reconstruct section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Precise meshes for robotics simulation and collision geometry"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "out-of-scope",
+      "note": "No published unit of logic and so no naming question.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, inspecting assets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can inspect meshes and splats in the Scaniverse Web to evaluate scan quality and identify coverage gaps."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "partial",
+      "note": "Publishing to the shared global map implies review by the operator, and enterprise data is kept private by default, but no review process, standard or appeal is documented for what a capture may contain.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/scaniverse-3d-scanner/id1541433223",
+          "title": "Scaniverse on the App Store, version 5.2.7 of 17 August 2026, developer description",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The classic Scaniverse experience you know is still here — unlimited on-device Gaussian splat capture and processing, several export formats including SPZ, and the shared global map."
+        },
+        {
+          "url": "https://www.nianticspatial.com/products/capture",
+          "title": "Niantic Spatial, Capture product page, processing",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Photorealistic results: Generate Gaussian Splats and meshes processed efficiently on-device."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "partial",
+      "note": "The Georeference tool does exactly what the row describes on the input side: it declares where an asset sits on the Earth and saves that alignment against the map. The transform is not published anywhere a second system could read it, and no map version or lifecycle is exposed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, the Georeference tool",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can use the Georeference tool to ensure the asset's location matches its real-world position."
+        },
+        {
+          "url": "https://apps.apple.com/us/app/scaniverse-3d-scanner/id1541433223",
+          "title": "Scaniverse on the App Store, Localize section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Localize: Test Niantic VPS 2.0 in app, deploy with NSDK."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "No coverage area is declared for a capture or an asset in anything the user can read or export.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Scaniverse documentation, the Georeference tool",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can use the Georeference tool to ensure the asset's location matches its real-world position."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "out-of-scope",
+      "note": "Scaniverse is assessed here as phone and 360-camera capture processing, asset inspection and localization playback tools. The subject does not issue or exchange trust claims whose establishment a relying party evaluates; reconstruction confidence is a different quantity.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "out-of-scope",
+      "note": "Scaniverse is assessed here as phone and 360-camera capture processing, asset inspection and localization playback tools. The subject's scene or model data types are not a vocabulary for identity claims exchanged with a relying party.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "out-of-scope",
+      "note": "Scaniverse is assessed here as phone and 360-camera capture processing, asset inspection and localization playback tools. The subject is not an identity-presentation system with pairwise relationship identifiers and correlation guarantees.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.encryption",
+      "level": "out-of-scope",
+      "note": "Scaniverse is assessed here as phone and 360-camera capture processing, asset inspection and localization playback tools. Image, geometry and device processing do not define recipient identity keys or confidential identity delivery.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.key-lifecycle",
+      "level": "out-of-scope",
+      "note": "Scaniverse is assessed here as phone and 360-camera capture processing, asset inspection and localization playback tools. The subject does not govern identity-control key rotation, revocation or recovery; account administration belongs to its host.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "out-of-scope",
+      "note": "Scaniverse is assessed here as phone and 360-camera capture processing, asset inspection and localization playback tools. The subject does not issue portable credentials with a post-issuance status-discovery mechanism.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "out-of-scope",
+      "note": "Scaniverse is assessed here as phone and 360-camera capture processing, asset inspection and localization playback tools. Captured appearance and inferred training exposure are not runtime environmental illumination estimates supplied to content.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "out-of-scope",
+      "note": "Scaniverse is assessed here as phone and 360-camera capture processing, asset inspection and localization playback tools. Offline calibration targets or reference photos do not expose runtime physical-marker detection with tracked poses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "partial",
+      "note": "Localization playback records device movement and camera input for repeated testing; the read guide does not specify an interoperable time-associated pose sequence format.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Advanced Tools — Scaniverse",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "It captures device movement and camera input so you can test whether existing assets localize reliably."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "out-of-scope",
+      "note": "Scaniverse is assessed here as phone and 360-camera capture processing, asset inspection and localization playback tools. Editor selection or image masking is not an exposed runtime picking interface that returns the intersected scene object or geometry.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.text",
+      "level": "out-of-scope",
+      "note": "Scaniverse is assessed here as phone and 360-camera capture processing, asset inspection and localization playback tools. Prompt strings or command-line parameters are authoring inputs, not a defined runtime character-entry interface for scene applications.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "out-of-scope",
+      "note": "Scaniverse is assessed here as phone and 360-camera capture processing, asset inspection and localization playback tools. The selected interface is not a display compositor accepting independently shaped image layers and composition properties.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "out-of-scope",
+      "note": "Scaniverse is assessed here as phone and 360-camera capture processing, asset inspection and localization playback tools. Fitted motion and ordinary parenting are not authored node-to-node transform constraints with runtime evaluation rules.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "out-of-scope",
+      "note": "Scaniverse is assessed here as phone and 360-camera capture processing, asset inspection and localization playback tools. Image sequences used as reconstruction observations do not reference synchronized audiovisual media as content within a separately authored scene.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "out-of-scope",
+      "note": "Scaniverse is assessed here as phone and 360-camera capture processing, asset inspection and localization playback tools. Capture extents or a training region do not report the user's usable physical play area and floor-relative reference.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "out-of-scope",
+      "note": "Scaniverse is assessed here as phone and 360-camera capture processing, asset inspection and localization playback tools. The selected reconstruction or sensing interface does not exchange a sound-synthesis model for evaluation during playback.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "out-of-scope",
+      "note": "Scaniverse is assessed here as phone and 360-camera capture processing, asset inspection and localization playback tools. The subject does not publish an exchange of identified spatial zones and typed, temporally scoped events; scene bounds or capture locations are not that protocol.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.consent",
+      "level": "out-of-scope",
+      "note": "Scaniverse is assessed here as phone and 360-camera capture processing, asset inspection and localization playback tools. An application permission dialog or dataset licence does not carry a subject-bound grant with scope, purpose, validity and withdrawal information.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "out-of-scope",
+      "note": "Scaniverse is assessed here as phone and 360-camera capture processing, asset inspection and localization playback tools. Training metrics and processing status are not machine-readable accounts of a recipient evaluating and acting on an arriving subject or claim.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "Scaniverse is assessed here as phone and 360-camera capture processing, asset inspection and localization playback tools. The selected subject does not define arrival between independent destinations; local API setup and asset loading are not pre-arrival admission responses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.frame-timing",
+      "level": "out-of-scope",
+      "note": "Scaniverse is assessed here as phone and 360-camera capture processing, asset inspection and localization playback tools. Offline fitting or ordinary preview playback does not coordinate application frame submission with a predicted headset display time and matching view poses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "out-of-scope",
+      "note": "Scaniverse is assessed here as phone and 360-camera capture processing, asset inspection and localization playback tools. Implementation shaders or learned weights do not make the subject a specified shader language with common execution semantics.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.parametric",
+      "level": "out-of-scope",
+      "note": "Scaniverse is assessed here as phone and 360-camera capture processing, asset inspection and localization playback tools. The selected representation is sampled imagery, points, splats or meshes; it does not carry exact parametric curves and surfaces for another system to evaluate.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "out-of-scope",
+      "note": "Scaniverse is assessed here as phone and 360-camera capture processing, asset inspection and localization playback tools. Gaussian primitives and optimized point samples are a representation, not exchanged emitters with runtime particle simulation parameters.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.style",
+      "level": "out-of-scope",
+      "note": "Scaniverse is assessed here as phone and 360-camera capture processing, asset inspection and localization playback tools. Capture edits and model appearance are not separate metadata-driven rules for selecting scene-feature visibility or color.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "out-of-scope",
+      "note": "Scaniverse is assessed here as phone and 360-camera capture processing, asset inspection and localization playback tools. Offline reconstructed geometry is not a sensing runtime that answers physical-environment ray queries with hit poses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "out-of-scope",
+      "note": "Scaniverse is assessed here as phone and 360-camera capture processing, asset inspection and localization playback tools. The subject does not expose a musical-instrument device or recorded-event input interface with channels, notes and controllers.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "partial",
+      "note": "The documented 360-video workflow reconstructs Gaussian splats and meshes from captured imagery; the public guide describes capture/processing controls but does not expose the Gaussian optimizer or camera-parameter interface.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/360camera/",
+          "title": "Using a 360 Camera with Scaniverse",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "capturing, uploading, and processing scans into meshes and Gaussian splats."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.objectgen",
+      "level": "out-of-scope",
+      "note": "Scaniverse is assessed here as phone and 360-camera capture processing, asset inspection and localization playback tools. This observation-fitting or device-sensing boundary does not synthesize a separate placeable object from a text or single-image prompt.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.privacy",
+      "level": "native",
+      "note": "Scaniverse Sites keeps captured scenes private by default and lets an owner select which scans are included in a shared site. These are explicit publication controls for sensed spatial data.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/faq/scaniverse-lightship-migration",
+          "title": "Niantic Spatial Lightship to Scaniverse Migration FAQ | Niantic Spatial, Inc.",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Private sites by default."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "partial",
+      "note": "Scaniverse documentation specifies a bottom asset-view toggle, a map panel with a movable bullseye, zoom controls and a save/confirm sequence. The quickstart also identifies top and bottom screen controls. This establishes functional panel placement and interaction; the read product documentation does not specify region dimensions or resizing behavior.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/advanced_tools/",
+          "title": "Advanced Scan Review Tools | Niantic Spatial Platform",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Select the white teapot icon at the bottom to switch to a splat view."
+        },
+        {
+          "url": "https://www.nianticspatial.com/docs/scaniverse/quickstart/",
+          "title": "Scaniverse Quickstart | Niantic Spatial Platform",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "at the bottom of your screen."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "native",
+      "note": "The public Scaniverse Web USDZ sample linked by Niantic contains a World transform hierarchy, a gauss volume, a referenced mesh and explicit xformOp matrices. The mesh has an axis-rotation transform under the common World frame, and the volume links its mesh proxy. This proves linked-frame export for the named Web USDZ route, not that every mobile export or capture format retains a pose graph.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.nianticspatial.com/blog/usdz-scaniverse",
+          "title": "Addressing the Robotics Sim-to-Real Gap with USDZ Export in Scaniverse\n| Niantic Spatial, Inc.",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The splat and mesh are packaged together as a USDZ file"
+        },
+        {
+          "url": "https://drive.google.com/file/d/1Mha4CDAYw1bTr54ytM4GliSg6586kfzE/view",
+          "title": "scaniverse usdz gauss",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "custom rel proxy = </World/mesh>"
+        },
+        {
+          "url": "https://drive.google.com/file/d/1Mha4CDAYw1bTr54ytM4GliSg6586kfzE/view",
+          "title": "scaniverse usdz gauss",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "uniform token[] xformOpOrder = [\"xformOp:transform\"]"
+        }
+      ],
+      "direction": "write"
+    }
+  ]
+}

@@ -1,0 +1,2243 @@
+{
+  "subject_id": "unity",
+  "summary": "Unity is a commercial real-time three-dimensional engine and editor. Its own files are not an exchange format: scenes, prefabs and asset bundles are read only by Unity, and an asset bundle is tied to the build target and editor version that wrote it. The base editor covers drawing, scenes, transforms, physics through the built-in engine, audio, level of detail, instancing, text and C# scripting; almost everything a shared world needs on top of that arrives as a separate installable package, so a claim that Unity supports something is usually a claim about a package rather than about the engine. The one part of Unity that is genuinely built for portability is the humanoid rig: a fixed list of named bones and a muscle space that lets an animation authored on one body play on a different body. A standards reader should watch four traps: Unity's Avatar asset is a retargeting map and not an avatar body format; a material is a reference to a shader, so appearance does not survive a move even between Unity's own drawing pipelines, let alone to another renderer; the coordinate system is left-handed while the neutral formats are right-handed; and the two neutral formats this map cares about most, the glTF transfer format and the OpenUSD scene description format, are not read by the base editor at all, one needing an official package and the other only an experimental one.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "native",
+      "note": "The engine draws scenes to pixels itself, but the only pipeline inside the base editor is the Built-In Render Pipeline, which Unity has marked deprecated; the modern pass structure and render graph live in the Scriptable Render Pipeline packages.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/render-pipelines-overview.html",
+          "title": "Unity Manual: Introduction to render pipelines",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity provides three prebuilt render pipelines with different capabilities and performance characteristics, or you can create your own."
+        },
+        {
+          "url": "https://docs.unity3d.com/Manual/render-pipelines.html",
+          "title": "Unity Manual: Render pipelines",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The Built-In Render Pipeline is deprecated and will be made obsolete in a future release."
+        },
+        {
+          "url": "https://docs.unity3d.com/Manual/urp/render-graph-introduction.html",
+          "title": "Unity Manual: Introduction to the render graph system in URP",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The render graph system is a set of APIs from the Core Scriptable Render Pipeline (SRP) package"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "native",
+      "note": "The base editor targets DirectX, Metal, OpenGL and Vulkan depending on the platform, and on the web target it uses WebGL2, with the newer WebGPU interface still marked experimental.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/GraphicsAPIs.html",
+          "title": "Unity Manual: Graphics API support",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity supports DirectX, Metal, OpenGL, and Vulkan graphics APIs, depending on the availability of the API on a particular platform."
+        },
+        {
+          "url": "https://docs.unity3d.com/Manual/WebGPU-features.html",
+          "title": "Unity Manual: Introduction to the WebGPU graphics API",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU is a web graphics API that provides low-level, high-performance access to modern GPU features."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "native",
+      "note": "A material is a reference to a shader plus its property values, and shaders are written in Unity's own shader language or built in Shader Graph, so surface appearance is described in engine terms rather than in any neutral terms.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/materials-introduction.html",
+          "title": "Unity Manual: Introduction to materials",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "You use meshes to describe shapes, and materials to describe the appearance of surfaces."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "native",
+      "note": "The base editor ships direct lighting, shadows, baked lightmaps, light probes and two indirect-light systems, with the newer adaptive probe volumes coming from the Universal and High Definition pipeline packages.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/LightingInUnity.html",
+          "title": "Unity Manual: Introduction to lighting",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity has two global illumination systems, which combine direct and indirect lighting."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.post",
+      "level": "via-extension",
+      "note": "Effects after the main pass come from the volume framework in the Universal Render Pipeline package (com.unity.render-pipelines.universal) or the High Definition one (com.unity.render-pipelines.high-definition); the deprecated built-in pipeline needs the separate Post Processing package (com.unity.postprocessing).",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/urp/Volumes.html",
+          "title": "Unity Manual: Understand volumes in URP",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Each Volume component references a Volume Profile, which contains scene properties in one or more Volume Overrides."
+        },
+        {
+          "url": "https://packages.unity.com/com.unity.postprocessing",
+          "title": "Unity package registry: com.unity.postprocessing",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The post-processing stack (v2) comes with a collection of effects and image filters you can apply to your cameras"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "partial",
+      "note": "Choosing what detail to show is native through two features, Mesh LOD and LOD Group, but nothing in Unity declares a send-first order that another runtime could read; download order is a private matter for the Addressables package.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/LevelOfDetail.html",
+          "title": "Unity Manual: Introduction to level of detail",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity implements two different LOD features"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "none",
+      "note": "No first-party support: a search of the whole Unity 6.5 manual contents list finds no page on splats or radiance fields, and there is no Unity package for them; the well-known solutions are community or asset store work.",
+      "confidence": "reported"
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "partial",
+      "note": "The Alembic package (com.unity.formats.alembic) can bring in and play back point clouds and baked vertex caches, but there is no first-party reader for the usual point cloud files and no voxel or volumetric video support.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.formats.alembic@2.4/manual/index.html",
+          "title": "Alembic for Unity",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Importing data from Meshes, Particle Cloud Points, Curves, and Cameras."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "native",
+      "note": "TextMesh Pro ships inside the editor and draws sharp two and three dimensional text with its own font assets, and a simple Text Mesh component also exists for plain in-world text.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.ugui@2.6/manual/TextMeshPro/index.html",
+          "title": "TextMesh Pro Documentation (Unity UI package)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The TextMesh Pro package is included in the Unity Editor. You do not need to install it."
+        },
+        {
+          "url": "https://docs.unity3d.com/Manual/class-TextMesh.html",
+          "title": "Unity Manual: Text Mesh component reference",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The Text Mesh component generates 3D geometry that displays text strings."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "native",
+      "note": "A viewpoint is a Camera component on a game object, with perspective or orthographic projection and a defined render order; moving and blending between viewpoints in a directed way needs the Cinemachine package (com.unity.cinemachine).",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/CamerasOverview.html",
+          "title": "Unity Manual: Introduction to cameras",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "In Unity, you create a camera by adding a Camera component to a GameObject."
+        },
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/index.html",
+          "title": "Cinemachine package",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "To use the Cinemachine package, you must install it separately from the Unity Editor."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "native",
+      "note": "A scene is a tree of game objects, each with exactly one Transform that holds its place and its parent link, so the graph is strictly a tree with single parents rather than a shared graph.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/class-Transform.html",
+          "title": "Unity Manual: Transforms",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A GameObject always has a Transform component attached: you can’t remove a Transform or create a GameObject without a Transform component."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "native",
+      "note": "Position, rotation and scale compose down the parent chain, but Unity is left-handed with the up axis second, while the glTF transfer format and OpenUSD are right-handed, so every import and export has to flip an axis.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/ScriptReference/Vector3.Cross.html",
+          "title": "Unity Scripting API: Vector3.Cross",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "You can determine the direction of the result vector from the two input vectors using the \"left hand rule\"."
+        },
+        {
+          "url": "https://docs.unity3d.com/Manual/class-Transform.html",
+          "title": "Unity Manual: Transforms",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A GameObject always has a Transform component attached: you can’t remove a Transform or create a GameObject without a Transform component."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "partial",
+      "note": "The base editor reads the older interchange files but not the neutral ones this map cares about: glTF needs the Unity glTFast package (com.unity.cloud.gltfast) and OpenUSD only has an experimental package (com.unity.formats.usd), while Unity's own scene, prefab and asset bundle files travel nowhere else.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/3D-formats.html",
+          "title": "Unity Manual: Model file formats reference",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity can read the following standard 3D file formats:"
+        },
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.cloud.gltfast@6.19/manual/index.html",
+          "title": "Unity glTFast Documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity glTFast is a Package and is installed via the name com.unity.cloud.gltfast in the Package Manager window in Unity"
+        },
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.formats.usd@3.0/manual/index.html",
+          "title": "USD Experimental Package for Unity",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "USD Experimental Package for Unity"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "native",
+      "note": "Meshes have their own vertex layout with two built-in ways of shrinking them, one lowering precision across a project and one packing a single mesh on disk; the compressed geometry codecs used by the transfer format come only with the glTFast package.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/types-of-mesh-data-compression.html",
+          "title": "Unity Manual: Types of mesh data compression",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity provides two ways of compressing meshes."
+        },
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.cloud.gltfast@6.19/manual/index.html",
+          "title": "Unity glTFast Documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Make use of state-of-the art mesh and texture compression methods, like KTX™/Basis Universal, Draco™ and meshoptimizer."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "native",
+      "note": "The importer picks a compressed picture format for each target device, with per-platform overrides, so the same source picture ships in a different form on desktop, phone and console.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/texture-compression-formats.html",
+          "title": "Unity Manual: Texture formats in memory",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Resources for choosing and using texture compression formats on the GPU."
+        },
+        {
+          "url": "https://docs.unity3d.com/Manual/texture-choose-format-by-platform.html",
+          "title": "Unity Manual: Choose a GPU texture format by platform",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Choose suitable GPU texture formats for desktop, iOS and Android platforms."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "conflicts",
+      "note": "Surface appearance will not carry across: the manual has no page on the MaterialX exchange form, and a Unity material breaks even when moved between Unity's own drawing pipelines, which is why the manual tells you to run a converter or see pink objects.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/upgrade-material.html",
+          "title": "Unity Manual: Upgrade material assets to Scriptable Render Pipeline",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "If you don’t upgrade your materials, they appear bright pink in Scene view."
+        },
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.cloud.gltfast@6.19/manual/features.html",
+          "title": "Unity glTFast: Features",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "There are two approximation implementations for transmission in Universal render pipeline."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "native",
+      "note": "Keyframes live in animation clips that import from the interchange files and play back through the Animator, but the state machine that decides which clip plays is a Unity-only asset with no neutral equivalent, and even glTFast warns that imported clips will not be wired up for it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/AnimationClips.html",
+          "title": "Unity Manual: Introduction to animation clips",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Animation clips are one of the core elements of Unity’s animation system."
+        },
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.cloud.gltfast@6.19/manual/features.html",
+          "title": "Unity glTFast: Features",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Animation clips can be imported Mecanim compatible, but they won't be assigned and cannot be played back without further work."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "native",
+      "note": "A rig is an ordinary hierarchy of Transforms driven by a Skinned Mesh Renderer, with a default limit of four bones per vertex that you can raise; Unity draws a line between a free-form rig and the constrained humanoid one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/ConfiguringtheAvatar.html",
+          "title": "Unity Manual: Importing a model with humanoid animations",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "You can also change the maximum number of bones that can influence a given vertex with the Skin Weights property."
+        },
+        {
+          "url": "https://docs.unity3d.com/Manual/class-SkinnedMeshRenderer.html",
+          "title": "Unity Manual: Skinned Mesh Renderer component reference",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Skinned Mesh Renderer component reference"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "native",
+      "note": "Shape deformation comes in from the interchange file as blend shapes on the Skinned Mesh Renderer and can be driven by script or by an animation clip.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/BlendShapes.html",
+          "title": "Unity Manual: Work with blend shapes",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The Inspector window displays the BlendShapes section containing all the blend shapes under the SkinnedMeshRenderer component."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "native",
+      "note": "Repeats of the same mesh and material go out in one draw call, with a lower-level batch renderer group for very large crowds.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/GPUInstancing.html",
+          "title": "Unity Manual: Introduction to GPU instancing",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "GPU instancing is a draw call optimization method that uses a single draw call to render multiple GameObjects that use the same mesh and material."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "partial",
+      "note": "Prefabs give referencing, nesting, variants and per-instance overrides, and several scenes can be open at once, but there is no ordered layer stack that lets separate sources contribute opinions to one scene, and none of it is readable outside Unity.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/PrefabVariants.html",
+          "title": "Unity Manual: Create variations of prefabs",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A prefab variant inherits properties from a base prefab. Overrides in the variant take precedence over the base values."
+        },
+        {
+          "url": "https://docs.unity3d.com/Manual/MultiSceneEditing.html",
+          "title": "Unity Manual: Work with multiple scenes in Unity",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "you can open and edit multiple scenes in the Unity Editor simultaneously"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "native",
+      "note": "One Unity unit is one metre by agreement of the physics and lighting systems, and the model importer has a convert-units switch plus a scale factor for files that were authored to another scale.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/models-preparing.html",
+          "title": "Unity Manual: Preparing your model files for export",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity’s physics and lighting systems expect 1 meter in the game world to be 1 unit in the imported Model file."
+        },
+        {
+          "url": "https://docs.unity3d.com/Manual/FBXImporter-Model.html",
+          "title": "Unity Manual: Model tab Import Settings reference",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity’s physics system expects 1 m in the game world to be 1 unit in the imported file."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "none",
+      "note": "Nothing in the engine carries terms of use with an asset; the manual contents list has no page on rights or licence metadata travelling with content.",
+      "confidence": "reported"
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "none",
+      "note": "There is no signed record of who made an asset; the manual contents list has no page on content credentials or provenance, and no Unity package provides them.",
+      "confidence": "reported"
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "none",
+      "note": "Unity has no portable avatar file; an avatar is just a prefab of skinned meshes. The trap for readers is the name: Unity's Avatar asset is a retargeting map for the animation system, not a description of a body.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/ScriptReference/Avatar.html",
+          "title": "Unity Scripting API: Avatar",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The avatar asset describes the mapping of the character in the Animator"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "native",
+      "note": "The humanoid rig is Unity's agreed bone set: a fixed named list from hips to fingers, eyes and jaw, needing at least fifteen bones, mapped once at import so that clips move between bodies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/ConfiguringtheAvatar.html",
+          "title": "Unity Manual: Importing a model with humanoid animations",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A Humanoid model is a specific structure, containing at least 15 bones organized in a way that loosely conforms to an actual human skeleton."
+        },
+        {
+          "url": "https://docs.unity3d.com/ScriptReference/HumanBodyBones.html",
+          "title": "Unity Scripting API: HumanBodyBones",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Human Body Bones."
+        },
+        {
+          "url": "https://docs.unity3d.com/Manual/AvatarCreationandSetup.html",
+          "title": "Unity Manual: Humanoid Avatar",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The Avatar system is how Unity identifies that a particular animated model is a humanoid, and which parts of the model correspond to the legs, arms, head, and body."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "none",
+      "note": "Unity names no expressions and no mouth shapes for speech; faces are raw blend shapes whose names come from whoever modelled them, and the manual contents list has no page on the subject.",
+      "confidence": "reported"
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "native",
+      "note": "This is Unity's strongest avatar feature: once each model has a configured humanoid Avatar, a clip plays on a different body without renaming bones, because motion is held in a normalised muscle space rather than in raw bone rotations. Free-form rigs cannot retarget, and the muscle space is Unity's own, so it does not travel to another runtime.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/Retargeting.html",
+          "title": "Unity Manual: Retarget humanoid animation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Use retargeting to apply the same animation to different humanoid models without having to restructure skeletons or rename bones."
+        },
+        {
+          "url": "https://docs.unity3d.com/Manual/MuscleDefinitions.html",
+          "title": "Unity Manual: Avatar Muscle & Settings tab reference",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity’s animation system allows you to control the range of motion of different bones using Muscles"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "partial",
+      "note": "On a humanoid rig you can ask for the Transform of a named bone and parent an item to it, which is a usable attachment point, but Unity defines no set of attachment points and no way for a worn item to declare where it belongs, so nothing survives a transfer.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/ScriptReference/Animator.GetBoneTransform.html",
+          "title": "Unity Scripting API: Animator.GetBoneTransform",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The human bone to be queried. See the HumanBodyBones enum for a list of possible values."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "partial",
+      "note": "Unity has general level of detail machinery that can cut polygons, materials and renderer count as an object shrinks on screen, but it ships no reduced avatar form for crowds and no agreed way for an avatar to say which reduced form to use.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/LevelOfDetail.html",
+          "title": "Unity Manual: Introduction to level of detail",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Reduce the number of Mesh Renderer components."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "none",
+      "note": "Nothing ties an avatar to a checkable identity; the Authentication package signs a player in to Unity's own services but knows nothing about the avatar they wear.",
+      "confidence": "reported"
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "native",
+      "note": "The base editor carries two engines, PhysX for three dimensions and Box2D for two; two more, the data-oriented Unity Physics package (com.unity.physics) and Havok Physics for Unity (com.havok.physics), are optional installs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/PhysicsOverview.html",
+          "title": "Unity Manual: Built-in 3D physics",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity’s default built-in 3D physics system is an integration of the Nvidia PhysX engine."
+        },
+        {
+          "url": "https://docs.unity3d.com/Manual/physics-integrations.html",
+          "title": "Unity Manual: Physics integrations in Unity",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "If your project uses Unity’s Data-Oriented Technology Stack (DOTS), you need to install the Unity Physics package."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "native",
+      "note": "Contact shapes are separate components from the drawn mesh: simple boxes, spheres and capsules, a mesh collider that follows the drawn shape, a wheel collider, and compounds made from several shapes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/collider-shapes-introduction.html",
+          "title": "Unity Manual: Introduction to collider shapes",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Colliders are available in different shape configurations. There are three main shape types for colliders:"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "native",
+      "note": "Five joint components ship in the base editor, from a hinge and a spring to a fully configurable one, plus an articulation body for chains of linked parts.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/Joints.html",
+          "title": "Unity Manual: Introduction to joints",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity provides the following joint components that apply different forces and limits to Rigidbody components"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.material",
+      "level": "native",
+      "note": "A Physics Material asset sets grip and bounce on a collider surface, with rules for how two touching surfaces combine their values.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/class-PhysicsMaterial.html",
+          "title": "Unity Manual: Physics Material asset reference",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The material defines properties on the collider’s surface, such as friction and bounciness."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.determinism",
+      "level": "via-extension",
+      "note": "Only the optional data-oriented package claims same-in same-out behaviour; Unity makes no such claim for the default built-in engine and warns that a frame-rate-dependent step makes it non-deterministic, while the Havok package is deterministic but keeps hidden state, so a rolled-back world will not replay the same way.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.physics@1.4/manual/design.html",
+          "title": "Unity Physics: Design philosophy",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity Physics is a completely deterministic rigid body dynamics and spatial query system, written entirely in high performance C# using ECS best practices."
+        },
+        {
+          "url": "https://docs.unity3d.com/ScriptReference/Physics.Simulate.html",
+          "title": "Unity Scripting API: Physics.Simulate",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "your simulation will be non-deterministic because of the unpredictable fluctuations in framerate that can arise"
+        },
+        {
+          "url": "https://docs.unity3d.com/Packages/com.havok.physics@1.4/manual/faq.html",
+          "title": "Havok Physics for Unity: Frequently Asked Questions",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Havok Physics for Unity is a deterministic but stateful engine."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "partial",
+      "note": "Only cloth is simulated, and only on a skinned mesh for character clothing; there is no general deformable body in the base editor or in Unity's physics packages.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/class-Cloth.html",
+          "title": "Unity Manual: Cloth",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The Cloth component works with the Skinned Mesh Renderer to provide a physics-based solution for simulating fabrics."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "native",
+      "note": "Any collider can be marked as a trigger, and entering, staying in or leaving it calls a script function.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/collider-interactions.html",
+          "title": "Unity Manual: Collider interactions",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The two essential function types for collision interaction are OnCollision and OnTrigger"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "native",
+      "note": "Sound is placed by an Audio Source component and picked up by an Audio Listener, with distance falloff curves, a blend between flat and placed sound, and a pitch shift for moving sources.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/AudioOverview.html",
+          "title": "Unity Manual: Audio overview",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "To simulate the effects of position, Unity requires sounds to originate from Audio Sources attached to objects."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "partial",
+      "note": "What is native is the socket, not the technique: Unity defines a spatializer plug-in interface and reads whole-sphere sound files in the standard channel order and normalisation, but ships no ear-model spatializer and no decoder of its own, so real direction rendering needs a third-party plug-in such as those from Meta, Steam, Microsoft or Qualcomm.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/VRAudioSpatializer.html",
+          "title": "Unity Manual: Audio spatializers in XR",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity doesn’t provide any built-in spatializer plug-ins itself, but several plug-in implementations are available in third-party 3D audio SDKs."
+        },
+        {
+          "url": "https://docs.unity3d.com/Manual/AmbisonicAudio.html",
+          "title": "Unity Manual: Introduction to ambisonic audio",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "There are no built-in decoders included with Unity"
+        },
+        {
+          "url": "https://docs.unity3d.com/Manual/AmbisonicAudio.html",
+          "title": "Unity Manual: Introduction to ambisonic audio",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "import a multi-channel B-format WAV file with ACN component ordering, and SN3D normalization"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "partial",
+      "note": "Reverb zones, reverb filters and mixer effects colour a space, but they are hand-placed by an artist: Unity states plainly that it does not work echoes out from the shape of the scene.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/AudioOverview.html",
+          "title": "Unity Manual: Audio overview",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity can’t calculate echoes purely from scene geometry, but you can simulate them by adding Audio Filters to objects."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "none",
+      "note": "Nothing in the engine muffles a sound because a wall is in the way; you have to cast your own rays and drive a low-pass filter, or bring in a third-party spatializer that does it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/AudioOverview.html",
+          "title": "Unity Manual: Audio overview",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity can’t calculate echoes purely from scene geometry, but you can simulate them by adding Audio Filters to objects."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "partial",
+      "note": "The streaming setting on a sound clip reads from local disk, not from the network, and is easy to mistake for network delivery; fetching sound over the network is a plain web request, and there is no adaptive delivery layer.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/class-AudioClip.html",
+          "title": "Unity Manual: Audio Clip Import Settings reference",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "buffer compressed data that’s incrementally read from the disk and decoded spontaneously"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "via-extension",
+      "note": "Live voice comes from the Vivox package (com.unity.services.vivox), a hosted Unity service; the engine itself only offers raw microphone capture.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://packages.unity.com/com.unity.services.vivox",
+          "title": "Unity package registry: com.unity.services.vivox",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity's voice and text chat service for multiplayer communication offers voice chat and direct message text service with a managed hosted solution."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "via-extension",
+      "note": "There is no networking in the base editor and more than one package to choose from: Netcode for GameObjects (com.unity.netcode.gameobjects) shares state through network variables and remote calls, while Netcode for Entities (com.unity.netcode) sends snapshots of data-oriented entities.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.netcode.gameobjects@2.13/manual/index.html",
+          "title": "Netcode for GameObjects",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "You can send GameObjects and world data across a networking session to many players at once."
+        },
+        {
+          "url": "https://packages.unity.com/com.unity.netcode",
+          "title": "Unity package registry: com.unity.netcode",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity's Data Oriented Technology Stack (DOTS) multiplayer netcode layer - a high level netcode system built on entities."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "via-extension",
+      "note": "Netcode for GameObjects offers two models, one server deciding everything or authority split across clients with one of them acting as session owner; every networked object has exactly one authority.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.netcode.gameobjects@2.13/manual/terms-concepts/authority.html",
+          "title": "Netcode for GameObjects: Authority",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Netcode for GameObjects provides two authority models: server authority and distributed authority."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "partial",
+      "note": "Netcode for GameObjects gives you a per-object visibility callback you must write yourself and assumes everything is visible to everyone if you do not; there is no built-in rule for deciding what each client needs. The entity-based package adds relevance and importance settings.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.netcode.gameobjects@2.13/manual/basics/object-visibility.html",
+          "title": "Netcode for GameObjects: Object visibility",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "If NetworkObject.CheckObjectVisibility isn't assigned, then Netcode for GameObjects assumes it's visible to all clients."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.prediction",
+      "level": "partial",
+      "note": "This is a real split inside Unity: the game-object package says outright that it does not do full prediction with rollback and replay, only a lighter guess-and-correct scheme, while the entity-based package does run the full loop.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.netcode.gameobjects@2.13/manual/advanced-topics/client-anticipation.html",
+          "title": "Netcode for GameObjects: Client anticipation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Netcode for GameObjects doesn't support full client-side prediction and reconciliation, but it does support client anticipation"
+        },
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.netcode@1.14/manual/intro-to-prediction.html",
+          "title": "Netcode for Entities: Introduction to prediction",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Client prediction allows clients to use their own inputs to locally simulate the game, without waiting for the server's simulation result."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "via-extension",
+      "note": "Unity Transport (com.unity.transport) sits under both netcode packages and runs over plain datagram sockets or web sockets, with or without encryption; the message format on the wire is Unity's own, so a non-Unity client cannot join.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.transport@2.7/manual/index.html",
+          "title": "About Unity Transport",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "over either UDP sockets or WebSockets. Both can be setup with or without encryption"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.media",
+      "level": "via-extension",
+      "note": "Live sound and picture streams come from the WebRTC package (com.unity.webrtc) and the Render Streaming package built on it, not from the engine.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.webrtc@3.0/manual/index.html",
+          "title": "WebRTC for Unity",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebRTC for Unity is a package that allows WebRTC to be used in Unity."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "via-extension",
+      "note": "Joining a running world is handled by the Multiplayer Services package (com.unity.services.multiplayer), which bundles sessions, lobbies, matchmaking and a relay that passes traffic through a Unity server, with sign-in from the Authentication package.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://packages.unity.com/com.unity.services.multiplayer",
+          "title": "Unity package registry: com.unity.services.multiplayer",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The Multiplayer Services package is a one-stop solution for adding multiplayer elements to a game developed in Unity."
+        },
+        {
+          "url": "https://docs.unity.com/ugs/en-us/manual/relay/manual/introduction",
+          "title": "Unity Relay",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "the Relay service provides connectivity through a universal Relay server acting as a proxy"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "none",
+      "note": "There is no way to leave one world and arrive in another keeping your state; a Unity session ends and a new one begins, and reconnection support only restores a player into the same session.",
+      "confidence": "reported"
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "via-extension",
+      "note": "The Friends package (com.unity.services.friends) tracks relationships and who is online, but only inside one project's Unity service; there is no view across operators.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://packages.unity.com/com.unity.services.friends",
+          "title": "Unity package registry: com.unity.services.friends",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The Friends service allows you to boost player engagement by providing players with a social system that works well with other Unity services."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "none",
+      "note": "Unity names no places and resolves no names. The nearest thing is a relay join code, which points at one running session rather than at a world, and dies with it.",
+      "confidence": "reported"
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "partial",
+      "note": "Lobbies and matchmaking can find running sessions, but only those belonging to the same project inside Unity's own service; nothing finds worlds, nodes or services run by anyone else.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://packages.unity.com/com.unity.services.multiplayer",
+          "title": "Unity package registry: com.unity.services.multiplayer",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The Multiplayer Services package is a one-stop solution for adding multiplayer elements to a game developed in Unity."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "via-extension",
+      "note": "The netcode packages keep a shared tick and a pair of clocks, one local and one for the server, so events can be ordered despite transmission delay; the base editor has only a local frame clock.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.netcode.gameobjects@2.13/manual/advanced-topics/networktime-ticks.html",
+          "title": "Netcode for GameObjects: NetworkTime and ticks",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "NetworkTime allows to use time while considering those transmission delays."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "via-extension",
+      "note": "The Authentication package (com.unity.services.authentication) issues a player identifier for Unity's own services, optionally linked to a platform account; it is not a portable or self-owned identifier.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://packages.unity.com/com.unity.services.authentication",
+          "title": "Unity package registry: com.unity.services.authentication",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Client SDK offering player identity management for Unity Gaming Services."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "none",
+      "note": "Unity defines no way to express a checkable claim about a person or thing, and no Unity package reads one.",
+      "confidence": "reported"
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "none",
+      "note": "There is no protocol in Unity for asking for and presenting claims; sign-in goes to Unity's own service or to a platform account provider.",
+      "confidence": "reported"
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "none",
+      "note": "Nothing states what a subject may do in a form a party that did not issue it could check; permissions in a Unity game are whatever that game's own code decides.",
+      "confidence": "reported"
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "none",
+      "note": "There is no mechanism for revealing only part of what is known about a user to a receiving world.",
+      "confidence": "reported"
+    },
+    {
+      "capability_id": "identity.social",
+      "level": "via-extension",
+      "note": "The Friends package holds relationships, but they belong to one project inside Unity's service and cannot be carried anywhere else.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://packages.unity.com/com.unity.services.friends",
+          "title": "Unity package registry: com.unity.services.friends",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "your players can send and receive friend requests"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "none",
+      "note": "The runtime does not read or act on licence terms at the moment content is used; nothing in the manual or the package list covers this.",
+      "confidence": "reported"
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "none",
+      "note": "Unity's cross-platform layer has no place on the Earth: AR Foundation states that the geographic anchors Apple's platform offers are not supported, and the sample that uses them drops to platform code.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.xr.arfoundation@6.6/manual/samples/arkit/geo-anchors.html",
+          "title": "AR Foundation: Geo anchors sample",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "ARKit's ARGeoAnchors aren't yet supported by AR Foundation."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "none",
+      "note": "Unity has one scene frame in metres and no notion of a named Earth reference frame; projects that need one bring in a third-party plug-in.",
+      "confidence": "reported"
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "via-extension",
+      "note": "The AR Foundation package (com.unity.xr.arfoundation) provides an anchor as a tracked position and rotation you parent content to, so content stays put when tracking shifts.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.xr.arfoundation@6.6/manual/features/anchors/introduction.html",
+          "title": "AR Foundation: Introduction to anchors",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "An anchor is a tracked Pose (position and rotation) that allows you to place mixed reality content at known coordinates in the physical world."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "partial",
+      "note": "AR Foundation has both a save-and-load anchor API and a shared anchor API, but it says plainly that an anchor saved on one platform cannot be loaded on another, and sharing is only offered by some providers, so the interface is common while the anchors are not.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.xr.arfoundation@6.6/manual/features/anchors/persistent-anchors.html",
+          "title": "AR Foundation: Persistent anchors",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "you can't save an anchor on one platform and load it on another platform"
+        },
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.xr.arfoundation@6.6/manual/features/anchors/shared-anchors.html",
+          "title": "AR Foundation: Shared anchors",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Some platforms implement a shared anchors API that enables you to share anchors between colocated users."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.vps",
+      "level": "none",
+      "note": "Unity does not recover a precise pose from camera pictures; that comes from platform or vendor plug-ins outside Unity's own packages.",
+      "confidence": "reported"
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "none",
+      "note": "No Unity package streams large Earth data by tile; projects that need it install a third-party plug-in.",
+      "confidence": "reported"
+    },
+    {
+      "capability_id": "geo.indoor",
+      "level": "partial",
+      "note": "AR Foundation senses interiors rather than describing them: it finds flat surfaces, builds meshes with semantic labels on supporting platforms, and detects bounding boxes, but there is no structured description of a building that could be authored or exchanged.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.xr.arfoundation@6.6/manual/features/meshing/classification.html",
+          "title": "AR Foundation: Mesh classification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "you can enable mesh classification on supported platforms to apply semantic labels of detected meshes"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "via-extension",
+      "note": "Immersive sessions run through the XR Plug-in Management package plus a provider plug-in; the cross-vendor route is the OpenXR Plugin package (com.unity.xr.openxr), and a project setting decides whether the app enters the immersive mode at start-up or later under script control.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.xr.openxr@1.16/manual/index.html",
+          "title": "OpenXR Plugin",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an open, royalty-free standard developed by Khronos that aims to simplify AR/VR development"
+        },
+        {
+          "url": "https://docs.unity3d.com/Manual/xr-plugin-management.html",
+          "title": "Unity Manual: XR Plug-in Management settings",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Whether the game or application starts in XR mode immediately."
+        },
+        {
+          "url": "https://docs.unity3d.com/Manual/XRPluginArchitecture.html",
+          "title": "Unity Manual: XR architecture",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "XR subsystems define a common interface for XR features."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "via-extension",
+      "note": "Buttons, sticks and hand poses reach the app through the Input System package bound to OpenXR interaction profiles, with a lower-level device and node API in the editor's own XR module; the older input manager is not supported with OpenXR.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/xr-input-overview.html",
+          "title": "Unity Manual: XR input options",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "When you use the OpenXR plug-in, you must use the Input System. The Input Manager is not supported."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "via-extension",
+      "note": "Jointed hand poses come from the XR Hands package (com.unity.xr.hands), which needs a provider plug-in that supplies the data.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/xr-input-overview.html",
+          "title": "Unity Manual: XR input options",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The XR Hands package provides access to hand tracking data from XR devices that support it."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.eye",
+      "level": "via-extension",
+      "note": "Gaze arrives as a pose through the OpenXR Plugin's support for the Khronos eye tracking extension; Unity itself adds no privacy handling beyond what the platform enforces.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.xr.openxr@1.16/manual/features/eyegazeinteraction.html",
+          "title": "OpenXR Plugin: Eye Gaze Interaction",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity OpenXR provides support for the Eye Tracking Interaction extension specified by Khronos."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "native",
+      "note": "The editor's built-in XR module can send a touch pulse of a given strength and length to a device, though the manual notes the length argument only works on some hardware; higher-level haptic components come with the XR Interaction Toolkit package.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/ScriptReference/XR.InputDevice.SendHapticImpulse.html",
+          "title": "Unity Scripting API: XR.InputDevice.SendHapticImpulse",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Sends a haptic impulse to a device."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "partial",
+      "note": "Apps learn what a device can do by asking which subsystems a provider plug-in has implemented, and AR Foundation publishes support tables per feature, but the answers are per-provider rather than a single agreed description of a client device.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/XRPluginArchitecture.html",
+          "title": "Unity Manual: XR architecture",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "An XR provider plug-in implements one or more interfaces called subsystems."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "native",
+      "note": "World rules are written in C# and run either on a managed runtime with just-in-time compilation or turned ahead of time into native code, which is required on several platforms.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/scripting-backends.html",
+          "title": "Unity Manual: Scripting back ends",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "In Unity, the scripting back end is the runtime technology that compiles and executes your C# scripts."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "via-extension",
+      "note": "Two packages offer node graphs, Unity Behavior (com.unity.behavior) for behaviour trees and Visual Scripting (com.unity.visualscripting) for general logic, but both produce Unity assets that only Unity can run, so interactivity does not travel with an asset.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.behavior@1.0/manual/index.html",
+          "title": "About Unity Behavior",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity Behavior is a visual tool for authoring behaviors that control non-player characters (NPCs), gameplay logic, objects, and scene interactions in Unity."
+        },
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.visualscripting@1.9/manual/index.html",
+          "title": "About Visual Scripting",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Use Visual Scripting to create logic for games or applications without hand-coded C# scripts."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "none",
+      "note": "Unity has no way to run untrusted guest content safely. Code must be compiled into the player, asset bundles carry data only, and the manual warns that even data from an untrusted bundle can be crafted to exploit the runtime and tells developers never to accept bundles uploaded by users.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/AssetBundles-Integrity.html",
+          "title": "Unity Manual: Verifying downloaded AssetBundles",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "While AssetBundles can’t contain executable code, altered serialized data might exploit vulnerabilities in your application code or the Unity runtime."
+        },
+        {
+          "url": "https://docs.unity3d.com/Manual/AssetBundles-Integrity.html",
+          "title": "Unity Manual: Verifying downloaded AssetBundles",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Don’t allow users to upload binary AssetBundle files directly."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "via-extension",
+      "note": "The ML-Agents package (com.unity.ml-agents) lets a scene act as a training and inference environment for learned agents, but it is a training toolkit rather than a way for an outside agent to join a running world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.ml-agents@4.1/manual/index.html",
+          "title": "ML-Agents Overview",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "ML-Agents enable games and simulations to serve as environments for training intelligent agents in Unity."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "none",
+      "note": "Unity measures memory and time with profiler tools but does not bound them: there is no mechanism to cap what a piece of guest content may use, because there is no guest content model in the first place.",
+      "confidence": "reported"
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "none",
+      "note": "Nothing survives a restart by default. The Cloud Save package stores a player's own data in Unity's service, but there is no notion of a world whose state persists.",
+      "confidence": "reported"
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "via-extension",
+      "note": "The Economy package (com.unity.services.economy) holds currencies and a player's items, but only within one project's Unity service, so nothing a player owns travels to another world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://packages.unity.com/com.unity.services.economy",
+          "title": "Unity package registry: com.unity.services.economy",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "seamless purchases, currency conversion, player inventory management, and more"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "partial",
+      "note": "Settings are kept locally and unencrypted in a per-application store, and the Cloud Save package can sync them across a player's devices, but only for that one application; nothing follows the user between applications or vendors.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/ScriptReference/PlayerPrefs.html",
+          "title": "Unity Scripting API: PlayerPrefs",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "PlayerPrefs is a class that stores Player preferences between game sessions."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "partial",
+      "note": "Unity computes a true hash of a bundle's content and keys its download cache by a version hash, so integrity and cache identity are hash-based, but assets are still fetched by address or file name rather than by content hash.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/AssetBundles-Integrity.html",
+          "title": "Unity Manual: Verifying downloaded AssetBundles",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The AssetFileHash in the .manifest file, accessible via BuildPipeline.GetHashForAssetBundle , is a true hash of the content."
+        },
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.addressables@4.0/manual/index.html",
+          "title": "Addressables package",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "you can use that asset's address to load it locally or from a content delivery network, rather than using its file name"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "native",
+      "note": "The editor builds a runnable player for desktop, phone, console, headset and the web, where it emits WebAssembly, and packs extra content into asset bundles. The catch for interoperability is that a bundle is tied to the build target it was made for, and to the editor version that made it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/AssetBundlesIntro.html",
+          "title": "Unity Manual: Introduction to AssetBundles",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "AssetBundles are platform-specific because Unity builds asset data into formats based on the BuildTarget you set when you create a build"
+        },
+        {
+          "url": "https://docs.unity3d.com/Manual/webgl-intro.html",
+          "title": "Unity Manual: Web introduction",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The Web option in the Unity Editor allows you to publish content as JavaScript programs which use HTML5/JavaScript, WebAssembly, WebGL rendering API"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "via-extension",
+      "note": "Cloud Content Delivery (com.unity.services.ccd.management) hosts and serves live content worldwide, and the Addressables package can load remote content from it or from any other host.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://packages.unity.com/com.unity.services.ccd.management",
+          "title": "Unity package registry: com.unity.services.ccd.management",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Cloud Content Delivery (CCD) is a managed cloud service that hosts and delivers live content to your application's users worldwide."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "via-extension",
+      "note": "The Addressables package ships changed content without a new install by rebuilding only what changed against a saved state file; the hard limit is that this moves assets only, since bundles cannot carry code changes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.addressables@4.0/manual/content-update-builds-overview.html",
+          "title": "Addressables: Introduction to update builds",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "you should only modify assets, not code, because AssetBundles contain only asset data and can't include code changes"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "none",
+      "note": "Unity ships a test framework for a project's own tests but publishes no suite that proves the engine matches an outside specification. Where conformance exists in Unity's stack it belongs to someone else: the OpenXR plug-in relies on runtimes that Khronos has certified.",
+      "confidence": "reported"
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "Unity is a general engine whose first-party surface is the editor, the manual and the packages Unity publishes, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/LevelOfDetail.html",
+          "title": "Unity Manual: Introduction to level of detail",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity implements two different LOD features"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "Unity is a general engine whose first-party surface is the editor, the manual and the packages Unity publishes, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/LevelOfDetail.html",
+          "title": "Unity Manual: Introduction to level of detail",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity implements two different LOD features"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "Unity is a general engine whose first-party surface is the editor, the manual and the packages Unity publishes, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/LevelOfDetail.html",
+          "title": "Unity Manual: Introduction to level of detail",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity implements two different LOD features"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "none",
+      "note": "No first-party support: a search of the whole Unity 6.5 manual contents finds no page on splats or radiance fields and there is no Unity package for them. The well-known solutions are community and asset-store work, which is worth naming because the device platform that generates splats on a phone points its own developers at exactly such a plug-in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/LevelOfDetail.html",
+          "title": "Unity Manual: Introduction to level of detail",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity implements two different LOD features"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "out-of-scope",
+      "note": "Unity is a general engine whose first-party surface is the editor, the manual and the packages Unity publishes, and it delivers no captured scene, progressively by region and detail or otherwise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/LevelOfDetail.html",
+          "title": "Unity Manual: Introduction to level of detail",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity implements two different LOD features"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "Unity is a general engine whose first-party surface is the editor, the manual and the packages Unity publishes, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/LevelOfDetail.html",
+          "title": "Unity Manual: Introduction to level of detail",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity implements two different LOD features"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "via-extension",
+      "note": "Points come in through the Alembic package, which imports particle cloud points alongside meshes, curves and cameras and plays them back. There is no first-party reader for the formats a scanner writes and no compression, so this is a cache playback path rather than a point cloud pipeline.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.formats.alembic@2.4/manual/index.html",
+          "title": "Unity Manual: Alembic package",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Importing data from Meshes, Particle Cloud Points, Curves, and Cameras."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "Unity is a general engine whose first-party surface is the editor, the manual and the packages Unity publishes, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/LevelOfDetail.html",
+          "title": "Unity Manual: Introduction to level of detail",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity implements two different LOD features"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "out-of-scope",
+      "note": "Unity is a general engine whose first-party surface is the editor, the manual and the packages Unity publishes, and it produces no image from a viewing position that no capture camera occupied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/LevelOfDetail.html",
+          "title": "Unity Manual: Introduction to level of detail",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity implements two different LOD features"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "via-extension",
+      "note": "The same package is the answer here: a baked vertex cache plays back at the rate it was recorded, which is a captured scene changing over time carried as one file rather than a folder of frames. It is a general animation cache, not a capture format, and nothing states a capture's own timing metadata.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.formats.alembic@2.4/manual/index.html",
+          "title": "Unity Manual: Alembic package",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Importing data from Meshes, Particle Cloud Points, Curves, and Cameras."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "Unity is a general engine whose first-party surface is the editor, the manual and the packages Unity publishes, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/LevelOfDetail.html",
+          "title": "Unity Manual: Introduction to level of detail",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity implements two different LOD features"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "Unity is a general engine whose first-party surface is the editor, the manual and the packages Unity publishes, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/LevelOfDetail.html",
+          "title": "Unity Manual: Introduction to level of detail",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity implements two different LOD features"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "Unity is a general engine whose first-party surface is the editor, the manual and the packages Unity publishes, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/LevelOfDetail.html",
+          "title": "Unity Manual: Introduction to level of detail",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity implements two different LOD features"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "Unity is a general engine whose first-party surface is the editor, the manual and the packages Unity publishes, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/LevelOfDetail.html",
+          "title": "Unity Manual: Introduction to level of detail",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity implements two different LOD features"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "Unity is a general engine whose first-party surface is the editor, the manual and the packages Unity publishes, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/LevelOfDetail.html",
+          "title": "Unity Manual: Introduction to level of detail",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity implements two different LOD features"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "Unity is a general engine whose first-party surface is the editor, the manual and the packages Unity publishes, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/LevelOfDetail.html",
+          "title": "Unity Manual: Introduction to level of detail",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unity implements two different LOD features"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "native",
+      "note": "The panoramic skybox material states its projection rather than assuming one: a mapping property chooses between six sides and a latitude-longitude layout, and an image-type property says whether the picture covers 180 or 360 degrees. That is precisely what this row asks for, and it is in the built-in and universal pipelines but not the high-definition one.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/6000.3/Documentation/Manual/shader-skybox-panoramic.html",
+          "title": "Unity Manual: Panoramic Skybox Shader Material Inspector Window reference",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Specifies the method this Material uses to project the Texture to create the skybox."
+        },
+        {
+          "url": "https://docs.unity3d.com/6000.3/Documentation/Manual/shader-skybox-panoramic.html",
+          "title": "Unity Manual: Panoramic Skybox Shader Material Inspector Window reference",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Latitude Longitude Layout : Uses a cylindrical wrapping method to map the Texture to the skybox."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "via-extension",
+      "note": "The engine itself does not read rooms; the AR Foundation package does, and it generates a mesh from scans of the physical world through the mesh manager and the mesh subsystem. Which platforms supply it, and at what quality, is left to the provider plug-in underneath, so this is support through a named package rather than an engine feature.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.xr.arfoundation@6.6/manual/features/meshing.html",
+          "title": "AR Foundation 6.6 manual, Meshing",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The AR Foundation meshing feature generates a mesh based on scans of the physical world."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "via-extension",
+      "note": "Mesh classification arrived in AR Foundation 6.4 and applies semantic labels to detected meshes, read back per mesh identifier. The label set is the indoor one — ceiling, door, floor, seat, table, wall, window and other — and it works only where the platform underneath supports it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.xr.arfoundation@6.6/manual/features/meshing/classification.html",
+          "title": "AR Foundation 6.6 manual, Mesh classification",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "In AR Foundation 6.4 and newer, you can enable mesh classification on supported platforms to apply semantic labels of detected meshes."
+        },
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.xr.arfoundation@6.6/manual/features/meshing.html",
+          "title": "AR Foundation 6.6 manual, Meshing",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The AR Foundation meshing feature generates a mesh based on scans of the physical world."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "via-extension",
+      "note": "The occlusion manager acquires per-frame images from the platform holding depth or stencil data, with an environment depth mode at four quality settings, optional temporal smoothing, and separate human segmentation stencil and depth textures. The package exposes the platform's depth; it does not define units of its own.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.xr.arfoundation@6.6/manual/features/occlusion/occlusion-manager.html",
+          "title": "AR Foundation 6.6 manual, AR Occlusion Manager component",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The AR Occlusion Manager acquires per-frame images from the AR platform containing depth or stencil data that shaders can use to implement the occlusion effect."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "via-extension",
+      "note": "AR Foundation hides content behind physical objects, and offers both a cheap hard occlusion with a jagged edge and a costlier soft occlusion with a smooth one. It ships as a shader occlusion component and sample material inside the package, not in the engine core.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.xr.arfoundation@6.6/manual/features/occlusion/introduction.html",
+          "title": "AR Foundation 6.6 manual, Introduction to occlusion",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Occlusion allows mixed reality content in your app to appear hidden or partially obscured behind objects in the physical environment."
+        },
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.xr.arfoundation@6.6/manual/features/occlusion/introduction.html",
+          "title": "AR Foundation 6.6 manual, Introduction to occlusion",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "AR Foundation provides support for hard and soft occlusion as outlined in the following sections."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "via-extension",
+      "note": "The engine itself draws nothing of the real room; the AR Foundation package does. Its camera background component renders the device camera video behind the scene and can be switched off, given a custom material and shader, and ordered before or after opaque geometry so that only the pixels virtual content does not cover are drawn. Headset passthrough on top of that comes through further vendor packages, not through AR Foundation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.xr.arfoundation@6.2/manual/features/camera/camera-components.html",
+          "title": "Camera components, AR Foundation 6.2 manual",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The ARCameraBackground component renders video from the device camera as the background of the scene."
+        },
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.xr.arfoundation@6.2/manual/features/camera/camera-components.html",
+          "title": "Camera components, AR Foundation 6.2 manual",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "After Opaques: Selectively render the camera background after opaque geometry, rendering only pixels that are not occluded by opaque geometry in the scene."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.face",
+      "level": "via-extension",
+      "note": "Face tracking is an AR Foundation subsystem, not part of the engine: a face manager component creates a trackable for each detected face, and the platform behind it decides what arrives. Which devices support it and what the stream contains varies by provider, and the privacy terms come from the platform rather than from Unity.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.xr.arfoundation@6.2/manual/features/face-tracking.html",
+          "title": "Face tracking, AR Foundation 6.2 manual",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Face tracking functionality allows your app to detect and track human faces in mixed reality scenes. The AR Face Manager component controls face tracking functionality in your app, and creates ARFace trackables for each detected face."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "via-extension",
+      "note": "Navigation left the engine core and lives in the AI Navigation package, where navigation meshes are created from the scene's own geometry and baked into it, with links and dynamic obstacles on top. The walkable surface really does travel with the scene inside Unity's own format, which is what this row asks; what does not travel is any of it to another engine, and spawn points remain the project's own convention.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.ai.navigation@2.0/manual/index.html",
+          "title": "AI Navigation 2.0 package documentation, Unity",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "These characters use navigation meshes that are created automatically from your Scene geometry."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "partial",
+      "note": "Unity has the shape of the row without the guarantee. A package is named with a unique multi-part identifier in reverse domain notation, and a registry refuses a package whose manifest does not carry one, so within a registry two packages cannot collide. Nothing makes the name permanent or unclaimable outside that registry: the same identifier can be published to a different registry by somebody else, and a private registry can serve anything under it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Manual/upm-manifestPkg.html",
+          "title": "Package manifest, Unity Manual",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A unique multi-part identifier that conforms to the Unity Package Manager naming convention, which uses reverse domain name notation."
+        },
+        {
+          "url": "https://docs.unity3d.com/Manual/upm-manifestPkg.html",
+          "title": "Package manifest, Unity Manual",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "If these properties aren't present, either the registry refuses the package when it's published, or the Package Manager can't fetch or load the package."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "out-of-scope",
+      "note": "Unity is an engine and an editor. Finished content leaves it as a built application, and any review that stands between that application and its audience belongs to the store it ships through, not to Unity.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "AR Foundation gives an application anchors and tracked features from whichever device provider is underneath. Declaring a map of a place with a version, or a transform to another map, is the provider's business and not the engine's.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "via-extension",
+      "note": "Coverage reaches a Unity application only through a provider package: with the ARCore extensions in place, an application asks whether the visual positioning service is available at a given horizontal position before the session starts, and can hide its own entry point where it is not. Unity declares no coverage of its own and offers no common shape for it across providers.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/unity-arf/geospatial/check-vps-availability",
+          "title": "Check VPS availability at the device's current location, ARCore",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Enabling the ARCore API and using AREarthManager.CheckVpsAvailabilityAsync() are necessary to check VPS availability in your app."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.extension",
+      "level": "partial",
+      "note": "UPM packages declare reusable versioned code and data; the captured package description does not settle behavior for content recipients missing a package.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/6000.6/Documentation/Manual/cus-pkg-lp.html",
+          "title": "Unity - Manual: Package creation",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "UPM packages offer modularity, versioning, and reuse across projects."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.color",
+      "level": "partial",
+      "note": "The manual documents linear and gamma color spaces and HDR configuration; the indexed page alone does not establish each surface's declared conversion contract.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/6000.6/Documentation/Manual/graphics-color.html",
+          "title": "Unity - Manual: Color and High Dynamic Range (HDR)",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "linear and gamma color spaces"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.metadata",
+      "level": "partial",
+      "note": "Asset labels carry descriptive organization in the editor; the captured source explicitly limits them to the editor and does not prove runtime domain-metadata exchange.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/6000.6/Documentation/Manual/organizing-assets-with-labels.html",
+          "title": "Unity - Manual: Organize assets with labels",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Labels are an Editor-only way of organizing assets."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "native",
+      "note": "UI Toolkit defines structure through UXML or C#, style through USS and control behavior through events.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/6000.6/Documentation/Manual/UIElements.html",
+          "title": "Unity - Manual: UI Toolkit",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Structure your UI with either UXML or C#."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "native",
+      "note": "Physics.Raycast reports collider intersections with origin, direction and filtering controls for content picking.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/6000.6/Documentation/ScriptReference/Physics.Raycast.html",
+          "title": "Unity - Scripting API: Physics.Raycast",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "The starting point of the ray in world coordinates."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.text",
+      "level": "native",
+      "note": "Editable GUI fields and the platform keyboard interface receive text; native mobile platform limits remain explicit.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/6000.6/Documentation/Manual/MobileKeyboard.html",
+          "title": "Unity - Manual: Mobile Keyboard",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "The keyboard will appear automatically"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.bounds",
+      "level": "partial",
+      "note": "Bounds are attached to colliders, meshes and renderers; the captured in-memory contract does not establish pre-load spatial rejection.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/6000.6/Documentation/ScriptReference/Bounds.html",
+          "title": "Unity - Scripting API: Bounds",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Represents an axis aligned bounding box."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.collection",
+      "level": "native",
+      "note": "Named layers group GameObjects for scene operations and interaction filtering.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/6000.6/Documentation/Manual/Layers.html",
+          "title": "Unity - Manual: Assign GameObjects to layers",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "separate GameObjects in your scenes"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "native",
+      "note": "Constraint components link a GameObject's position, rotation or scale to another GameObject using defined constraint types.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/6000.6/Documentation/Manual/Constraints.html",
+          "title": "Unity - Manual: Constraint components introduction",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "A Constraint component links the position, rotation, or scale"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "partial",
+      "note": "VideoPlayer attaches timed video to a GameObject texture; the captured page does not settle scene-wide audiovisual synchronization rules.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/6000.6/Documentation/Manual/VideoPlayer.html",
+          "title": "Unity - Manual: Video Player",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "attach video files to GameObjects"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "partial",
+      "note": "Scriptable audio generators produce samples at playback time; exchange of a synthesis model is not established, and the captured pipeline excludes Web builds.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/6000.6/Documentation/Manual/audio-scriptable-processors.html",
+          "title": "Unity - Manual: Scriptable audio pipeline",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Create a generator and attach it to an audio source."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "native",
+      "note": "The engine supports compute shaders outside the normal rendering pipeline, with graphics API and platform support conditions.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/6000.6/Documentation/Manual/class-ComputeShader.html",
+          "title": "Unity - Manual: Compute shaders",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "run on the GPU, outside of the normal rendering pipeline."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "native",
+      "note": "Custom shaders consume HLSL and ShaderLab; pipeline-specific bindings are required and do not imply unchanged cross-engine materials.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/6000.6/Documentation/Manual/Shaders.html",
+          "title": "Unity - Manual: Custom shaders",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "High-Level Shader Language (HLSL) and ShaderLab."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "partial",
+      "note": "Particle systems simulate authored effect parameters; the captured page does not establish exchange of emitter descriptions to another runtime.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/6000.6/Documentation/Manual/ParticleSystems.html",
+          "title": "Unity - Manual: Particle effects",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "simulates and renders many small images or Meshes"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "via-extension",
+      "confidence": "verified",
+      "note": "AR Foundation provides the tracked-image manager and ARTrackedImage trackables; device-provider support remains required.",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.xr.arfoundation@6.1/manual/features/image-tracking.html",
+          "title": "Image tracking | AR Foundation | 6.1.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Image tracking allows your app to detect and track 2D images in the environment."
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "via-extension",
+      "confidence": "verified",
+      "note": "AR Foundation ray casts intersect detected physical-environment trackables, with supported hit types determined by the target provider.",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.xr.arfoundation@6.1/manual/features/raycasts.html",
+          "title": "Ray casts | AR Foundation | 6.1.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "calculate the intersection between that ray and detected trackables in the physical environment."
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "via-extension",
+      "confidence": "verified",
+      "note": "AR Foundation exposes device-provided light-estimation data, including supported ambient and directional estimates; fields depend on the provider.",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.xr.arfoundation@6.4/api/UnityEngine.XR.ARFoundation.ARLightEstimationData.html",
+          "title": "Struct ARLightEstimationData\n | AR Foundation | 6.4.3",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "A structure for light estimation information provided by the AR device."
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "via-extension",
+      "confidence": "verified",
+      "note": "The Composition Layers package defines separate compositor layers and lets device plugins add layer types and extensions.",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.xr.compositionlayers@2.0/manual/index.html",
+          "title": "About Composition Layers | XR Composition Layers | 2.0.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The Composition Layers package defines a few common layer types"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.parametric",
+      "level": "via-extension",
+      "confidence": "verified",
+      "note": "The Splines package defines stored curves with a common data model and tools for evaluating and authoring paths.",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/Packages/com.unity.splines@2.8/manual/index.html",
+          "title": "About Splines | Splines | 2.8.4",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "A standard data format and storage model for commonly used splines."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.variant",
+      "level": "native",
+      "confidence": "verified",
+      "note": "Prefab variants preserve alternate authored configurations and select them as distinct prefab assets, with variant overrides taking precedence.",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/6000.0/Documentation/Manual/PrefabVariants.html",
+          "title": "Unity - Manual: Create variations of prefabs",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "A prefab variant inherits properties from a base prefab."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.resolve",
+      "level": "native",
+      "confidence": "verified",
+      "note": "Resources.Load resolves case-insensitive resource paths under Resources folders, excludes file extensions, and returns the matching asset or null.",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Resources.Load.html",
+          "title": "Unity - Scripting API: Resources.Load",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The path is relative to any folder named Resources inside the Assets folder of your project."
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "partial",
+      "confidence": "verified",
+      "note": "XRInputSubsystem exposes provider boundary points when available; the cited method does not itself declare the floor-relative reference-space relation.",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/XR.XRInputSubsystem.TryGetBoundaryPoints.html",
+          "title": "Unity - Scripting API: XR.XRInputSubsystem.TryGetBoundaryPoints",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Gets the list of 3D position values that represents the SDK-set boundary."
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "native",
+      "confidence": "verified",
+      "note": "Animation clips represent time-varying object position and rotation and can be imported or edited in Mecanim. This is scene animation rather than a geodetic trajectory profile.",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/6000.6/Documentation/Manual/animation-mecanim.html",
+          "title": "Unity - Manual: Mecanim Animation system",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "An animation clip contains information about how a character or GameObject changes its position, rotation, or other properties over time."
+        }
+      ],
+      "direction": "both"
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "native",
+      "confidence": "verified",
+      "note": "Unity scene serialization carries Transform local position/rotation/scale and parent/child file references. Loading the scene reconstructs its linked object frames.",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/6000.6/Documentation/Manual/TextSceneFormat.html",
+          "title": "Unity - Manual: Text-based scene files",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "the text data can be generated and parsed by tools"
+        },
+        {
+          "url": "https://docs.unity3d.com/6000.6/Documentation/Manual/YAMLSceneExample.html",
+          "title": "Unity 6000.6 YAML scene example",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "m_Children: [] m_Father: {fileID: 0}"
+        },
+        {
+          "url": "https://docs.unity3d.com/6000.6/Documentation/Manual/YAMLSceneExample.html",
+          "title": "Unity 6000.6 YAML scene example",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "m_LocalRotation: {x: 0, y: 0, z: 0, w: 1} m_LocalPosition: {x: 0, y: 1, z: -10}"
+        }
+      ],
+      "direction": "both"
+    }
+  ]
+}

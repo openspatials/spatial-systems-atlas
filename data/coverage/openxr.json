@@ -1,0 +1,2453 @@
+{
+  "subject_id": "openxr",
+  "summary": "The settled way for an application to talk to a headset or a pair of glasses: it covers the session, the frame loop, the tracked spaces, the views to draw, the input actions and touch feedback. It is a ratified Khronos standard with a real conformance test suite and an adopter programme, and the current release is 1.1.62, dated 31 July 2026, so read the version line before you cite it. There are two builds of the same document: one with all ratified extensions and one with all registered extensions, and the second says of itself that it is not a ratified specification. Of the 246 extensions in the registry only 48 are ratified, all 28 Khronos-tagged ones and 20 of the 36 multi-vendor ones, and not one single-vendor extension is ratified. It draws nothing itself: an application cannot even open a session without one of the ratified graphics binding extensions, and there is no sound, no scene, no networking and no identity anywhere in it. Two traps for a standards audience: the six spatial entity extensions ratified in June 2025 give you anchors, planes, markers and persistence but no way to share an anchor with another device or another person, and the only two audio extensions in the whole registry are single-vendor and unratified, so the ratified specification has no audio surface at all.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "out-of-scope",
+      "note": "It draws nothing. It hands the application a chain of images to draw into with a graphics interface of the application's choosing, then composites the submitted layers back to front. Turning geometry into pixels happens entirely outside it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Layers must be drawn with a \"painter’s algorithm,\" with each successive layer potentially overwriting the destination layers whether or not the new layers are virtually closer to the viewer."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "via-extension",
+      "note": "The graphics binding is not in the core at all. Each of the ratified Khronos extensions XR_KHR_vulkan_enable2, XR_KHR_D3D11_enable, XR_KHR_D3D12_enable, XR_KHR_opengl_enable, XR_KHR_opengl_es_enable and XR_KHR_metal_enable adds one binding, and a session cannot be created without exactly one of them in the chain.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unextended OpenXR does not support any graphics APIs natively but provides a number of extensions of which each runtime can support any subset."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/OpenXR-SDK/main/specification/registry/xr.xml",
+          "title": "OpenXR API Registry (xr.xml)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "partial",
+      "note": "There is no lighting or global illumination model. One single-vendor extension that is not ratified, XR_ANDROID_light_estimation, reports the real room's light so that placed objects can be lit to match. How that estimate is used is the renderer's business.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all registered extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This extension allows the application to request data representing the lighting of the real-world environment around the headset."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.post",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "native",
+      "note": "The viewpoint model is the core of the specification: view configurations declare how many views a device has, and the application asks the runtime for the viewer pose and the projection for each one, every frame.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "An application uses xrLocateViews to retrieve the viewer pose and projection parameters needed to render each view for use in a composition projection layer."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "out-of-scope",
+      "note": "No scene tree. What it does have is a graph of tracked spaces that can be located against one another, which is a different thing: it describes where the real world and the device are, not what content exists.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR defines a set of well-known reference spaces that applications use to bootstrap their spatial reasoning."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "partial",
+      "note": "It fixes handedness and the pose form that everything else has to match: a right-handed Cartesian frame, position as a three component vector and rotation as a unit quaternion, with rotation applied before translation. It defines no transform hierarchy for content and no scaling, so a scene graph still has to be built on top.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This API uses a Cartesian right-handed coordinate system."
+        },
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "When using XrPosef the rotation described by orientation is always applied before the translation described by position."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "via-extension",
+      "note": "It defines no container, but the ratified XR_EXT_render_model requires the runtime to hand the application a glTF 2.0 binary file. This is narrow: it covers the models of the device's own controllers and hardware, not application content.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This extension enables the application to retrieve a glTF 2.0 render model asset from a runtime and animate parts of the model."
+        },
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The binary data copied by the xrGetRenderModelAssetDataEXT function must conform to the glTF 2.0 binary format (GLB) and must contain a valid glTF 2.0 asset that passes validation."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "out-of-scope",
+      "note": "Nothing about encoding or compressing meshes for interchange. A ratified spatial entity component returns a three dimensional mesh of the surroundings as plain vertex and index arrays in memory, which is a read-out, not a format.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "out-of-scope",
+      "note": "Image formats belong to the bound graphics interface. The runtime only enumerates which of that interface's formats it will accept for the images the application draws into.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "out-of-scope",
+      "note": "No animation format. The ratified render model extension names the nodes of a device model that the runtime will move, but the movement is a live state read-out, not stored keyframes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "out-of-scope",
+      "note": "No rig definition for content. Tracked joints exist as input, and are scored under hand tracking and under the avatar skeleton row rather than here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "native",
+      "note": "Distance is metres throughout, stated on every vector and pose type. This is the one scale agreement a working group can rely on across every conformant runtime.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A construct representing a position and orientation within a space, with position expressed in meters, and orientation represented as a unit quaternion."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "partial",
+      "note": "There is exactly one agreed skeleton, and it is only a hand: the ratified XR_EXT_hand_tracking fixes 26 named joints from palm and wrist through every finger, in a fixed order. Bodies are covered only by single-vendor extensions that are not ratified and do not agree with each other (from Meta, HTC and ByteDance), so nothing above the wrist transfers.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This extension enables applications to locate the individual joints of hand tracking inputs."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/OpenXR-SDK/main/specification/registry/xr.xml",
+          "title": "OpenXR API Registry (xr.xml)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "partial",
+      "note": "Faces are readable but not portable. Every face extension is single-vendor and unratified, and they use different sets: Meta's two face tracking extensions and a separate viseme extension, Magic Leap's facial expression extension, Google's and ByteDance's own. There is no ratified expression or viseme naming, so a face captured on one runtime does not replay on another.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all registered extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Visemes are the visual representations of the face and mouth while speaking"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/OpenXR-SDK/main/specification/registry/xr.xml",
+          "title": "OpenXR API Registry (xr.xml)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.material",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.determinism",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "via-extension",
+      "note": "One extension, XR_BD_spatial_audio_rendering from ByteDance, lets an application build a sound scene and hand raw audio to the system to place. It is single-vendor and not ratified. In the ratified specification the word audio does not appear at all.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all registered extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This extension allows applications to render spatial audio in a 3D space. It allows applications to create sound scenes, and submit raw audio data which is then processed and rendered by the system."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/OpenXR-SDK/main/specification/registry/xr.xml",
+          "title": "OpenXR API Registry (xr.xml)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "via-extension",
+      "note": "The same single-vendor unratified extension, XR_BD_spatial_audio_rendering, has the system do the placement, and it does not say how. The only other audio extension in the whole registry, XR_OCULUS_audio_device_guid from Oculus, is also unratified and only tells a Windows application which sound device belongs to the headset. Neither has been through Khronos ratification, so there is no agreed way to render direction to the ears.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all registered extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This extension enables the querying of audio device information associated with an OpenXR instance."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/OpenXR-SDK/main/specification/registry/xr.xml",
+          "title": "OpenXR API Registry (xr.xml)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "none",
+      "note": "No room acoustics or reverb anywhere in the registry, ratified or not.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "none",
+      "note": "No sound occlusion or obstruction anywhere in the registry.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.prediction",
+      "level": "out-of-scope",
+      "note": "It predicts, but locally and for one purpose: poses are located at a predicted display time so that what is drawn matches where the head will be. There is no remote state and nothing to reconcile.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.media",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "out-of-scope",
+      "note": "A session here means one application's connection to one runtime on one machine. It is not a connection to a shared world and carries no authentication.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A session represents an application’s intention to display XR content to the user."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "out-of-scope",
+      "note": "It defines a time value and two ratified extensions to convert it to the platform clock, but that is one device's clock. Nothing here orders events between machines.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.social",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "via-extension",
+      "note": "Only through XR_ANDROID_geospatial, a Google extension that is not ratified. It reports latitude, longitude and altitude with an orientation, from a mix of motion tracking, satellite positioning and Google's visual positioning service, and it needs Google account credentials to work. Nothing ratified expresses a pose against the Earth.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all registered extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This extension provides the Geospatial tracking for Google’s Geospatial API, which provides precise geo-location and orientation, and allows the application to place content with respect to the Earth."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/OpenXR-SDK/main/specification/registry/xr.xml",
+          "title": "OpenXR API Registry (xr.xml)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "via-extension",
+      "note": "The same unratified single-vendor extension names one frame and only one: altitude in metres above the WGS84 ellipsoid, with a local frame of east, up and south. There is no way to declare any other reference system, and nothing ratified mentions one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all registered extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The XrGeospatialPoseANDROID structure represents a position and orientation relative to the Earth using the WGS84 ellipsoid."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "via-extension",
+      "note": "The ratified XR_EXT_spatial_anchor, one of the six spatial entity extensions, lets an application drop a point in the room and have the runtime keep correcting it as its map of the world improves. This is the strongest single piece of cross-vendor agreement in spatial computing today.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This extension builds on XR_EXT_spatial_entity and allows applications to create spatial anchors, which are arbitrary points in the user’s physical environment that will then be tracked by the runtime."
+        },
+        {
+          "url": "https://www.khronos.org/blog/openxr-spatial-entities-extensions-released-for-developer-feedback",
+          "title": "OpenXR Spatial Entities Extensions Released for Developer Feedback, Khronos, 10 June 2025",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The Spatial Entities Extensions have been ratified and published in the OpenXR Registry on GitHub"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "partial",
+      "note": "Half met, and the missing half is in the specification rather than in implementations. Persistence across sessions is ratified: XR_EXT_spatial_persistence and XR_EXT_spatial_persistence_operations give an anchor a stable identifier that survives a reboot. Sharing is absent. The persistence store has exactly two scopes, one read-only and system managed, the other bounded to the same device, the same user and the same application, and the anchor extension defers sharing to other extensions that do not exist in ratified form. Every extension in the registry with sharing in its name is single-vendor and unratified: XR_FB_spatial_entity_sharing, XR_META_spatial_entity_sharing, XR_META_spatial_entity_group_sharing, XR_BD_spatial_anchor_sharing and XR_ANDROID_anchor_sharing_export. Godot's documentation says sharing is not supported in the spatial entities specification, and that claim holds.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Persistence operations and data access is limited to spatial anchors, on the same device, for the same user and same app"
+        },
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Other extensions may offer functions to persist this newly created anchor across multiple XrSession or to share it across process boundaries with other applications."
+        },
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all registered extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This extension enables spatial entities to be shared between users."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/OpenXR-SDK/main/specification/registry/xr.xml",
+          "title": "OpenXR API Registry (xr.xml)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.vps",
+      "level": "via-extension",
+      "note": "Only inside XR_ANDROID_geospatial, which is single-vendor and unratified, and which recovers pose by matching the camera against street imagery. There is no ratified way to ask a runtime for a camera-derived pose, and no way to ask a different provider for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all registered extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "VPS compares images from a device’s camera to Street View imagery in order to determine a precise location and orientation."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.indoor",
+      "level": "partial",
+      "note": "The ratified XR_EXT_spatial_plane_tracking finds the flat surfaces of a room and labels them wall, floor, ceiling, table or uncategorised, and XR_EXT_spatial_marker_tracking reads printed codes fixed to a place. That is a live read-out of one room, not a structured description: no rooms, no doors, no connectivity and nothing that can be written down and handed to another system.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This extension builds on XR_EXT_spatial_entity and defines the plane tracking spatial capability for the spatial entity framework."
+        },
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Markers are 2D codes which may include QR Codes, Micro QR Codes, ArUco markers, or AprilTags."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "native",
+      "note": "This is the centre of the specification. A session has nine declared states and the runtime drives the application through them by event, from idle through ready, synchronised, visible and focused to stopping and exiting, with the frame loop running in between.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A session represents an application’s intention to display XR content to the user."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "native",
+      "note": "Controllers are reached through actions rather than buttons. The application declares what it wants to know, suggests bindings for known interaction profiles, and the runtime decides which physical control answers. That indirection is what lets one application work across hardware it has never heard of, and it is the part of the design most worth copying.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR applications communicate with input devices using XrActions."
+        },
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Input action handles represent 'actions' that the application is interested in obtaining the state of, not direct input device hardware."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "via-extension",
+      "note": "XR_EXT_hand_tracking is ratified and multi-vendor, and returns a fixed set of 26 named joints per hand. A companion ratified extension, XR_EXT_hand_tracking_data_source, says whether the pose came from real hands or from a controller. Hand meshes and gestures remain single-vendor and unratified.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This extension enables applications to locate the individual joints of hand tracking inputs."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/OpenXR-SDK/main/specification/registry/xr.xml",
+          "title": "OpenXR API Registry (xr.xml)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "input.eye",
+      "level": "via-extension",
+      "note": "XR_EXT_eye_gaze_interaction is ratified and multi-vendor, with contributors from Tobii, Microsoft, Oculus, Varjo and Magic Leap. It exposes gaze as a pose the action system can bind to, which keeps the raw signal behind the same permission machinery as any other input.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This extension provides an XrPath for getting eye gaze input from an eye tracker to enable eye gaze interactions."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/OpenXR-SDK/main/specification/registry/xr.xml",
+          "title": "OpenXR API Registry (xr.xml)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "native",
+      "note": "Touch feedback is a core output action, sent through the same action system as input. Richer waveform feedback exists only in unratified extensions: XR_FB_haptic_amplitude_envelope and XR_FB_haptic_pcm from Meta, and XR_EXT_haptic_parametric, which despite its multi-vendor tag is not ratified.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Haptic feedback is sent to a device using the xrApplyHapticFeedback function."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/OpenXR-SDK/main/specification/registry/xr.xml",
+          "title": "OpenXR API Registry (xr.xml)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "native",
+      "note": "Discovery is layered and mandatory: the application enumerates the extensions the runtime offers before creating an instance, asks the system for its properties, and enumerates view configurations and blend modes. Nothing optional can be used without first being found.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "An application can call xrGetSystemProperties to retrieve information about the system such as vendor ID, system name, and graphics and tracking properties."
+        },
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The application queries the available list of extensions using the xrEnumerateInstanceExtensionProperties function."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "out-of-scope",
+      "note": "It has layers that can sit between the application and the runtime, but they exist for validation and debugging, not for containing untrusted content.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "out-of-scope",
+      "note": "The ratified XR_EXT_performance_settings lets an application hint at how hard it intends to work and be warned when the device is struggling. Those are hints and warnings, not a bound on memory, time or calls.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "out-of-scope",
+      "note": "Nothing about a world survives. What does survive is scored under shared and persistent anchors: an identifier for a point in a room, and nothing attached to it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "out-of-scope",
+      "note": "Persisted anchors and device model assets are named by generated identifiers, not by a hash of their content, so nothing here supports referring to content by what it is.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "out-of-scope",
+      "note": "A device interface. It covers the runtime, the session, the tracked spaces, the input actions and the frame loop, and stops there. Nothing in the core specification or in any ratified extension touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "native",
+      "note": "Change is handled carefully and visibly. Versions are major, minor and patch in one packed number; extensions are optional and must be found and switched on before use; and extensions that prove themselves are promoted into the core, with the registry recording what was promoted, what was deprecated and what was obsoleted by what.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an extensible API that grows through the addition of new features."
+        },
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Extensions are optional, and therefore must be enabled by the application before the extended functionality is made available."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/OpenXR-SDK/main/specification/registry/xr.xml",
+          "title": "OpenXR API Registry (xr.xml)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "native",
+      "note": "There is a real test suite, kept in the open, and passing it is a required step in the Khronos adopter process before a runtime may call itself conformant. A ratified extension, XR_EXT_conformance_automation, exists so the tests can drive a runtime. Note the honest wording: passing is necessary but not sufficient.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/KhronosGroup/OpenXR-CTS",
+          "title": "OpenXR Conformance Test Suite repository",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The OpenXR Conformance Test Suite is a collection of tests covering the breadth of the OpenXR API."
+        },
+        {
+          "url": "https://registry.khronos.org/OpenXR/",
+          "title": "Khronos OpenXR Registry",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "OpenXR is a device interface covering the runtime, the session, tracked spaces, input actions and the frame loop, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "OpenXR is a device interface covering the runtime, the session, tracked spaces, input actions and the frame loop, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "OpenXR is a device interface covering the runtime, the session, tracked spaces, input actions and the frame loop, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "out-of-scope",
+      "note": "OpenXR is a device interface covering the runtime, the session, tracked spaces, input actions and the frame loop, and it names no Gaussian splat interchange format and carries no splat data.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "out-of-scope",
+      "note": "OpenXR is a device interface covering the runtime, the session, tracked spaces, input actions and the frame loop, and it delivers no captured scene, progressively by region and detail or otherwise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "OpenXR is a device interface covering the runtime, the session, tracked spaces, input actions and the frame loop, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "out-of-scope",
+      "note": "OpenXR is a device interface covering the runtime, the session, tracked spaces, input actions and the frame loop, and it defines no encoding or compression for a set of points with attributes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "OpenXR is a device interface covering the runtime, the session, tracked spaces, input actions and the frame loop, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "out-of-scope",
+      "note": "OpenXR is a device interface covering the runtime, the session, tracked spaces, input actions and the frame loop, and it produces no image from a viewing position that no capture camera occupied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "OpenXR is a device interface covering the runtime, the session, tracked spaces, input actions and the frame loop, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "OpenXR is a device interface covering the runtime, the session, tracked spaces, input actions and the frame loop, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "OpenXR is a device interface covering the runtime, the session, tracked spaces, input actions and the frame loop, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "OpenXR is a device interface covering the runtime, the session, tracked spaces, input actions and the frame loop, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "OpenXR is a device interface covering the runtime, the session, tracked spaces, input actions and the frame loop, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "OpenXR is a device interface covering the runtime, the session, tracked spaces, input actions and the frame loop, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "OpenXR is a device interface covering the runtime, the session, tracked spaces, input actions and the frame loop, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "out-of-scope",
+      "note": "OpenXR is a device interface covering the runtime, the session, tracked spaces, input actions and the frame loop, and it carries no full 360-degree view of a place as an image with its projection stated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.62 Specification (with all ratified extensions)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "via-extension",
+      "note": "Core OpenXR has no reading of the room at all. The ratified spatial plane tracking extension, built on the spatial entity framework, is the cross-vendor way to get planes with their bounds, polygon and a 2D mesh. A full environment mesh is vendor-only and unratified: Google's scene meshing extension, Meta's room mesh, and Microsoft's older scene understanding, which the specification now marks obsolete.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1.63 specification, with all registered extensions, 12.54 XR_EXT_spatial_plane_tracking",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "This extension builds on XR_EXT_spatial_entity and defines the plane tracking spatial capability for the spatial entity framework."
+        },
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1.63 specification, with all registered extensions, 12.74 XR_ANDROID_scene_meshing",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "This extension is intended to provide meshes that approximately represent the physical objects in the user’s environment."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "via-extension",
+      "note": "Plane semantic labels are ratified and cross-vendor, with a short list — uncategorised, floor, wall, ceiling and table. Richer labelling is vendor-specific and unratified: Meta's spatial entity semantic label extension adds door and window frames and inner and invisible wall faces. There is no per-pixel class channel anywhere in the registry.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1.63 specification, with all registered extensions, 12.54 XR_EXT_spatial_plane_tracking",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The XrSpatialPlaneSemanticLabelEXT enumeration describes a set of semantic labels for planes."
+        },
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1.63 specification, with all registered extensions, 12.176 XR_META_spatial_entity_semantic_label",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "This extension defines semantic labels to describe semantic meanings of an associated spatial entity, or parts of an associated spatial entity."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "via-extension",
+      "note": "Environment depth reaches the application only through Meta's unratified extension, which hands over depth maps of the real world around the headset in a swapchain, with an option for the runtime to remove the hands. No ratified extension and no part of the core specification carries a depth map of the room.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1.63 specification, with all registered extensions, 12.155 XR_META_environment_depth",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "This extension allows the application to request depth maps of the real-world environment around the headset."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "via-extension",
+      "note": "Occlusion against the real world is a compositor feature of one vendor. Varjo's environment depth estimation lets the compositor mix real and virtual content by depth so that layers submitted with depth are occluded correctly. It is not ratified, and core OpenXR composites layers in submission order with no knowledge of where real surfaces are.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1.63 specification, with all registered extensions, XR_VARJO_environment_depth_estimation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Mixed reality applications might want to mix real and virtual content based on the depth information for proper occlusion."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "partial",
+      "note": "The core has the coarse control and nothing finer. An application asks which environment blend modes the system supports and then picks one — opaque, additive or alpha blend — on every frame, which is how much of the room shows through at all. Cutting a hole in a virtual environment, styling the passthrough image or placing it as its own layer needs vendor extensions, and not one of them is in the ratified set.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.63 Specification (with all ratified extensions)",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Applications select their environment blend mode each frame as part of their call to xrEndFrame ."
+        },
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.63 Specification (with all ratified extensions)",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "a VR headset may not support the XR_ENVIRONMENT_BLEND_MODE_ADDITIVE or XR_ENVIRONMENT_BLEND_MODE_ALPHA_BLEND modes unless it has video passthrough"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.face",
+      "level": "none",
+      "note": "Nothing in the specification with all ratified extensions tracks a face or a body: searching the ratified text for face tracking returns no result. The face and body tracking extensions in the registry are single-vendor and unratified, so a portable application cannot count on them, and eye gaze — the one ratified piece of the person's own state — is an interaction path, not an expression stream.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.63 Specification (with all ratified extensions)",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The OpenXR™ 1.1.63 Specification (with all ratified extensions)"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "out-of-scope",
+      "note": "OpenXR hands an application tracked spaces, views and input. It carries no scene, so there is no place description in which a walkable surface or an arrival point could travel.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "out-of-scope",
+      "note": "OpenXR runs no code on anyone's behalf and publishes no units of logic. Its own extension names are registered with Khronos, which is a naming rule for the API, not an address for world logic.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "out-of-scope",
+      "note": "A device runtime interface has no publishing path: no content passes through OpenXR on its way to an audience, so no review can stand in that path.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "none",
+      "note": "The ratified spatial entity extensions give an application anchors, planes, markers and persistence keyed by a UUID that survives between sessions, which is as close as OpenXR comes. There is still no map object with a version and a lifecycle, and no transform published between two maps of the same place, so two devices cannot be told they are in the same map.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1-khr/html/xrspec.html",
+          "title": "The OpenXR 1.1.63 Specification (with all ratified extensions)",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "This extension allows applications to discover and correlate spatial entities across application sessions, OpenXR sessions and multiple OpenXR spatial contexts within a session."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "OpenXR speaks about the space around one device, not about the Earth. It has no geographic frame in which a coverage area could be stated.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.extension",
+      "level": "native",
+      "note": "OpenXR instance creation names enabled extensions and rejects unsupported requested extensions; structure chains and extension-specific commands carry their additions.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "if a specified extension cannot be found, the call must return XR_ERROR_EXTENSION_NOT_PRESENT"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.color",
+      "level": "via-extension",
+      "note": "The named XR_FB_color_space extension enumerates color spaces and selects the application's submitted color interpretation; supported spaces remain runtime-dependent.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "An application to set the color space for the session."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenXR 1.1 specifies the application-to-XR-runtime interface. This row requires evidence and assurance information accompanying a claim, enabling the relying party to assess how the claim was established. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenXR 1.1 specifies the application-to-XR-runtime interface. This row requires declaring the vocabulary, types, and validation schemas needed to interpret and check the structure of a claim. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenXR 1.1 specifies the application-to-XR-runtime interface. This row requires pairwise identifiers and presentation mechanisms that reduce correlation across relationships, with their remaining correlation risks stated. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.thumbnail",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenXR 1.1 specifies the application-to-XR-runtime interface. This row requires a preview image referenced or packaged with an asset, usable without rendering its three-dimensional contents. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.encryption",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenXR 1.1 specifies the application-to-XR-runtime interface. This row requires identifying recipient key material and algorithms that permit confidential communication or encrypted content for an intended subject. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.key-lifecycle",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenXR 1.1 specifies the application-to-XR-runtime interface. This row requires rules for changing, revoking, or recovering identity-control keys and for discovering the applicable verification material. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenXR 1.1 specifies the application-to-XR-runtime interface. This row requires a defined mechanism to discover the suspension, revocation, or other status of a credential after issuance. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "partial",
+      "note": "Core quad layers give two-dimensional regions their size and scene-relative pose; child-widget layout and alignment semantics remain application-defined.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "A quad layer has no thickness; it is a two-dimensional object positioned and"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "via-extension",
+      "note": "XR_ANDROID_light_estimation exposes runtime ambient and directional illumination estimates; this is registered extension support, not an OpenXR core requirement.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "The light estimation data is generated by the runtime and shared with the"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "via-extension",
+      "note": "XR_EXT_spatial_marker_tracking defines marker-specific spatial capabilities and tracked poses; marker formats and support are explicitly advertised by the runtime.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "applications to detect and track markers in their environment."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.resolve",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenXR 1.1 specifies the application-to-XR-runtime interface. This row requires resolving scene resource identifiers against a context or resolver so the referenced resources can subsequently be accessed. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.text",
+      "level": "via-extension",
+      "note": "XR_META_virtual_keyboard supplies committed UTF-8 text and separate keyboard events through a named optional runtime extension.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "The XrEventDataVirtualKeyboardCommitTextMETA event must be sent by the runtime when a character or string is input by the keyboard."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "native",
+      "note": "Core projection and quad composition layers define image submissions, poses, sizes and blending flags; additional layer shapes require their named extensions.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "The quad layer type describes a posable planar rectangle in the virtual"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenXR 1.1 specifies the application-to-XR-runtime interface. This row requires authored runtime relationships that constrain one node's transform using another node and defined evaluation rules. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenXR 1.1 specifies the application-to-XR-runtime interface. This row requires referencing timed audiovisual media inside a scene and defining the synchronization needed to present it as scene content. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "native",
+      "note": "Core STAGE and LOCAL_FLOOR reference spaces provide floor-relative origins; xrGetReferenceSpaceBoundsRect reports available stage bounds with explicit unavailable-bounds behavior.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "should return the extents of a rectangle that is clear of obstacles down to the floor"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenXR 1.1 specifies the application-to-XR-runtime interface. This row requires generating audio during playback from an exchanged synthesis model, supporting data, and changing control parameters. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenXR 1.1 specifies the application-to-XR-runtime interface. This row requires interchanging identified spatial zones, typed events scoped to them, and summaries with defined spatial and temporal meaning. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.consent",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenXR 1.1 specifies the application-to-XR-runtime interface. This row requires carrying a grant of permission with scope, purpose, validity, and withdrawal information for uses of the subject or represented data. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenXR 1.1 specifies the application-to-XR-runtime interface. This row requires a machine-readable account of a recipient's evaluation and action, with any signature or integrity proof explicitly identified. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenXR 1.1 specifies the application-to-XR-runtime interface. This row requires a destination's pre-arrival approval or refusal response, including any validity limit and optional explanatory information. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenXR 1.1 specifies the application-to-XR-runtime interface. This row requires dispatching programmable non-raster GPU workloads against resources available through the graphics-compute API. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.frame-timing",
+      "level": "native",
+      "note": "The core xrWaitFrame/xrBeginFrame/xrEndFrame sequence returns predicted display time and associates view location and submitted layers with that time.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "predictedDisplayTime is the anticipated display XrTime for the next application-generated frame."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenXR 1.1 specifies the application-to-XR-runtime interface. This row requires a specified shader source language and execution semantics enabling implementations to consume the same shader program. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.parametric",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenXR 1.1 specifies the application-to-XR-runtime interface. This row requires carrying parametric curves and surfaces in mathematical form so a receiver can evaluate or tessellate them. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenXR 1.1 specifies the application-to-XR-runtime interface. This row requires exchanging particle-system emitters and simulation/rendering parameters that a receiving runtime evaluates. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance-recovery",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenXR 1.1 specifies the application-to-XR-runtime interface. This row requires locating associated provenance through a supported content fingerprint or watermark when embedded association has been lost. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.style",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenXR 1.1 specifies the application-to-XR-runtime interface. This row requires separately expressed styling rules that select feature visibility, color, or other supported display properties from content metadata. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.variant",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenXR 1.1 specifies the application-to-XR-runtime interface. This row requires named alternatives of an asset's authored configuration, with a defined selection mechanism. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.voxel",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenXR 1.1 specifies the application-to-XR-runtime interface. This row requires interchanging spatial cell volumes and their properties, including updates, as a scene representation. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "via-extension",
+      "note": "XR_META_environment_raycast supplies ray intersections against runtime-estimated surroundings and hit poses; its support is optional and distinct from picking virtual scene objects.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "perform raycast operations against the surrounding physical environment."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenXR 1.1 specifies the application-to-XR-runtime interface. This row requires reconstructing a radiance field or Gaussian representation from observed images and camera information, including optimization controls and a trained scene usable for subsequent view synthesis. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.objectgen",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenXR 1.1 specifies the application-to-XR-runtime interface. This row requires producing an individual three-dimensional object from a text or image prompt, with geometry or another renderable representation available for placement in a separately authored scene. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "OpenXR is an API (Application Programming Interface) for XR applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "native",
+      "note": "xrLocateSpace returns an object's pose relative to another space at an XrTime; repeated frame-time queries provide changing, time-associated poses. This is an application/runtime API, not an interchange file.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "passing in an updated time to xrLocateSpace each frame will result in an updated relative pose"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.privacy",
+      "level": "via-extension",
+      "note": "XR_EXT_eye_gaze_interaction specifies access denial behavior for gaze data and recommends explicit acceptance before storage or transfer. It is a named optional extension, not a guarantee that every runtime implements a permission system.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "Eye tracking data is sensitive personal information"
+        }
+      ]
+    }
+  ]
+}

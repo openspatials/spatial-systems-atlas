@@ -1,0 +1,171 @@
+<meta charset="utf-8">
+<title>Territory Matrix</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&display=swap">
+
+<link rel="stylesheet" href="matrix.css">
+
+<div class="wrap">
+  <div class="eyebrow">Metaverse Standards Forum &middot; Infrastructure Working Group</div>
+  <h1>Territory matrix</h1>
+
+  <div class="bar">
+    <div class="searchwrap">
+      <span class="setlabel" id="searchlabel" tabindex="0" data-tip="search">Search</span>
+      <div class="searchbox">
+        <input type="text" id="search" class="searchfield" autocomplete="off" spellcheck="false"
+               role="combobox" aria-expanded="false" aria-controls="searchlist"
+               aria-autocomplete="list" aria-labelledby="searchlabel"
+               placeholder="A capability, a subject or a group">
+        <ul class="searchlist" id="searchlist" role="listbox"
+            aria-labelledby="searchlabel" hidden></ul>
+      </div>
+      <div class="searchnote" id="searchnote" role="status" hidden></div>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start">
+      <div>
+        <span class="setlabel" id="modelabel">Mode</span>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+          <!-- Matrix and the diagram are modes of this page; the atlas is a page of its own and
+               is the address the map lands on, so it is a link rather than a radio button. The
+               link is outside the radiogroup, which may hold radios only. switch.js keeps the
+               lens on it. -->
+          <div class="modes" role="radiogroup" aria-labelledby="modelabel" id="modes">
+            <button type="button" class="mode" role="radio" data-mode="matrix" aria-checked="true"
+                    tabindex="0" data-tip="mode.matrix">Matrix</button>
+            <button type="button" class="mode" role="radio" data-mode="c4" aria-checked="false"
+                    tabindex="-1" data-tip="mode.c4">Diagram</button>
+          </div>
+          <a class="linkchip" id="atlaslink" href="/msf/map/" data-tip="mode.atlas">Atlas</a>
+        </div>
+      </div>
+      <div>
+        <span class="setlabel">Elsewhere</span>
+        <div class="pagechips">
+          <a class="linkchip" id="layerslink"
+             href="https://openspatials.com/msf/map/#level=territory&amp;layers=1"
+             data-tip="layers">Layers</a>
+          <!-- No destination is written into this markup, and none ships on this page. The one
+               constant at the top of switch.js holds it; while that constant is empty this
+               button and the line under it stay hidden, and neither carries an address for
+               anybody, or any scanner, to find. Two reasons it is written this way: the owner's
+               direction that no address ships, and Cloudflare's email obfuscation, which
+               rewrites any mailto it finds in the HTML into a /cdn-cgi/l/email-protection link
+               and injects a decode script the site's policy then blocks. -->
+          <a class="linkchip" id="commentbtn" data-tip="comment" hidden>Comment on this map</a>
+        </div>
+        <div class="commentnote" id="commentnote" hidden>Comments are folded in every two
+          weeks; the change list appears here.</div>
+      </div>
+      <div>
+        <span class="setlabel">This page</span>
+        <div class="pagechips">
+          <button type="button" class="chip" id="explchip" aria-pressed="true"
+                  data-tip="toggle.explanations">Explanations</button>
+          <div class="exportwrap">
+            <button type="button" class="chip" id="exportchip" aria-expanded="false"
+                    aria-haspopup="true" aria-controls="exportmenu"
+                    data-tip="export">Export</button>
+            <div class="exportmenu" id="exportmenu" role="menu" aria-labelledby="exportchip" hidden>
+              <a class="exportitem" role="menuitem" id="exportcsvall" href="territory.csv"
+                 download="territory.csv" target="_blank" rel="noopener"
+                 data-tip="export.csv.all">CSV, everything</a>
+              <a class="exportitem" role="menuitem" id="exportmdall" href="territory.md"
+                 download="territory.md" target="_blank" rel="noopener"
+                 data-tip="export.md.all">Markdown, everything</a>
+              <button type="button" class="exportitem" role="menuitem" id="exportshown"
+                      data-tip="export.csv.shown">CSV, what is shown</button>
+            </div>
+          </div>
+        </div>
+        <div class="exportnote" id="exportnote" role="status" hidden></div>
+      </div>
+    </div>
+    <div>
+      <span class="setlabel">Subjects &mdash; click a name to switch it on or off, a group title
+        to switch the whole group</span>
+      <div class="sgroups" id="subs"></div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center">
+      <div>
+        <span class="setlabel">Show only</span>
+        <div class="chips" id="filters">
+          <button class="chip" data-f="all" aria-pressed="true" data-tip="filter.all">Everything</button>
+          <button class="chip" data-f="overlap" aria-pressed="false" data-tip="filter.overlap">Overlaps &mdash; 2 or more systems have it</button>
+          <button class="chip" data-f="thin" aria-pressed="false" data-tip="filter.thin">Only one system has it</button>
+          <button class="chip" data-f="gap" aria-pressed="false" data-tip="filter.gap">No native or extension support recorded</button>
+          <button class="chip" data-f="conflict" aria-pressed="false" data-tip="filter.conflict">Recorded conflicts</button>
+          <button class="chip" data-f="connect" aria-pressed="false" data-tip="filter.connect">Protocol &mdash; agreed when systems connect</button>
+          <button class="chip" data-f="interop" aria-pressed="false" data-tip="filter.interop">Must interoperate</button>
+          <button class="chip toggle" id="hasentry" data-toggle="hasentry" aria-pressed="false"
+                  data-tip="filter.hasentry">Only rows someone has filled in</button>
+        </div>
+      </div>
+    </div>
+    <div class="countline">
+      <span class="stat" id="stat"></span>
+      <span class="metric" id="metric"></span>
+      <div class="chips" id="metricbasis">
+        <button type="button" class="chip" data-basis="production" aria-pressed="true"
+                data-tip="metric.production">Production subjects</button>
+        <button type="button" class="chip" data-basis="all" aria-pressed="false"
+                data-tip="metric.all">All subjects on</button>
+        <button type="button" class="chip" data-basis="must" aria-pressed="false"
+                data-tip="metric.must">Must-interoperate rows only</button>
+      </div>
+    </div>
+    <p class="metricnote" id="metricnote"></p>
+    <div class="legend">
+      <span class="key" tabindex="0" data-tip="level.native"><span class="sw n"></span>Built in</span>
+      <span class="key" tabindex="0" data-tip="level.via-extension"><span class="sw x"></span>Through an extension</span>
+      <span class="key" tabindex="0" data-tip="level.partial"><span class="sw p"></span>Partial</span>
+      <span class="key" tabindex="0" data-tip="level.none"><span class="sw z"></span>Absent</span>
+      <span class="key" tabindex="0" data-tip="level.conflicts"><span class="sw c"></span>Conflicts &mdash; these will not work together</span>
+      <span class="key" tabindex="0" data-tip="binding.protocol">FORMAT capabilities are fixed when the content is made. <span style="color:var(--survey)">PROTOCOL</span> capabilities are agreed between two systems when they connect.</span>
+      <span class="key" tabindex="0" data-tip="interop.must"><span class="mustmark" aria-hidden="true">must interoperate</span> marks rows where two independent systems have to agree, or a use case fails outright.</span>
+      <span class="key"><span id="explhint">Hover or tab to any name, chip or number for a written explanation.</span> Click any cell to read the claim and its sources.</span>
+    </div>
+  </div>
+
+  <div id="body"></div>
+
+  <div id="c4panel" class="hidden">
+    <div>
+      <span class="setlabel">View</span>
+      <div class="chips" id="c4views"></div>
+    </div>
+    <div id="c4claim" class="c4-claim hidden"></div>
+    <div id="stage"></div>
+  </div>
+
+  <!-- The foot of the page. The frozen copy at /msf/map/v1/ is the map exactly as it stood on
+       2026-09-04; it is never rebuilt, so anyone who wants the version they saw that day can
+       still reach it. -->
+  <p class="metricnote" id="pagefoot"><a href="/msf/map/v1/"
+     style="color:var(--chart)">Version 1</a> &mdash; this map exactly as it stood on
+    2026-09-04, kept unchanged. The maintained map is the <a href="/msf/map/"
+     style="color:var(--chart)">atlas</a>.</p>
+</div>
+
+<!-- The comment button and the form behind it. submit.js builds both inside this
+     one element: a circle fixed in the bottom right, and a form that files the
+     submission as a public issue and shows the reader its number. The page name here
+     is the label the submission carries. -->
+<div id="submitmount" data-submit-page="map"></div>
+
+<script src="predicates.js"></script>
+<script src="tooltips.js"></script>
+<script src="matrix.js"></script>
+<script src="c4.js"></script>
+<script src="export.js"></script>
+<script src="search.js"></script>
+<script src="metric.js"></script>
+<script src="switch.js"></script>
+<script src="submit.js"></script>

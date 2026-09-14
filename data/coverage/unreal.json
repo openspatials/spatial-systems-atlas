@@ -1,0 +1,2070 @@
+{
+  "subject_id": "unreal",
+  "summary": "Unreal Engine is Epic Games' source-available real-time engine. Important correction to this project's subject record: version 6 has not shipped. On 17 June 2026 Epic released Unreal Engine 5.8 and, the same day, announced the plan for version 6; Epic's own documentation site carries 5.8 release notes and no version 6 documentation, and the community forum announcement dates the 5.8 release to that day. Everything below is scored against 5.8, the shipping engine. Verse is likewise not the gameplay language of the shipping engine: Epic documents Verse only under Fortnite and the Unreal Editor for Fortnite, and the 5.8 experimental feature list names no Verse or Scene Graph entry. In shipping Unreal the gameplay languages are Blueprint and C++. Epic's stated plan is to move the gameplay model to Verse for version 6, with early access targeted for the end of 2027, so a standards audience should treat Verse today as a language you can only run inside Epic's own Fortnite service, not as a portable engine feature. What the engine covers very well: rendering, geometry, physics, sound, packaging and, unusually, an open standard for immersive sessions, because head-mounted display support goes through the OpenXR plugin. What it does not cover is portability. The renderer's virtualized geometry system uses, in Epic's own words, an internal mesh format; the lighting system is an engine-private algorithm; and the built-in networking is the deepest lock-in of all, because replication is welded to the engine's own object model, its own wire protocol and matching client and server builds. The trap for a standards group is that almost every capability here is present and strong, and almost none of it is specified anywhere a second implementation could follow. The three places Unreal genuinely meets the outside world are OpenXR for sessions, the glTF importer and exporter for models, and Pixel Streaming, which sends rendered frames and sound to a plain web browser over WebRTC and so lets a cloud-rendered topology reach clients that could never run the engine.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "native",
+      "note": "The engine ships deferred and forward rendering paths for desktop and for head-mounted displays, plus a separate mobile path; the pass structure and render graph are engine-internal and are not published as anything a second implementation could follow.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/supported-features-by-rendering-path-for-desktop-with-unreal-engine",
+          "title": "Supported Features by Rendering Path for Desktop with Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Desktop Deferred (SM5/SM6: DirectX 12, macOS, Vulkan Desktop)"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "native",
+      "note": "Targets Direct3D 12 and 11, Vulkan and Metal, with the newest features gated on Direct3D 12 and shader model 6; no browser graphics interface is listed as a target, so web reach is by streaming pixels rather than by running the renderer in the client.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/hardware-and-software-specifications-for-unreal-engine",
+          "title": "Hardware and Software Specifications for Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Although some features have a minimum requirement of DirectX 11, we recommend DirectX 12 for most games"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "native",
+      "note": "Surface appearance is authored as a node graph compiled into engine shaders, with the newer layered material system still shipping experimental parts in 5.8; nothing outside the engine evaluates these graphs, so the model is engine-only.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/unreal-engine-5-8-release-notes?lang=en-US",
+          "title": "Unreal Engine 5.8 Release Notes",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Substrate NPR Shading (Experimental)"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "native",
+      "note": "Lumen is the default dynamic global illumination and reflections system, with hardware and software ray tracing paths, joined in 5.8 by a production-ready many-light system and a cheaper medium-quality global illumination setting; all of it is an engine-private algorithm that no other runtime implements.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/lumen-global-illumination-and-reflections-in-unreal-engine",
+          "title": "Lumen Global Illumination and Reflections in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Lumen is Unreal Engine's fully dynamic global illumination and reflections system"
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/unreal-engine-5-8-release-notes?lang=en-US",
+          "title": "Unreal Engine 5.8 Release Notes",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "a new medium-quality setting for Global Illumination using Irradiance Fields"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.post",
+      "level": "native",
+      "note": "A volume placed in the level drives the full post chain, from exposure and colour grading to motion blur and path tracing; the settings are engine assets and do not travel to any other renderer.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/post-process-effects-in-unreal-engine?lang=en-US",
+          "title": "Post Process Effects in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A special type of volume, called a Post Process Volume, can be added to a Level to access these features."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "native",
+      "note": "The virtualized geometry system streams only the detail that is visible, and world partition adds level-of-detail across a whole map; because the streamed data is the engine's own internal mesh format, another runtime cannot consume the same stream.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-virtualized-geometry-in-unreal-engine",
+          "title": "Nanite Virtualized Geometry in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Data is streamed in on demand so that only visible detail needs to reside in memory."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "none",
+      "note": "Version 5.8 has no documented support for splats or radiance fields; the only material on Epic's site is a community tutorial, not engine documentation, and no such feature appears in the release notes or the experimental feature list.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/experimental-features",
+          "title": "Experimental Features (Unreal Engine 5.8)",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "via-extension",
+      "note": "Point clouds come from the LiDAR Point Cloud plugin, which reads the open interchange formats for scanned data; volumetric rendering through heterogeneous volumes and sparse volume textures ships as an experimental engine feature.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/lidar-point-cloud-plugin-overview-in-unreal-engine",
+          "title": "LiDAR Point Cloud Plugin Overview in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Use the LiDAR Point Cloud plugin to import, visualize, and edit point clouds in Unreal Engine."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/experimental-features",
+          "title": "Experimental Features (Unreal Engine 5.8)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Heterogeneous Volumes"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "via-extension",
+      "note": "Solid three-dimensional lettering comes from the Text 3D plugin, which builds geometry from a font; flat interface text uses the engine's own widget system. Neither is a portable text layout model.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/3d-text-actor-in-unreal-engine?lang=en-US",
+          "title": "3D Text Actor in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "native",
+      "note": "Cameras are components and actors with view targets and modifiers; a newer gameplay camera system ships in 5.8 but is still marked experimental, so the camera model is in flux.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/experimental-features",
+          "title": "Experimental Features (Unreal Engine 5.8)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Gameplay Camera System"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "native",
+      "note": "The world is a set of actors holding attached components; this hierarchy is defined only by the engine's own object system and does not exist outside it.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/level-instancing-in-unreal-engine",
+          "title": "Level Instancing in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "native",
+      "note": "The engine is left-handed with the up axis pointing along Z and forward along X, which is the opposite handedness and a different up axis from both glTF and the usual scene description convention, so every import and export has to convert axes and winding.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/coordinate-system-and-spaces-in-unreal-engine",
+          "title": "Coordinate System and Spaces in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "In the Unreal Editor the coordinate system is left-handed and uses a Z-up axis."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "partial",
+      "note": "The engine's own containers carry nothing outward: authoring uses engine asset and map files, and shipping uses cooked containers holding package, bulk and shader data, both tied to the exact engine build. The real transfer route is the import and export framework, which is file-format agnostic, can run at runtime, and reads and writes the open Khronos transfer format; that route is open to any implementation, but it carries far less than the engine's own files do.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/zen-loader-in-unreal-engine",
+          "title": "Zen Loader in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "packages all package data, bulk data and shader data into a set of `.utoc` and `.ucas` container files"
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/interchange-framework-in-unreal-engine",
+          "title": "Interchange Framework in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The **Interchange Framework** is Unreal Engine's import and export framework."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/the-gl-transmission-format-gltf-in-unreal-engine",
+          "title": "The GL Transmission Format (glTF) in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "an extensible, open-standard file format developed and maintained by Khronos Group"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "native",
+      "note": "Meshes are stored in the engine's own compressed form, and the virtualized geometry path is explicitly described by Epic as an internal mesh format, which is the clearest single statement of geometry lock-in in the documentation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-virtualized-geometry-in-unreal-engine",
+          "title": "Nanite Virtualized Geometry in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Nanite is Unreal Engine's virtualized geometry system which uses an internal mesh format"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "native",
+      "note": "Source images are recompressed at cook time to the block formats each target device wants, with an optional virtual texture path; the choice of format is a project setting, not something carried in an interchange file.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/packaging-and-cooking-games-in-unreal-engine",
+          "title": "Packaging and Cooking Games in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "partial",
+      "note": "The glTF exporter can either match simple material patterns or bake complex ones to textures, and it emits a named set of Khronos extensions plus one Epic vendor extension; Epic states plainly that the target format cannot hold everything the engine can express, so material exchange is lossy in the outward direction.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/how-the-gltf-exporter-handles-unreal-engine-content",
+          "title": "How the glTF Exporter Handles Unreal Engine Content",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF is a data-driven format, and does not support everything in Unreal Engine."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "native",
+      "note": "Animation clips are engine assets driven by animation blueprints and a sequencer; clips can be brought in through the import framework but the runtime representation is engine-only.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/animation-retargeting-in-unreal-engine",
+          "title": "Animation Retargeting in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "native",
+      "note": "Bone hierarchy and binding live in a dedicated skeleton asset that every animation is tied to; the engine defines this itself and does not implement an agreed cross-vendor bone naming scheme.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/animation-retargeting-in-unreal-engine",
+          "title": "Animation Retargeting in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Animation Retargeting is a feature that allows animations to be reused between characters that use the same Skeleton asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "partial",
+      "note": "Shape deformation targets exist inside the engine, but they do not survive export: Epic lists morph target animations among the things the glTF exporter does not carry.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/how-the-gltf-exporter-handles-unreal-engine-content",
+          "title": "How the glTF Exporter Handles Unreal Engine Content",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Morph target animations"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "native",
+      "note": "Repeated objects use instanced and hierarchical instanced mesh components, and the virtualized geometry path instances as well; the mechanism is engine-internal and has no interchange representation here.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-virtualized-geometry-in-unreal-engine",
+          "title": "Nanite Virtualized Geometry in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "via-extension",
+      "note": "Inside the engine, level instances and world partition data layers layer a map from several files. Genuine referencing and override across tools comes from the scene description plugin, which works on the stage directly rather than converting it, and which supports payloads, variants and writing edits back. Epic has taken a public position on the format by joining the Alliance for OpenUSD as a general member, so this is a deliberate bet on an outside standard rather than an engine-only feature; the caveat is that Epic still marks the support beta, and beta support for the composition layer that most interoperability work depends on is a real risk for anyone planning around it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/universal-scene-description-in-unreal-engine",
+          "title": "Universal Scene Description in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Learn to use this Beta feature, but use caution when shipping with it."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/universal-scene-description-in-unreal-engine",
+          "title": "Universal Scene Description in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "the USD Stage workflow works natively with your USD data"
+        },
+        {
+          "url": "https://aousd.org/news/alliance-for-openusd-unveils-roadmap-for-core-usd-specification-and-ecosystem-collaborations/",
+          "title": "Alliance for OpenUSD Unveils Roadmap for Core USD Specification and Ecosystem Collaboration",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "AOUSD is proud to welcome 12 new general members: Cesium, Chaos, Epic Games, Foundry, Hexagon, IKEA, Lowe's, Meta, OTOY, SideFX, Spatial, and Unity."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/level-instancing-in-unreal-engine",
+          "title": "Level Instancing in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "native",
+      "note": "Distance defaults to centimetres, so one engine unit is one centimetre; imports from tools that work in metres need a scale factor, and getting it wrong is the most common cause of wrong-sized content.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/units-of-measurement-in-unreal-engine",
+          "title": "Units of Measurement in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Centimeters (cm)"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "via-extension",
+      "note": "MetaHuman is Epic's own framework for rigged photorealistic characters and ships as engine plugins; it is a first-party pipeline rather than a portable avatar container, and no engine-neutral avatar format is implemented.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/metahuman/metahuman-documentation",
+          "title": "MetaHuman Documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "partial",
+      "note": "The engine has a strong internal convention through its own mannequin skeleton and an abstraction layer for mapping between rigs, but there is no agreed bone naming standard, so transfer between worlds still needs a per-pair mapping.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/ik-rig-in-unreal-engine",
+          "title": "IK Rig in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "partial",
+      "note": "MetaHuman supplies a named facial control rig and animation can be generated from captured performance, but the named expressions are Epic's own set and there is no portable expression or viseme vocabulary that survives a move to another world.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/metahuman/metahuman-animator",
+          "title": "MetaHuman Animator in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "native",
+      "note": "Animation made for one body can be replayed on another, both between characters sharing a skeleton and, through the rig mapping assets, between skeletons with different bone counts and names; this works only inside the engine.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/animation-retargeting-in-unreal-engine",
+          "title": "Animation Retargeting in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Animation Retargeting is a feature that allows animations to be reused between characters"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "partial",
+      "note": "Sockets and component attachment let items be worn or carried, and modular characters can share a pose, but attachment points are named inside engine assets and carry no meaning outside them.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/metahuman/metahuman-documentation",
+          "title": "MetaHuman Documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "native",
+      "note": "Skinned meshes carry reduced versions for distance and for weaker devices, chosen by the same detail machinery as static geometry.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-virtualized-geometry-in-unreal-engine",
+          "title": "Nanite Virtualized Geometry in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "none",
+      "note": "Nothing in the engine ties an avatar to a verifiable credential. The online plugins issue an opaque per-service account identifier at login and nothing beyond it; that asserts an account signed in, not who the holder is, and it carries no meaning to a party outside that service.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-identity-interface-in-unreal-engine",
+          "title": "Online Subsystem Identity Interface in Unreal Engine",
+          "retrieved": "2026-08-25",
+          "kind": "primary",
+          "quote": "an opaque FUniqueNetId value is associated with a local player automatically upon a successful login attempt"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "native",
+      "note": "Chaos is the built-in physics solution and covers rigid body dynamics directly; it is engine code with no separate specification, though the same job is done by several independent physics libraries elsewhere.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/physics-in-unreal-engine",
+          "title": "Physics in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "a light-weight physics simulation solution available in Unreal Engine"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "native",
+      "note": "Contact shapes are authored separately from visible geometry, with simple and complex collision and a channel and response matrix; the presets are engine configuration and do not travel with an exported model.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/physics-in-unreal-engine",
+          "title": "Physics in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "native",
+      "note": "Constraint components and actors provide hinges, sliders and the rest, and physics assets wire them into character rigs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/physics-in-unreal-engine",
+          "title": "Physics in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Physics Constraints"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.material",
+      "level": "native",
+      "note": "Friction, restitution, density and surface type are set on physical material assets referenced by rendering materials; the values are engine assets and are not carried by any interchange format used here.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/physics-in-unreal-engine",
+          "title": "Physics in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.determinism",
+      "level": "partial",
+      "note": "Epic does not claim that the same inputs give the same outcome on different machines; instead the networked physics design assumes divergence and corrects it, with a resimulation mode that replays cached inputs on the client, and that machinery has to be written by hand in C++. Asynchronous stepping is described as improving determinism, not guaranteeing it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/networked-physics-overview",
+          "title": "Networked Physics Overview",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The Network Physics Component is a low-level system and needs to be implemented manually through C++."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "native",
+      "note": "Cloth, hair and soft tissue simulation all ship as part of the built-in physics system, including a machine-learning cloth path.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/physics-in-unreal-engine",
+          "title": "Physics in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Cloth Physics and Machine Learning Cloth Simulation"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "native",
+      "note": "Trigger actors and overlap events fire when something enters a region; this is a standard engine actor and the pattern is easily reproduced elsewhere.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/physics-in-unreal-engine",
+          "title": "Physics in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "native",
+      "note": "Sounds are placed in the world and fall off with distance through attenuation shapes; sound generation itself is a signal-processing graph asset with sample-accurate timing.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/sound-attenuation-in-unreal-engine",
+          "title": "Sound Attenuation in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "As the listener moves away from this inner area the sound will decrease in volume"
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/metasounds-the-next-generation-sound-sources-in-unreal-engine?lang=en-US",
+          "title": "MetaSounds: The Next Generation Sound Sources in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "MetaSound is a high-performance audio system that provides audio designers complete control over a Digital Signal Processing (DSP) graph"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "partial",
+      "note": "The engine itself gives you panning and a soundfield submix path for ambisonics, but it ships no binaural head-related transfer renderer of its own: Epic's documentation points at third-party plugins for that. The plugin interface is open C++, so other vendors can and do implement it, which makes this one of the less locked-in parts of the engine.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/native-soundfield-ambisonics-rendering-in-unreal-engine",
+          "title": "Native Soundfield Ambisonics Rendering in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Ambisonics is a specific soundfield representation that projects positional audio onto a sphere using spherical harmonics."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/audio-engine-overview-in-unreal-engine",
+          "title": "Audio Engine Overview in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "binaural/HRTF spatialization or ambisonics (soundfield) encoding and decoding"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "native",
+      "note": "Rooms colour sound through submix reverb effects and volumes, with the amount of reverb sent scaling with distance from the listener; the settings are engine assets rather than a described acoustic model.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/sound-attenuation-in-unreal-engine",
+          "title": "Sound Attenuation in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This section defines the relationship between the sound's distance from the listener and the amount of reverb that is applied to the sound."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "native",
+      "note": "A built-in occlusion pass traces against scene geometry to cut volume and high frequencies when something blocks the path; the trace is cheap and asynchronous, and the approach is generic enough that anything could implement it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/audio-engine-overview-in-unreal-engine",
+          "title": "Audio Engine Overview in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "an extremely inexpensive default async trace that performs occlusion checks for sounds"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "native",
+      "note": "Long sounds stream from disk with a shared cache rather than loading whole; this is local streaming, not delivery over a network at scale.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/audio-engine-overview-in-unreal-engine",
+          "title": "Audio Engine Overview in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "via-extension",
+      "note": "Live voice between players comes from the online services plugins rather than the core engine, so it depends on the operator's chosen service; the engine exposes a voice interface that a different back end could implement.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/online-subsystems-and-services-in-unreal-engine",
+          "title": "Online Subsystems and Services in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Online Subsystem is an Unreal Engine plugin that helps you implement online services functionality in your game."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "native",
+      "note": "This is the deepest lock-in in the whole subject. Replication synchronises properties and procedure calls between server and clients, but it is defined by the engine's own object system, its own property markup and its own serialisation, and it requires matching engine builds on both ends. Nothing outside Unreal can speak it, and no specification exists that would let anything try.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/networking-and-multiplayer-in-unreal-engine",
+          "title": "Networking and Multiplayer in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Replication is the name for the process of synchronizing data and procedure calls between clients and servers."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "native",
+      "note": "One server holds the authoritative state and clients remote-control the objects they own; the ownership rules are engine concepts expressed in engine code, not a described protocol.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/networking-overview-for-unreal-engine?lang=en-US",
+          "title": "Networking Overview for Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "native",
+      "note": "Both the older replication graph and the newer replication system filter and prioritise per connection so each client gets only what it needs; the newer system is still marked experimental in 5.8 and the older one remains the default.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/introduction-to-iris-in-unreal-engine",
+          "title": "Introduction to Iris in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Filters what actors are replicated to which connections."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/experimental-features",
+          "title": "Experimental Features (Unreal Engine 5.8)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Iris Replication System"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.prediction",
+      "level": "native",
+      "note": "Movement is predicted locally and corrected, and physics adds a resimulation mode that runs the client half a round trip ahead of the server and replays inputs when the server disagrees.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/networked-physics-overview",
+          "title": "Networked Physics Overview",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Resimulation is fully forward predicted on the client. This means that the client is half a Round Trip Time (RTT) ahead of the server."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "native",
+      "note": "Session traffic runs over the engine's own network driver and connection layer on top of a datagram socket; the wire format is not published as a specification, so a non-Unreal client cannot join an Unreal server. Note the contrast with pixel streaming, which does use an open transport.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/networking-and-multiplayer-in-unreal-engine",
+          "title": "Networking and Multiplayer in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.media",
+      "level": "via-extension",
+      "note": "Pixel Streaming runs the application on a server and sends the rendered frames and sound to a plain web browser over WebRTC, with the signalling server published separately on GitHub. This is the one part of the engine built for a cloud-rendered topology, and because the transport is an open standard the client side is not locked to Epic at all. Version 5.5 added a second plugin that hides WebRTC types behind an internal layer, and both plugins ship side by side.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/pixel-streaming-in-unreal-engine",
+          "title": "Pixel Streaming in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "stream its rendered frames and audio to browsers and mobile devices over WebRTC"
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/pixel-streaming-2-overview-in-unreal-engine",
+          "title": "Pixel Streaming 2 Overview in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "both the original Pixel Streaming plugin and the Pixel Streaming 2 plugin will be shipped with Unreal Engine"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "via-extension",
+      "note": "Joining a running world, including sign-in, is handled by the online subsystem plugin, with Epic's own service as one back end; the interface is pluggable so another operator's service can sit behind it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/online-subsystems-and-services-in-unreal-engine",
+          "title": "Online Subsystems and Services in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Online Subsystem is an Unreal Engine plugin that helps you implement online services functionality in your game."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "partial",
+      "note": "The engine can move a whole server and its clients to a new map without dropping the connection, and named actors such as controllers and inventory carry across; but this only works between Unreal servers running the same build, so it is a within-engine handoff, not a portal to another operator's world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/travelling-in-multiplayer-in-unreal-engine",
+          "title": "Travelling in Multiplayer in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "actors further added via `AGameModeBase::GetSeamlessTravelActorList`"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "via-extension",
+      "note": "Knowing who is online comes from the online services plugins, which are per-operator; there is no cross-operator presence.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/online-subsystems-and-services-in-unreal-engine",
+          "title": "Online Subsystems and Services in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "partial",
+      "note": "Travel takes a string naming a map plus options, and clients can be told to travel to another host; but this is an address inside one deployment, not a naming scheme that resolves a place to a reachable destination across operators.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/travelling-in-multiplayer-in-unreal-engine",
+          "title": "Travelling in Multiplayer in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "instruct[s] the particular client to travel to the new map (but stay connected to the current server)"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "via-extension",
+      "note": "Finding sessions is a search against whichever online service the project uses, plus a local network beacon; there is no open discovery mechanism.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/online-subsystems-and-services-in-unreal-engine",
+          "title": "Online Subsystems and Services in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "partial",
+      "note": "The game state replicates a server world time that clients read, which is enough to order events inside one session, but there is no shared clock model across servers or operators.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/networking-overview-for-unreal-engine?lang=en-US",
+          "title": "Networking Overview for Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "via-extension",
+      "note": "An account identifier comes from whichever online service the project plugs in, Epic's own included; it is a per-service identifier, not a portable base identifier for a person.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-eos-plugin-in-unreal-engine",
+          "title": "Online Subsystem EOS Plugin in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "none",
+      "note": "The engine has no format for verifiable claims about a subject. What its identity surface produces is a login and a service access token, which proves a session against one provider rather than expressing a claim a second party could check.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-identity-interface-in-unreal-engine",
+          "title": "Online Subsystem Identity Interface in Unreal Engine",
+          "retrieved": "2026-08-25",
+          "kind": "primary",
+          "quote": "the Identity Interface handles account-related interactions with these services, providing the ability to authenticate users and obtain access tokens"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "none",
+      "note": "No selective disclosure mechanism exists. The user account abstraction exposes whatever the online service treats as publicly visible, with a wider set for the logged-in local user. The granularity is the service's to decide and the holder has no way to reveal only part of it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-identity-interface-in-unreal-engine",
+          "title": "Online Subsystem Identity Interface in Unreal Engine",
+          "retrieved": "2026-08-25",
+          "kind": "primary",
+          "quote": "serves as the common interface for accessing publicly-visible information for local or remote users"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.social",
+      "level": "via-extension",
+      "note": "Friends lists come from the online services plugins and stay inside that service; relationships are not portable.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/online-subsystem-eos-plugin-in-unreal-engine",
+          "title": "Online Subsystem EOS Plugin in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "via-extension",
+      "note": "The georeferencing plugin ties the level origin to a place on a planet and converts between engine coordinates and latitude and longitude; it is a first-party plugin and the maths it implements is standard, so nothing here is engine-specific except the plumbing.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/georeferencing-a-level-in-unreal-engine",
+          "title": "Georeferencing a Level in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "via-extension",
+      "note": "The same plugin lets a project state which reference frame its coordinates are in, including earth-centred and projected frames on a chosen ellipsoid.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/georeferencing-a-level-in-unreal-engine",
+          "title": "Georeferencing a Level in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "via-extension",
+      "note": "Handheld augmented reality on phones goes through the platform frameworks, which Epic names as packaging targets; the engine wraps them rather than defining anchors itself.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/packaging-your-project?lang=en-US",
+          "title": "Packaging Your Project",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "XR (extended reality) platforms such as OpenXR, PSVR2, ARKit, ARCore, and visionOS."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "via-extension",
+      "note": "Correction: this row previously asserted that the engine has no shared or persistent anchor model of its own. That is wrong. ARPin is the engine's own cross-platform anchor API, with a separate implementation behind it per platform; storing pin data locally persists content between app sessions, and cloud storage shares it between devices. Scored via-extension rather than native because persistence and sharing both arrive through platform plugins - Azure Spatial Anchors, ARCore Cloud Anchors, ARKit Geo Anchors - and the support matrix differs per platform, so an anchor is not portable across them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/arpins-in-unreal-engine",
+          "title": "ARPins in Unreal Engine",
+          "retrieved": "2026-08-25",
+          "kind": "primary",
+          "quote": "ARPins are a fixed real-world location in augmented reality (AR) to which you can attach virtual content within Unreal Engine."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/arpin-overview-in-unreal-engine",
+          "title": "ARPin Overview in Unreal Engine",
+          "retrieved": "2026-08-25",
+          "kind": "primary",
+          "quote": "You can store ARPins in the cloud through Azure Spatial Anchors, Cloud Anchors with ARCore, and Geo Anchors with ARKit."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "via-extension",
+      "note": "Streaming large geospatial data by tile is done with a third-party plugin that implements the open 3D Tiles format; this is not Epic's code and is the clearest case in the whole subject of an open standard reaching the engine from outside.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://github.com/CesiumGS/cesium-unreal",
+          "title": "cesium-unreal repository",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "via-extension",
+      "note": "Immersive sessions run through the OpenXR plugin, an open royalty-free standard, which is the single largest piece of genuine portability in the engine; the limit is that Epic supports head-mounted devices only through it, on Windows and Android, so handheld augmented reality takes a different path.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/developing-for-head-mounted-experiences-with-openxr-in-unreal-engine",
+          "title": "Developing for Head-Mounted Experiences with OpenXR in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR is a royalty-free, open standard that provides high-performance access to XR platforms and devices."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/developing-for-head-mounted-experiences-with-openxr-in-unreal-engine",
+          "title": "Developing for Head-Mounted Experiences with OpenXR in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXR in Unreal Engine only supports head-mounted devices"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "native",
+      "note": "The enhanced input plugin turns raw device input into named actions through mapping contexts that can be swapped at runtime, and immersive controllers arrive as standard interaction profiles from the open session standard.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/enhanced-input-in-unreal-engine",
+          "title": "Enhanced Input in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "via-extension",
+      "note": "Articulated hand pose comes from a shipped extension plugin on top of the open session standard, so the same content works across runtimes that expose it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/developing-for-head-mounted-experiences-with-openxr-in-unreal-engine",
+          "title": "Developing for Head-Mounted Experiences with OpenXR in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXRHandTracking"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.eye",
+      "level": "via-extension",
+      "note": "Gaze direction comes from a shipped extension plugin on the open session standard; the privacy handling is left to the runtime and the application.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/developing-for-head-mounted-experiences-with-openxr-in-unreal-engine",
+          "title": "Developing for Head-Mounted Experiences with OpenXR in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenXREyeTracker"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "native",
+      "note": "Touch feedback is authored as force feedback effect assets with per-channel and per-device settings; the assets are engine-only but the concept maps cleanly onto any platform's rumble interface.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/force-feedback-in-unreal-engine",
+          "title": "Force Feedback in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "partial",
+      "note": "Device profiles and scalability settings let a project vary behaviour by device, and the renderer reports its feature level, but there is no general way for content to ask a client what it can do; the checks are per-platform configuration decided ahead of time.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/scalability-reference-for-unreal-engine?lang=en-US",
+          "title": "Scalability Reference for Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "native",
+      "note": "World rules in the shipping engine are written in the visual node language or in C++, with editor scripting in Python. Verse is not available here: Epic documents it only under Fortnite and the Unreal Editor for Fortnite, and it appears nowhere in the 5.8 experimental feature list. That matters for portability, because Epic's stated direction is to make Verse the gameplay language of version 6, and Verse today runs only inside Epic's own Fortnite service; content written in it cannot be taken to another engine, another runtime, or even to standalone Unreal. The visual node language and C++ are equally engine-bound, so no scripting route out of this engine exists at any level.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/overview-of-blueprints-visual-scripting-in-unreal-engine",
+          "title": "Overview of Blueprints Visual Scripting in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "a visual scripting language that uses a node-based interface to create gameplay functionality without writing code"
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/programming-with-verse-in-unreal-editor-for-fortnite",
+          "title": "Programming with Verse in Unreal Editor for Fortnite",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Create your own rules and behaviors for your game by programming with Verse in UEFN!"
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/scene-graph-in-unreal-editor-for-fortnite",
+          "title": "Scene Graph in Unreal Editor for Fortnite",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Scene Graph is a Verse native system that takes advantage of Verse characteristics"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "partial",
+      "note": "Interactivity does travel with an asset, but only as a compiled visual graph inside an engine asset that another engine cannot read; the glTF exporter carries no behaviour extension, so nothing interactive survives export.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/how-the-gltf-exporter-handles-unreal-engine-content",
+          "title": "How the glTF Exporter Handles Unreal Engine Content",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF is a data-driven format, and does not support everything in Unreal Engine."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "none",
+      "note": "The shipping engine runs C++ and compiled visual scripts with the full rights of the process, with no isolation for untrusted guest content. Epic's sandboxed model is the Fortnite editor, where creator code is checked and run inside Epic's service, and that model is not available in standalone Unreal.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/programming-with-verse-in-unreal-editor-for-fortnite",
+          "title": "Programming with Verse in Unreal Editor for Fortnite",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Create your own rules and behaviors for your game by programming with Verse in UEFN!"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "native",
+      "note": "Autonomous characters use behaviour trees, state trees and the crowd simulation framework. Separately, 5.8 ships an experimental Model Context Protocol server so that language-model tools can drive the editor, but that is authoring-time tooling, not agents acting inside a running world.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/unreal-mcp-in-unreal-editor?lang=en-US",
+          "title": "Unreal MCP in Unreal Editor",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "none",
+      "note": "Scalability settings adjust quality for the game as a whole to hold performance on a given machine; they are not a bound on what one piece of content may consume. There is no mechanism to cap memory, time or calls for guest content, because the engine has no notion of guest content.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/scalability-reference-for-unreal-engine",
+          "title": "Scalability Reference for Unreal Engine",
+          "retrieved": "2026-08-25",
+          "kind": "primary",
+          "quote": "The Scalability settings provide a way for you to adjust the quality of various features in order to maintain the best performance for your game on different platforms and hardware."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "partial",
+      "note": "A save game object serialises whatever the project chooses into a slot, synchronously or in the background; what survives a restart is entirely up to the application, and the file is engine-private.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/saving-and-loading-your-game-in-unreal-engine",
+          "title": "Saving and Loading Your Game in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "partial",
+      "note": "The cooked container indexes chunks and the shared build cache keys data by hash, but content is referenced in projects by object path rather than by hash, so hash-based referring is an internal build detail rather than an addressing scheme.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/zen-loader-in-unreal-engine",
+          "title": "Zen Loader in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The `.utoc` file describes the container file, including chunk size and offset, compression format, and whether the chunks are encrypted."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "native",
+      "note": "Packaging turns a project into a platform-native application, covering desktop, mobile, consoles and immersive platforms; the output is an executable for one platform, not a portable runnable bundle, so there is no way to hand the same package to a different runtime.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/packaging-your-project?lang=en-US",
+          "title": "Packaging Your Project",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Packaging is a process that converts an Unreal Engine project into a standalone executable (.exe) or application."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/packaging-your-project?lang=en-US",
+          "title": "Packaging Your Project",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Cooking is a build operation that prepares game content so that it can be run outside of the Unreal Editor."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "via-extension",
+      "note": "Content can be split into separate archive files and fetched at runtime by a shipped downloader plugin driven by a manifest; Epic supplies the client, not the hosting, so the operator brings the delivery network.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/patching-content-delivery-and-dlc-in-unreal-engine",
+          "title": "Patching, Content Delivery, and DLC in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The ChunkDownloader plugin is a general patching solution intended for games that need to deliver a large number of small files."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "native",
+      "note": "A build can be marked as a numbered release and later cooks are compared against it to work out what belongs in a patch, with the smallest unit being one package; this only works between builds of the same project on the same engine version.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/how-to-create-a-patch-in-unreal-engine",
+          "title": "How to Create a Patch in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "Unreal Engine is a general engine whose capture-adjacent features arrive as engine plugins, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-virtualized-geometry-in-unreal-engine",
+          "title": "Nanite Virtualized Geometry in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Data is streamed in on demand so that only visible detail needs to reside in memory."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "Unreal Engine is a general engine whose capture-adjacent features arrive as engine plugins, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-virtualized-geometry-in-unreal-engine",
+          "title": "Nanite Virtualized Geometry in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Data is streamed in on demand so that only visible detail needs to reside in memory."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "Unreal Engine is a general engine whose capture-adjacent features arrive as engine plugins, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-virtualized-geometry-in-unreal-engine",
+          "title": "Nanite Virtualized Geometry in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Data is streamed in on demand so that only visible detail needs to reside in memory."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "none",
+      "note": "Version 5.8 documents no splat or radiance field support. Nothing appears in the release notes or in the experimental feature list, and the only material on Epic's own site is a community tutorial rather than engine documentation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/experimental-features",
+          "title": "Experimental Features (Unreal Engine 5.8)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Heterogeneous Volumes"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "out-of-scope",
+      "note": "Unreal Engine is a general engine whose capture-adjacent features arrive as engine plugins, and it delivers no captured scene, progressively by region and detail or otherwise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-virtualized-geometry-in-unreal-engine",
+          "title": "Nanite Virtualized Geometry in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Data is streamed in on demand so that only visible detail needs to reside in memory."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "none",
+      "note": "Volumetric rendering ships as an experimental feature over sparse volume textures, which draws a volume that is already in the project. There is no captured, time-varying scene carried as media and no calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/experimental-features",
+          "title": "Experimental Features (Unreal Engine 5.8)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Heterogeneous Volumes"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "via-extension",
+      "note": "The LiDAR Point Cloud plugin is the whole answer, and it is a good one: it imports the open interchange formats a scanner writes, draws them, and edits them in the editor. It is a plugin rather than core, and there is no compressed point cloud codec.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/lidar-point-cloud-plugin-overview-in-unreal-engine",
+          "title": "LiDAR Point Cloud plugin overview, Unreal Engine documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Use the LiDAR Point Cloud plugin to import, visualize, and edit point clouds in Unreal Engine."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "Unreal Engine is a general engine whose capture-adjacent features arrive as engine plugins, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-virtualized-geometry-in-unreal-engine",
+          "title": "Nanite Virtualized Geometry in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Data is streamed in on demand so that only visible detail needs to reside in memory."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "out-of-scope",
+      "note": "Unreal Engine is a general engine whose capture-adjacent features arrive as engine plugins, and it produces no image from a viewing position that no capture camera occupied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-virtualized-geometry-in-unreal-engine",
+          "title": "Nanite Virtualized Geometry in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Data is streamed in on demand so that only visible detail needs to reside in memory."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "Unreal Engine is a general engine whose capture-adjacent features arrive as engine plugins, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-virtualized-geometry-in-unreal-engine",
+          "title": "Nanite Virtualized Geometry in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Data is streamed in on demand so that only visible detail needs to reside in memory."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "Unreal Engine is a general engine whose capture-adjacent features arrive as engine plugins, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-virtualized-geometry-in-unreal-engine",
+          "title": "Nanite Virtualized Geometry in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Data is streamed in on demand so that only visible detail needs to reside in memory."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "via-extension",
+      "note": "Editing a capture after the fact is possible for exactly one kind of capture, through the same plugin, which states editing as one of its three verbs. What it edits is a point cloud in the editor; nothing applies an edit consistently across the frames of a moving capture.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/lidar-point-cloud-plugin-overview-in-unreal-engine",
+          "title": "LiDAR Point Cloud plugin overview, Unreal Engine documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Use the LiDAR Point Cloud plugin to import, visualize, and edit point clouds in Unreal Engine."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "Unreal Engine is a general engine whose capture-adjacent features arrive as engine plugins, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-virtualized-geometry-in-unreal-engine",
+          "title": "Nanite Virtualized Geometry in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Data is streamed in on demand so that only visible detail needs to reside in memory."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "Unreal Engine is a general engine whose capture-adjacent features arrive as engine plugins, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-virtualized-geometry-in-unreal-engine",
+          "title": "Nanite Virtualized Geometry in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Data is streamed in on demand so that only visible detail needs to reside in memory."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "Unreal Engine is a general engine whose capture-adjacent features arrive as engine plugins, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-virtualized-geometry-in-unreal-engine",
+          "title": "Nanite Virtualized Geometry in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Data is streamed in on demand so that only visible detail needs to reside in memory."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "Unreal Engine is a general engine whose capture-adjacent features arrive as engine plugins, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-virtualized-geometry-in-unreal-engine",
+          "title": "Nanite Virtualized Geometry in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Data is streamed in on demand so that only visible detail needs to reside in memory."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "out-of-scope",
+      "note": "Unreal Engine is a general engine whose capture-adjacent features arrive as engine plugins, and it carries no full 360-degree view of a place as an image with its projection stated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-virtualized-geometry-in-unreal-engine",
+          "title": "Nanite Virtualized Geometry in Unreal Engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Data is streamed in on demand so that only visible detail needs to reside in memory."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "native",
+      "note": "The augmented reality module is part of the engine, not a plug-in. One switch on the session settings makes the system generate mesh data from tracked geometry that can be used for rendering, collision and navigation, with further switches for collision, navigation mesh and wireframe drawing. The geometry arrives as a tracked mesh object the game can query.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/AugmentedReality/UARSessionConfig",
+          "title": "Unreal Engine 5.8 API reference: UARSessionConfig",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Boolean to determine whether the AR system should generate mesh data that can be used for rendering, collision, NavMesh, and more."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/AugmentedReality/UARMeshGeometry",
+          "title": "Unreal Engine 5.8 API reference: UARMeshGeometry",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Try to determine the classification of the object at a world space location"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "partial",
+      "note": "Classification exists but only as a point query: a mesh geometry can be asked what class of object sits at a world location, returning one value and the place it was measured. There is no labelled channel to iterate, no per-pixel class image, and the answer depends on what the platform underneath reports.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/AugmentedReality/UARMeshGeometry",
+          "title": "Unreal Engine 5.8 API reference: UARMeshGeometry",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Try to determine the classification of the object at a world space location"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "partial",
+      "note": "The engine exposes the platform's scene depth as an augmented reality texture, alongside a scene depth confidence map and separate person segmentation depth, and can use scene depth to occlude. What it does not do is state the units or define the depth itself: the texture is passed through from ARKit or ARCore, so the metric half of this row rests on the platform, not on the engine.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/AugmentedReality/EARTextureType",
+          "title": "Unreal Engine 5.8 API reference: EARTextureType",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "SceneDepthMap"
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/AugmentedReality/UARSessionConfig",
+          "title": "Unreal Engine 5.8 API reference: UARSessionConfig",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Boolean to determine whether to use the scene depth information for occluding virtual content."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "native",
+      "note": "Occlusion is configuration rather than code. The session settings carry three separate switches: render the mesh data as occlusion meshes, use the scene depth information for occluding virtual content, and use the person segmentation results for the same. All three sit in the engine's own augmented reality settings.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/AugmentedReality/UARSessionConfig",
+          "title": "Unreal Engine 5.8 API reference: UARSessionConfig",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Boolean to determine whether the AR system should render the mesh data as occlusion meshes."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/AugmentedReality/UARSessionConfig",
+          "title": "Unreal Engine 5.8 API reference: UARSessionConfig",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Boolean to determine whether to use the scene depth information for occluding virtual content."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/AugmentedReality/UARSessionConfig",
+          "title": "Unreal Engine 5.8 API reference: UARSessionConfig",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Boolean to determine whether to use the person segmentation results for occluding virtual content."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "via-extension",
+      "note": "Unreal's OpenXR plugin gives the standard's own blend modes and nothing beyond them; everything a mixed reality application actually wants — a passthrough layer, alpha masking, styling — arrives as a vendor extension plugin, and Epic says plainly that those are the device vendor's to build and support, obtainable from Fab. The engine ships extension plugins for hand tracking, eye tracking and visualisation, and none for passthrough.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/developing-for-head-mounted-experiences-with-openxr-in-unreal-engine",
+          "title": "Developing for Head-Mounted Experiences with OpenXR in Unreal Engine",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "For device specific features provided through OpenXR Vendor Extensions , device vendors are responsible for development and support. You can find vendor plugins for XR devices on Fab."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/developing-for-head-mounted-experiences-with-openxr-in-unreal-engine",
+          "title": "Developing for Head-Mounted Experiences with OpenXR in Unreal Engine",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The OpenXR plugin in Unreal Engine supports extension plugins so you can add functionality to OpenXR without relying on engine releases."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.face",
+      "level": "via-extension",
+      "note": "The path is Live Link: a common interface for streaming animation data into the engine from outside, extensible through plugins, which is how a phone's face capture or a headset's face tracker drives a character in Unreal. The engine core reads no face itself, the source decides what the stream contains, and the privacy terms belong to the device that captured it.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/live-link-in-unreal-engine",
+          "title": "Live Link in Unreal Engine",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The purpose of Live Link is to provide a common interface for streaming and consuming animation data from external sources (for example, DDC tools or Mocap Servers) into Unreal Engine."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "native",
+      "note": "A navigation mesh is generated from the level's own collision geometry inside a bounds volume the author places, stored in the level as a RecastNavMesh actor and tiled so parts of it can be rebuilt. The walkable surface is therefore authored and carried with the level rather than recomputed by whoever opens it — inside Unreal. Nothing of it survives export to another engine or a neutral format, and arrival points are the project's own actors.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/basic-navigation-in-unreal-engine",
+          "title": "Basic Navigation in Unreal Engine",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "To make it possible to find a path between a start location and a destination, a Navigation Mesh is generated from the world's collision geometry. This simplified polygon mesh represents the navigable space in the Level."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/basic-navigation-in-unreal-engine",
+          "title": "Basic Navigation in Unreal Engine",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Unreal Engine automatically generates the Navigation Mesh as soon as a Nav Mesh Bounds Volume Actor is added to the Level or is resized."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "none",
+      "note": "Plugins and modules are found by scanning the disk for descriptor files, and a module's name has to be unique only within the build it is loaded into. There is no registry that makes a published plugin's name permanent, nothing stops a second author using the same name, and a project that takes a plugin from a stranger cannot tell from the name what it will get.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/plugins-in-unreal-engine",
+          "title": "Plugins in Unreal Engine",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Unreal Engine finds your Plugin by searching for .uplugin files on disk. We call these files Plugin Descriptors ."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/plugins-in-unreal-engine",
+          "title": "Plugins in Unreal Engine",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "\"Name\" is the unique name of the Plugin Module that will be loaded with the Plugin."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "out-of-scope",
+      "note": "The engine builds an application; the review that stands between that application and its players belongs to the store or platform it ships through. Epic runs such a review for Fortnite islands, which is scored on that subject, not on the engine.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "Unreal can georeference a level so its origin sits at a known place on Earth. It declares no map of a place with a version and a lifecycle, and publishes no transform between two maps.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "The engine states no area over which anything applies; a georeferenced level is content placed on Earth, not a service declaring where it answers.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.extension",
+      "level": "partial",
+      "note": "Plugins declare code and data for editor and runtime features; the source does not establish a general contract for recipients missing the plugin.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/plugins-in-unreal-engine",
+          "title": "Plugins in Unreal Engine | Unreal Engine 5.8 Documentation | Epic Developer Community",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Plugins are collections of code and data"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.color",
+      "level": "partial",
+      "note": "The documentation names working color space and the OpenColorIO integration; this overview alone does not establish each output surface's range and conversion rules.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/working-with-media-in-unreal-engine",
+          "title": "Working with Media in Unreal Engine | Unreal Engine 5.8 Documentation | Epic Developer Community",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Ensure color consistency across projects with OpenColorIO."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.metadata",
+      "level": "partial",
+      "note": "Asset metadata is importable and script-readable in the editor; the source explicitly excludes direct runtime gameplay access.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/asset-metadata-in-unreal-engine",
+          "title": "Asset Metadata in Unreal Engine | Unreal Engine 5.8 Documentation | Epic Developer Community",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "you can't access it directly in your runtime gameplay code."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "native",
+      "note": "UMG and Slate provide engine interface widgets, layout and rendering.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/creating-user-interfaces-with-umg-and-slate-in-unreal-engine",
+          "title": "Creating User Interfaces With UMG and Slate in Unreal Engine | Unreal Engine 5.8 Documentation | Epic Developer Community",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Program user interfaces with Unreal Engine's Slate framework."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.resolve",
+      "level": "native",
+      "note": "Zen Loader resolves staged package and object dependencies through the engine's container and loading system.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/zen-loader-in-unreal-engine",
+          "title": "Zen Loader in Unreal Engine | Unreal Engine 5.8 Documentation | Epic Developer Community",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "package and object dependency graph"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "via-extension",
+      "note": "The Targeting System plugin offers trace tasks and actor filters for scene targeting; it is an optional gameplay integration.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/gameplay-targeting-system-in-unreal-engine",
+          "title": "Gameplay Targeting System in Unreal Engine  | Unreal Engine 5.8 Documentation | Epic Developer Community",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "a Trace targeting task"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.text",
+      "level": "native",
+      "note": "The Android input path accepts text through a dialog or operating-system virtual keyboard.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/setting-up-android-virtual-keyboard-in-unreal-engine-projects",
+          "title": "Setting Up Android Virtual Keyboard in Unreal Engine Projects | Unreal Engine 5.8 Documentation | Epic Developer Community",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "the operating system's virtual keyboard."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.bounds",
+      "level": "partial",
+      "note": "Actor boxes and spheres support visibility and collision testing; the captured page does not establish pre-load geometry traversal.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/visibility-and-occlusion-culling-in-unreal-engine",
+          "title": "Visibility and Occlusion Culling in Unreal Engine | Unreal Engine 5.8 Documentation | Epic Developer Community",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "a set of bounds using a box and a sphere"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.collection",
+      "level": "partial",
+      "note": "Content Browser Collections group assets for editor operations; the cited source does not establish sets of live scene objects consumed at runtime.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/understanding-the-basics-of-unreal-engine",
+          "title": "Understanding the Basics of Unreal Engine | Unreal Engine 5.8 Documentation | Epic Developer Community",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Use filters and Collections"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "via-extension",
+      "note": "Control Rig and Sequencer constraints link transforms with offset and evaluation settings; this is the documented animation tooling route.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/animation-constraint-tools-in-unreal-engine",
+          "title": "Animation Constraint Tools in Unreal Engine | Unreal Engine 5.8 Documentation | Epic Developer Community",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "controlling the attachment offset and baking the constraint back to normal keyframes."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "partial",
+      "note": "Media Framework supplies media playback; this overview does not settle a scene-specific audiovisual synchronization contract.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/working-with-media-in-unreal-engine",
+          "title": "Working with Media in Unreal Engine | Unreal Engine 5.8 Documentation | Epic Developer Community",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Working with Media Playback functionality"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "partial",
+      "note": "MetaSounds generates audio at runtime with sample-accurate control; the captured overview does not establish an exchanged synthesis-model contract.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/metasounds-the-next-generation-sound-sources-in-unreal-engine",
+          "title": "MetaSounds: The Next Generation Sound Sources in Unreal Engine | Unreal Engine 5.8 Documentation | Epic Developer Community",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "generate audio synthetically at runtime"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "native",
+      "note": "The documented async-compute path dispatches GPU work and synchronizes compute and rendering contexts; this captured page is specific to Xbox One.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/asynccompute-in-unreal-engine",
+          "title": "AsyncCompute in Unreal Engine  | Unreal Engine 5.8 Documentation | Epic Developer Community",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "running dispatch() calls asynchronously with the rendering."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.frame-timing",
+      "level": "partial",
+      "note": "Low-latency frame syncing coordinates game, render and GPU threads; the captured source does not associate predicted display time with immersive view poses.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/low-latency-frame-syncing-in-unreal-engine",
+          "title": "Low-Latency Frame Syncing in Unreal Engine | Unreal Engine 5.8 Documentation | Epic Developer Community",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "greatly reduce and control input latency."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "native",
+      "note": "The shader toolchain accepts HLSL and documents cross-compilation; engine-specific bindings and offline compilation remain required.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/shader-development-in-unreal-engine",
+          "title": "Shader Development in Unreal Engine | Unreal Engine 5.8 Documentation | Epic Developer Community",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "automatically convert HLSL into GLSL"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.parametric",
+      "level": "partial",
+      "note": "Spline components retain editable mathematical paths; the source does not establish exchange of the parametric representation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/blueprint-spline-components-overview-in-unreal-engine",
+          "title": "Blueprint Spline Components Overview in Unreal Engine | Unreal Engine 5.8 Documentation | Epic Developer Community",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "a path for you to define and use positional data."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "partial",
+      "note": "Niagara provides authored emitter systems and modules; this overview does not establish exchanging their description with a receiving runtime.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/creating-visual-effects-in-niagara-for-unreal-engine",
+          "title": "Creating Visual Effects in Niagara for Unreal Engine | Unreal Engine 5.8 Documentation | Epic Developer Community",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "create custom modules in Niagara."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.variant",
+      "level": "native",
+      "note": "The documented variant workflow selects authored object states, including transforms, visibility and materials.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/working-with-scene-variants-in-unreal-engine",
+          "title": "Working with Scene Variants in Unreal Engine | Unreal Engine 5.8 Documentation | Epic Developer Community",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "switch the objects in your scene from one state to another."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "native",
+      "confidence": "verified",
+      "note": "Unreal's unified augmented-reality framework exposes light estimation through supported platform providers; this is the framework's documented feature and not proof of every device backend.",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/augmented-reality-overview-in-unreal-engine",
+          "title": "Augmented Reality Overview in Unreal Engine | Unreal Engine 5.8 Documentation | Epic Developer Community",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The unified AR framework includes support for basic AR functionality like Alignment, Light Estimation, Pinning, Session State, Trace Results, and Tracking."
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "partial",
+      "confidence": "verified",
+      "note": "The augmented-reality framework documents image and object detection support; this overview alone does not fully specify tracked-image pose/reference-space results.",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/augmented-reality-overview-in-unreal-engine",
+          "title": "Augmented Reality Overview in Unreal Engine | Unreal Engine 5.8 Documentation | Epic Developer Community",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "2D Image Detection 3D Object Detection"
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "partial",
+      "confidence": "verified",
+      "note": "The augmented-reality framework includes trace results; the overview does not define the complete physical-hit pose result contract for each provider.",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/augmented-reality-overview-in-unreal-engine",
+          "title": "Augmented Reality Overview in Unreal Engine | Unreal Engine 5.8 Documentation | Epic Developer Community",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Trace Results, and Tracking."
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "via-extension",
+      "confidence": "verified",
+      "note": "The MIDI Device Support plugin sends and receives typed instrument messages; the documentation labels it Beta and distinguishes device streaming from file playback.",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/midi-in-unreal-engine",
+          "title": "MIDI in Unreal Engine | Unreal Engine 5.8 Documentation | Epic Developer Community",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The MIDI Device Support plugin adds the ability to send and receive MIDI (Musical Instrument Digital Interface) protocol messages."
+        }
+      ],
+      "direction": "both"
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "partial",
+      "confidence": "verified",
+      "note": "The Control Rig documentation describes baking bone transform animation into an animation sequence. The retained overview does not declare the pose sample timing or interpolation semantics.",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/unreal-engine/animating-characters-and-objects-in-unreal-engine",
+          "title": "Animating Characters and Objects in Unreal Engine | Unreal Engine 5.8 Documentation | Epic Developer Community",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "These animations can then be played in Sequencer or even baked as standalone assets"
+        }
+      ],
+      "direction": "both"
+    }
+  ]
+}

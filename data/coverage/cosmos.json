@@ -1,0 +1,2663 @@
+{
+  "subject_id": "cosmos",
+  "summary": "NVIDIA Cosmos is a family of world models for what NVIDIA calls physical AI: robots, vehicles and machines that act in the real world. The current family, Cosmos 3, was published on 31 May 2026 under the Linux Foundation's OpenMDW-1.1 licence, with open weights in three sizes and a training and serving framework beside them. It has two faces. One reads pictures and video and writes text, answering questions about what is happening, when it happened and where in the frame it is. The other generates: given a text prompt, a starting image, a video or a stream of actions, it produces images, video, sound muxed into the video, and action trajectories for a named robot or vehicle, including the future a given action would bring about and the actions that would bring about a given future. Scored against this map it is almost entirely out of scope, and that is the finding rather than a gap in the research: sixty-four of the eighty-nine rows describe machinery Cosmos does not have, because it has no scene, no objects, no transforms, no materials, no lights and no physics engine, and its own limitation notice says so, stating that the model lacks an explicit physics simulator and that geometry, object permanence and contact dynamics are only approximated. What it does have that this map can see is narrow and worth naming: a camera it can be driven by and can estimate, in nine numbers a frame; a time-sampled action record; scene text as a measured concern; and a guardrail on generation. Four things a standards audience should carry away. The only structured description of a scene in the whole platform is the JSON prompt handed to the generator, and every field in it is prose, so the interchange artefact of a world model is a paragraph in slots. The action trajectory, which is the one numeric record Cosmos both reads and writes, cannot be read by anything else: its columns mean whatever the named embodiment says they mean, its values are normalised by figures taken from the training set, and decoding them needs a projection matrix that lives inside the model. Nothing marks a Cosmos output as generated, though a safety classifier and a face blur do run over the frames. And nothing anywhere expresses a position on the Earth, in a platform trained on ten thousand hours of driving. Two traps for anyone planning on this. The autoencoder in the generation path is not NVIDIA's: it is taken from the Wan2.2 model, published by Wan-AI under Apache 2.0, and kept frozen, so a separately owned component sits inside what an OpenMDW notice appears to cover. And the platform's own publications already contradict each other: the documentation site still gives Apache 2.0 and the NVIDIA Open Model License where the repository, the model card and the technical report all give OpenMDW-1.1, and says the guardrail cannot be disabled where the shipped code documents four ways to disable it.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "out-of-scope",
+      "note": "Nothing is rasterised, because there is no geometry to rasterise. Pixels are produced by denoising latent tokens and decoding them through a video autoencoder, and that autoencoder is not NVIDIA's own: the generation encoder is taken from the Wan2.2 model, published by Wan-AI under Apache 2.0, and is frozen during training. There is no render pass, no draw call and no render graph anywhere in the platform.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "In Generator Mode, noisy image, video, audio, and action tokens are denoised through full attention, allowing the model to jointly generate coherent multimodal outputs."
+        },
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "For visual generation, we use the video VAE encoder from Wan2.2-TI2V- 5B (Wan et al., 2025a)."
+        },
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The ViT encoder for understanding is jointly trained with the backbone, while the VAE encoder for generation is kept frozen during training."
+        },
+        {
+          "url": "https://huggingface.co/Wan-AI/Wan2.2-TI2V-5B",
+          "title": "Wan2.2 model card, Hugging Face",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The models in this repository are licensed under the Apache 2.0 License."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "out-of-scope",
+      "note": "No graphics interface is bound or targeted. The platform binds a compute stack instead: NVIDIA GPUs of Ampere generation or newer, CUDA 12.8 or later, and Linux only.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/docs/setup.md",
+          "title": "Cosmos Framework setup guide",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "NVIDIA GPUs with Ampere architecture (RTX 30 Series, A100) or newer"
+        },
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/docs/setup.md",
+          "title": "Cosmos Framework setup guide",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Linux x86-64/aarch64"
+        },
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| GPU architectures | NVIDIA Ampere, Hopper, and Blackwell |"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "out-of-scope",
+      "note": "There is no material model. Surface appearance is asked for in prose fields of the prompt schema and painted by the model. The only real material data in the whole platform sits inside the synthetic training scenes, which are USD assets carrying material bindings with physical properties, and none of that reaches the model's inputs or outputs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/cosmos_framework/inference/prompting_templates/external_api/t2v_i2v_video_json_schema.json",
+          "title": "Cosmos 3 text-to-video and image-to-video prompt JSON schema template",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "\"background_setting\": \"full prose description of the environment and setting\","
+        },
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Each scene is authored as a self-contained USD asset whose geometry, material bindings (with physical properties), initial poses, kinematic constraints, and randomization parameters are fully captured in a single .usda file"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "none",
+      "note": "A world model that produces lit imagery has no lighting model. The only lighting control is four prose fields in the prompt schema, describing conditions, direction, shadows and effect. Nothing declares a light, nothing computes a shadow, and nothing a second implementation could reproduce is written down.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/cosmos_framework/inference/prompting_templates/external_api/t2v_i2v_video_json_schema.json",
+          "title": "Cosmos 3 text-to-video and image-to-video prompt JSON schema template",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "\"conditions\": \"type and quality of light (e.g., 'Bright daylight', 'Overcast', 'Studio lighting')\","
+        },
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/cosmos_framework/inference/prompting_templates/external_api/t2v_i2v_video_json_schema.json",
+          "title": "Cosmos 3 text-to-video and image-to-video prompt JSON schema template",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "\"shadows\": \"description of shadows\","
+        },
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "We use a structured caption representation for text-to-image training data that captures a broad range of visual attributes, including foreground subjects, scene composition, background elements, lighting, aesthetics, artistic style, camera viewpoint, and cinematographic properties."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.post",
+      "level": "out-of-scope",
+      "note": "There is no pass structure, so nothing can be applied after one. The single post-generation step in the shipped pipeline is a safety one: a face detector blurs faces in the generated frames.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/docs/inference.md",
+          "title": "Cosmos Framework inference guide",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "video content-safety classifier, and RetinaFace face-blur post-processor"
+        },
+        {
+          "url": "https://docs.nvidia.com/cosmos/latest/guardrail.html",
+          "title": "Cosmos Guardrail, NVIDIA Cosmos documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Face Blur Filter : A face detection and blurring module"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "out-of-scope",
+      "note": "There is no geometry to reduce and nothing is streamed. Detail is chosen once per request as a resolution tier, and the tier caps how long the clip can be: 400 frames at the lowest tier, 200 at the highest.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/docs/inference.md",
+          "title": "Cosmos Framework inference guide",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Condition and output resolution **tier**, not a pixel dimension."
+        },
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/docs/faq.md",
+          "title": "Cosmos Framework FAQ",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| 720p | 200 |"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "out-of-scope",
+      "note": "Cosmos neither draws nor carries splats or radiance fields. The word does not appear in the repository, the framework documentation or the model card; the visual output is a JPG or an MP4. This matters because the obvious pairing of a world model with captured radiance fields is not something this platform does today.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Output formats | JPG image, MP4 video, AAC sound stream muxed into MP4, JSON action values, text string |"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "out-of-scope",
+      "note": "Nothing volumetric is produced or consumed. The output is flat video. Depth exists in the platform only as an annotation stream inside the released synthetic datasets and as one of the control modalities a control video may carry.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Output types | Image, video, sound, action state, text |"
+        },
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "a control-conditioned video-to-video benchmark covering four spatial control modalities: blur, edge, segmentation, and depth."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "partial",
+      "note": "Text in the picture is a first-class concern and a measured one: the prompt schema has a slot for every visible string with its category and placement, and the model is scored on exact scene-text rendering with an optical-character-recognition metric. What is missing is everything a text system normally means: no font, no glyph, no layout box, no text primitive. The text is painted, and misspelling is a named failure mode of the class.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/cosmos_framework/inference/prompting_templates/external_api/t2v_i2v_video_json_schema.json",
+          "title": "Cosmos 3 text-to-video and image-to-video prompt JSON schema template",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "\"text\": \"the visible text content\","
+        },
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "CVTG isolates a frequent failure mode of image generators—misspelled, omitted, blurred, or duplicated scene text—through OCR-based GNED and PNED scores."
+        },
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "exact scene-text rendering"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "partial",
+      "note": "The camera is the one part of a scene Cosmos can be told about numerically. Camera motion is an action stream of nine numbers per frame, a three-dimensional translation and a six-dimensional rotation expressed as a relative transform in metric scale, and the model both follows it and predicts it. What is absent is a camera object: no intrinsics in the request, no projection, no field of view, no named viewpoint. Several synchronised views are handled by concatenating them into one image and putting the layout in metadata.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Action conditioning | Supported action dimensions depend on the embodiment, including camera motion (9D), autonomous vehicle (9D), egocentric motion (57D)"
+        },
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "For consecutive SE(3) poses T𝑡−1 and T𝑡 , we represent motion as the relative transform"
+        },
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "All camera poses are kept in metric scale and converted to the unified action coordinate convention."
+        },
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "For data with multiple synchronized viewpoints, we concatenate the views into a canvas and store the camera layout in metadata"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "none",
+      "note": "There is no scene graph and no scene object. The nearest thing is a list of subjects in the prompt schema, and every field in it is prose: where a subject stands is a phrase such as centre foreground, its size is a phrase, its orientation is a phrase. Nothing carries an identifier, so nothing can be referred to again in a later request.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/cosmos_framework/inference/prompting_templates/external_api/t2v_i2v_video_json_schema.json",
+          "title": "Cosmos 3 text-to-video and image-to-video prompt JSON schema template",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "\"location\": \"where in frame (e.g., 'center foreground', 'left background')\","
+        },
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/cosmos_framework/inference/prompting_templates/external_api/t2v_i2v_video_json_schema.json",
+          "title": "Cosmos 3 text-to-video and image-to-video prompt JSON schema template",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "\"relative_size\": \"size within frame (e.g., 'Small within frame', 'Medium within frame', 'Large within frame')\","
+        },
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Rather than relying on dense free-form natural language, captions are represented as JSON objects with predefined semantic fields."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "partial",
+      "note": "One coordinate convention is stated, and it applies only to the action channel: motion is a relative transform between consecutive rigid-body poses, rotation is carried in a six-number over-parameterised form, and the axis convention is OpenCV's. Nothing in the visual path has a transform at all, so a scene cannot be positioned, only described.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "We use the 6D representation following Zhou et al. (2019) and the OpenCV convention for rotations where the z-axis is along the fingers/grippers and x-axis is to the right."
+        },
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "we represent motion as the relative transform"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "none",
+      "note": "Nothing carries a scene between tools. What crosses the boundary is media and numbers: a text string, a JPEG or PNG image, an MP4 video, and a JSON array of action values. The only real scene files anywhere in the platform are the USD files shipped inside the released synthetic training datasets, and they are training material, not an input or an output of the model.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Input formats | Text string, JPG/PNG/JPEG/WEBP image, MP4 video, JSON action array"
+        },
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Scene file (USD). The self-contained .usda used to produce the run, replayable exactly in Isaac Sim."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "out-of-scope",
+      "note": "No mesh is read, written or held. The report is blunt that geometry is only approximated inside the weights, and lists disappearing and morphing objects as the consequence.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://huggingface.co/nvidia/Cosmos3-Super",
+          "title": "Cosmos3-Super model card, Hugging Face",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Because the model lacks an explicit physics simulator, 3D geometry, 4D space-time evolution, object permanence, contact dynamics, and physical laws are only approximated"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "out-of-scope",
+      "note": "There are no textures, because there are no surfaces. Images are output as JPEG and video as MP4; nothing is sampled onto anything.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Output formats | JPG image, MP4 video, AAC sound stream muxed into MP4, JSON action values, text string |"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "out-of-scope",
+      "note": "Nothing exchanges material definitions. Material data exists only inside the USD scenes that generated the synthetic training data and stops there.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "material bindings (with physical properties)"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "conflicts",
+      "note": "Cosmos does carry a time-sampled motion record, and it will not interoperate with anything. An action trajectory is a two-dimensional array, one row per frame, one column per raw action dimension. What a column means depends on which embodiment string was named; the values are normalised into roughly minus one to plus one using per-dimension normalisers computed from the training data; and turning tokens back into an embodiment's own units needs a projection matrix that lives inside the model, one per embodiment. A receiver that has not got that model cannot read the file.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://huggingface.co/nvidia/Cosmos3-Super",
+          "title": "Cosmos3-Super model card, Hugging Face",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The full input is a 2D array shaped (T, D), where T is the number of frames and D is the embodiment-specific dimensionality listed below."
+        },
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/docs/inference.md",
+          "title": "Cosmos Framework inference guide",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "`action_path`: JSON action sequence. Required for `forward_dynamics`; each row is one action step and each column is one raw action dimension."
+        },
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "we compute per-dimension normalizers from the training data and scale action channels to a comparable range of roughly [−1, 1]."
+        },
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "We therefore use domain-aware input and output projection layers with separate weight matrices for each embodiment domain"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "out-of-scope",
+      "note": "There is no rig and no bone naming. The nearest thing is a fixed-width action vector per body, ten numbers for a single-arm robot, twenty for two arms, twenty-nine for one humanoid, fifty-seven for egocentric motion, and each of those widths has its own learned projection inside the model. A new body cannot be declared; it has to be trained.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://huggingface.co/nvidia/Cosmos3-Super",
+          "title": "Cosmos3-Super model card, Hugging Face",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "including general camera motion (9D), autonomous vehicle (9D), egocentric motion (57D), single Franka Panda arm with RobotiQ gripper (10D), dual Franka Panda arm with RobotiQ gripper (20D), Agibot (29D)"
+        },
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "separate weight matrices for each embodiment domain"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "out-of-scope",
+      "note": "No blend shapes and no shape deformation. Morphing appears in this subject only as a defect: the repository lists object morphing among the artefacts the model produces.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Common failure modes include temporal inconsistency, unstable camera or object motion, inaccurate sound-video alignment, imperfect action-state consistency, object morphing, inaccurate 3D structure, and implausible physical dynamics."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "out-of-scope",
+      "note": "Nothing is instanced, because nothing is an object. The nearest thing is a count in the prompt schema saying how many of a described subject there should be.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/cosmos_framework/inference/prompting_templates/external_api/t2v_i2v_video_json_schema.json",
+          "title": "Cosmos 3 text-to-video and image-to-video prompt JSON schema template",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "\"number_of_subjects\": \"int; total in this subject group, 0 if N/A\","
+        },
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "If a subject corresponds to a group or cluster of similar entities, the schema may additionally include:"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "none",
+      "note": "Nothing layers, references or overrides anything. Each request is one flat prompt with optional conditioning media. The closest thing to composition is transfer, where a control video, carrying edges, depth, segmentation or blur, constrains the structure of the result while the prompt supplies the rest, and even there the two are inputs to one generation, not layers of a scene that can be revisited.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "a control-conditioned video-to-video benchmark covering four spatial control modalities: blur, edge, segmentation, and depth."
+        },
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "a single unified backbone natively supports all four spatial controls"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "none",
+      "note": "Nothing in the visual path has a scale. An image is a resolution tier and an aspect ratio; a video adds a frame rate and a frame count. The one metric quantity in the platform is in the action channel, where camera poses are kept in metric scale, so the only thing measured in metres is the movement of the observer, never the world observed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "All camera poses are kept in metric scale"
+        },
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Vision conditioning | 720p uses 1280x720, 480p uses 832x480, and 256p uses 320x192."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "none",
+      "note": "No licence travels with anything Cosmos produces. There is no rights field in the output, and the frames carry no terms. The licence sits on the model instead, and the platform's own two statements of it disagree: the repository, the model card and the technical report all say the code and the models are under OpenMDW-1.1, while the documentation site, last updated in August 2026, still says the code is Apache 2.0 and the models are under the NVIDIA Open Model License. Anyone writing a licence into a procurement document has to pick one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "NVIDIA Cosmos source code and models are released under, and subject to the terms of, the [OpenMDW-1.1](https://openmdw.ai/license/1-1/) License."
+        },
+        {
+          "url": "https://docs.nvidia.com/cosmos/latest/license.html",
+          "title": "License, NVIDIA Cosmos documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "NVIDIA Cosmos source code is released under the (Apache 2 License)"
+        },
+        {
+          "url": "https://docs.nvidia.com/cosmos/latest/license.html",
+          "title": "License, NVIDIA Cosmos documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "NVIDIA Cosmos models are released under the (NVIDIA Open Model License)"
+        },
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/LICENSE",
+          "title": "OpenMDW License Agreement version 1.1, as shipped in the Cosmos repository",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "OpenMDW License Agreement, version 1.1 (OpenMDW-1.1)"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "none",
+      "note": "Nothing marks a Cosmos output as generated. There is no signature, no content credential and no watermark in the documented pipeline. The one thing applied to finished frames is safety filtering: a classifier that judges them safe or unsafe, and a face blur. A world model that can produce photorealistic footage of a real-looking street therefore hands back a file that says nothing about where it came from, which is exactly the gap C2PA, already a subject on this map, exists to close.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nvidia.com/cosmos/latest/guardrail.html",
+          "title": "Cosmos Guardrail, NVIDIA Cosmos documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Cosmos post-Guard models are applied to video frames generated by Cosmos models."
+        },
+        {
+          "url": "https://docs.nvidia.com/cosmos/latest/guardrail.html",
+          "title": "Cosmos Guardrail, NVIDIA Cosmos documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Video Content Safety Filter : A classifier trained to distinguish between safe and unsafe video frames"
+        },
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/docs/inference.md",
+          "title": "Cosmos Framework inference guide",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "video content-safety classifier, and RetinaFace face-blur post-processor"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "out-of-scope",
+      "note": "There is no avatar. People exist as pixels and as prose fields describing appearance, clothing, age and skin tone in the prompt schema. Nothing portable represents a person, and the model card warns that a person in an input image is reproduced without protection of any kind.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/cosmos_framework/inference/prompting_templates/external_api/t2v_i2v_video_json_schema.json",
+          "title": "Cosmos 3 text-to-video and image-to-video prompt JSON schema template",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "\"skin_tone_and_texture\": \"skin tone description; '' if non-human\","
+        },
+        {
+          "url": "https://huggingface.co/nvidia/Cosmos3-Super",
+          "title": "Cosmos3-Super model card, Hugging Face",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "if image or video includes people, personal health information, or intellectual property, the image or video generated will not blur or maintain proportions of image subjects included"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "out-of-scope",
+      "note": "No bone hierarchy and no naming agreement. The closest thing is the action vector for a body, and for hands the training data goes as far as a twenty-one-point three-dimensional pose per hand, but that is a sensor record used to train, not a rig that can be exchanged.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "a 21-keypoint 3D pose (Zimmermann and Brox, 2017; Simon et al., 2017) that provides per-joint position and orientation in the camera coordinate frame"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "out-of-scope",
+      "note": "No named expressions and no visemes. Expression is a free-text field in the prompt schema, alongside other facial attributes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/cosmos_framework/inference/prompting_templates/external_api/t2v_i2v_video_json_schema.json",
+          "title": "Cosmos 3 text-to-video and image-to-video prompt JSON schema template",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "\"expression\": \"facial expression; '' if non-human or not visible\","
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "out-of-scope",
+      "note": "Nothing is retargeted. Motion cannot move between bodies here at all: each embodiment has its own vector width and its own learned projection, so a trajectory recorded for one arm has no meaning for another.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "separate weight matrices for each embodiment domain"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "out-of-scope",
+      "note": "No attachment points and no worn items. Clothing is a prose field.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/cosmos_framework/inference/prompting_templates/external_api/t2v_i2v_video_json_schema.json",
+          "title": "Cosmos 3 text-to-video and image-to-video prompt JSON schema template",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "\"clothing\": \"clothing and accessories; '' if non-human or not visible\","
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "out-of-scope",
+      "note": "No reduced representation of a person, because there is no representation of a person. The only detail control is the resolution tier of the whole picture.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/docs/inference.md",
+          "title": "Cosmos Framework inference guide",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| `1,1` | 256x256 | 640x640 | 960x960 | 1024x1024 |"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "out-of-scope",
+      "note": "Nothing binds a depicted person to any identifier. The platform's only identity mechanism is an access token for downloading weights.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Before running examples, create a Hugging Face access token and then authenticate locally:"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "out-of-scope",
+      "note": "There are no bodies, no masses and no velocities. Behaviour that looks like physics comes out of learned weights, and the platform says so plainly: the model has no explicit physics simulator. Real rigid-body physics exists in Cosmos only upstream, in the Isaac Sim runs that made part of the training data, where every body's mass, inertia tensor, friction, restitution and density were recorded next to the video and then thrown away at the model's boundary.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://huggingface.co/nvidia/Cosmos3-Super",
+          "title": "Cosmos3-Super model card, Hugging Face",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Because the model lacks an explicit physics simulator"
+        },
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Static per-object physics (JSON). World gravity, and per-rigid-body mass, diagonal inertia tensor, body- frame center of mass, principal-axes quaternion, static and dynamic friction, restitution, density, and collision flag, keyed by USD prim path and segmentation color."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "out-of-scope",
+      "note": "No collision shapes exist, and collisions are a known failure mode rather than a computed result.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://huggingface.co/nvidia/Cosmos3-Super",
+          "title": "Cosmos3-Super model card, Hugging Face",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "producing artifacts such as disappearing or morphing objects, unrealistic collisions, and physically implausible motions"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "out-of-scope",
+      "note": "No joints or constraints. Kinematic constraints appear only in the USD scenes that produced the synthetic training clips.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "initial poses, kinematic constraints, and randomization parameters are fully captured in a single .usda file"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.material",
+      "level": "out-of-scope",
+      "note": "No physics materials. Friction and restitution are recorded per body in the training data and are not expressible at the model's interface.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "static and dynamic friction, restitution, density, and collision flag"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.determinism",
+      "level": "none",
+      "note": "This is the row a standards audience should read twice. A seed is exposed, and the documentation calls it a seed for reproducibility, but nothing claims the same seed gives the same output on another machine, only one numeric precision has been tested, and the platform states that its outputs must not be treated as physically accurate simulation. So a world model can be re-run, but it cannot be relied on to agree with itself elsewhere, which is what determinism means here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/docs/inference.md",
+          "title": "Cosmos Framework inference guide",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "`seed`: Random seed for reproducibility."
+        },
+        {
+          "url": "https://huggingface.co/nvidia/Cosmos3-Super",
+          "title": "Cosmos3-Super model card, Hugging Face",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**Note:** Only BF16 precision is tested. Other precisions like FP4, FP8, and FP16 are not officially supported."
+        },
+        {
+          "url": "https://huggingface.co/nvidia/Cosmos3-Super",
+          "title": "Cosmos3-Super model card, Hugging Face",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Cosmos3 outputs should not be treated as physically accurate simulation, reliable ground-truth reasoning, or safety-certified decision making."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "out-of-scope",
+      "note": "No soft bodies or cloth simulation. Cloth appears only as content the model has learned to depict.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://huggingface.co/nvidia/Cosmos3-Super",
+          "title": "Cosmos3-Super model card, Hugging Face",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Because the model lacks an explicit physics simulator"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "out-of-scope",
+      "note": "No regions and no events. Nothing in a generated scene can fire anything, because nothing in it is addressable.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Output types | Image, video, sound, action state, text |"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "none",
+      "note": "Sound is generated, but no sound is placed. What comes back is one stereo mix baked into the video file, and the only control over it is a sentence of prose in the prompt schema. There is no source, no distance and no direction.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Sound output | Stereo AAC at 48 kHz when generated with video"
+        },
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/cosmos_framework/inference/prompting_templates/external_api/t2v_i2v_video_json_schema.json",
+          "title": "Cosmos 3 text-to-video and image-to-video prompt JSON schema template",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "\"audio_description\": \"a natural-language description of the audio: speech, music, ambient, and notable effects\","
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "none",
+      "note": "Two channels, and nothing else. No head-related transfer function, no ambisonics, no binaural option: the audio path encodes and decodes stereo at forty-eight kilohertz, and the model is scored on whether the sound matches the picture, not on where it appears to come from.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://huggingface.co/nvidia/Cosmos3-Super",
+          "title": "Cosmos3-Super model card, Hugging Face",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The generated audio is encoded in AAC format, muxed into the video MP4 file with 2 channels (stereo) and a 48 kHz sample rate."
+        },
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The raw stereo audio sampled at 48 kHz is encoded with a hop size of 1920 samples, resulting in 25 tokens per second of audio."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "out-of-scope",
+      "note": "No room model and no reverb. Whatever a space sounds like is whatever the model paints, learned from clips selected for environmental and physical sound.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "12.8M non-speech clips for environmental and physical sound generation"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "out-of-scope",
+      "note": "No obstruction model. There is no geometry to block anything.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://huggingface.co/nvidia/Cosmos3-Super",
+          "title": "Cosmos3-Super model card, Hugging Face",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Because the model lacks an explicit physics simulator, 3D geometry, 4D space-time evolution, object permanence, contact dynamics, and physical laws are only approximated"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "out-of-scope",
+      "note": "Audio is not streamed anywhere. It arrives as a finished coded stream inside the returned video file.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Output formats | JPG image, MP4 video, AAC sound stream muxed into MP4, JSON action values, text string |"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "out-of-scope",
+      "note": "No live voice is carried. The model can generate speech that matches a visible speaker, trained on six million clips selected for that, but this is synthesis into a file, not transport between people.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "6M speech-synchronized clips for visually grounded speech generation"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "out-of-scope",
+      "note": "There is no shared state to replicate and no session to hold it. Every request is independent: arguments in, files out, into a named output directory.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/docs/inference.md",
+          "title": "Cosmos Framework inference guide",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "- `<sample_name>/` - `sample_args.json`: Sample arguments. - `sample_outputs.json`: Generation status, action (if enabled). - `vision.jpg`, `vision.mp4`: Vision output (if enabled)."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "out-of-scope",
+      "note": "Nothing is owned by anyone, because nothing persists between requests to be owned.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/docs/inference.md",
+          "title": "Cosmos Framework inference guide",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Sample arguments are read from multiple sources (in priority order):"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "out-of-scope",
+      "note": "No clients and no world, so nothing to filter per client. The nearest thing is batching several independent samples on one replica.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/docs/inference.md",
+          "title": "Cosmos Framework inference guide",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "`--max-num-seqs`: Maximum number of samples batched together per replica."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.prediction",
+      "level": "out-of-scope",
+      "note": "Prediction here means something else entirely: predicting the next state of a world from actions, not hiding network latency. Nothing reconciles anything after the fact.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**World generation:** Produce images, videos, synchronized sound, and action-conditioned rollouts from text, image, video, or action inputs."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "out-of-scope",
+      "note": "No session protocol. The only wire traffic in the platform is a call to a model: an interface shaped like a chat completion for the reasoner, a container endpoint that takes a request and returns the video encoded inside the reply, and, for robot control, a policy server on a port that streams actions to whatever is driving the robot.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Prebuilt NGC container for T2V/I2V video generation only; uses `/v1/infer` and returns JSON `b64_video`"
+        },
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/docs/action_policy_droid_server.md",
+          "title": "Cosmos3-Policy-DROID server guide",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Each of these policy models is served by a policy **Server** that streams actions to a **Client** driving a simulated or real robot."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.media",
+      "level": "none",
+      "note": "Nothing is streamed live. A generation returns a complete file, or the whole video encoded as text inside a reply, after seconds to minutes of compute measured in the platform's own latency tables. A world model in this shape cannot be a source in a live media path.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "uses `/v1/infer` and returns JSON `b64_video`"
+        },
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Generator sections report visual-generation latency in seconds across GPUs and integrated computing platforms, including text-to-image, text-to-video, and image-to-video."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "out-of-scope",
+      "note": "Nothing is joined. The nearest thing to signing in is authenticating to a model hub to fetch weights.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "uvx hf@latest auth login"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "out-of-scope",
+      "note": "No worlds to leave or arrive in, and nothing to carry between them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| **Text-to-video** | Text | Vision | Industrial video generation from a dense scene description |"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "out-of-scope",
+      "note": "No participants and no roster.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Surface | Inputs | Outputs | Use Cases |"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "out-of-scope",
+      "note": "Nothing is addressed, and nothing resolves. The only names in the platform are model names on a hub, passed as a checkpoint path.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/docs/inference.md",
+          "title": "Cosmos Framework inference guide",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Cosmos3-Nano | `--checkpoint-path=Cosmos3-Nano` | All |"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "out-of-scope",
+      "note": "Nothing is discovered at run time. Deployment is a catalogue of microservices a person picks from.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nvidia.com/cosmos/latest/cosmos_nim.html",
+          "title": "NVIDIA NIMs for Cosmos, NVIDIA Cosmos documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "NVIDIA NIM offers a number of microservices for Cosmos apps, including the following:"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "out-of-scope",
+      "note": "No clock is shared with anyone. Time exists inside the model, where action, audio, control and video tokens sit on one temporal coordinate system, and at the interface as a frame rate and a frame count; it is a timeline for one clip, not an ordering agreed between parties.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This lets action, audio, control, and video tokens share the same temporal coordinate system and two-way attention pattern described in Sec. 2."
+        },
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/docs/inference.md",
+          "title": "Cosmos Framework inference guide",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "`fps`: Condition and output frames per second."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "out-of-scope",
+      "note": "No identifiers for people, agents or things. The subjects in a generated scene have no identity at all, only descriptions.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/cosmos_framework/inference/prompting_templates/external_api/t2v_i2v_video_json_schema.json",
+          "title": "Cosmos 3 text-to-video and image-to-video prompt JSON schema template",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "\"description\": \"full visual description of the subject (appearance, clothing, identifying features)\","
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "out-of-scope",
+      "note": "No claims about anyone are expressed or carried.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://huggingface.co/nvidia/Cosmos3-Super",
+          "title": "Cosmos3-Super model card, Hugging Face",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Users are responsible for model inputs and outputs."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "out-of-scope",
+      "note": "Nothing is requested or presented between parties.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://huggingface.co/nvidia/Cosmos3-Super",
+          "title": "Cosmos3-Super model card, Hugging Face",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Users are responsible for ensuring safe integration of this model, including implementing guardrails as well as other safety mechanisms, prior to deployment."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "out-of-scope",
+      "note": "Nothing grants a permission that a third party could read. The only gate in the platform is repository access: the generation path needs a safety model whose repository is gated, and the container path needs a key for the vendor's own registry.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Request access to the gated [nvidia/Cosmos-1.0-Guardrail](https://huggingface.co/nvidia/Cosmos-1.0-Guardrail) HF repository for Hugging Face based Generator paths."
+        },
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "NIM examples use an NGC API key (`NGC_API_KEY`) instead of Hugging Face authentication."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "out-of-scope",
+      "note": "Nothing is selectively disclosed. The one privacy mechanism in the pipeline is blunt and after the fact: faces in generated frames are detected and blurred. Responsibility for the rights and the personal data in whatever is fed in is placed on the caller.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nvidia.com/cosmos/latest/guardrail.html",
+          "title": "Cosmos Guardrail, NVIDIA Cosmos documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Face Blur Filter : A face detection and blurring module"
+        },
+        {
+          "url": "https://huggingface.co/nvidia/Cosmos3-Super",
+          "title": "Cosmos3-Super model card, Hugging Face",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Please make sure you have proper rights and permissions for all input image and video content"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.social",
+      "level": "out-of-scope",
+      "note": "No relationships and no standing. Relationship exists in this subject only as a sentence describing how one depicted subject relates to another.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/cosmos_framework/inference/prompting_templates/external_api/t2v_i2v_video_json_schema.json",
+          "title": "Cosmos 3 text-to-video and image-to-video prompt JSON schema template",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "\"relationship\": \"how this subject relates to others or to the scene\","
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "none",
+      "note": "Nothing acts on licence terms at the point of use. The licence on the model materials grants dealing without restriction, subject to keeping the notices, and the filtering that does run at generation time is about content safety, not about rights: it blocks harmful prompts and unsafe frames, and it has nothing to say about whether the caller was entitled to the picture they supplied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/LICENSE",
+          "title": "OpenMDW License Agreement version 1.1, as shipped in the Cosmos repository",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "permission is hereby granted, free of charge, to deal in the Model Materials without restriction"
+        },
+        {
+          "url": "https://docs.nvidia.com/cosmos/latest/guardrail.html",
+          "title": "Cosmos Guardrail, NVIDIA Cosmos documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Blocklist : A keyword list checker for detecting harmful keywords"
+        },
+        {
+          "url": "https://huggingface.co/nvidia/Cosmos3-Super",
+          "title": "Cosmos3-Super model card, Hugging Face",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Please make sure you have proper rights and permissions for all input image and video content"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "none",
+      "note": "Nothing in Cosmos expresses a position on the Earth. This is the sharpest absence in the record, because the platform is trained on ten thousand hours of driving logs and still never mentions a latitude, a longitude or a datum: driving trajectories are converted out of the vehicle frame into the camera frame, and every pose in the action space is a difference from the previous pose. A world model can generate a street and cannot say which street.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "we transform driving trajectories from the vehicle coordinate frame to the front-wide camera coordinate frame."
+        },
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "ego and effector poses are represented as pseudo-actions derived from state differences."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "out-of-scope",
+      "note": "No coordinate reference system is named anywhere. The only frames in use are a camera frame and an embodiment's own frame.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "provides per-joint position and orientation in the camera coordinate frame"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "out-of-scope",
+      "note": "Nothing is fixed to a place, on one device or otherwise. Nothing survives the request that made it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/docs/inference.md",
+          "title": "Cosmos Framework inference guide",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "- `-o`, `--output-dir`: Output directory."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "out-of-scope",
+      "note": "No anchors, no sharing and no persistence across sessions or devices.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Input types | Text, text + image, text + video, text + image + action |"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.vps",
+      "level": "partial",
+      "note": "Half of this row is genuinely there. Given only a video, the model runs inverse dynamics and returns the ego-motion trajectory that produced it, and the training pipeline built its camera-motion corpus the same way, estimating poses from ordinary video. What is missing is the other half of positioning: the result is relative motion in the camera's own frame, with no map to match against, no absolute frame to land in and no accuracy figure attached. It recovers how the camera moved, never where it was.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Inverse dynamics: ego-motion trajectory prediction from input AV video"
+        },
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/docs/inference.md",
+          "title": "Cosmos Framework inference guide",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| `inverse_dynamics` | observation video + prompt | predicted action sequence in `sample_outputs.json`"
+        },
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "We convert these videos into action trajectories by estimating camera poses with ViPE (Huang et al., 2025) and DepthAnything3 (Lin et al., 2025b)."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "out-of-scope",
+      "note": "No tiles, no terrain and no city data. Nothing large is streamed by region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Input formats | Text string, JPG/PNG/JPEG/WEBP image, MP4 video, JSON action array |"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.indoor",
+      "level": "out-of-scope",
+      "note": "Indoor space is a subject matter, not a structure. The platform trained on indoor and outdoor scenes; it produces no description of a building.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://huggingface.co/nvidia/Cosmos3-Super",
+          "title": "Cosmos3-Super model card, Hugging Face",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "robotics, autonomous driving, industrial environments, indoor and outdoor scenes, varied lighting and weather conditions, camera viewpoints, object categories, and human activities"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "out-of-scope",
+      "note": "There is no immersive session to start or end. The nearest thing to a running loop is the policy server, which holds a model open on a port while a client drives a robot against it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/docs/action_policy_droid_server.md",
+          "title": "Cosmos3-Policy-DROID server guide",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Start the server first, then connect the client."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "out-of-scope",
+      "note": "No device input of any kind. Control reaches the model as a file of numbers, one row per frame, not as a live signal from something held in a hand.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/docs/inference.md",
+          "title": "Cosmos Framework inference guide",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "`action_path`: JSON action sequence."
+        },
+        {
+          "url": "https://huggingface.co/nvidia/Cosmos3-Super",
+          "title": "Cosmos3-Super model card, Hugging Face",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Action input is a per-frame sequence of robot/agent state or control values (e.g., joint positions, gripper state, camera pose)."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "out-of-scope",
+      "note": "Hands appear as data, not as an input source. In the egocentric action space the grasp state is fifteen numbers, the fingertip positions in each wrist's frame; that is conditioning material for generation, not a tracker a runtime can subscribe to.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "For egocentric data, we use head-camera pose deltas as ego poses, wrist-pose deltas as effector poses, and fingertip positions in each wrist frame as grasp states"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.eye",
+      "level": "out-of-scope",
+      "note": "No gaze anywhere. Egocentric data uses the pose of the head-mounted camera, which is where the head pointed, not where the eyes looked.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "we use head-camera pose deltas as ego poses"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "out-of-scope",
+      "note": "No feedback to a user of any kind. The outputs are media and numbers.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Output types | Image, video, sound, action state, text |"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "out-of-scope",
+      "note": "Nothing is negotiated at run time. What a deployment can do is written in documentation and read by a person: Ampere or newer, Linux, a listed CUDA version, and, for the smallest model, a smaller envelope of resolutions, frame rates and clip lengths.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/docs/setup.md",
+          "title": "Cosmos Framework setup guide",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "- [NVIDIA CUDA >=12.8]"
+        },
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Cosmos3-Edge only supports 256p and 480p resolution, 12–30 fps, and 50–150 frames."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "out-of-scope",
+      "note": "There is no scripting language and no world rules to express. Behaviour lives in weights. The only programmable surface is a Python entry point taking JSON, YAML or JSONL argument files.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/README.md",
+          "title": "Cosmos Framework repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Entry point: `cosmos_framework.scripts.inference`."
+        },
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/docs/inference.md",
+          "title": "Cosmos Framework inference guide",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "- `-i`, `--input-files`: Path to the sample argument file(s) (JSON, JSONL, YAML)."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "none",
+      "note": "Nothing declarative travels with a Cosmos output. The closest artefact is the typed JSON prompt handed to the generator, and it is a description, not a behaviour: timed intervals with prose descriptions of what happens, segments with prose about what changes. It tells a model what to paint; it cannot tell a runtime what to do.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/cosmos_framework/inference/prompting_templates/external_api/t2v_i2v_video_json_schema.json",
+          "title": "Cosmos 3 text-to-video and image-to-video prompt JSON schema template",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "\"description\": \"what happens in this timed interval\""
+        },
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/cosmos_framework/inference/prompting_templates/external_api/t2v_i2v_video_json_schema.json",
+          "title": "Cosmos 3 text-to-video and image-to-video prompt JSON schema template",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "\"key_changes\": \"notable changes within the segment\","
+        },
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The JSON specification additionally includes explicit media controls (duration, FPS, spatial height and width, and aspect ratio), keeping prompt interpretation and sampling configuration inspectable and reproducible."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "partial",
+      "note": "The guardrail is the only limit the platform imposes at run time, and it limits content, not execution: a word blocklist and a safety classifier on the prompt, a safety classifier and a face blur on the frames. It is on by default. Two things a working group should note. It is not isolation, so nothing here bounds what a caller's own code does. And the published statements disagree about whether it can be switched off: the documentation site says the guardrail cannot be disabled, while the shipped code takes a flag to disable it in four separate serving paths.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/docs/inference.md",
+          "title": "Cosmos Framework inference guide",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Inference ships with guardrails enabled by default, sourced from [nvidia/Cosmos-Guardrail1](https://huggingface.co/nvidia/Cosmos-Guardrail1)."
+        },
+        {
+          "url": "https://docs.nvidia.com/cosmos/latest/guardrail.html",
+          "title": "Cosmos Guardrail, NVIDIA Cosmos documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The Cosmos-1.0-Guardrail model is integrated into the diffusion and autoregressive world generation pipelines and cannot be disabled."
+        },
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "To disable the guardrail, set `enable_safety_checker=False` (Diffusers), `TRTLLM_DISABLE_COSMOS3_GUARDRAILS=1` or `use_guardrails: false` through `extra_params` (TensorRT-LLM), `guardrails: false` (vLLM-Omni `extra_params`/`extra_args`), or `--no-guardrails` (Cosmos Framework)."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "partial",
+      "note": "Cosmos is built for agents, and the agent is always outside. The model predicts action trajectories for named embodiments, ships policy checkpoints for a robot platform, and serves them to a client driving a simulated or real robot. What it does not have is a world for an agent to act inside: the agent acts in the real world or in someone else's simulator, and Cosmos supplies either the policy or the prediction of what happens next.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**Action modeling:** Predict policy actions, inverse dynamics, and forward dynamics for robotics, camera motion, egocentric motion, and autonomous-driving settings."
+        },
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/docs/action_policy_droid_server.md",
+          "title": "Cosmos3-Policy-DROID server guide",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Each of these policy models is served by a policy **Server** that streams actions to a **Client** driving a simulated or real robot."
+        },
+        {
+          "url": "https://huggingface.co/nvidia/Cosmos3-Super",
+          "title": "Cosmos3-Super model card, Hugging Face",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Given language instructions and visual observations from the DROID robot platform, generate robot action trajectories for manipulation and control tasks."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "out-of-scope",
+      "note": "There is no guest content to bound. What exists is a published envelope for the caller's own request, and even that is stated inconsistently: the repository says five to three hundred frames, the model card says five to four hundred, and the framework's own answer is that the ceiling depends on the resolution tier.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Frame count | 5 to 300 frames, default=189 |"
+        },
+        {
+          "url": "https://huggingface.co/nvidia/Cosmos3-Super",
+          "title": "Cosmos3-Super model card, Hugging Face",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Video generation supports durations from 5 to 400 frames, with 189 frames as the default generation duration."
+        },
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/docs/faq.md",
+          "title": "Cosmos Framework FAQ",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "### Q: How many frames can I generate?"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "out-of-scope",
+      "note": "Nothing survives, because there is no world to restart. Each generation begins from its conditioning frames, and the model's own limitation notice lists object permanence among the things it only approximates.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://huggingface.co/nvidia/Cosmos3-Super",
+          "title": "Cosmos3-Super model card, Hugging Face",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "3D geometry, 4D space-time evolution, object permanence, contact dynamics, and physical laws are only approximated"
+        },
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Video conditioning uses 5 frames at the matching resolution."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "out-of-scope",
+      "note": "No items and no holder.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Output types | Image, video, sound, action state, text |"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "out-of-scope",
+      "note": "Nothing follows a user anywhere. The nearest thing is a local defaults file of sampling arguments that a caller may point at.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/docs/inference.md",
+          "title": "Cosmos Framework inference guide",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "To use your own default values instead of the built-in presets, pass a JSON file via the `defaults_file` field in your sample arguments:"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "out-of-scope",
+      "note": "Nothing is referred to by hash. Weights are named repositories on a hub, training runs write named directories, and the pointer to the latest checkpoint is a text file holding a name.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "CKPT=$RUN_DIR/checkpoints/$(cat \"$RUN_DIR/checkpoints/latest_checkpoint.txt\")"
+        },
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/docs/inference.md",
+          "title": "Cosmos Framework inference guide",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Cosmos3-Super | `--checkpoint-path=Cosmos3-Super` | `text2image`, `text2video`, `image2video` |"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "partial",
+      "note": "Something is packaged, and it is a model rather than an experience. Training writes sharded checkpoints, one script exports them to a safetensors directory, a second converts that into a pipeline layout of transformer, autoencoder and scheduler folders, and a prebuilt container wraps the result for deployment. Every one of those formats belongs to another project; Cosmos specifies none of them and names no bundle of its own.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Training writes sharded PyTorch Distributed Checkpoints (DCP) under"
+        },
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**Step 1 — Export to Hugging Face safetensors** (`export_model`). Converts the DCP checkpoint into a Hugging Face safetensors directory:"
+        },
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/README.md",
+          "title": "Cosmos Framework repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "native DCP checkpoints with HuggingFace `safetensors` import/export"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "partial",
+      "note": "Distribution is real and it is other people's: weights and datasets from a model hub, containers from the vendor's registry, each behind its own token, with one repository in the generation path gated by request. Nothing here delivers content to end users at scale; it delivers models to developers.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Before running examples, create a Hugging Face access token and then authenticate locally:"
+        },
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "NIM examples use an NGC API key (`NGC_API_KEY`) instead of Hugging Face authentication."
+        },
+        {
+          "url": "https://docs.nvidia.com/cosmos/latest/cosmos_nim.html",
+          "title": "NVIDIA NIMs for Cosmos, NVIDIA Cosmos documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Allows for accelerated deployment of post-trained Cosmos world foundation models (WFMs) to cloud or data centers."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "partial",
+      "note": "Versions exist and they replace rather than extend. Cosmos 3 arrived as a new family on 31 May 2026, with new model names, and the previous generation's repository now carries a banner saying it is no longer under active development and directing users to migrate. Nothing describes compatibility between generations, because nothing is compatible: a prompt, a checkpoint and an action layout all belong to one family.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://huggingface.co/nvidia/Cosmos3-Super",
+          "title": "Cosmos3-Super model card, Hugging Face",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Hugging Face 05/31/2026 via [https://huggingface.co/collections/nvidia/cosmos3](https://huggingface.co/collections/nvidia/cosmos3)"
+        },
+        {
+          "url": "https://github.com/nvidia-cosmos/cosmos-predict2.5/blob/main/README.md",
+          "title": "Cosmos-Predict2.5 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This repository is no longer under active development and will receive only limited maintenance updates."
+        },
+        {
+          "url": "https://github.com/nvidia-cosmos/cosmos-predict2.5/blob/main/README.md",
+          "title": "Cosmos-Predict2.5 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "We encourage all users to migrate to Cosmos 3 for the latest state-of-the-art Physical AI capabilities."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "none",
+      "note": "There is no specification, so there is nothing to conform to, and no conformance suite exists. What the platform has instead is evaluation of output quality: a benchmark suite in the technical report, and a separate service with three checkers that score a generated video for hallucinated motion, object correspondence and stated attributes. That answers whether an output looks right, never whether an implementation is correct.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/cosmos-evaluator/blob/main/README.md",
+          "title": "Cosmos Evaluator repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Cosmos Evaluator is an automated evaluation system for synthetic video output generated by [Cosmos](https://developer.nvidia.com/cosmos)."
+        },
+        {
+          "url": "https://github.com/NVIDIA/cosmos-evaluator/blob/main/README.md",
+          "title": "Cosmos Evaluator repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This release includes three evaluation checks and the service framework to run them:"
+        },
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Our benchmark suite combines automated metrics, human evaluation, domain-specific Physical AI benchmarks, and real-world robotics evaluations"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "native",
+      "note": "Making a place from a description is what this subject is for, and the second half of the row's question decides how it lands on this map: what comes out is frames to watch, not a scene a receiver can keep. Images, video, synchronised sound and action-conditioned rollouts are produced from text, image, video or action inputs, and the output format list is a picture or a video file.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**World generation:** Produce images, videos, synchronized sound, and action-conditioned rollouts from text, image, video, or action inputs."
+        },
+        {
+          "url": "https://huggingface.co/nvidia/Cosmos3-Super",
+          "title": "Cosmos3-Super model card, Hugging Face",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Cosmos3 is a collection of Omnimodal world models capable of generating dynamic, high-quality video, image, audio, and action commands from combinations of text, image, video, and action trajectory inputs."
+        },
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Output formats | JPG image, MP4 video, AAC sound stream muxed into MP4, JSON action values, text string |"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "native",
+      "note": "Forward dynamics takes text, vision and action and returns a future-state rollout, which is this row exactly: the next moment is inferred by a model rather than computed by a rule engine. The limits belong in the same claim and the vendor states them: there is no explicit physics simulator, so geometry, object permanence and contact dynamics are approximated, and the outputs are not to be treated as physically accurate simulation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| **Forward dynamics** | Text, vision, action | Vision | Future-state rollout from action and visual context |"
+        },
+        {
+          "url": "https://huggingface.co/nvidia/Cosmos3-Super",
+          "title": "Cosmos3-Super model card, Hugging Face",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Because the model lacks an explicit physics simulator, 3D geometry, 4D space-time evolution, object permanence, contact dynamics, and physical laws are only approximated"
+        },
+        {
+          "url": "https://huggingface.co/nvidia/Cosmos3-Super",
+          "title": "Cosmos3-Super model card, Hugging Face",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Cosmos3 outputs should not be treated as physically accurate simulation, reliable ground-truth reasoning, or safety-certified decision making."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is a world model: text, images, video or actions go in and frames, sound and action values come out, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Output formats | JPG image, MP4 video, AAC sound stream muxed into MP4, JSON action values, text string |"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "none",
+      "note": "Cosmos neither draws nor carries splats or radiance fields; the word appears nowhere in the repository, the framework documentation or the model card. This matters because the obvious pairing of a world model with captured radiance fields is not something this platform does.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Output formats | JPG image, MP4 video, AAC sound stream muxed into MP4, JSON action values, text string |"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is a world model: text, images, video or actions go in and frames, sound and action values come out, and it delivers no captured scene, progressively by region and detail or otherwise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Output formats | JPG image, MP4 video, AAC sound stream muxed into MP4, JSON action values, text string |"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is a world model: text, images, video or actions go in and frames, sound and action values come out, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Output formats | JPG image, MP4 video, AAC sound stream muxed into MP4, JSON action values, text string |"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "none",
+      "note": "No point cloud is read or written. Depth exists only as an annotation stream inside the released synthetic datasets and as one of the control modalities a control video may carry, which is a picture of depth rather than a set of points.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "a control-conditioned video-to-video benchmark covering four spatial control modalities: blur, edge, segmentation, and depth."
+        },
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Output types | Image, video, sound, action state, text |"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is a world model: text, images, video or actions go in and frames, sound and action values come out, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Output formats | JPG image, MP4 video, AAC sound stream muxed into MP4, JSON action values, text string |"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "native",
+      "note": "Camera-motion forward dynamics produces the picture from a viewpoint no camera occupied, which is this row, done by prediction rather than by reprojection. It is also the sharpest contrast the row can draw: the same answer as a splat renderer, reached with no geometry at all.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| **Forward dynamics** | Text, vision, action | Vision | Future-state rollout from action and visual context |"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "partial",
+      "note": "What is produced is a video, so it moves and a receiver plays it at the rate the container states. It is not a captured three-dimensional scene that changes over time: there is no scene, and detail is chosen once per request as a resolution tier that also caps the clip length.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Output formats | JPG image, MP4 video, AAC sound stream muxed into MP4, JSON action values, text string |"
+        },
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/docs/inference.md",
+          "title": "Cosmos framework inference documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Condition and output resolution **tier**, not a pixel dimension."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is a world model: text, images, video or actions go in and frames, sound and action values come out, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Output formats | JPG image, MP4 video, AAC sound stream muxed into MP4, JSON action values, text string |"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is a world model: text, images, video or actions go in and frames, sound and action values come out, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Output formats | JPG image, MP4 video, AAC sound stream muxed into MP4, JSON action values, text string |"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "none",
+      "note": "There is no world object to go back to. Each request produces a recording, and changing it means asking again with a different prompt; nothing edits a region of a world already made, extends one past its edges or keeps earlier versions.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Output types | Image, video, sound, action state, text |"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "partial",
+      "note": "The specification of what to generate is unusually structured for this family: the generator is trained on structured JSON captions covering subjects, background, lighting, aesthetics and cinematography, and the input formats are a text string, ordinary image files, an MP4 and a JSON action array. What is missing is any interchange format for the scene itself, so an authoring pipeline cannot hand over the geometry it already has.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The Cosmos 3 Generator is trained on structured JSON captions that provide fine-grained control over scene composition, covering subjects, background, lighting, aesthetics, cinematography"
+        },
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Input formats | Text string, JPG/PNG/JPEG/WEBP image, MP4 video, JSON action array |"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "none",
+      "note": "Nothing conventional comes out. The output types are image, video, sound, action state and text, so a receiving engine gets a recording and never a mesh, a collider or a panorama it could place in a scene.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Output types | Image, video, sound, action state, text |"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "native",
+      "note": "The one subject on the map with a real action interface, and the row was proposed for it. Actions arrive as a two-dimensional array of frames by embodiment-specific dimensions, per-dimension normalisers scale the channels to roughly minus one to one, and separate projection layers per embodiment domain mean the numbers only mean anything alongside the embodiment that produced them.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://huggingface.co/nvidia/Cosmos3-Super",
+          "title": "Cosmos3-Super model card, Hugging Face",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The full input is a 2D array shaped (T, D), where T is the number of frames and D is the embodiment-specific dimensionality listed below."
+        },
+        {
+          "url": "https://research.nvidia.com/labs/cosmos-lab/cosmos3/technical-report.pdf",
+          "title": "Cosmos 3: Omnimodal World Models for Physical AI, technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "we compute per-dimension normalizers from the training data and scale action channels to a comparable range of roughly [−1, 1]"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is a world model: text, images, video or actions go in and frames, sound and action values come out, and it carries no full 360-degree view of a place as an image with its projection stated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Output formats | JPG image, MP4 video, AAC sound stream muxed into MP4, JSON action values, text string |"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "out-of-scope",
+      "note": "A world foundation model that generates images, video, sound, action state and text from prompts and conditioning. It invents a world rather than reading the one a device is standing in; there is no live session with sensors.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Output types | Image, video, sound, action state, text |"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "It can be conditioned on segmentation as a control modality, but that is an input steering generation, not a labelled reading of the real room delivered to an application.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Output types | Image, video, sound, action state, text |"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "out-of-scope",
+      "note": "Depth appears for the same reason — as one of the spatial control modalities it accepts — not as a metric measurement it produces of the space around a device.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Output types | Image, video, sound, action state, text |"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "Its outputs are images, video and action values. Nothing in it decides whether a real surface hides virtual content.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/NVIDIA/Cosmos/blob/main/README.md",
+          "title": "NVIDIA Cosmos repository README (Cosmos 3)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Output types | Image, video, sound, action state, text |"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "out-of-scope",
+      "note": "Cosmos generates video and world states. It never presents to a headset, so mixing with a camera view of the room is not something it does.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.face",
+      "level": "out-of-scope",
+      "note": "The model takes prompts, images and video as conditioning. It reads no live sensor stream of a user's own face or body, and describes faces only as text in a prompt schema.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "out-of-scope",
+      "note": "What comes out is generated imagery and world state rather than an authored place, so there is no walkable surface or arrival point to carry with it.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "out-of-scope",
+      "note": "Model weights and pipelines are distributed as repositories and checkpoints. Nothing here is a published unit of world logic that another author names and depends on.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "native",
+      "note": "A review really does stand between the generated content and the person who asked for it, and it is a machine: the guardrail is integrated into the generation pipelines, enabled by default, with a prompt blocklist, a video content safety classifier and a face blur on the output. It is content safety rather than editorial review, it names no reviewer, and later releases let a caller switch it off with a flag.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://docs.nvidia.com/cosmos/latest/guardrail.html",
+          "title": "Cosmos Guardrail, NVIDIA Cosmos documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The Cosmos-1.0-Guardrail model is integrated into the diffusion and autoregressive world generation pipelines and cannot be disabled."
+        },
+        {
+          "url": "https://github.com/NVIDIA/cosmos-framework/blob/main/docs/inference.md",
+          "title": "Cosmos Framework inference guide",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Inference ships with guardrails enabled by default, sourced from [nvidia/Cosmos-Guardrail1](https://huggingface.co/nvidia/Cosmos-Guardrail1)."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "The model has no map of a real place and publishes no transform to one.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "Generated worlds are not bound to a region of the Earth and no coverage area is declared.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.extension",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. The selected model-only output boundary does not define extensions to portable scene data or runtime behavior with unknown-recipient rules.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.profile",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. Model sizes and training presets are internal choices, not declared compatible content/implementation subsets with requirements.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.metadata",
+      "level": "partial",
+      "note": "The Reasoner can return structured annotations about media, including temporal events, but the overview does not define a persistent asset-part metadata schema or association contract.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/NVIDIA/cosmos/a9aa3bc3986910892d3af1575a486babfb731275/README.md",
+          "title": "Cosmos 3 repository README",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Event detection, timestamp query, and interval question answering"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. The subject does not issue or exchange trust claims whose establishment a relying party evaluates; reconstruction confidence is a different quantity.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. The subject's scene or model data types are not a vocabulary for identity claims exchanged with a relying party.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. The subject is not an identity-presentation system with pairwise relationship identifiers and correlation guarantees.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.encryption",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. Image, geometry and device processing do not define recipient identity keys or confidential identity delivery.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.key-lifecycle",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. The subject does not govern identity-control key rotation, revocation or recovery; account administration belongs to its host.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. The subject does not issue portable credentials with a post-issuance status-discovery mechanism.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. An authoring application's own menus do not define reusable layout and presentation of interface surfaces for content consumers.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. Captured appearance and inferred training exposure are not runtime environmental illumination estimates supplied to content.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. Offline calibration targets or reference photos do not expose runtime physical-marker detection with tracked poses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "partial",
+      "note": "Cosmos 3 accepts embodiment-specific camera-motion/action arrays, but the read overview does not fully define pose timestamps, reference frames and interpolation for cross-system trajectories.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/NVIDIA/cosmos/a9aa3bc3986910892d3af1575a486babfb731275/README.md",
+          "title": "Cosmos 3 repository README",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "camera motion (9D)"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. Editor selection or image masking is not an exposed runtime picking interface that returns the intersected scene object or geometry.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.text",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. Prompt strings or command-line parameters are authoring inputs, not a defined runtime character-entry interface for scene applications.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. The selected interface is not a display compositor accepting independently shaped image layers and composition properties.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. Fitted motion and ordinary parenting are not authored node-to-node transform constraints with runtime evaluation rules.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. Image sequences used as reconstruction observations do not reference synchronized audiovisual media as content within a separately authored scene.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. Capture extents or a training region do not report the user's usable physical play area and floor-relative reference.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. The selected reconstruction or sensing interface does not exchange a sound-synthesis model for evaluation during playback.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. The subject does not publish an exchange of identified spatial zones and typed, temporally scoped events; scene bounds or capture locations are not that protocol.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.consent",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. An application permission dialog or dataset licence does not carry a subject-bound grant with scope, purpose, validity and withdrawal information.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. Training metrics and processing status are not machine-readable accounts of a recipient evaluating and acting on an arriving subject or claim.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. The selected subject does not define arrival between independent destinations; local API setup and asset loading are not pre-arrival admission responses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.frame-timing",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. Offline fitting or ordinary preview playback does not coordinate application frame submission with a predicted headset display time and matching view poses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. Implementation shaders or learned weights do not make the subject a specified shader language with common execution semantics.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.parametric",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. The selected representation is sampled imagery, points, splats or meshes; it does not carry exact parametric curves and surfaces for another system to evaluate.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. Gaussian primitives and optimized point samples are a representation, not exchanged emitters with runtime particle simulation parameters.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.style",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. Capture edits and model appearance are not separate metadata-driven rules for selecting scene-feature visibility or color.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. Offline reconstructed geometry is not a sensing runtime that answers physical-environment ray queries with hit poses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. The subject does not expose a musical-instrument device or recorded-event input interface with channels, notes and controllers.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "out-of-scope",
+      "note": "NVIDIA Cosmos is assessed here as Cosmos 3 media/action generation and reasoning models, whose listed outputs are images, video, sound, actions and text. The selected subject provides device sensing or media generation rather than a radiance-field fitting workflow with trained scene output.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "capture.objectgen",
+      "level": "none",
+      "note": "The published Cosmos 3 output catalog is images, video, sound, action state and text; it does not output a placeable three-dimensional object representation in this documented model family.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/NVIDIA/cosmos/a9aa3bc3986910892d3af1575a486babfb731275/README.md",
+          "title": "Cosmos 3 repository README",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "| Output types | Image, video, sound, action state, text |"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.thumbnail",
+      "level": "out-of-scope",
+      "note": "The pinned Cosmos 3 outputs are image/video/audio generation or reasoning, so a packaged preview association for a delivered 3D asset lies outside that declared output contract. Required function: A preview image referenced or packaged with an asset, usable without rendering its three-dimensional contents.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/NVIDIA/cosmos/a9aa3bc3986910892d3af1575a486babfb731275/README.md",
+          "title": "Cosmos",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Text-to-video"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.resolve",
+      "level": "out-of-scope",
+      "note": "Resolving nested scene-resource identifiers belongs to an authored scene-container system; the pinned generator/reasoner does not emit that scene contract. Required function: Resolving scene resource identifiers against a context or resolver so the referenced resources can subsequently be accessed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/NVIDIA/cosmos/a9aa3bc3986910892d3af1575a486babfb731275/README.md",
+          "title": "Cosmos",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Text-to-video"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.bounds",
+      "level": "out-of-scope",
+      "note": "Preload traversal of bounded 3D scene geometry is outside the declared image/video/audio output and reasoning contract. Required function: Bounding volumes associated with scene content, organized for spatial rejection, traversal, or selection before detailed geometry is loaded.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/NVIDIA/cosmos/a9aa3bc3986910892d3af1575a486babfb731275/README.md",
+          "title": "Cosmos",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Text-to-video"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.collection",
+      "level": "out-of-scope",
+      "note": "Named scene-object operation sets require an authored scene object model; world-image prediction does not define one. Required function: Named or rule-defined sets of scene objects that consumers can use as targets for scene operations.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/NVIDIA/cosmos/a9aa3bc3986910892d3af1575a486babfb731275/README.md",
+          "title": "Cosmos",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Text-to-video"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.variant",
+      "level": "out-of-scope",
+      "note": "Selecting named configurations of one authored 3D asset is outside the generator's declared image/video/audio output types; generated media alternatives are not an asset variant set. Required function: Named alternatives of an asset's authored configuration, with a defined selection mechanism.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/NVIDIA/cosmos/a9aa3bc3986910892d3af1575a486babfb731275/README.md",
+          "title": "Cosmos",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Text-to-video"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.voxel",
+      "level": "out-of-scope",
+      "note": "Exchanged spatial cell volumes/properties and updates require a 3D scene representation, outside the pinned multimodal generation/reasoning output contract. Required function: Interchanging spatial cell volumes and their properties, including updates, as a scene representation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/NVIDIA/cosmos/a9aa3bc3986910892d3af1575a486babfb731275/README.md",
+          "title": "Cosmos",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Text-to-video"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "native",
+      "note": "The framework linked by Cosmos 3 reads JSON camera-to-world 4x4 trajectories anchored to the first frame, and supplies explicit absolute/relative transform conversions with matching reconstruction conventions. Camera frames therefore have a declared relation to the shared initial/world frame. This is the camera-conditioning utility in the named framework snapshot, not a general-purpose scene hierarchy exchange.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/NVIDIA/cosmos/a9aa3bc3986910892d3af1575a486babfb731275/README.md",
+          "title": "cosmos README.md",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "cosmos-framework"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/NVIDIA/cosmos-framework/ffa9c6b60a6b04b2fae337577bc6cbd8a93c39f5/cosmos_framework/data/generator/action/utils/camera_trajectory.py",
+          "title": "cosmos framework cosmos.framework data generator action utils camera.trajectory.py",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "4x4 camera-to-world pose matrices anchored"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/NVIDIA/cosmos-framework/ffa9c6b60a6b04b2fae337577bc6cbd8a93c39f5/cosmos_framework/data/generator/action/utils/pose_utils.py",
+          "title": "cosmos framework cosmos.framework data generator action utils pose.utils.py",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "def pose_rel_to_abs("
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "native",
+      "note": "The Cosmos 3 framework contains Triton RMS-normalization kernels for its DC-AE video tokenizer. The source launches a fused kernel with an explicit grid and binds input, weight and output tensors. This establishes programmable non-raster GPU compute in that named framework route; it does not claim an external compute API for generated worlds.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/NVIDIA/cosmos/a9aa3bc3986910892d3af1575a486babfb731275/README.md",
+          "title": "cosmos README.md",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "cosmos-framework"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/NVIDIA/cosmos-framework/ffa9c6b60a6b04b2fae337577bc6cbd8a93c39f5/cosmos_framework/model/generator/tokenizers/dc_ae/dc_ae_v_triton_rms_norm.py",
+          "title": "cosmos framework cosmos.framework model generator tokenizers dc.ae dc.ae.v.triton.rms.norm.py",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "_rms_norm_2d_fwd_fused[(M * num_blocks,)]"
+        }
+      ]
+    }
+  ]
+}

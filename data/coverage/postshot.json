@@ -1,0 +1,2296 @@
+{
+  "subject_id": "postshot",
+  "summary": "Jawset Postshot is the desktop counterweight in this lane: a free-to-download Windows application that needs an NVIDIA card, keeps every image and every training step on the operator's own machine, and covers the whole path from a folder of photographs or a video to a trained radiance field that can be cropped, aligned, exported and dropped into Unreal Engine. It is scored here because it shows what the phone tools give up. It solves camera poses itself or imports them from COLMAP, Bundler or RealityScan; it reads professional image formats including raw and high-dynamic-range video, tracks the colour space through training and records it in the file; it will align a scene to a printed marker of a stated physical size, which is the only real-world scale mechanism found anywhere in this lane; and it writes its own non-standard metadata into the PLY header — colour space, anti-aliasing mode and world origin — because no splat format has anywhere to put them. Its export list is three items: a self-contained web page, lossless PLY, and SPZ with a version choice, and the reason given for keeping the older SPZ version is the honest state of splat interoperability — some third-party software does not read version 4 yet. There is no mesh, no time axis, no macOS or Linux build, and no statement of rights or authorship in anything it writes.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "partial",
+      "note": "The application carries a full splat renderer with real controls over it — a minimum primitive radius, a harmonic degree used at render time, splat scale and opacity — separate from the training settings. There is no pass structure or render graph beyond the field itself.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Scene%20Tree/Rdnc%20Field",
+          "title": "Postshot User Guide, render controls",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Small Gaussian Splatting primitives with a radius below this value will not be rendered. This can improve rendering speed especially for very large models and very high frame rate requirements."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "native",
+      "note": "The requirement is stated bluntly on the front page: Windows and an NVIDIA card of a named minimum capability. There is no macOS or Linux build and no path that avoids the vendor.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, system requirements",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "System Requirements: Windows 10 or later, Nvidia GPU CC 7.5 or higher (GeForce RTX 2060, Quadro T400/RTX 4000 or higher)"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "out-of-scope",
+      "note": "No material model. Appearance is spherical-harmonic colour on each primitive, with the harmonic degree adjustable at render time.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Scene%20Tree/Rdnc%20Field",
+          "title": "Postshot User Guide, render controls",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Small Gaussian Splatting primitives with a radius below this value will not be rendered. This can improve rendering speed especially for very large models and very high frame rate requirements."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "partial",
+      "note": "A sky model can be trained that projects the environment onto a large sphere around the scene, which is the nearest thing to lighting anywhere in this lane. It reduces artefacts rather than lighting the content.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Scene%20Tree/Rdnc%20Field",
+          "title": "Postshot User Guide, render controls",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Small Gaussian Splatting primitives with a radius below this value will not be rendered. This can improve rendering speed especially for very large models and very high frame rate requirements."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.post",
+      "level": "out-of-scope",
+      "note": "No post-processing chain; compositing is what the After Effects and Unreal integrations are for.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide/Unreal+Engine+Integration",
+          "title": "Postshot User Guide, Unreal Engine integration",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot includes plugins for Unreal Engine 5.4 through 5.7 that allow you to integrate Postshot scenes into your Unreal projects."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "partial",
+      "note": "Render-time controls trade quality for speed on large models — dropping primitives below a radius, lowering the harmonic degree — which is level of detail chosen by the viewer. Nothing in the exported file carries a level structure.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Scene%20Tree/Rdnc%20Field",
+          "title": "Postshot User Guide, render controls",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Small Gaussian Splatting primitives with a radius below this value will not be rendered. This can improve rendering speed especially for very large models and very high frame rate requirements."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "native",
+      "note": "Training, editing and rendering Gaussian splats is the whole product, from tracking through to export.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide",
+          "title": "Postshot User Guide, welcome",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot offers an end-to-end solution for tracking, training, editing and rendering radiance fields within a user-friendly, seamless workflow."
+        },
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Scene%20Tree/Rdnc%20Field",
+          "title": "Postshot User Guide, render controls",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Small Gaussian Splatting primitives with a radius below this value will not be rendered. This can improve rendering speed especially for very large models and very high frame rate requirements."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "partial",
+      "note": "Radiance fields are the representation and are drawn as such. Point clouds are an input or an initialisation, not something the application draws or writes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide/Importing+Images",
+          "title": "Postshot User Guide, camera pose formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot supports the following file formats for camera poses and points: COLMAP *.bin or *.txt files"
+        },
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide",
+          "title": "Postshot User Guide, welcome",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot offers an end-to-end solution for tracking, training, editing and rendering radiance fields within a user-friendly, seamless workflow."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "out-of-scope",
+      "note": "No three-dimensional text rendering.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide",
+          "title": "Postshot User Guide, welcome",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot offers an end-to-end solution for tracking, training, editing and rendering radiance fields within a user-friendly, seamless workflow."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "native",
+      "note": "Cameras are first-class objects: solved from images, imported from three external tools with their intrinsics and extrinsics, animated as trajectories, and used to render new sequences.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide/Importing+Images",
+          "title": "Postshot User Guide, importing images",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "For such an image-only import, Postshot will compute the camera poses and a sparse set of points from the imported images."
+        },
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide/Importing+Images",
+          "title": "Postshot User Guide, camera pose formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot supports the following file formats for camera poses and points: COLMAP *.bin or *.txt files"
+        },
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, sequence rendering",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Model Sequence Rendering"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "partial",
+      "note": "There is a real scene tree with cameras, image sets, radiance fields and their child boxes, so the application composes a project. Nothing of that structure is exported: what leaves is one field.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Scene%20Tree/Rdnc%20Field",
+          "title": "Postshot User Guide, crop box",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "If enabled, the Translate, Rotate and Scale parameters specify a box that radiance field rendering will be bounded by. This allows the isolation of objects and the removal of background."
+        },
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, radiance field export",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Exporting to the HTML format enables scenes to be opened using a standard web browser. The PLY format provides a lossless representation of the scene. The SPZ format uses lossy compression to reduce the file size."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "partial",
+      "note": "The application takes the frame problem seriously — an estimated up vector for imported poses whose orientation is effectively random, a transform that can be baked into the data on export — and still nothing in the written file states the convention, beyond a world origin recorded in the PLY header.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Scene%20Tree/Rdnc%20Field",
+          "title": "Postshot User Guide, up vector",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "If camera poses have been imported from external sources, they often have an orientation that is effectively random. This option lets you quickly set the orientation to the estimated upward direction."
+        },
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Scene%20Tree/Rdnc%20Field",
+          "title": "Postshot User Guide, baking the transform",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "However, if the radiance field is exported, the transformation will be 'baked into' the data."
+        },
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, non-standard PLY metadata",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot stores several non-standard metadata in the PLY header, including the color space, anti-aliasing mode, and world origin. These can be extracted using custom software."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "partial",
+      "note": "Three containers out, one project format in. The web page is a viewer, the PLY is lossless with private header fields, and the SPZ is compressed with a version choice; nothing reads a scene in except the application's own project file and pose files.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, radiance field export",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Exporting to the HTML format enables scenes to be opened using a standard web browser. The PLY format provides a lossless representation of the scene. The SPZ format uses lossy compression to reduce the file size."
+        },
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide/Importing+Images",
+          "title": "Postshot User Guide, camera pose formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot supports the following file formats for camera poses and points: COLMAP *.bin or *.txt files"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "none",
+      "note": "No mesh is produced at any point. For a tool aimed at production work, the absence is notable: the way into an engine is the plug-in, not geometry.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, radiance field export",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Exporting to the HTML format enables scenes to be opened using a standard web browser. The PLY format provides a lossless representation of the scene. The SPZ format uses lossy compression to reduce the file size."
+        },
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide/Unreal+Engine+Integration",
+          "title": "Postshot User Guide, Unreal Engine integration",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot includes plugins for Unreal Engine 5.4 through 5.7 that allow you to integrate Postshot scenes into your Unreal projects."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "out-of-scope",
+      "note": "No textures are produced; there is no surface to put one on.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, radiance field export",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Exporting to the HTML format enables scenes to be opened using a standard web browser. The PLY format provides a lossless representation of the scene. The SPZ format uses lossy compression to reduce the file size."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "out-of-scope",
+      "note": "No material definitions exist to exchange with another renderer.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, radiance field export",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Exporting to the HTML format enables scenes to be opened using a standard web browser. The PLY format provides a lossless representation of the scene. The SPZ format uses lossy compression to reduce the file size."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "partial",
+      "note": "Camera animation and model sequence rendering exist inside the application, so a moving camera through a still scene is authored and rendered. No animation is written to any export format.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, sequence rendering",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Model Sequence Rendering"
+        },
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, radiance field export",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Exporting to the HTML format enables scenes to be opened using a standard web browser. The PLY format provides a lossless representation of the scene. The SPZ format uses lossy compression to reduce the file size."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "out-of-scope",
+      "note": "No skeletons or rigs anywhere in the product.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, radiance field export",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Exporting to the HTML format enables scenes to be opened using a standard web browser. The PLY format provides a lossless representation of the scene. The SPZ format uses lossy compression to reduce the file size."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "out-of-scope",
+      "note": "No morph targets or blend shapes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, radiance field export",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Exporting to the HTML format enables scenes to be opened using a standard web browser. The PLY format provides a lossless representation of the scene. The SPZ format uses lossy compression to reduce the file size."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "out-of-scope",
+      "note": "No instancing concept; a field is a single set of primitives.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, radiance field export",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Exporting to the HTML format enables scenes to be opened using a standard web browser. The PLY format provides a lossless representation of the scene. The SPZ format uses lossy compression to reduce the file size."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "partial",
+      "note": "Several scenes can be merged into one, and a region of interest focuses training on part of a scene. There is no referencing or override that survives into an exported file.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, feature list",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Image masking for occluder and background removal"
+        },
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Scene%20Tree/Rdnc%20Field",
+          "title": "Postshot User Guide, crop box",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "If enabled, the Translate, Rotate and Scale parameters specify a box that radiance field rendering will be bounded by. This allows the isolation of objects and the removal of background."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "partial",
+      "note": "Marker alignment is the one real scale mechanism in this lane: a printed tag whose side length is given in millimetres fixes the position, orientation and size of the field. The unit is used and is not written into any export.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Scene%20Tree/Rdnc%20Field",
+          "title": "Postshot User Guide, AprilTag alignment",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Specify the side-length of the tag in millimeters. This should match the real-world size of the printed tags as closely as possible."
+        },
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, non-standard PLY metadata",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot stores several non-standard metadata in the PLY header, including the color space, anti-aliasing mode, and world origin. These can be extracted using custom software."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "none",
+      "note": "No licence or rights field is written into the PLY header, the SPZ file or the web export, in a tool whose selling point is that your content never leaves your machine.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, non-standard PLY metadata",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot stores several non-standard metadata in the PLY header, including the color space, anti-aliasing mode, and world origin. These can be extracted using custom software."
+        },
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, content ownership",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Your content remains on your devices and under your full control. Postshot runs all processing and machine learning steps on devices only you have access to."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "partial",
+      "note": "One provenance field exists and it is about the tool, not the person: the model records which version of Postshot trained it, and the PLY header carries the colour space, anti-aliasing mode and world origin. No author and no signature.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Scene%20Tree/Rdnc%20Field",
+          "title": "Postshot User Guide, model information",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Model trained by This field displays the version of Postshot that was used to train this radiance field."
+        },
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, non-standard PLY metadata",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot stores several non-standard metadata in the PLY header, including the color space, anti-aliasing mode, and world origin. These can be extracted using custom software."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "out-of-scope",
+      "note": "No avatar representation; the product reconstructs scenes and objects.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide",
+          "title": "Postshot User Guide, welcome",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot offers an end-to-end solution for tracking, training, editing and rendering radiance fields within a user-friendly, seamless workflow."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "out-of-scope",
+      "note": "No skeletons are produced.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide",
+          "title": "Postshot User Guide, welcome",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot offers an end-to-end solution for tracking, training, editing and rendering radiance fields within a user-friendly, seamless workflow."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "out-of-scope",
+      "note": "No expression model exists.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide",
+          "title": "Postshot User Guide, welcome",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot offers an end-to-end solution for tracking, training, editing and rendering radiance fields within a user-friendly, seamless workflow."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "out-of-scope",
+      "note": "Nothing is rigged, so nothing can be retargeted.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide",
+          "title": "Postshot User Guide, welcome",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot offers an end-to-end solution for tracking, training, editing and rendering radiance fields within a user-friendly, seamless workflow."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "out-of-scope",
+      "note": "No attachment points or wearables.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide",
+          "title": "Postshot User Guide, welcome",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot offers an end-to-end solution for tracking, training, editing and rendering radiance fields within a user-friendly, seamless workflow."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "out-of-scope",
+      "note": "No avatar exists to reduce.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide",
+          "title": "Postshot User Guide, welcome",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot offers an end-to-end solution for tracking, training, editing and rendering radiance fields within a user-friendly, seamless workflow."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "out-of-scope",
+      "note": "No identity binding of any kind; the tool runs locally with no account.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, content ownership",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Your content remains on your devices and under your full control. Postshot runs all processing and machine learning steps on devices only you have access to."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "out-of-scope",
+      "note": "Nothing is simulated; the output is a rendered field.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide",
+          "title": "Postshot User Guide, welcome",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot offers an end-to-end solution for tracking, training, editing and rendering radiance fields within a user-friendly, seamless workflow."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "out-of-scope",
+      "note": "No collision geometry is produced, and no mesh exists to derive it from.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, radiance field export",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Exporting to the HTML format enables scenes to be opened using a standard web browser. The PLY format provides a lossless representation of the scene. The SPZ format uses lossy compression to reduce the file size."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "out-of-scope",
+      "note": "No bodies and no joints.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide",
+          "title": "Postshot User Guide, welcome",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot offers an end-to-end solution for tracking, training, editing and rendering radiance fields within a user-friendly, seamless workflow."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.material",
+      "level": "out-of-scope",
+      "note": "No surface response is modelled.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide",
+          "title": "Postshot User Guide, welcome",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot offers an end-to-end solution for tracking, training, editing and rendering radiance fields within a user-friendly, seamless workflow."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.determinism",
+      "level": "out-of-scope",
+      "note": "There is no simulation to reproduce.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide",
+          "title": "Postshot User Guide, welcome",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot offers an end-to-end solution for tracking, training, editing and rendering radiance fields within a user-friendly, seamless workflow."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "out-of-scope",
+      "note": "Nothing deformable is modelled.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide",
+          "title": "Postshot User Guide, welcome",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot offers an end-to-end solution for tracking, training, editing and rendering radiance fields within a user-friendly, seamless workflow."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "out-of-scope",
+      "note": "No event regions are defined.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide",
+          "title": "Postshot User Guide, welcome",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot offers an end-to-end solution for tracking, training, editing and rendering radiance fields within a user-friendly, seamless workflow."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "out-of-scope",
+      "note": "Inputs are images and video frames; no audio track is used or carried.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, supported inputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supports inputs in JPG, PNG, TIF, EXR, DNG, RAW, MOV, MP4, MKV"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "out-of-scope",
+      "note": "No spatialisation, because there is no audio.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, supported inputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supports inputs in JPG, PNG, TIF, EXR, DNG, RAW, MOV, MP4, MKV"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "out-of-scope",
+      "note": "A room is reconstructed visually with nothing said about how it sounds.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, supported inputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supports inputs in JPG, PNG, TIF, EXR, DNG, RAW, MOV, MP4, MKV"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "out-of-scope",
+      "note": "No acoustic model exists to occlude.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, supported inputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supports inputs in JPG, PNG, TIF, EXR, DNG, RAW, MOV, MP4, MKV"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "out-of-scope",
+      "note": "No audio is delivered by anything in the product.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, supported inputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supports inputs in JPG, PNG, TIF, EXR, DNG, RAW, MOV, MP4, MKV"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "out-of-scope",
+      "note": "No session and no participants, so no voice.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, content ownership",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Your content remains on your devices and under your full control. Postshot runs all processing and machine learning steps on devices only you have access to."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "out-of-scope",
+      "note": "Nothing is shared live; the application is single-user and local.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, content ownership",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Your content remains on your devices and under your full control. Postshot runs all processing and machine learning steps on devices only you have access to."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "out-of-scope",
+      "note": "No shared state and no authority model.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, content ownership",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Your content remains on your devices and under your full control. Postshot runs all processing and machine learning steps on devices only you have access to."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "out-of-scope",
+      "note": "No clients to filter content for.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, content ownership",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Your content remains on your devices and under your full control. Postshot runs all processing and machine learning steps on devices only you have access to."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.prediction",
+      "level": "out-of-scope",
+      "note": "No session traffic and no latency to hide.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, content ownership",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Your content remains on your devices and under your full control. Postshot runs all processing and machine learning steps on devices only you have access to."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "out-of-scope",
+      "note": "The only network involvement is hosting an exported web page, which is ordinary file serving.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, HTML export",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Self-contained HTML File: the scene will be exported to a single HTML file that can be opened in a web browser from the local file system."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.media",
+      "level": "out-of-scope",
+      "note": "No live media is carried in either direction.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, content ownership",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Your content remains on your devices and under your full control. Postshot runs all processing and machine learning steps on devices only you have access to."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "out-of-scope",
+      "note": "There is no world to join and nothing to authenticate to.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, content ownership",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Your content remains on your devices and under your full control. Postshot runs all processing and machine learning steps on devices only you have access to."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "out-of-scope",
+      "note": "No portals and no state carried between places.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, content ownership",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Your content remains on your devices and under your full control. Postshot runs all processing and machine learning steps on devices only you have access to."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "out-of-scope",
+      "note": "Nothing tracks who is where.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, content ownership",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Your content remains on your devices and under your full control. Postshot runs all processing and machine learning steps on devices only you have access to."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "out-of-scope",
+      "note": "Scenes are files on disk, or a web page at whatever address you host it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, HTML export",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Self-contained HTML File: the scene will be exported to a single HTML file that can be opened in a web browser from the local file system."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "out-of-scope",
+      "note": "Nothing is discovered; the operator supplies the images.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide/Importing+Images",
+          "title": "Postshot User Guide, importing images",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "For such an image-only import, Postshot will compute the camera poses and a sparse set of points from the imported images."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "out-of-scope",
+      "note": "No shared clock and no ordering problem across machines.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, content ownership",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Your content remains on your devices and under your full control. Postshot runs all processing and machine learning steps on devices only you have access to."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "out-of-scope",
+      "note": "No identifiers for people or things; the application has no accounts.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, content ownership",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Your content remains on your devices and under your full control. Postshot runs all processing and machine learning steps on devices only you have access to."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "out-of-scope",
+      "note": "No verifiable claims are expressed or consumed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, content ownership",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Your content remains on your devices and under your full control. Postshot runs all processing and machine learning steps on devices only you have access to."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "out-of-scope",
+      "note": "No credential exchange protocol exists.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, content ownership",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Your content remains on your devices and under your full control. Postshot runs all processing and machine learning steps on devices only you have access to."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "out-of-scope",
+      "note": "No permission model; the tool runs on the operator's own files with no service behind it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, content ownership",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Your content remains on your devices and under your full control. Postshot runs all processing and machine learning steps on devices only you have access to."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "out-of-scope",
+      "note": "Privacy here is architectural rather than expressed: nothing leaves the machine, so nothing is disclosed at all.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, content ownership",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Your content remains on your devices and under your full control. Postshot runs all processing and machine learning steps on devices only you have access to."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.social",
+      "level": "out-of-scope",
+      "note": "No relationships or standing are represented.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, content ownership",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Your content remains on your devices and under your full control. Postshot runs all processing and machine learning steps on devices only you have access to."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "out-of-scope",
+      "note": "No terms travel with an exported field, so nothing can be enforced where it is used.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, non-standard PLY metadata",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot stores several non-standard metadata in the PLY header, including the color space, anti-aliasing mode, and world origin. These can be extracted using custom software."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "partial",
+      "note": "The front page claims integration with geo-referenced data, and the documentation read here describes alignment to printed markers rather than to the Earth. Nothing states a geospatial pose in an exported file.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, geo-referenced data and markers",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Integrates with geo-referenced data"
+        },
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Scene%20Tree/Rdnc%20Field",
+          "title": "Postshot User Guide, AprilTag alignment",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Specify the side-length of the tag in millimeters. This should match the real-world size of the printed tags as closely as possible."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "none",
+      "note": "No coordinate reference system is named in the interface or in any export; the world origin recorded in the PLY header is the scene's own.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, non-standard PLY metadata",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot stores several non-standard metadata in the PLY header, including the color space, anti-aliasing mode, and world origin. These can be extracted using custom software."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "partial",
+      "note": "Marker alignment anchors a field to a physical thing in a room, with the tag's identifier, size, offset and normal all specified. It anchors the capture, not virtual content on a device.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Scene%20Tree/Rdnc%20Field",
+          "title": "Postshot User Guide, AprilTag alignment",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Specify the side-length of the tag in millimeters. This should match the real-world size of the printed tags as closely as possible."
+        },
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, marker alignment",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "AprilTag detection for automatic scene alignment"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "out-of-scope",
+      "note": "No shared or persistent anchors between devices are defined.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, content ownership",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Your content remains on your devices and under your full control. Postshot runs all processing and machine learning steps on devices only you have access to."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.vps",
+      "level": "out-of-scope",
+      "note": "No positioning from imagery is offered as a service; camera tracking is an internal step.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide/Importing+Images",
+          "title": "Postshot User Guide, importing images",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "For such an image-only import, Postshot will compute the camera poses and a sparse set of points from the imported images."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "out-of-scope",
+      "note": "No tiling scheme; a scene is one model with unlimited size claimed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, feature list",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Image masking for occluder and background removal"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.indoor",
+      "level": "out-of-scope",
+      "note": "Interiors are reconstructed as appearance with no structured description of the space.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide",
+          "title": "Postshot User Guide, welcome",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot offers an end-to-end solution for tracking, training, editing and rendering radiance fields within a user-friendly, seamless workflow."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "out-of-scope",
+      "note": "No immersive session; the application is a desktop window.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, system requirements",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "System Requirements: Windows 10 or later, Nvidia GPU CC 7.5 or higher (GeForce RTX 2060, Quadro T400/RTX 4000 or higher)"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "out-of-scope",
+      "note": "No controller input is consumed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, system requirements",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "System Requirements: Windows 10 or later, Nvidia GPU CC 7.5 or higher (GeForce RTX 2060, Quadro T400/RTX 4000 or higher)"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "out-of-scope",
+      "note": "No hand tracking is read; the application is driven by mouse and keyboard.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, system requirements",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "System Requirements: Windows 10 or later, Nvidia GPU CC 7.5 or higher (GeForce RTX 2060, Quadro T400/RTX 4000 or higher)"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.eye",
+      "level": "out-of-scope",
+      "note": "No gaze input and no eye data at any stage.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, system requirements",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "System Requirements: Windows 10 or later, Nvidia GPU CC 7.5 or higher (GeForce RTX 2060, Quadro T400/RTX 4000 or higher)"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "out-of-scope",
+      "note": "No haptic output; the application renders pictures.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, system requirements",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "System Requirements: Windows 10 or later, Nvidia GPU CC 7.5 or higher (GeForce RTX 2060, Quadro T400/RTX 4000 or higher)"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "partial",
+      "note": "Capability is a stated hard requirement — a named minimum graphics card — rather than something discovered and described. The export list adapts to what the receiving software can read, which the operator has to know.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, system requirements",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "System Requirements: Windows 10 or later, Nvidia GPU CC 7.5 or higher (GeForce RTX 2060, Quadro T400/RTX 4000 or higher)"
+        },
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, SPZ format version",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "However, some third-party software may not yet support version 4. If you need the exported files to open in such software, you can revert to version 3."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "out-of-scope",
+      "note": "No scripting runtime for content; there is a command-line interface for the tool itself.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, feature list",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Image masking for occluder and background removal"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "out-of-scope",
+      "note": "No interactivity travels with an exported field.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, radiance field export",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Exporting to the HTML format enables scenes to be opened using a standard web browser. The PLY format provides a lossless representation of the scene. The SPZ format uses lossy compression to reduce the file size."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "out-of-scope",
+      "note": "No untrusted guest content runs anywhere.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, content ownership",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Your content remains on your devices and under your full control. Postshot runs all processing and machine learning steps on devices only you have access to."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "out-of-scope",
+      "note": "No agents act inside a scene.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide",
+          "title": "Postshot User Guide, welcome",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot offers an end-to-end solution for tracking, training, editing and rendering radiance fields within a user-friendly, seamless workflow."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "partial",
+      "note": "Real budgets exist for the tool's own work: a maximum splat count, a training step limit, downsampled input images and a region of interest that concentrates resources. None of it bounds guest content, because there is none.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Scene%20Tree/Rdnc%20Field",
+          "title": "Postshot User Guide, render controls",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Small Gaussian Splatting primitives with a radius below this value will not be rendered. This can improve rendering speed especially for very large models and very high frame rate requirements."
+        },
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Scene%20Tree/Rdnc%20Field",
+          "title": "Postshot User Guide, crop box",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "If enabled, the Translate, Rotate and Scale parameters specify a box that radiance field rendering will be bounded by. This allows the isolation of objects and the removal of background."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "out-of-scope",
+      "note": "Projects persist as files, including the training context if you ask for it, which is a document rather than world state.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Scene%20Tree/Rdnc%20Field",
+          "title": "Postshot User Guide, model information",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Model trained by This field displays the version of Postshot that was used to train this radiance field."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "out-of-scope",
+      "note": "No items and no holders.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, content ownership",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Your content remains on your devices and under your full control. Postshot runs all processing and machine learning steps on devices only you have access to."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "out-of-scope",
+      "note": "No portable preferences follow a user to another system.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, content ownership",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Your content remains on your devices and under your full control. Postshot runs all processing and machine learning steps on devices only you have access to."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "out-of-scope",
+      "note": "Files are named on disk; no content addressing is offered.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, radiance field export",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Exporting to the HTML format enables scenes to be opened using a standard web browser. The PLY format provides a lossless representation of the scene. The SPZ format uses lossy compression to reduce the file size."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "partial",
+      "note": "The self-contained web page is a genuine bundle: one file with the scene and a viewer inside it, openable from a local disk. It is a viewer for one field, not a package for a runnable experience.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, HTML export",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Self-contained HTML File: the scene will be exported to a single HTML file that can be opened in a web browser from the local file system."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "out-of-scope",
+      "note": "Delivery is left to whoever hosts the exported page or file.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, HTML export",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Self-contained HTML File: the scene will be exported to a single HTML file that can be opened in a web browser from the local file system."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "partial",
+      "note": "Version awareness is real and points outward: the exported SPZ can be written as version 4 or reverted to version 3 for software that has not caught up, and the model records which version of the application trained it.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, SPZ format version",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "However, some third-party software may not yet support version 4. If you need the exported files to open in such software, you can revert to version 3."
+        },
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Scene%20Tree/Rdnc%20Field",
+          "title": "Postshot User Guide, model information",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Model trained by This field displays the version of Postshot that was used to train this radiance field."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "none",
+      "note": "No conformance test is published, and the documentation names the consequence twice: software without splat support cannot open the PLY at all, and some software cannot read the current SPZ version.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, PLY compatibility warning",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Software that does not explicitly support 3DGS data will not be able to open files exported by Postshot."
+        },
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, SPZ format version",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "However, some third-party software may not yet support version 4. If you need the exported files to open in such software, you can revert to version 3."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "Nothing is generated from a description; every scene is fitted to real photographs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, capture requirements",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Radiance Field technology creates 3D scenes even from regular RGB images without requiring specialized scanning devices."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "The trained field is a static scene, not a model that continues a world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide",
+          "title": "Postshot User Guide, welcome",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot offers an end-to-end solution for tracking, training, editing and rendering radiance fields within a user-friendly, seamless workflow."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "partial",
+      "note": "Photographs or video in, camera tracking and training handled in one application, on any camera without special equipment. The result is a radiance field: no textured mesh is produced, so the traditional half of the definition is unmet.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, capture requirements",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Radiance Field technology creates 3D scenes even from regular RGB images without requiring specialized scanning devices."
+        },
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide/Importing+Images",
+          "title": "Postshot User Guide, importing images",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "For such an image-only import, Postshot will compute the camera poses and a sparse set of points from the imported images."
+        },
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, radiance field export",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Exporting to the HTML format enables scenes to be opened using a standard web browser. The PLY format provides a lossless representation of the scene. The SPZ format uses lossy compression to reduce the file size."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "native",
+      "note": "Two splat containers are written with real control over both — a lossless PLY carrying private header metadata, and SPZ at a chosen quality and a chosen format version — plus a self-contained web page. Nothing reads a splat back in.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, radiance field export",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Exporting to the HTML format enables scenes to be opened using a standard web browser. The PLY format provides a lossless representation of the scene. The SPZ format uses lossy compression to reduce the file size."
+        },
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, SPZ format version",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "However, some third-party software may not yet support version 4. If you need the exported files to open in such software, you can revert to version 3."
+        },
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, non-standard PLY metadata",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot stores several non-standard metadata in the PLY header, including the color space, anti-aliasing mode, and world origin. These can be extracted using custom software."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "partial",
+      "note": "The web export can be split into a page and a separate scene file that a server hosts, which is delivery in parts rather than progressive delivery by region or detail.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, HTML export",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Self-contained HTML File: the scene will be exported to a single HTML file that can be opened in a web browser from the local file system."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "none",
+      "note": "Nothing time-varying is trained or exported. Model sequence rendering moves a camera through a still field.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, sequence rendering",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Model Sequence Rendering"
+        },
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, radiance field export",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Exporting to the HTML format enables scenes to be opened using a standard web browser. The PLY format provides a lossless representation of the scene. The SPZ format uses lossy compression to reduce the file size."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "partial",
+      "note": "Sparse points are read alongside imported camera poses, in COLMAP or PLY form. No point cloud is written.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide/Importing+Images",
+          "title": "Postshot User Guide, camera pose formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot supports the following file formats for camera poses and points: COLMAP *.bin or *.txt files"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "none",
+      "note": "Calibrated views are read with their intrinsics and extrinsics and no per-pixel depth is read or written anywhere in the pipeline.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide/Importing+Images",
+          "title": "Postshot User Guide, camera pose formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot supports the following file formats for camera poses and points: COLMAP *.bin or *.txt files"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "native",
+      "note": "Rendering the scene from viewpoints no camera occupied, with different lenses and focal lengths, is stated as the purpose of the product in its own first paragraph.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide",
+          "title": "Postshot User Guide, welcome",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot offers an end-to-end solution for tracking, training, editing and rendering radiance fields within a user-friendly, seamless workflow."
+        },
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, capture requirements",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Radiance Field technology creates 3D scenes even from regular RGB images without requiring specialized scanning devices."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "none",
+      "note": "There is no time axis in training or in any export format. A capture is one moment however long the video was.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, radiance field export",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Exporting to the HTML format enables scenes to be opened using a standard web browser. The PLY format provides a lossless representation of the scene. The SPZ format uses lossy compression to reduce the file size."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "none",
+      "note": "Captured light stays where it was. The sky model surrounds the scene rather than separating its illumination.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Scene%20Tree/Rdnc%20Field",
+          "title": "Postshot User Guide, render controls",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Small Gaussian Splatting primitives with a radius below this value will not be rendered. This can improve rendering speed especially for very large models and very high frame rate requirements."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "native",
+      "note": "Editing survives export and the documentation says how: a crop box isolates an object and removes background, a transform can be baked into the data, marker alignment fixes the orientation, and image masks remove occluders before training.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Scene%20Tree/Rdnc%20Field",
+          "title": "Postshot User Guide, crop box",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "If enabled, the Translate, Rotate and Scale parameters specify a box that radiance field rendering will be bounded by. This allows the isolation of objects and the removal of background."
+        },
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Scene%20Tree/Rdnc%20Field",
+          "title": "Postshot User Guide, baking the transform",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "However, if the radiance field is exported, the transformation will be 'baked into' the data."
+        },
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, feature list",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Image masking for occluder and background removal"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "Nothing is generated, so nothing is changed by describing it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, capture requirements",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Radiance Field technology creates 3D scenes even from regular RGB images without requiring specialized scanning devices."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "There is no generating system to give a specification to.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, capture requirements",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Radiance Field technology creates 3D scenes even from regular RGB images without requiring specialized scanning devices."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "none",
+      "note": "No mesh, point cloud or conventional asset comes out. The route into a game engine is a plug-in that keeps the field as a field, and a packaged project still requires the application to be installed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, radiance field export",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Exporting to the HTML format enables scenes to be opened using a standard web browser. The PLY format provides a lossless representation of the scene. The SPZ format uses lossy compression to reduce the file size."
+        },
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide/Unreal+Engine+Integration",
+          "title": "Postshot User Guide, packaging limitation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Note that in the current version of the Postshot plugin, the Postshot app must be installed in order to use a packaged Unreal Engine project."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "No agent actions or control signals pass in or out.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide",
+          "title": "Postshot User Guide, welcome",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot offers an end-to-end solution for tracking, training, editing and rendering radiance fields within a user-friendly, seamless workflow."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "out-of-scope",
+      "note": "No panoramic input or output is described in the documentation read here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, supported inputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Supports inputs in JPG, PNG, TIF, EXR, DNG, RAW, MOV, MP4, MKV"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "out-of-scope",
+      "note": "Nothing is sensed live and no geometric description of a space is produced; the output is a radiance field.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, radiance field export",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Exporting to the HTML format enables scenes to be opened using a standard web browser. The PLY format provides a lossless representation of the scene. The SPZ format uses lossy compression to reduce the file size."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "Nothing is labelled or classified. Masks are drawn by the operator, not inferred.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, feature list",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Image masking for occluder and background removal"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "out-of-scope",
+      "note": "No depth sensor is read and no depth map is produced as an output.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide/Importing+Images",
+          "title": "Postshot User Guide, camera pose formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot supports the following file formats for camera poses and points: COLMAP *.bin or *.txt files"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "There is no live camera view for content to be occluded against; occluder removal here means removing them from the training images.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, feature list",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Image masking for occluder and background removal"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "out-of-scope",
+      "note": "No passthrough; the application is a desktop tool.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, system requirements",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "System Requirements: Windows 10 or later, Nvidia GPU CC 7.5 or higher (GeForce RTX 2060, Quadro T400/RTX 4000 or higher)"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.face",
+      "level": "out-of-scope",
+      "note": "No face or body tracking is consumed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, system requirements",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "System Requirements: Windows 10 or later, Nvidia GPU CC 7.5 or higher (GeForce RTX 2060, Quadro T400/RTX 4000 or higher)"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "out-of-scope",
+      "note": "Nothing states where a body may stand in a captured place.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Radiance%20Field%20Export",
+          "title": "Postshot User Guide, radiance field export",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Exporting to the HTML format enables scenes to be opened using a standard web browser. The PLY format provides a lossless representation of the scene. The SPZ format uses lossy compression to reduce the file size."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "out-of-scope",
+      "note": "No published unit of logic and so no naming question.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide",
+          "title": "Postshot User Guide, welcome",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Postshot offers an end-to-end solution for tracking, training, editing and rendering radiance fields within a user-friendly, seamless workflow."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "out-of-scope",
+      "note": "Nothing stands between a capture and its audience; everything happens on the operator's own machine.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, content ownership",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Your content remains on your devices and under your full control. Postshot runs all processing and machine learning steps on devices only you have access to."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "No map of a place is declared, versioned or aligned; alignment here is to a printed marker.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot%20User%20Guide/Interface/Scene%20Tree/Rdnc%20Field",
+          "title": "Postshot User Guide, AprilTag alignment",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Specify the side-length of the tag in millimeters. This should match the real-world size of the printed tags as closely as possible."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "No geographic area is declared for a capture.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/",
+          "title": "Jawset Postshot home page, geo-referenced data and markers",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Integrates with geo-referenced data"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.color",
+      "level": "native",
+      "note": "Postshot states field color-space and transfer-function interpretation, including mapping linear and camera-specific inputs to ACEScg; export keeps a non-standard color declaration requiring capable readers.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide/Interface/Scene+Tree/Rdnc+Field",
+          "title": "Postshot User Guide — Radiance Field",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "camera vendor specific color spaces used in RAW image formats are mapped to ACEScg for processing."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.metadata",
+      "level": "partial",
+      "note": "Exported PLY headers carry color space, anti-aliasing and world-origin metadata, but these are non-standard fields requiring custom software rather than an agreed metadata schema.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide/Interface/Radiance+Field+Export",
+          "title": "Postshot User Guide — Radiance Field Export",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Postshot stores several non-standard metadata in the PLY header, including the color space, anti-aliasing mode, and world origin."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "out-of-scope",
+      "note": "Postshot is assessed here as desktop radiance-field reconstruction, editing, camera animation and field export. The subject does not issue or exchange trust claims whose establishment a relying party evaluates; reconstruction confidence is a different quantity.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "out-of-scope",
+      "note": "Postshot is assessed here as desktop radiance-field reconstruction, editing, camera animation and field export. The subject's scene or model data types are not a vocabulary for identity claims exchanged with a relying party.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "out-of-scope",
+      "note": "Postshot is assessed here as desktop radiance-field reconstruction, editing, camera animation and field export. The subject is not an identity-presentation system with pairwise relationship identifiers and correlation guarantees.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.encryption",
+      "level": "out-of-scope",
+      "note": "Postshot is assessed here as desktop radiance-field reconstruction, editing, camera animation and field export. Image, geometry and device processing do not define recipient identity keys or confidential identity delivery.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.key-lifecycle",
+      "level": "out-of-scope",
+      "note": "Postshot is assessed here as desktop radiance-field reconstruction, editing, camera animation and field export. The subject does not govern identity-control key rotation, revocation or recovery; account administration belongs to its host.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "out-of-scope",
+      "note": "Postshot is assessed here as desktop radiance-field reconstruction, editing, camera animation and field export. The subject does not issue portable credentials with a post-issuance status-discovery mechanism.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "out-of-scope",
+      "note": "Postshot is assessed here as desktop radiance-field reconstruction, editing, camera animation and field export. Captured appearance and inferred training exposure are not runtime environmental illumination estimates supplied to content.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "out-of-scope",
+      "note": "Postshot is assessed here as desktop radiance-field reconstruction, editing, camera animation and field export. Offline calibration targets or reference photos do not expose runtime physical-marker detection with tracked poses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "native",
+      "note": "The timeline keys camera position, orientation and focal length by frame and supports path smoothing; this is the local authored camera series, with no portable trajectory export inferred.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide/Interface/Timeline",
+          "title": "Postshot User Guide — Timeline",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "On a camera object this will key the position, orientation and focal-length."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "out-of-scope",
+      "note": "Postshot is assessed here as desktop radiance-field reconstruction, editing, camera animation and field export. Editor selection or image masking is not an exposed runtime picking interface that returns the intersected scene object or geometry.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.text",
+      "level": "out-of-scope",
+      "note": "Postshot is assessed here as desktop radiance-field reconstruction, editing, camera animation and field export. Prompt strings or command-line parameters are authoring inputs, not a defined runtime character-entry interface for scene applications.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "out-of-scope",
+      "note": "Postshot is assessed here as desktop radiance-field reconstruction, editing, camera animation and field export. The selected interface is not a display compositor accepting independently shaped image layers and composition properties.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.bounds",
+      "level": "partial",
+      "note": "The field's region-of-interest box directs training resources; it does not establish a portable bounds hierarchy used for traversal before geometry loads.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide/Interface/Scene+Tree/Rdnc+Field",
+          "title": "Postshot User Guide — Radiance Field",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "If enabled, the Translate, Rotate and Scale parameters specify a box that the training process will focus its resources on."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "out-of-scope",
+      "note": "Postshot is assessed here as desktop radiance-field reconstruction, editing, camera animation and field export. Fitted motion and ordinary parenting are not authored node-to-node transform constraints with runtime evaluation rules.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "out-of-scope",
+      "note": "Postshot is assessed here as desktop radiance-field reconstruction, editing, camera animation and field export. Image sequences used as reconstruction observations do not reference synchronized audiovisual media as content within a separately authored scene.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "out-of-scope",
+      "note": "Postshot is assessed here as desktop radiance-field reconstruction, editing, camera animation and field export. Capture extents or a training region do not report the user's usable physical play area and floor-relative reference.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "out-of-scope",
+      "note": "Postshot is assessed here as desktop radiance-field reconstruction, editing, camera animation and field export. The selected reconstruction or sensing interface does not exchange a sound-synthesis model for evaluation during playback.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "out-of-scope",
+      "note": "Postshot is assessed here as desktop radiance-field reconstruction, editing, camera animation and field export. The subject does not publish an exchange of identified spatial zones and typed, temporally scoped events; scene bounds or capture locations are not that protocol.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.consent",
+      "level": "out-of-scope",
+      "note": "Postshot is assessed here as desktop radiance-field reconstruction, editing, camera animation and field export. An application permission dialog or dataset licence does not carry a subject-bound grant with scope, purpose, validity and withdrawal information.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "out-of-scope",
+      "note": "Postshot is assessed here as desktop radiance-field reconstruction, editing, camera animation and field export. Training metrics and processing status are not machine-readable accounts of a recipient evaluating and acting on an arriving subject or claim.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "Postshot is assessed here as desktop radiance-field reconstruction, editing, camera animation and field export. The selected subject does not define arrival between independent destinations; local API setup and asset loading are not pre-arrival admission responses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.frame-timing",
+      "level": "out-of-scope",
+      "note": "Postshot is assessed here as desktop radiance-field reconstruction, editing, camera animation and field export. Offline fitting or ordinary preview playback does not coordinate application frame submission with a predicted headset display time and matching view poses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "out-of-scope",
+      "note": "Postshot is assessed here as desktop radiance-field reconstruction, editing, camera animation and field export. Implementation shaders or learned weights do not make the subject a specified shader language with common execution semantics.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.parametric",
+      "level": "out-of-scope",
+      "note": "Postshot is assessed here as desktop radiance-field reconstruction, editing, camera animation and field export. The selected representation is sampled imagery, points, splats or meshes; it does not carry exact parametric curves and surfaces for another system to evaluate.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "out-of-scope",
+      "note": "Postshot is assessed here as desktop radiance-field reconstruction, editing, camera animation and field export. Gaussian primitives and optimized point samples are a representation, not exchanged emitters with runtime particle simulation parameters.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.style",
+      "level": "out-of-scope",
+      "note": "Postshot is assessed here as desktop radiance-field reconstruction, editing, camera animation and field export. Capture edits and model appearance are not separate metadata-driven rules for selecting scene-feature visibility or color.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "out-of-scope",
+      "note": "Postshot is assessed here as desktop radiance-field reconstruction, editing, camera animation and field export. Offline reconstructed geometry is not a sensing runtime that answers physical-environment ray queries with hit poses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "out-of-scope",
+      "note": "Postshot is assessed here as desktop radiance-field reconstruction, editing, camera animation and field export. The subject does not expose a musical-instrument device or recorded-event input interface with channels, notes and controllers.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "native",
+      "note": "Postshot imports observed images and recovered/supplied cameras, provides distinct Gaussian fitting strategies and splat/step controls, and renders/exports the trained field.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide/Interface/Training+Configuration",
+          "title": "Postshot User Guide — Training Configuration",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Postshot supports different profiles to create radiance fields."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.objectgen",
+      "level": "out-of-scope",
+      "note": "Postshot is assessed here as desktop radiance-field reconstruction, editing, camera animation and field export. This observation-fitting or device-sensing boundary does not synthesize a separate placeable object from a text or single-image prompt.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.collection",
+      "level": "partial",
+      "note": "Postshot's Scene node acts as an operation target covering multiple scene objects. User-defined named or rule-selected subcollections are not documented, so this is limited collection support.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide/Interface/Scene+Tree/Scene+Node",
+          "title": "Postshot User Guide",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The Scene node contains settings that apply to all or multiple objects in the scene."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "partial",
+      "note": "Postshot documents a camera-selection menu above its viewport, a Scene tree and Parameters tab, and interactive camera controls synchronized with selected scene cameras. This verifies UI regions and their relation to the 3D display; the read guide does not specify panel dimensions or resizing constraints.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide/Interface/Viewport",
+          "title": "Postshot User Guide",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The drop-down menu above the viewport"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "native",
+      "note": "Postshot imports COLMAP camera and image records containing intrinsics and extrinsics, and associates tracked camera poses with the corresponding images in an Image Set. COLMAP defines each extrinsic as a transform from the shared world frame to an identified camera frame. This establishes the linked reconstruction/camera frames on import; arbitrary rig hierarchy round-trip is not claimed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide/Importing+Images",
+          "title": "Postshot User Guide",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The three files cameras.bin, images.bin and points3D.bin"
+        },
+        {
+          "url": "https://www.jawset.com/docs/d/Postshot+User+Guide/Interface/Viewport",
+          "title": "Postshot User Guide",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "cycle through the images and their corresponding cameras."
+        },
+        {
+          "url": "https://colmap.github.io/format.html",
+          "title": "Output Format — COLMAP",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "the projection from world to the camera coordinate system"
+        }
+      ],
+      "direction": "read"
+    }
+  ]
+}

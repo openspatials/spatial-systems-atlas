@@ -1,0 +1,2380 @@
+{
+  "subject_id": "kiri",
+  "summary": "KIRI Engine is a phone and web scanner from KIRI Innovation with a free tier, and it is the most open of the consumer capture products: alongside the closed application sits a set of separately licensed open-source pieces — a Blender add-on for importing, editing, animating and exporting splats, an After Effects plug-in, a desktop tool for preparing images and 360 footage, and, most interesting to a standards audience, colmap4d, a frozen version 1.0 specification with a conformance suite that adds a timestamp to every image and every point of a COLMAP model. It captures four ways — photogrammetry, lidar, a neural method for shiny and featureless objects, and Gaussian splatting — and it exports more than anything else in this lane: OBJ, STL, FBX, glTF, GLB, USDZ, PLY and XYZ. Two things make it matter here. Its splat captures come with a mesh, and that mesh then reaches the product's mesh features, including automatic skeleton generation, which is the only path in this whole map from a phone capture of a real thing to something with bones in it. And its open-source work is where the time problem is being attacked in the open, by a specification with golden test fixtures rather than by a private file variant. What it does not do is carry rights, authorship or any statement of scale in what it writes, and its splat editing and rigging live inside the service rather than in any format a second implementation could read.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "partial",
+      "note": "Splats and meshes are drawn in the application, in a browser preview and, through the open add-on, inside Blender's own renderer. None of the product's own pipeline is described; the add-on's is Blender's.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features/3d-gaussian-splatting",
+          "title": "KIRI Engine, 3D Gaussian Splatting feature page, Blender add-on",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "This 100% free, open-sourced add-on allows you to access and render 3DGS files within Blender the same way they appear on the online preview panels."
+        },
+        {
+          "url": "https://github.com/Kiri-Innovation/3dgs-render-blender-addon/blob/main/README.md",
+          "title": "3DGS Render for Blender README, what it does",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Import and view 3DGS `.ply` files in Blender."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "out-of-scope",
+      "note": "No graphics interface is named or exposed anywhere in the product or the add-ons.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features/3d-gaussian-splatting",
+          "title": "KIRI Engine, 3D Gaussian Splatting feature page, Blender add-on",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "This 100% free, open-sourced add-on allows you to access and render 3DGS files within Blender the same way they appear on the online preview panels."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "partial",
+      "note": "Physically based material maps with normals are generated for meshes, which is a real material contribution, and they travel in whatever the export format carries. Splats have no material at all.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features",
+          "title": "KIRI Engine, features page, materials",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "PBR Materials Production-ready PBR maps with accurate normal"
+        },
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, export formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Formats: Export in OBJ, STL, FBX, GLTF, GLB, USDZ, PLY, XYZ, compatible with Blender 3D, Unreal Engine, Autodesk Maya, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "partial",
+      "note": "Lighting is baked into a capture, and the open Blender add-on adds two experimental ways to make it behave: sampled shadow proxies so splats cast shadows onto meshes, and baking light into splats. Neither is a lighting model that travels with a file.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Kiri-Innovation/3dgs-render-blender-addon/blob/main/README.md",
+          "title": "3DGS Render for Blender README, lighting",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Create sampled Eevee shadow proxies so splats can cast approximate shadows onto Blender meshes. *(Experimental.)*"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.post",
+      "level": "out-of-scope",
+      "note": "No post-processing chain is offered by the product; the After Effects plug-in is compositing in another tool.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features/3d-gaussian-splatting",
+          "title": "KIRI Engine, 3D Gaussian Splatting feature page, Blender add-on",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "This 100% free, open-sourced add-on allows you to access and render 3DGS files within Blender the same way they appear on the online preview panels."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "partial",
+      "note": "Decimation reduces a mesh's polygon count on demand, which is level-of-detail authoring by hand. No level structure or streaming order is carried in what is written.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features",
+          "title": "KIRI Engine, features page, mesh quality",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Quad-Mesh Retopology Quad mesh in clean, unwrapped UV maps"
+        },
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, export formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Formats: Export in OBJ, STL, FBX, GLTF, GLB, USDZ, PLY, XYZ, compatible with Blender 3D, Unreal Engine, Autodesk Maya, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "native",
+      "note": "Gaussian splat capture, editing and real-time rendering are a headline feature, on phones and in a browser, with a free open add-on that renders the same files in Blender.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features/3d-gaussian-splatting",
+          "title": "KIRI Engine, 3D Gaussian Splatting feature page, mesh-inclusive splats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Generate a separate Mesh file under the 'Scans' list and obtain a 3D model of your 3D gaussian splat. The 3D model will have access to advanced features such as Quad-Mesh Retopology, PBR Texture Generation, Auto-Rigging, and more."
+        },
+        {
+          "url": "https://www.kiriengine.app/features/3d-gaussian-splatting",
+          "title": "KIRI Engine, 3D Gaussian Splatting feature page, Blender add-on",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "This 100% free, open-sourced add-on allows you to access and render 3DGS files within Blender the same way they appear on the online preview panels."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "partial",
+      "note": "Splats and point data are drawn and XYZ point files are exported. Nothing time-varying is drawn as volumetric media by the product itself.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, export formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Formats: Export in OBJ, STL, FBX, GLTF, GLB, USDZ, PLY, XYZ, compatible with Blender 3D, Unreal Engine, Autodesk Maya, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "out-of-scope",
+      "note": "No three-dimensional text rendering anywhere.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features/3d-gaussian-splatting",
+          "title": "KIRI Engine, 3D Gaussian Splatting feature page, Blender add-on",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "This 100% free, open-sourced add-on allows you to access and render 3DGS files within Blender the same way they appear on the online preview panels."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "out-of-scope",
+      "note": "No viewpoint model is carried in or out; camera control is an interface matter.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, export formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Formats: Export in OBJ, STL, FBX, GLTF, GLB, USDZ, PLY, XYZ, compatible with Blender 3D, Unreal Engine, Autodesk Maya, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "out-of-scope",
+      "note": "A scan is one object, or a splat and a mesh side by side in a list. No node hierarchy is authored.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features/3d-gaussian-splatting",
+          "title": "KIRI Engine, 3D Gaussian Splatting feature page, mesh-inclusive splats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Generate a separate Mesh file under the 'Scans' list and obtain a 3D model of your 3D gaussian splat. The 3D model will have access to advanced features such as Quad-Mesh Retopology, PBR Texture Generation, Auto-Rigging, and more."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "partial",
+      "note": "Exports land in the conventions of eight different formats, from PLY to USDZ to FBX, each with its own handedness and axis order, and the product states none of them. The Blender add-on has to reconcile the splat convention with Blender's on import.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, export formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Formats: Export in OBJ, STL, FBX, GLTF, GLB, USDZ, PLY, XYZ, compatible with Blender 3D, Unreal Engine, Autodesk Maya, etc."
+        },
+        {
+          "url": "https://github.com/Kiri-Innovation/3dgs-render-blender-addon/blob/main/README.md",
+          "title": "3DGS Render for Blender README, what it does",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Import and view 3DGS `.ply` files in Blender."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "partial",
+      "note": "Eight named containers come out, covering the mesh world thoroughly, and the Blender add-on reads splat PLY back in and writes edited PLY out. The application itself does not import scenes.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, export formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Formats: Export in OBJ, STL, FBX, GLTF, GLB, USDZ, PLY, XYZ, compatible with Blender 3D, Unreal Engine, Autodesk Maya, etc."
+        },
+        {
+          "url": "https://github.com/Kiri-Innovation/3dgs-render-blender-addon/blob/main/README.md",
+          "title": "3DGS Render for Blender README, export and animation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Export edited 3DGS files and animated `.ply` sequences."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "native",
+      "note": "Meshes are produced from every capture mode including splats, with quad retopology, clean unwrapped texture coordinates, decimation and million-vertex output, in the formats modelling tools read.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features",
+          "title": "KIRI Engine, features page, mesh quality",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Quad-Mesh Retopology Quad mesh in clean, unwrapped UV maps"
+        },
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, export formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Formats: Export in OBJ, STL, FBX, GLTF, GLB, USDZ, PLY, XYZ, compatible with Blender 3D, Unreal Engine, Autodesk Maya, etc."
+        },
+        {
+          "url": "https://www.kiriengine.app/features/3d-gaussian-splatting",
+          "title": "KIRI Engine, 3D Gaussian Splatting feature page, mesh-inclusive splats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Generate a separate Mesh file under the 'Scans' list and obtain a 3D model of your 3D gaussian splat. The 3D model will have access to advanced features such as Quad-Mesh Retopology, PBR Texture Generation, Auto-Rigging, and more."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "native",
+      "note": "Textures up to eight thousand pixels square with physically based maps and accurate normals are generated and exported with the mesh.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features",
+          "title": "KIRI Engine, features page, materials",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "PBR Materials Production-ready PBR maps with accurate normal"
+        },
+        {
+          "url": "https://www.kiriengine.app/features",
+          "title": "KIRI Engine, features page, mesh quality",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Quad-Mesh Retopology Quad mesh in clean, unwrapped UV maps"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "partial",
+      "note": "A generated material reaches other tools only as far as the export format's own material carriage goes, and glTF, USDZ and FBX disagree about what that means. Nothing in the product describes the mapping.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features",
+          "title": "KIRI Engine, features page, materials",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "PBR Materials Production-ready PBR maps with accurate normal"
+        },
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, export formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Formats: Export in OBJ, STL, FBX, GLTF, GLB, USDZ, PLY, XYZ, compatible with Blender 3D, Unreal Engine, Autodesk Maya, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "partial",
+      "note": "Animation exists in the open add-on rather than the product: it exports animated PLY sequences and, experimentally, bakes rigged splat sequences. The scanner itself captures one still moment.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://github.com/Kiri-Innovation/3dgs-render-blender-addon/blob/main/README.md",
+          "title": "3DGS Render for Blender README, export and animation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Export edited 3DGS files and animated `.ply` sequences."
+        },
+        {
+          "url": "https://github.com/Kiri-Innovation/3dgs-render-blender-addon/blob/main/README.md",
+          "title": "3DGS Render for Blender README, experimental features",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Create proxy-based animation and bake rigged splat sequences. *(Experimental.)*"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "partial",
+      "note": "Automatic rig generation puts a skeleton on a scanned mesh, including a mesh derived from a splat, and it travels in FBX or glTF as those formats carry skeletons. No bone naming convention is stated, so whether the rig means anything to a receiving system is left to chance.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features",
+          "title": "KIRI Engine, features page, export options",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Auto-Rig Generation Auto-generated rigs for easy animation"
+        },
+        {
+          "url": "https://www.kiriengine.app/features/3d-gaussian-splatting",
+          "title": "KIRI Engine, 3D Gaussian Splatting feature page, mesh-inclusive splats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Generate a separate Mesh file under the 'Scans' list and obtain a 3D model of your 3D gaussian splat. The 3D model will have access to advanced features such as Quad-Mesh Retopology, PBR Texture Generation, Auto-Rigging, and more."
+        },
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, export formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Formats: Export in OBJ, STL, FBX, GLTF, GLB, USDZ, PLY, XYZ, compatible with Blender 3D, Unreal Engine, Autodesk Maya, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "out-of-scope",
+      "note": "No blend shapes or morph targets are produced by any capture or processing mode.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features",
+          "title": "KIRI Engine, features page, export options",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Auto-Rig Generation Auto-generated rigs for easy animation"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "out-of-scope",
+      "note": "No instancing concept exists in a scan.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, export formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Formats: Export in OBJ, STL, FBX, GLTF, GLB, USDZ, PLY, XYZ, compatible with Blender 3D, Unreal Engine, Autodesk Maya, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "partial",
+      "note": "A splat capture produces a second, separate mesh file in the same scan list, so one capture becomes two related assets. There is no referencing or override relationship between them beyond that.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features/3d-gaussian-splatting",
+          "title": "KIRI Engine, 3D Gaussian Splatting feature page, mesh-inclusive splats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Generate a separate Mesh file under the 'Scans' list and obtain a 3D model of your 3D gaussian splat. The 3D model will have access to advanced features such as Quad-Mesh Retopology, PBR Texture Generation, Auto-Rigging, and more."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "none",
+      "note": "Nothing states scale. The product is built around objects rather than measured spaces, and neither the application nor the export list mentions units, dimensions or a measurement tolerance.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, export formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Formats: Export in OBJ, STL, FBX, GLTF, GLB, USDZ, PLY, XYZ, compatible with Blender 3D, Unreal Engine, Autodesk Maya, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "none",
+      "note": "No licence field is written into any of the eight export formats, and sharing to third-party model sites is a link rather than a grant carried with the file.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, sharing",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Share: On various platforms such as Sketchfab, Thingiverse, GeoScan, and more."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "none",
+      "note": "No authorship or signature is carried in an exported model, although the service knows which account produced it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, export formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Formats: Export in OBJ, STL, FBX, GLTF, GLB, USDZ, PLY, XYZ, compatible with Blender 3D, Unreal Engine, Autodesk Maya, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "partial",
+      "note": "A scan of a person would produce a mesh with automatically generated bones, which is the raw material of an avatar and not an avatar format: nothing here writes a portable avatar description, and no avatar profile or specification is named.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features",
+          "title": "KIRI Engine, features page, export options",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Auto-Rig Generation Auto-generated rigs for easy animation"
+        },
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, export formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Formats: Export in OBJ, STL, FBX, GLTF, GLB, USDZ, PLY, XYZ, compatible with Blender 3D, Unreal Engine, Autodesk Maya, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "none",
+      "note": "Rigs are generated and no agreed skeleton is claimed. Without a named bone convention, an automatically generated rig will not accept animation authored for a standard humanoid, which is exactly the gap the row is about.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features",
+          "title": "KIRI Engine, features page, export options",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Auto-Rig Generation Auto-generated rigs for easy animation"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "out-of-scope",
+      "note": "No expression or viseme model is produced by any part of the product.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features",
+          "title": "KIRI Engine, features page, export options",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Auto-Rig Generation Auto-generated rigs for easy animation"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "out-of-scope",
+      "note": "No retargeting is offered; a generated rig is handed over as it is.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features",
+          "title": "KIRI Engine, features page, export options",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Auto-Rig Generation Auto-generated rigs for easy animation"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "out-of-scope",
+      "note": "No attachment points or wearable items are modelled.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, export formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Formats: Export in OBJ, STL, FBX, GLTF, GLB, USDZ, PLY, XYZ, compatible with Blender 3D, Unreal Engine, Autodesk Maya, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "out-of-scope",
+      "note": "Decimation reduces any mesh; no avatar-specific reduction exists because no avatar concept exists.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features",
+          "title": "KIRI Engine, features page, mesh quality",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Quad-Mesh Retopology Quad mesh in clean, unwrapped UV maps"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "out-of-scope",
+      "note": "No identity is bound to a scan or a generated rig.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, free version",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Functional Free Version: Dive into the world of photogrammetry without paying a cent for subscriptions, a LiDAR sensor, or an expensive 3D Scanner."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "out-of-scope",
+      "note": "Nothing is simulated in the product.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, export formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Formats: Export in OBJ, STL, FBX, GLTF, GLB, USDZ, PLY, XYZ, compatible with Blender 3D, Unreal Engine, Autodesk Maya, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "out-of-scope",
+      "note": "No collision shapes are authored, though an exported mesh will serve as one wherever it lands.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, export formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Formats: Export in OBJ, STL, FBX, GLTF, GLB, USDZ, PLY, XYZ, compatible with Blender 3D, Unreal Engine, Autodesk Maya, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "out-of-scope",
+      "note": "No bodies and no joints; the generated rig is for animation, not simulation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features",
+          "title": "KIRI Engine, features page, export options",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Auto-Rig Generation Auto-generated rigs for easy animation"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.material",
+      "level": "out-of-scope",
+      "note": "No friction or restitution is estimated for a scanned surface.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features",
+          "title": "KIRI Engine, features page, materials",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "PBR Materials Production-ready PBR maps with accurate normal"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.determinism",
+      "level": "out-of-scope",
+      "note": "There is no simulation to reproduce.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, export formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Formats: Export in OBJ, STL, FBX, GLTF, GLB, USDZ, PLY, XYZ, compatible with Blender 3D, Unreal Engine, Autodesk Maya, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "out-of-scope",
+      "note": "Nothing deformable is modelled.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, export formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Formats: Export in OBJ, STL, FBX, GLTF, GLB, USDZ, PLY, XYZ, compatible with Blender 3D, Unreal Engine, Autodesk Maya, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "out-of-scope",
+      "note": "No event regions are defined anywhere.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, export formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Formats: Export in OBJ, STL, FBX, GLTF, GLB, USDZ, PLY, XYZ, compatible with Blender 3D, Unreal Engine, Autodesk Maya, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "out-of-scope",
+      "note": "Scans are images and video frames. No audio is recorded or carried.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, version 4.2.7 of 1 September 2026, developer description",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "NSR (Neural Surface Reconstruction): 3D Scan featureless/shiny objects with a video processed by Neural Radiance Fields (NeRF) integrated Featureless Object Scan."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "out-of-scope",
+      "note": "No spatialisation model, because there is no audio.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, version 4.2.7 of 1 September 2026, developer description",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "NSR (Neural Surface Reconstruction): 3D Scan featureless/shiny objects with a video processed by Neural Radiance Fields (NeRF) integrated Featureless Object Scan."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "out-of-scope",
+      "note": "Spaces are captured visually with nothing said about acoustics.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/",
+          "title": "KIRI Engine home page, lidar scan",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "LiDAR Scan Access advanced 3D scanning features with your LiDAR-equipped iOS device—3D scan models, create floor plans, and generate quick scene visualizations"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "out-of-scope",
+      "note": "No acoustic model exists to occlude.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, version 4.2.7 of 1 September 2026, developer description",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "NSR (Neural Surface Reconstruction): 3D Scan featureless/shiny objects with a video processed by Neural Radiance Fields (NeRF) integrated Featureless Object Scan."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "out-of-scope",
+      "note": "No audio is delivered by the product or the add-ons.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, version 4.2.7 of 1 September 2026, developer description",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "NSR (Neural Surface Reconstruction): 3D Scan featureless/shiny objects with a video processed by Neural Radiance Fields (NeRF) integrated Featureless Object Scan."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "out-of-scope",
+      "note": "No live session and no voice.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, free version",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Functional Free Version: Dive into the world of photogrammetry without paying a cent for subscriptions, a LiDAR sensor, or an expensive 3D Scanner."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "out-of-scope",
+      "note": "Nothing is shared live; scans are uploaded, processed and downloaded.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features/3d-gaussian-splatting",
+          "title": "KIRI Engine, 3D Gaussian Splatting feature page, processing time",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "However, you can generally expect your 3DGS results to be ready within approximately 7–20 minutes after uploading."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "out-of-scope",
+      "note": "No live shared state and no authority model.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features/3d-gaussian-splatting",
+          "title": "KIRI Engine, 3D Gaussian Splatting feature page, processing time",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "However, you can generally expect your 3DGS results to be ready within approximately 7–20 minutes after uploading."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "out-of-scope",
+      "note": "No live clients to filter for.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features/3d-gaussian-splatting",
+          "title": "KIRI Engine, 3D Gaussian Splatting feature page, processing time",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "However, you can generally expect your 3DGS results to be ready within approximately 7–20 minutes after uploading."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.prediction",
+      "level": "out-of-scope",
+      "note": "No session traffic and no latency to hide.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features/3d-gaussian-splatting",
+          "title": "KIRI Engine, 3D Gaussian Splatting feature page, processing time",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "However, you can generally expect your 3DGS results to be ready within approximately 7–20 minutes after uploading."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "out-of-scope",
+      "note": "Uploads, processing jobs and downloads over the ordinary web, with an interface for programs on top. That is service access, not session transport.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Kiri-Innovation/KIRI-ENGINE-SDK-API/blob/main/README.md",
+          "title": "KIRI Engine API repository README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "KIRI Engine API allows you to integrate one of the best 3D scanning functionality with our services seamlessly."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.media",
+      "level": "out-of-scope",
+      "note": "No live media; video is an input file for reconstruction.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, version 4.2.7 of 1 September 2026, developer description",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "NSR (Neural Surface Reconstruction): 3D Scan featureless/shiny objects with a video processed by Neural Radiance Fields (NeRF) integrated Featureless Object Scan."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "out-of-scope",
+      "note": "There is no world to join; an account authenticates a person to a service.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, free version",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Functional Free Version: Dive into the world of photogrammetry without paying a cent for subscriptions, a LiDAR sensor, or an expensive 3D Scanner."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "out-of-scope",
+      "note": "No portals and no state carried between places.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, free version",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Functional Free Version: Dive into the world of photogrammetry without paying a cent for subscriptions, a LiDAR sensor, or an expensive 3D Scanner."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "out-of-scope",
+      "note": "Nothing tracks who is where.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, free version",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Functional Free Version: Dive into the world of photogrammetry without paying a cent for subscriptions, a LiDAR sensor, or an expensive 3D Scanner."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "out-of-scope",
+      "note": "Scans are entries in a library and links to third-party model sites. No addressing scheme is defined.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, sharing",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Share: On various platforms such as Sketchfab, Thingiverse, GeoScan, and more."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "partial",
+      "note": "A community gallery shows what other people have scanned, and models can be pushed to established sharing sites. Neither is a discovery mechanism any other system could query.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, sharing",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Share: On various platforms such as Sketchfab, Thingiverse, GeoScan, and more."
+        },
+        {
+          "url": "https://www.kiriengine.app/",
+          "title": "KIRI Engine home page",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Our Best 3D SCANNER APP for all smartphones & web browsers"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "out-of-scope",
+      "note": "No shared clock in the product. The one place time is taken seriously is colmap4d, and that is a data format rather than a session.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Kiri-Innovation/colmap4d/blob/main/README.md",
+          "title": "colmap4d README, what it is",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "**A standard COLMAP sparse model + one timestamp per image + one timestamp per point.**"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "out-of-scope",
+      "note": "Identity is a service account; no identifier is defined for anyone else's use.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, free version",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Functional Free Version: Dive into the world of photogrammetry without paying a cent for subscriptions, a LiDAR sensor, or an expensive 3D Scanner."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "out-of-scope",
+      "note": "No verifiable claims are issued or consumed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, free version",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Functional Free Version: Dive into the world of photogrammetry without paying a cent for subscriptions, a LiDAR sensor, or an expensive 3D Scanner."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "out-of-scope",
+      "note": "No credential exchange; the interface for programs uses service keys.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Kiri-Innovation/KIRI-ENGINE-SDK-API/blob/main/README.md",
+          "title": "KIRI Engine API repository README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "KIRI Engine API allows you to integrate one of the best 3D scanning functionality with our services seamlessly."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "out-of-scope",
+      "note": "No permission model beyond an account and its export allowance, which is a commercial limit rather than a capability grant a recipient can read.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, free version",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Functional Free Version: Dive into the world of photogrammetry without paying a cent for subscriptions, a LiDAR sensor, or an expensive 3D Scanner."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "out-of-scope",
+      "note": "Nothing is selectively disclosed; a model is exported whole.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, export formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Formats: Export in OBJ, STL, FBX, GLTF, GLB, USDZ, PLY, XYZ, compatible with Blender 3D, Unreal Engine, Autodesk Maya, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.social",
+      "level": "out-of-scope",
+      "note": "No portable relationships or standing are represented.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, sharing",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Share: On various platforms such as Sketchfab, Thingiverse, GeoScan, and more."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "out-of-scope",
+      "note": "No terms travel with an export, so nothing can be enforced downstream.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, export formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Formats: Export in OBJ, STL, FBX, GLTF, GLB, USDZ, PLY, XYZ, compatible with Blender 3D, Unreal Engine, Autodesk Maya, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "out-of-scope",
+      "note": "The product scans objects and small spaces and never places them on the Earth.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/",
+          "title": "KIRI Engine home page, lidar scan",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "LiDAR Scan Access advanced 3D scanning features with your LiDAR-equipped iOS device—3D scan models, create floor plans, and generate quick scene visualizations"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "out-of-scope",
+      "note": "No coordinate reference system is named or implied anywhere.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, export formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Formats: Export in OBJ, STL, FBX, GLTF, GLB, USDZ, PLY, XYZ, compatible with Blender 3D, Unreal Engine, Autodesk Maya, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "out-of-scope",
+      "note": "No anchoring of content to a place; the product captures things rather than positioning them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/",
+          "title": "KIRI Engine home page, lidar scan",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "LiDAR Scan Access advanced 3D scanning features with your LiDAR-equipped iOS device—3D scan models, create floor plans, and generate quick scene visualizations"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "out-of-scope",
+      "note": "No shared or persistent anchors are offered.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/",
+          "title": "KIRI Engine home page, lidar scan",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "LiDAR Scan Access advanced 3D scanning features with your LiDAR-equipped iOS device—3D scan models, create floor plans, and generate quick scene visualizations"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.vps",
+      "level": "out-of-scope",
+      "note": "No positioning from imagery is offered as a capability.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/",
+          "title": "KIRI Engine home page, lidar scan",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "LiDAR Scan Access advanced 3D scanning features with your LiDAR-equipped iOS device—3D scan models, create floor plans, and generate quick scene visualizations"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "out-of-scope",
+      "note": "No tiled streaming of large areas; scans are single assets.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, export formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Formats: Export in OBJ, STL, FBX, GLTF, GLB, USDZ, PLY, XYZ, compatible with Blender 3D, Unreal Engine, Autodesk Maya, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.indoor",
+      "level": "partial",
+      "note": "The lidar mode makes floor plans and quick scene visualisations on devices that have the sensor. What comes out is a drawing and a model rather than a structured description of the interior.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/",
+          "title": "KIRI Engine home page, lidar scan",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "LiDAR Scan Access advanced 3D scanning features with your LiDAR-equipped iOS device—3D scan models, create floor plans, and generate quick scene visualizations"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "out-of-scope",
+      "note": "No immersive session; scanning and the augmented-reality preview are ordinary application features.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, version 4.2.7 of 1 September 2026, developer description",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "NSR (Neural Surface Reconstruction): 3D Scan featureless/shiny objects with a video processed by Neural Radiance Fields (NeRF) integrated Featureless Object Scan."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "out-of-scope",
+      "note": "No controller input is consumed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, version 4.2.7 of 1 September 2026, developer description",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "NSR (Neural Surface Reconstruction): 3D Scan featureless/shiny objects with a video processed by Neural Radiance Fields (NeRF) integrated Featureless Object Scan."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "out-of-scope",
+      "note": "No hand tracking is used.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, version 4.2.7 of 1 September 2026, developer description",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "NSR (Neural Surface Reconstruction): 3D Scan featureless/shiny objects with a video processed by Neural Radiance Fields (NeRF) integrated Featureless Object Scan."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.eye",
+      "level": "out-of-scope",
+      "note": "No gaze input and no eye data anywhere in the product.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, version 4.2.7 of 1 September 2026, developer description",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "NSR (Neural Surface Reconstruction): 3D Scan featureless/shiny objects with a video processed by Neural Radiance Fields (NeRF) integrated Featureless Object Scan."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "out-of-scope",
+      "note": "No haptic output beyond ordinary interface feedback.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, version 4.2.7 of 1 September 2026, developer description",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "NSR (Neural Surface Reconstruction): 3D Scan featureless/shiny objects with a video processed by Neural Radiance Fields (NeRF) integrated Featureless Object Scan."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "partial",
+      "note": "The product adapts to the device: photogrammetry works without a lidar sensor, the lidar mode appears only on hardware that has one, and an advanced camera mode exposes shutter and exposure. Nothing describes those capabilities to another party.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, free version",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Functional Free Version: Dive into the world of photogrammetry without paying a cent for subscriptions, a LiDAR sensor, or an expensive 3D Scanner."
+        },
+        {
+          "url": "https://www.kiriengine.app/",
+          "title": "KIRI Engine home page, lidar scan",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "LiDAR Scan Access advanced 3D scanning features with your LiDAR-equipped iOS device—3D scan models, create floor plans, and generate quick scene visualizations"
+        },
+        {
+          "url": "https://docs.nerf.studio/quickstart/custom_dataset.html",
+          "title": "Nerfstudio documentation on KIRI Engine captures, an independent reader of the data",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio can trained from data processed by the KIRI Engine app . This works for both Android and iPhone and does not require a LiDAR supported device."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "out-of-scope",
+      "note": "No scripting runtime for content; the add-ons are Blender and After Effects extensions.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features/3d-gaussian-splatting",
+          "title": "KIRI Engine, 3D Gaussian Splatting feature page, Blender add-on",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "This 100% free, open-sourced add-on allows you to access and render 3DGS files within Blender the same way they appear on the online preview panels."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "out-of-scope",
+      "note": "No interactivity travels with an exported scan.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, export formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Formats: Export in OBJ, STL, FBX, GLTF, GLB, USDZ, PLY, XYZ, compatible with Blender 3D, Unreal Engine, Autodesk Maya, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "out-of-scope",
+      "note": "No untrusted guest content is run.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features/3d-gaussian-splatting",
+          "title": "KIRI Engine, 3D Gaussian Splatting feature page, Blender add-on",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "This 100% free, open-sourced add-on allows you to access and render 3DGS files within Blender the same way they appear on the online preview panels."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "out-of-scope",
+      "note": "No agents act inside a capture, though the open specification work publishes instructions for driving it from one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Kiri-Innovation/colmap4d/blob/main/README.md",
+          "title": "colmap4d README, second implementations",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "implement Part I, then pass every fixture in [`conformance/golden/`](https://github.com/Kiri-Innovation/colmap4d/tree/main/conformance/golden) at the `v1.0` tag"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "out-of-scope",
+      "note": "No budgets for guest content; the limits are export allowances on the free tier.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, free version",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Functional Free Version: Dive into the world of photogrammetry without paying a cent for subscriptions, a LiDAR sensor, or an expensive 3D Scanner."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "out-of-scope",
+      "note": "Scans persist in a library, which is storage of documents rather than world state.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features/3d-gaussian-splatting",
+          "title": "KIRI Engine, 3D Gaussian Splatting feature page, mesh-inclusive splats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Generate a separate Mesh file under the 'Scans' list and obtain a 3D model of your 3D gaussian splat. The 3D model will have access to advanced features such as Quad-Mesh Retopology, PBR Texture Generation, Auto-Rigging, and more."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "out-of-scope",
+      "note": "No items and no holders.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, free version",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Functional Free Version: Dive into the world of photogrammetry without paying a cent for subscriptions, a LiDAR sensor, or an expensive 3D Scanner."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "out-of-scope",
+      "note": "No portable preferences follow a user anywhere.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, free version",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Functional Free Version: Dive into the world of photogrammetry without paying a cent for subscriptions, a LiDAR sensor, or an expensive 3D Scanner."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "out-of-scope",
+      "note": "Scans are named entries, never addressed by hash.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features/3d-gaussian-splatting",
+          "title": "KIRI Engine, 3D Gaussian Splatting feature page, mesh-inclusive splats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Generate a separate Mesh file under the 'Scans' list and obtain a 3D model of your 3D gaussian splat. The 3D model will have access to advanced features such as Quad-Mesh Retopology, PBR Texture Generation, Auto-Rigging, and more."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "out-of-scope",
+      "note": "The outputs are assets, not runnable experiences.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, export formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Formats: Export in OBJ, STL, FBX, GLTF, GLB, USDZ, PLY, XYZ, compatible with Blender 3D, Unreal Engine, Autodesk Maya, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "out-of-scope",
+      "note": "Delivery is a download from the service or a push to a third-party model site.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, sharing",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Share: On various platforms such as Sketchfab, Thingiverse, GeoScan, and more."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "partial",
+      "note": "colmap4d versions its own specification properly — a frozen version 1.0 with a changelog governing changes — which is more than the product does for the files it writes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Kiri-Innovation/colmap4d/blob/main/README.md",
+          "title": "colmap4d README, second implementations",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "implement Part I, then pass every fixture in [`conformance/golden/`](https://github.com/Kiri-Innovation/colmap4d/tree/main/conformance/golden) at the `v1.0` tag"
+        },
+        {
+          "url": "https://github.com/Kiri-Innovation/colmap4d/blob/main/README.md",
+          "title": "colmap4d README, what it is",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "**A standard COLMAP sparse model + one timestamp per image + one timestamp per point.**"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "via-extension",
+      "note": "The one conformance suite anywhere in this lane comes from KIRI's open-source side and not from the product: colmap4d tells a second implementer to implement Part I of the specification and then pass every golden fixture at the version 1.0 tag. Nothing tests the application's own eight export formats.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Kiri-Innovation/colmap4d/blob/main/README.md",
+          "title": "colmap4d README, second implementations",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "implement Part I, then pass every fixture in [`conformance/golden/`](https://github.com/Kiri-Innovation/colmap4d/tree/main/conformance/golden) at the `v1.0` tag"
+        },
+        {
+          "url": "https://github.com/Kiri-Innovation/colmap4d/blob/main/README.md",
+          "title": "colmap4d README, what it is",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "**A standard COLMAP sparse model + one timestamp per image + one timestamp per point.**"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "Nothing is generated from a prompt or a picture; every scan is fitted to photographs or video.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, version 4.2.7 of 1 September 2026, developer description",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "NSR (Neural Surface Reconstruction): 3D Scan featureless/shiny objects with a video processed by Neural Radiance Fields (NeRF) integrated Featureless Object Scan."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "No learned model continues a scene; the neural method reconstructs a static object.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, version 4.2.7 of 1 September 2026, developer description",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "NSR (Neural Surface Reconstruction): 3D Scan featureless/shiny objects with a video processed by Neural Radiance Fields (NeRF) integrated Featureless Object Scan."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "native",
+      "note": "Photographs go in and a textured, retopologised, physically based model comes out, on a phone with no lidar sensor and in a browser, with an open desktop tool for preparing the images and 360 footage first.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, free version",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Functional Free Version: Dive into the world of photogrammetry without paying a cent for subscriptions, a LiDAR sensor, or an expensive 3D Scanner."
+        },
+        {
+          "url": "https://www.kiriengine.app/features",
+          "title": "KIRI Engine, features page, mesh quality",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Quad-Mesh Retopology Quad mesh in clean, unwrapped UV maps"
+        },
+        {
+          "url": "https://github.com/Kiri-Innovation/3D-Scan-Preparation-Tool-by-KIRI-Engine",
+          "title": "3D Scan Preparation Tool by KIRI Engine, repository description",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Open-source desktop tool for preparing images, videos, 360 footage, masks, and scan-focused processing for photogrammetry workflows."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "partial",
+      "note": "Splats export in the product's native form or as OBJ, and the open Blender add-on reads and writes splat PLY, including animated sequences. No compact splat container such as SPZ is named, and the native form is not documented as a format anyone else implements.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, splat editing and export",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "3D Gaussian Splatting: Experience the future of 3D scanning and capture accurate 3D scenes with a short video; edit using tools like sphere/plane cutters and brushes. Export in native format or OBJ."
+        },
+        {
+          "url": "https://github.com/Kiri-Innovation/3dgs-render-blender-addon/blob/main/README.md",
+          "title": "3DGS Render for Blender README, what it does",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Import and view 3DGS `.ply` files in Blender."
+        },
+        {
+          "url": "https://github.com/Kiri-Innovation/3dgs-render-blender-addon/blob/main/README.md",
+          "title": "3DGS Render for Blender README, export and animation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Export edited 3DGS files and animated `.ply` sequences."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "none",
+      "note": "Nothing is delivered by region or detail. A scan is processed in the cloud, typically in seven to twenty minutes, then downloaded whole.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features/3d-gaussian-splatting",
+          "title": "KIRI Engine, 3D Gaussian Splatting feature page, processing time",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "However, you can generally expect your 3DGS results to be ready within approximately 7–20 minutes after uploading."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "partial",
+      "note": "The product captures nothing time-varying, and the open add-on plays and exports animated PLY sequences, so the family reaches playback but not capture. The sequence is a flipbook of complete frames.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://github.com/Kiri-Innovation/3dgs-render-blender-addon/blob/main/README.md",
+          "title": "3DGS Render for Blender README, export and animation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Export edited 3DGS files and animated `.ply` sequences."
+        },
+        {
+          "url": "https://github.com/Kiri-Innovation/3dgs-render-blender-addon/blob/main/README.md",
+          "title": "3DGS Render for Blender README, experimental features",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Create proxy-based animation and bake rigged splat sequences. *(Experimental.)*"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "partial",
+      "note": "XYZ point files are a named export format. Nothing reads a point cloud in, and no compression or attribute scheme is described.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, export formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Formats: Export in OBJ, STL, FBX, GLTF, GLB, USDZ, PLY, XYZ, compatible with Blender 3D, Unreal Engine, Autodesk Maya, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "partial",
+      "note": "Lidar depth is used where the device has it and inferred where it does not, and colmap4d carries per-image and per-point time beside a standard camera model. No calibrated views-plus-depth interchange is produced by the product.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/",
+          "title": "KIRI Engine home page, lidar scan",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "LiDAR Scan Access advanced 3D scanning features with your LiDAR-equipped iOS device—3D scan models, create floor plans, and generate quick scene visualizations"
+        },
+        {
+          "url": "https://github.com/Kiri-Innovation/colmap4d/blob/main/README.md",
+          "title": "colmap4d README, what it is",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "**A standard COLMAP sparse model + one timestamp per image + one timestamp per point.**"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "native",
+      "note": "Splat and neural captures are viewed from positions no camera occupied, in the application, in the browser preview and in Blender through the add-on.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features/3d-gaussian-splatting",
+          "title": "KIRI Engine, 3D Gaussian Splatting feature page, Blender add-on",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "This 100% free, open-sourced add-on allows you to access and render 3DGS files within Blender the same way they appear on the online preview panels."
+        },
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, version 4.2.7 of 1 September 2026, developer description",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "NSR (Neural Surface Reconstruction): 3D Scan featureless/shiny objects with a video processed by Neural Radiance Fields (NeRF) integrated Featureless Object Scan."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "via-extension",
+      "note": "Time reaches this subject through a separately published open specification rather than the product: colmap4d gives every image and every point a timestamp, adds up to three sidecar files, changes no existing file, and has frozen its version 1.0 with golden conformance fixtures. The scanner itself captures one moment.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://github.com/Kiri-Innovation/colmap4d/blob/main/README.md",
+          "title": "colmap4d README, what it is",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "**A standard COLMAP sparse model + one timestamp per image + one timestamp per point.**"
+        },
+        {
+          "url": "https://github.com/Kiri-Innovation/colmap4d/blob/main/README.md",
+          "title": "colmap4d README, backward compatibility",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "colmap4d adds up to three **sidecar** files to an ordinary COLMAP model and changes no existing file — so old tools open it as a perfectly normal (static) reconstruction, while a 4D-aware viewer unlocks a free 3D view + a draggable time axis."
+        },
+        {
+          "url": "https://github.com/Kiri-Innovation/colmap4d/blob/main/README.md",
+          "title": "colmap4d README, second implementations",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "implement Part I, then pass every fixture in [`conformance/golden/`](https://github.com/Kiri-Innovation/colmap4d/tree/main/conformance/golden) at the `v1.0` tag"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "partial",
+      "note": "A generated physically based material with normals is the nearest thing here to relightable captured content, and it applies to the mesh rather than the splat. The add-on's light baking runs the other way, fixing light into the splat.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features",
+          "title": "KIRI Engine, features page, materials",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "PBR Materials Production-ready PBR maps with accurate normal"
+        },
+        {
+          "url": "https://github.com/Kiri-Innovation/3dgs-render-blender-addon/blob/main/README.md",
+          "title": "3DGS Render for Blender README, lighting",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Create sampled Eevee shadow proxies so splats can cast approximate shadows onto Blender meshes. *(Experimental.)*"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "native",
+      "note": "Editing a capture and keeping the edit is a documented feature: sphere, plane and brush cutters on the splat, automatic background masking during processing, and edited splats exported from the open Blender add-on.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, splat editing and export",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "3D Gaussian Splatting: Experience the future of 3D scanning and capture accurate 3D scenes with a short video; edit using tools like sphere/plane cutters and brushes. Export in native format or OBJ."
+        },
+        {
+          "url": "https://www.kiriengine.app/features/3d-gaussian-splatting",
+          "title": "KIRI Engine, 3D Gaussian Splatting feature page, masking",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Use 3DGS Masking to automatically crop out the background when processing the file and obtain a clean, isolated 3D gaussian splat."
+        },
+        {
+          "url": "https://github.com/Kiri-Innovation/3dgs-render-blender-addon/blob/main/README.md",
+          "title": "3DGS Render for Blender README, export and animation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Export edited 3DGS files and animated `.ply` sequences."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "No world is generated, so none can be changed by describing the change.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, version 4.2.7 of 1 September 2026, developer description",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "NSR (Neural Surface Reconstruction): 3D Scan featureless/shiny objects with a video processed by Neural Radiance Fields (NeRF) integrated Featureless Object Scan."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "There is no generating system to give a specification to.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, version 4.2.7 of 1 September 2026, developer description",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "NSR (Neural Surface Reconstruction): 3D Scan featureless/shiny objects with a video processed by Neural Radiance Fields (NeRF) integrated Featureless Object Scan."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "native",
+      "note": "A splat capture yields a separate mesh file that then reaches the whole mesh pipeline — quad retopology, physically based textures, automatic rigging — and exports in eight formats. No other capture product scored here carries a splat that far into conventional assets.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features/3d-gaussian-splatting",
+          "title": "KIRI Engine, 3D Gaussian Splatting feature page, mesh-inclusive splats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Generate a separate Mesh file under the 'Scans' list and obtain a 3D model of your 3D gaussian splat. The 3D model will have access to advanced features such as Quad-Mesh Retopology, PBR Texture Generation, Auto-Rigging, and more."
+        },
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, export formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Formats: Export in OBJ, STL, FBX, GLTF, GLB, USDZ, PLY, XYZ, compatible with Blender 3D, Unreal Engine, Autodesk Maya, etc."
+        },
+        {
+          "url": "https://www.kiriengine.app/features",
+          "title": "KIRI Engine, features page, export options",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Auto-Rig Generation Auto-generated rigs for easy animation"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "No agent actions or control signals pass through the product.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, version 4.2.7 of 1 September 2026, developer description",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "NSR (Neural Surface Reconstruction): 3D Scan featureless/shiny objects with a video processed by Neural Radiance Fields (NeRF) integrated Featureless Object Scan."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "partial",
+      "note": "The open preparation tool handles 360 footage as an input for photogrammetry workflows. Nothing panoramic is produced as an output with its projection stated.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://github.com/Kiri-Innovation/3D-Scan-Preparation-Tool-by-KIRI-Engine",
+          "title": "3D Scan Preparation Tool by KIRI Engine, repository description",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Open-source desktop tool for preparing images, videos, 360 footage, masks, and scan-focused processing for photogrammetry workflows."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "partial",
+      "note": "A geometric description of a real object or small space is produced from the device's own camera and lidar sensor, as a processed model minutes later rather than as a live reconstruction.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/",
+          "title": "KIRI Engine home page, lidar scan",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "LiDAR Scan Access advanced 3D scanning features with your LiDAR-equipped iOS device—3D scan models, create floor plans, and generate quick scene visualizations"
+        },
+        {
+          "url": "https://www.kiriengine.app/features/3d-gaussian-splatting",
+          "title": "KIRI Engine, 3D Gaussian Splatting feature page, processing time",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "However, you can generally expect your 3DGS results to be ready within approximately 7–20 minutes after uploading."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "partial",
+      "note": "Automatic object masking separates the thing being scanned from its background, which is a two-class decision made during capture. No semantic labels are exported.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, object masking",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Cleanup: Auto Object Masking for noise-free, clean models during capture by eliminating background elements."
+        },
+        {
+          "url": "https://www.kiriengine.app/features/3d-gaussian-splatting",
+          "title": "KIRI Engine, 3D Gaussian Splatting feature page, masking",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Use 3DGS Masking to automatically crop out the background when processing the file and obtain a clean, isolated 3D gaussian splat."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "partial",
+      "note": "Depth is read from the lidar sensor where it exists and inferred otherwise. No depth map is offered as an output or an interchange.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/",
+          "title": "KIRI Engine home page, lidar scan",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "LiDAR Scan Access advanced 3D scanning features with your LiDAR-equipped iOS device—3D scan models, create floor plans, and generate quick scene visualizations"
+        },
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, free version",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Functional Free Version: Dive into the world of photogrammetry without paying a cent for subscriptions, a LiDAR sensor, or an expensive 3D Scanner."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "No live mixing of virtual content with a camera view, so no occlusion question arises.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, version 4.2.7 of 1 September 2026, developer description",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "NSR (Neural Surface Reconstruction): 3D Scan featureless/shiny objects with a video processed by Neural Radiance Fields (NeRF) integrated Featureless Object Scan."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "out-of-scope",
+      "note": "The augmented-reality preview places a finished model in the camera view; there is no passthrough blending model of the kind this row means.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, version 4.2.7 of 1 September 2026, developer description",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "NSR (Neural Surface Reconstruction): 3D Scan featureless/shiny objects with a video processed by Neural Radiance Fields (NeRF) integrated Featureless Object Scan."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.face",
+      "level": "out-of-scope",
+      "note": "No face or body tracking is consumed as input.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, version 4.2.7 of 1 September 2026, developer description",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "NSR (Neural Surface Reconstruction): 3D Scan featureless/shiny objects with a video processed by Neural Radiance Fields (NeRF) integrated Featureless Object Scan."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "out-of-scope",
+      "note": "Nothing says where a body may stand, in a scan of an object or of a room.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/",
+          "title": "KIRI Engine home page, lidar scan",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "LiDAR Scan Access advanced 3D scanning features with your LiDAR-equipped iOS device—3D scan models, create floor plans, and generate quick scene visualizations"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "out-of-scope",
+      "note": "No published unit of logic and so no permanent naming question.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features/3d-gaussian-splatting",
+          "title": "KIRI Engine, 3D Gaussian Splatting feature page, Blender add-on",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "This 100% free, open-sourced add-on allows you to access and render 3DGS files within Blender the same way they appear on the online preview panels."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "out-of-scope",
+      "note": "Nothing documented stands between a scan and its audience; publishing happens on the third-party sites the product shares to, under their rules.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://apps.apple.com/us/app/kiri-engine-3d-scanner-lidar/id1577127142",
+          "title": "KIRI Engine on the App Store, sharing",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Share: On various platforms such as Sketchfab, Thingiverse, GeoScan, and more."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "No map of a place is declared or aligned; the product has no geography.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/",
+          "title": "KIRI Engine home page, lidar scan",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "LiDAR Scan Access advanced 3D scanning features with your LiDAR-equipped iOS device—3D scan models, create floor plans, and generate quick scene visualizations"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "No geographic area is declared for a scan at any point.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/",
+          "title": "KIRI Engine home page, lidar scan",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "LiDAR Scan Access advanced 3D scanning features with your LiDAR-equipped iOS device—3D scan models, create floor plans, and generate quick scene visualizations"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.extension",
+      "level": "via-extension",
+      "note": "The separately published colmap4d v1.0 specification adds optional time metadata with explicit unknown-field tolerance; this is not proof that the KIRI mobile capture app exports it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/Kiri-Innovation/colmap4d/a6c20a5652115e82a8eb8079564399aac26f8457/spec/colmap4d-v1.0.md",
+          "title": "colmap4d v1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "A reader MUST tolerate unknown top-level and unknown device fields (forward compatibility):"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.metadata",
+      "level": "via-extension",
+      "note": "colmap4d supplies declared clock semantics and optional device provenance alongside captured data; the specification expressly excludes optional device provenance from conformance, and mobile-app support is not inferred.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/Kiri-Innovation/colmap4d/a6c20a5652115e82a8eb8079564399aac26f8457/spec/colmap4d-v1.0.md",
+          "title": "colmap4d v1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "**`devices` is provenance, not a conformance gate.**"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "out-of-scope",
+      "note": "KIRI Engine is assessed here as capture tools and separately published KIRI colmap4d and Blender projects. The subject does not issue or exchange trust claims whose establishment a relying party evaluates; reconstruction confidence is a different quantity.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "out-of-scope",
+      "note": "KIRI Engine is assessed here as capture tools and separately published KIRI colmap4d and Blender projects. The subject's scene or model data types are not a vocabulary for identity claims exchanged with a relying party.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "out-of-scope",
+      "note": "KIRI Engine is assessed here as capture tools and separately published KIRI colmap4d and Blender projects. The subject is not an identity-presentation system with pairwise relationship identifiers and correlation guarantees.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.encryption",
+      "level": "out-of-scope",
+      "note": "KIRI Engine is assessed here as capture tools and separately published KIRI colmap4d and Blender projects. Image, geometry and device processing do not define recipient identity keys or confidential identity delivery.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.key-lifecycle",
+      "level": "out-of-scope",
+      "note": "KIRI Engine is assessed here as capture tools and separately published KIRI colmap4d and Blender projects. The subject does not govern identity-control key rotation, revocation or recovery; account administration belongs to its host.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "out-of-scope",
+      "note": "KIRI Engine is assessed here as capture tools and separately published KIRI colmap4d and Blender projects. The subject does not issue portable credentials with a post-issuance status-discovery mechanism.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "out-of-scope",
+      "note": "KIRI Engine is assessed here as capture tools and separately published KIRI colmap4d and Blender projects. Captured appearance and inferred training exposure are not runtime environmental illumination estimates supplied to content.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "out-of-scope",
+      "note": "KIRI Engine is assessed here as capture tools and separately published KIRI colmap4d and Blender projects. Offline calibration targets or reference photos do not expose runtime physical-marker detection with tracked poses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "out-of-scope",
+      "note": "KIRI Engine is assessed here as capture tools and separately published KIRI colmap4d and Blender projects. Editor selection or image masking is not an exposed runtime picking interface that returns the intersected scene object or geometry.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.text",
+      "level": "out-of-scope",
+      "note": "KIRI Engine is assessed here as capture tools and separately published KIRI colmap4d and Blender projects. Prompt strings or command-line parameters are authoring inputs, not a defined runtime character-entry interface for scene applications.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "out-of-scope",
+      "note": "KIRI Engine is assessed here as capture tools and separately published KIRI colmap4d and Blender projects. The selected interface is not a display compositor accepting independently shaped image layers and composition properties.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "out-of-scope",
+      "note": "KIRI Engine is assessed here as capture tools and separately published KIRI colmap4d and Blender projects. Fitted motion and ordinary parenting are not authored node-to-node transform constraints with runtime evaluation rules.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "out-of-scope",
+      "note": "KIRI Engine is assessed here as capture tools and separately published KIRI colmap4d and Blender projects. Image sequences used as reconstruction observations do not reference synchronized audiovisual media as content within a separately authored scene.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "out-of-scope",
+      "note": "KIRI Engine is assessed here as capture tools and separately published KIRI colmap4d and Blender projects. Capture extents or a training region do not report the user's usable physical play area and floor-relative reference.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "out-of-scope",
+      "note": "KIRI Engine is assessed here as capture tools and separately published KIRI colmap4d and Blender projects. The selected reconstruction or sensing interface does not exchange a sound-synthesis model for evaluation during playback.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "out-of-scope",
+      "note": "KIRI Engine is assessed here as capture tools and separately published KIRI colmap4d and Blender projects. The subject does not publish an exchange of identified spatial zones and typed, temporally scoped events; scene bounds or capture locations are not that protocol.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.consent",
+      "level": "out-of-scope",
+      "note": "KIRI Engine is assessed here as capture tools and separately published KIRI colmap4d and Blender projects. An application permission dialog or dataset licence does not carry a subject-bound grant with scope, purpose, validity and withdrawal information.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "out-of-scope",
+      "note": "KIRI Engine is assessed here as capture tools and separately published KIRI colmap4d and Blender projects. Training metrics and processing status are not machine-readable accounts of a recipient evaluating and acting on an arriving subject or claim.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "KIRI Engine is assessed here as capture tools and separately published KIRI colmap4d and Blender projects. The selected subject does not define arrival between independent destinations; local API setup and asset loading are not pre-arrival admission responses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.frame-timing",
+      "level": "out-of-scope",
+      "note": "KIRI Engine is assessed here as capture tools and separately published KIRI colmap4d and Blender projects. Offline fitting or ordinary preview playback does not coordinate application frame submission with a predicted headset display time and matching view poses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "out-of-scope",
+      "note": "KIRI Engine is assessed here as capture tools and separately published KIRI colmap4d and Blender projects. Implementation shaders or learned weights do not make the subject a specified shader language with common execution semantics.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.parametric",
+      "level": "out-of-scope",
+      "note": "KIRI Engine is assessed here as capture tools and separately published KIRI colmap4d and Blender projects. The selected representation is sampled imagery, points, splats or meshes; it does not carry exact parametric curves and surfaces for another system to evaluate.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "out-of-scope",
+      "note": "KIRI Engine is assessed here as capture tools and separately published KIRI colmap4d and Blender projects. Gaussian primitives and optimized point samples are a representation, not exchanged emitters with runtime particle simulation parameters.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.style",
+      "level": "out-of-scope",
+      "note": "KIRI Engine is assessed here as capture tools and separately published KIRI colmap4d and Blender projects. Capture edits and model appearance are not separate metadata-driven rules for selecting scene-feature visibility or color.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "out-of-scope",
+      "note": "KIRI Engine is assessed here as capture tools and separately published KIRI colmap4d and Blender projects. Offline reconstructed geometry is not a sensing runtime that answers physical-environment ray queries with hit poses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "out-of-scope",
+      "note": "KIRI Engine is assessed here as capture tools and separately published KIRI colmap4d and Blender projects. The subject does not expose a musical-instrument device or recorded-event input interface with channels, notes and controllers.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "native",
+      "note": "KIRI's documented 3DGS workflow reconstructs a Gaussian representation from image sets with background-masking controls and field export; the claim is to the capture workflow, not to all linked Blender tools.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/features/3d-gaussian-splatting",
+          "title": "3D Gaussian Splatting — KIRI workflow and FAQ",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Use 3DGS Masking to automatically crop out the background when processing the file"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.thumbnail",
+      "level": "via-extension",
+      "note": "The separate KIRI Scatter Blender add-on presents preview thumbnails for assets in its asset-pack gallery. This is that named add-on's asset library feature, not a phone-app export promise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/3d-tools/scatter-by-kiri-engine",
+          "title": "Scatter by KIRI Engine - KIRI Engine",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "click a thumbnail to choose an asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.collection",
+      "level": "via-extension",
+      "note": "The named KIRI Scatter Blender add-on uses KIRI_Scatter_Collection as the input set for scattering; other KIRI tools also accept crop collections. This is host add-on support, not a portable phone capture format.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/3d-tools/scatter-by-kiri-engine",
+          "title": "Scatter by KIRI Engine - KIRI Engine",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "It relies on an outliner collection"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "via-extension",
+      "note": "The separately versioned colmap4d sidecars associate image poses with timestamps. The specification distinguishes declared clock semantics from undeclared relative time; it is not asserted as a KIRI phone-app export.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/Kiri-Innovation/colmap4d/a6c20a5652115e82a8eb8079564399aac26f8457/spec/colmap4d-v1.0.md",
+          "title": "colmap4d format specification — v1.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "**colmap4d = a standard COLMAP sparse model + one timestamp per image + one timestamp > per point.**"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.bounds",
+      "level": "partial",
+      "note": "The separate KIRI 3DGS Render Blender add-on supports selection/cropping by bounding objects. The read add-on documentation does not establish an exported spatial index usable before full geometry loads.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.kiriengine.app/3d-tools/3dgs-render",
+          "title": "3DGS Render by KIRI Engine - KIRI Engine",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "selecting splats by size atttributes or bounding objects."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "via-extension",
+      "note": "KIRI’s separately versioned colmap4d contract preserves COLMAP cameras/images and optional rigs/frames and names the optional pycolmap model integration for 3.12 rig/frame parsing. COLMAP documents rig/sensor IDs, rig-from-world poses and camera frame conventions. This is that named format/integration, not a phone-app export guarantee.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/Kiri-Innovation/colmap4d/a6c20a5652115e82a8eb8079564399aac26f8457/spec/colmap4d-v1.0.md",
+          "title": "colmap4d format specification — v1.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "`pycolmap` when installed (optional extra `colmap4d[model]`) for authoritative parsing and 3.12 rigs/frames."
+        },
+        {
+          "url": "https://colmap.github.io/format.html",
+          "title": "Output Format — COLMAP",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "FRAME_ID, RIG_ID, RIG_FROM_WORLD[QW, QX, QY, QZ, TX, TY, TZ], NUM_DATA_IDS, DATA_IDS[] as (SENSOR_TYPE, SENSOR_ID, DATA_ID)"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "via-extension",
+      "note": "The separately named KIRI Blender 3DGS Render addon defines a VIEW_3D sidebar Panel in the UI region. Its draw routine creates boxes and rows with explicit expand alignment, scale values and mode-dependent controls. This is an addon UI contract, not native KIRI mobile UI support.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/Kiri-Innovation/3dgs-render-blender-addon/5e510bb09c1f4e4dabdba011c7ecaf112ffd8cfc/src/dgs_render_by_kiri_engine.py",
+          "title": "kiri blender menu",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "bl_space_type = 'VIEW_3D'"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/Kiri-Innovation/3dgs-render-blender-addon/5e510bb09c1f4e4dabdba011c7ecaf112ffd8cfc/src/dgs_render_main_function_menu.py",
+          "title": "kiri blender panel",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "row_A59C6.alignment = 'Expand'.upper()"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "via-extension",
+      "note": "The separately named KIRI After Effects Gaussian Splatting plugin creates a Metal compute encoder, binds its compute pipeline and buffers, and calls dispatchThreads for point transformations and animation. This is a concrete non-raster GPU route in that plugin; it does not prove the mobile capture app exposes or performs the same mechanism.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/Kiri-Innovation/Gaussian-Splatting-plugin-by-KIRI-Engine/e8244d2446133a0aff3026c9e767a26d55f6ffeb/Kiri_GaussianSplatting/src/Render/MetalManager.cpp",
+          "title": "kiri MetalManager.cpp",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "encoder->dispatchThreads("
+        },
+        {
+          "url": "https://raw.githubusercontent.com/Kiri-Innovation/Gaussian-Splatting-plugin-by-KIRI-Engine/e8244d2446133a0aff3026c9e767a26d55f6ffeb/Kiri_GaussianSplatting/shader/opengl/main.comp",
+          "title": "kiri main.comp",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "viewPosition"
+        }
+      ]
+    }
+  ]
+}

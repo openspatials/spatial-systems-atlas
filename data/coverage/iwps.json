@@ -1,0 +1,1344 @@
+{
+  "subject_id": "iwps",
+  "summary": "The Inter-World Portaling System is OMA3's draft protocol for one narrow job, moving a person from one virtual world to another, and it does that job with two calls over ordinary web protocols. A query call, made on the public link a world advertises, asks the destination may I come in and returns an approval, an address to teleport to, an approved landing spot, an optional link for downloading the destination's client and a number of seconds before the approval lapses; a teleport call then executes the move, launches the destination client, shows the person a two-digit number so they can confirm they arrived where they meant to, and calls back a success or failure address on the source side. It invents no address scheme of its own and defines a genuine resolution step, which is more than most portal proposals manage, and its drafting discipline is strong: defined modal verbs, requirement tables marked mandatory, optional, excluded or conditional, an explicit clause on what claiming conformance obliges you to support, and a forward-compatibility rule for reserved fields. The traps are large: the place inside the address is an optional free-text field whose form the destination world decides, so the only published design that resolves a portal does not standardize the name inside it; the three things it is most often credited with, asset transfer, look and feel negotiation and payments, are each a single line reading to be decided, with the field that would carry an avatar marked reserved for future use in both calls; and the websocket option in the address format is left undecided as well. The normative text is damaged in places too: the query response table lists the success callback twice where the second should be the failure callback, three steps name fields that appear in no table, and one step points at a Section 7.8 in a document that ends at Section 6. There is nothing here to build against yet, with version 0.3 appearing only as a file name on a PDF, no tag, no release, no reference implementation and no commit to the specification since September 2025.",
+  "coverage": [
+    {
+      "capability_id": "net.handoff",
+      "level": "native",
+      "note": "This is the subject and the only capability it fully specifies. Two calls in a fixed order, query then teleport, correlated by a teleport identifier, bounded by an expiry the destination checks, ending with the destination client launched, the source client closed, and a callback to the source saying it worked or it did not. Four communication paths are defined for the second call: device to device, through the clouds, hybrid, and through a user agent.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, section 5.3.3 Teleport API",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "ultimately logging in the User to the Destination Client and closing the Source Client"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "partial",
+      "note": "The resolving half is real and specified: a portal link conforms to RFC 3986, uses http or https, must be called with POST, and the query call made on it returns a destination address, so a name genuinely resolves to a reachable endpoint. The naming half is not. The place-designating segment is an optional free-text field described as coordinates in a form the destination world determines, with the destination free to pick the spot if none is given. So the only published design that resolves a portal does not standardize the name inside it, and no two worlds can write each other's landing addresses.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, section 5.2.1 Formats",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "is a spatial position in the target world"
+        },
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, Table 1 Query API parameters",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Coordinates in a form determined by the Destination World."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "none",
+      "note": "There is no registry, no index and no lookup. The specification says a portal link reaches a person through the developer's website, a direct message, a friend's referral, or a code on a billboard or a television advert. You cannot find a world you do not already have a link to.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, section 5.2.2 Portal URI",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "From an advertisement such as a QR code on a billboard or a TV commercial."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "partial",
+      "note": "The crossing ends in a session and the specification takes it right up to the door: the teleport call logs the person into the destination client, security profiles and identity arrangements are named, and the destination shows a confirmation number before login. What is missing is the joining itself. How the destination cloud launches its own client is stated to be implementation-dependent and outside scope, and no join, authenticate or ready message is defined for the destination world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, section 5.1.2 Teleport API Communication Options",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Details of how the Destination Cloud launches the Destination Client are implementation-dependent and outside the scope of the present specification."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "partial",
+      "note": "The wire is ordinary and that is a strength: calls are http or https, always POST, content sent as a string, responses in JSON, and a server need not support every queried field, in which case it simply omits it from the response. Missing: the third listed protocol option, websocket, is left to be decided, so nothing persistent is defined, and the maximum string length is explicitly undefined.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, section 5.2.1 Formats",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "All URLs SHALL be called with the POST method for security reasons."
+        },
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, section 5.3.1 API Formats",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The maximum acceptable length of a string is not defined"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "partial",
+      "note": "One time value exists: an expiry in seconds returned by the query call, checked by the destination when the teleport call arrives, with zero meaning never. Missing: no shared clock, no timestamps, no ordering of events, and no statement of whose clock the seconds are counted on.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, Table 2 Query API response",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "How many seconds the Portal is active for."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "none",
+      "note": "Nothing about who is where. The protocol carries one person's single move and then stops; there is no roster, no status and no notion of other people at either end.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, section 4.2 API Overview",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "out-of-scope",
+      "note": "The protocol ends the moment the person arrives. What state the destination world holds and how it shares it is not its business.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, section 1.3 Scope",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This is the base API specification for IWPS and is enough to implement a test network of interconnected worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "none",
+      "note": "No position or orientation is expressed against the Earth or against anything else. The landing spot is one text token in whatever form the destination world happens to use, and there is no orientation field at all, so a person can be placed but not aimed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, Table 1 Query API parameters",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Coordinates in a form determined by the Destination World."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "none",
+      "note": "No coordinate reference frame is named anywhere in the document, and no geospatial standard appears in either the normative or the informative reference list.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, section 2 References",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "partial",
+      "note": "The most concrete part of the specification and the one nearest to useful. The source sends a mandatory bundle describing the device: instruction set, word size, operating system, operating system version and client type, and the destination uses them to decide whether the teleport is possible and which address and download link to hand back. Missing is an agreed value space. The operating system list is written as a closed set but ends with etc., and the version is typed as a floating point number, so a version like 10.15.7 cannot be expressed. Two implementations will disagree on the values while agreeing on the fields.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, Table 1 Query API parameters",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "windows, macos, android, ios, ps, xbox, switch, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "none",
+      "note": "Nothing about starting, running or ending an immersive session. The specification knows only whether the client is a browser or an application and which operating system it is on; whether the person arrives in a headset or a window is never expressed, and how the destination client is actually launched is put outside scope.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, section 5.1.2 Teleport API Communication Options",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Details of how the Destination Cloud launches the Destination Client are implementation-dependent and outside the scope of the present specification."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "none",
+      "note": "The capability IWPS is most often credited with, and it is not written. Carrying assets is listed among the teleport call's capabilities and an asset field appears in both calls, but that field is marked reserved for future use in the query call, the query response and the teleport call alike, and the framework that would define it reads to be decided.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, Table 3 Teleport API parameters",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Reserved for Future Use"
+        },
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, section 5.6 Asset Transfer Framework",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "TBD."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "none",
+      "note": "No settings, no accessibility choices and no preferences of any kind cross the portal. Only an identifier and the device description are passed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, Table 1 Query API parameters",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "none",
+      "note": "An avatar is defined as a kind of asset the person owns, and moving assets is listed as a capability of the teleport call, but no avatar format is named, no field carries one, and the section that would say how is one line reading to be decided. IWPS would need to point at something like VRM and does not.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, section 3.3 Definitions",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A digital asset owned by the User, such as an avatar or mount."
+        },
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, section 5.6 Asset Transfer Framework",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "TBD."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "none",
+      "note": "The problem is named well and solved not at all. The look and feel framework exists to negotiate carrying a laser gun into a medieval world, and the section that would define it is one line reading to be decided. A limitations field and an approved-assets field are both reserved for future use.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, section 4.3 Extension Frameworks",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "To negotiate discrepancies between Worlds, such as bringing laser guns into medieval times."
+        },
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, section 5.7 Look and Feel Framework",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "TBD."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "partial",
+      "note": "Five identifier shapes are listed as things a service should support: email address, username, telephone number, blockchain address or name service, and passkey. A user identifier is passed from source to destination. Missing: no syntax is given for any of them, none is required, and no rule says how a destination decides which it is looking at.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, section 5.5 Identity Framework",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Services that support IWPS SHOULD support at least one of the following ID formats:"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "none",
+      "note": "No credential is defined. The identity section lists identifier shapes, which are names, not claims about a person, and nothing in either call carries an issuer, a signature or a proof.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, section 5.5 Identity Framework",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "partial",
+      "note": "Four arrangements are named and all are permitted: different identities each verified at its own end; one identity verified again at the destination; one identity verified by the source, with the honest warning that it lapses when the session ends; and two identities bridged by a user agent. Missing: these are described in prose, with no message, no field beyond the bare user identifier, and no way for the destination to state which arrangement it will accept.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, section 5.5 Identity Framework",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "there are limits to the usage of Source-verified ID, e.g. when the session ends, the Identity is no longer available without further authentication"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "partial",
+      "note": "There is one real grant and it is coarse: the query call can pre-approve a named teleport identifier for a stated number of seconds, and the destination refuses the teleport call if it arrives late. Missing: the grant says only yes or no to one crossing. It carries no permissions, no scope and nothing a third party could read.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, section 5.3.2 Query API",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "to give a pre-approval to the _teleport-id_ as long as the _Teleport_ API is called within _expiration_ seconds of calling the _Query_ API"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "none",
+      "note": "Nothing about revealing only part of what the source knows. The user identifier is passed whole, and in one of the four arrangements the source also passes whatever the destination needs to verify it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, section 5.5 Identity Framework",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "none",
+      "note": "No licence term is carried and nothing is enforced at the point of arrival. Rights would belong to the asset transfer and look and feel frameworks, and both are one line reading to be decided.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, sections 5.6 and 5.7",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "TBD."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "none",
+      "note": "The query response can return a download link so the person can install the destination's client before crossing, which is a sensible touch. But no packaging format is defined, and what sits behind the link is entirely the destination's business.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, section 5.3.2 Query API",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Give the User a _Download URI_ to download the Destination Client to the User’s Device."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "partial",
+      "note": "There is one genuine forward-compatibility rule and it is well written: a field marked reserved for future use must be omitted or set to zero by the sender, must be ignored by the receiver, and must not cause the receiver to reject the message. Missing: no version number is carried in any call, and the document itself states no version in its text, only in the file name of the PDF beside it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, section 3.1 Modal Verbs Terminology",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The receiving device SHALL NOT reject the data structure because of the presence of the field or its value."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "partial",
+      "note": "The vocabulary for conformance is better than most published standards: modal verbs defined against three bodies, informative terms separated from normative ones, requirement tables marked mandatory, optional, excluded, not applicable or conditional, and an explicit statement of what claiming conformance obliges you to support. Missing: everything that would let anyone test it. No test suite, no reference implementation, no certification, one OpenAPI file covering an unrelated metadata lookup, and a repository with no tag and no release.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, section 3.1 Modal Verbs Terminology",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "If conformance to the present specification is claimed, all normative capabilities indicated as mandatory within the scope of the present specification shall be supported in the specified manner."
+        },
+        {
+          "url": "https://github.com/oma3dao/iwps-specification",
+          "title": "oma3dao/iwps-specification repository",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This repository houses all the specifications related to the Inter World Portaling System"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "out-of-scope",
+      "note": "It moves a person, not a scene. Nothing about geometry, meshes or files appears anywhere outside the unwritten asset transfer section.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, section 1.3 Scope",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "out-of-scope",
+      "note": "No scene model of any kind. The contents of the destination world are wholly opaque to the protocol, which is deliberate.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, section 1.3 Scope",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "render.raster",
+      "level": "out-of-scope",
+      "note": "Nothing is drawn. A portal is defined as a feature of the source client's interface and the specification says nothing whatever about how it looks.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, section 3.3 Definitions",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "UX feature on a Source Client that allows a User to Teleport"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "out-of-scope",
+      "note": "No executable content, no world rules, no runtime.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, section 1.3 Scope",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "out-of-scope",
+      "note": "Worth stating because of a name collision. IWPS uses the term user agent for a relay that stands between the two worlds and can hold both of a person's identities; it is not an autonomous agent acting inside a world, and IWPS says nothing about those.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, section 3.3 Definitions",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A Client or other Application which acts on behalf of the User."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "The Inter-World Portaling System is a two-call protocol for moving a person from one world to another, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This is the base API specification for IWPS and is enough to implement a test network of interconnected worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "The Inter-World Portaling System is a two-call protocol for moving a person from one world to another, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This is the base API specification for IWPS and is enough to implement a test network of interconnected worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "The Inter-World Portaling System is a two-call protocol for moving a person from one world to another, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This is the base API specification for IWPS and is enough to implement a test network of interconnected worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "out-of-scope",
+      "note": "The Inter-World Portaling System is a two-call protocol for moving a person from one world to another, and it names no Gaussian splat interchange format and carries no splat data.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This is the base API specification for IWPS and is enough to implement a test network of interconnected worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "out-of-scope",
+      "note": "The Inter-World Portaling System is a two-call protocol for moving a person from one world to another, and it delivers no captured scene, progressively by region and detail or otherwise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This is the base API specification for IWPS and is enough to implement a test network of interconnected worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "The Inter-World Portaling System is a two-call protocol for moving a person from one world to another, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This is the base API specification for IWPS and is enough to implement a test network of interconnected worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "out-of-scope",
+      "note": "The Inter-World Portaling System is a two-call protocol for moving a person from one world to another, and it defines no encoding or compression for a set of points with attributes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This is the base API specification for IWPS and is enough to implement a test network of interconnected worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "The Inter-World Portaling System is a two-call protocol for moving a person from one world to another, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This is the base API specification for IWPS and is enough to implement a test network of interconnected worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "out-of-scope",
+      "note": "The Inter-World Portaling System is a two-call protocol for moving a person from one world to another, and it produces no image from a viewing position that no capture camera occupied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This is the base API specification for IWPS and is enough to implement a test network of interconnected worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "The Inter-World Portaling System is a two-call protocol for moving a person from one world to another, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This is the base API specification for IWPS and is enough to implement a test network of interconnected worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "The Inter-World Portaling System is a two-call protocol for moving a person from one world to another, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This is the base API specification for IWPS and is enough to implement a test network of interconnected worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "The Inter-World Portaling System is a two-call protocol for moving a person from one world to another, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This is the base API specification for IWPS and is enough to implement a test network of interconnected worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "The Inter-World Portaling System is a two-call protocol for moving a person from one world to another, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This is the base API specification for IWPS and is enough to implement a test network of interconnected worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "The Inter-World Portaling System is a two-call protocol for moving a person from one world to another, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This is the base API specification for IWPS and is enough to implement a test network of interconnected worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "The Inter-World Portaling System is a two-call protocol for moving a person from one world to another, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This is the base API specification for IWPS and is enough to implement a test network of interconnected worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "The Inter-World Portaling System is a two-call protocol for moving a person from one world to another, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This is the base API specification for IWPS and is enough to implement a test network of interconnected worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "out-of-scope",
+      "note": "The Inter-World Portaling System is a two-call protocol for moving a person from one world to another, and it carries no full 360-degree view of a place as an image with its projection stated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This is the base API specification for IWPS and is enough to implement a test network of interconnected worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "out-of-scope",
+      "note": "A handshake for taking a person from one world to another: a query, a teleport request and the launch of the destination client. Nothing in it reads a device's sensors or carries the shape of a real room.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This is the base API specification for IWPS and is enough to implement a test network of interconnected worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "The parameters it exchanges are destination, identity and placement. No label for a real surface is among them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This is the base API specification for IWPS and is enough to implement a test network of interconnected worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "out-of-scope",
+      "note": "No depth of the physical world is defined or carried; the specification's payloads are about where a person is going, not what their camera sees.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This is the base API specification for IWPS and is enough to implement a test network of interconnected worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "What the destination world draws, and how it composes with a passthrough view, is outside the portaling handshake entirely.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This is the base API specification for IWPS and is enough to implement a test network of interconnected worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "out-of-scope",
+      "note": "IWPS negotiates a move between two clients. What either client does with the camera view of the room is its own presentation.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.face",
+      "level": "out-of-scope",
+      "note": "The portaling APIs pass a user and a destination between services; they carry no sensor stream of the user's face or body.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "partial",
+      "note": "The arrival half of this row is genuinely here and nothing else is. A Portal URI may carry the landing location in the destination world, so a portal can put a visitor somewhere chosen rather than wherever the world starts everyone. There is no walkable surface, no bounds and no list of spawn points travelling with a place, and nothing tells the source client whether the landing location it names is somewhere a body may actually stand.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, OMA3",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Portal URI | URI that the User uses to create a Portal, optionally including parameters such as the landing location in the Destination World."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "out-of-scope",
+      "note": "The specification names worlds and clients so a teleport can be addressed. It publishes no units of logic and operates no namespace for them.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "none",
+      "note": "A destination takes an arriving user and, in the wider OMA3 work, arriving assets, and this is exactly where a receiving world would want to know what review something has had. The base specification defines two calls, Query and Teleport, and neither carries a review record, a content rating or any statement of what the source has already checked.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/oma3dao/iwps-specification/blob/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification, OMA3",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The document defines two API calls—Query API and Teleport API,—which together facilitate the process of setting up and executing a teleportation between clients and their corresponding cloud services."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "Teleporting is between virtual worlds. No map of a real place is declared and no transform between two maps is published.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "A destination world is not a service bound to a region of the Earth, and the specification states no coverage area for one.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.profile",
+      "level": "native",
+      "note": "IWPS 0.3 defines Internet Security and OMA3 Security profiles with distinct TLS, certificate and authentication requirements and an explicit compatibility boundary. The named security subsets satisfy this row; this is draft specification evidence.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Worlds that only support internet security SHALL NOT be able to connect to Worlds that support OMA3 security."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.color",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: IWPS specifies pre-arrival query and teleport exchanges between world services. This row requires declaring the color interpretation and output range of images, textures, and rendering surfaces so receivers can perform the required conversions. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The _Query_ API call determines the Teleport parameters before the _Teleport_ API is called."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "partial",
+      "note": "The informative user-agent route reduces source/destination tracking, but does not define a pairwise-identifier or cryptographically unlinkable presentation mechanism with complete correlation guarantees.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "makes tracking more difficult."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.encryption",
+      "level": "partial",
+      "note": "The authentication framework identifies client/server certificates and TLS requirements for confidential API transport; it does not define encrypted subject payload delivery beyond those endpoints.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Mutual TLS requires each client to have a unique X.509 certificate"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: IWPS specifies pre-arrival query and teleport exchanges between world services. This row requires layout and presentation of two-dimensional interface regions, including their size, alignment, and relationship to a display or scene. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The _Query_ API call determines the Teleport parameters before the _Teleport_ API is called."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: IWPS specifies pre-arrival query and teleport exchanges between world services. This row requires runtime estimates of environmental illumination made available to content for lighting or reflections. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The _Query_ API call determines the Teleport parameters before the _Teleport_ API is called."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: IWPS specifies pre-arrival query and teleport exchanges between world services. This row requires detecting recognized physical markers or images and reporting their tracked pose relative to a runtime reference space. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The _Query_ API call determines the Teleport parameters before the _Teleport_ API is called."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: IWPS specifies pre-arrival query and teleport exchanges between world services. This row requires picking scene content from pointing input and reporting the intersected object or geometry to the application. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The _Query_ API call determines the Teleport parameters before the _Teleport_ API is called."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.text",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: IWPS specifies pre-arrival query and teleport exchanges between world services. This row requires receiving character or string entry through a defined input interface, separate from interpreting physical controller actions. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The _Query_ API call determines the Teleport parameters before the _Teleport_ API is called."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: IWPS specifies pre-arrival query and teleport exchanges between world services. This row requires submitting distinct shaped image layers to a display compositor with their placement and composition properties. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The _Query_ API call determines the Teleport parameters before the _Teleport_ API is called."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.bounds",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: IWPS specifies pre-arrival query and teleport exchanges between world services. This row requires bounding volumes associated with scene content, organized for spatial rejection, traversal, or selection before detailed geometry is loaded. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The _Query_ API call determines the Teleport parameters before the _Teleport_ API is called."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.collection",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: IWPS specifies pre-arrival query and teleport exchanges between world services. This row requires named or rule-defined sets of scene objects that consumers can use as targets for scene operations. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The _Query_ API call determines the Teleport parameters before the _Teleport_ API is called."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: IWPS specifies pre-arrival query and teleport exchanges between world services. This row requires authored runtime relationships that constrain one node's transform using another node and defined evaluation rules. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The _Query_ API call determines the Teleport parameters before the _Teleport_ API is called."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: IWPS specifies pre-arrival query and teleport exchanges between world services. This row requires referencing timed audiovisual media inside a scene and defining the synchronization needed to present it as scene content. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The _Query_ API call determines the Teleport parameters before the _Teleport_ API is called."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: IWPS specifies pre-arrival query and teleport exchanges between world services. This row requires runtime-reported physical play-area bounds and floor-relative reference information available to an application. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The _Query_ API call determines the Teleport parameters before the _Teleport_ API is called."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: IWPS specifies pre-arrival query and teleport exchanges between world services. This row requires generating audio during playback from an exchanged synthesis model, supporting data, and changing control parameters. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The _Query_ API call determines the Teleport parameters before the _Teleport_ API is called."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: IWPS specifies pre-arrival query and teleport exchanges between world services. This row requires interchanging identified spatial zones, typed events scoped to them, and summaries with defined spatial and temporal meaning. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The _Query_ API call determines the Teleport parameters before the _Teleport_ API is called."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "native",
+      "note": "The Query response includes approval, expiration and optional error details, and Teleport checks the validity window before admitting an arrival.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The _Query_ API call determines the Teleport parameters before the _Teleport_ API is called."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: IWPS specifies pre-arrival query and teleport exchanges between world services. This row requires dispatching programmable non-raster GPU workloads against resources available through the graphics-compute API. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The _Query_ API call determines the Teleport parameters before the _Teleport_ API is called."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.frame-timing",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: IWPS specifies pre-arrival query and teleport exchanges between world services. This row requires coordinating frame submission with predicted display timing and the view poses associated with that time. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The _Query_ API call determines the Teleport parameters before the _Teleport_ API is called."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: IWPS specifies pre-arrival query and teleport exchanges between world services. This row requires a specified shader source language and execution semantics enabling implementations to consume the same shader program. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The _Query_ API call determines the Teleport parameters before the _Teleport_ API is called."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.parametric",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: IWPS specifies pre-arrival query and teleport exchanges between world services. This row requires carrying parametric curves and surfaces in mathematical form so a receiver can evaluate or tessellate them. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The _Query_ API call determines the Teleport parameters before the _Teleport_ API is called."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: IWPS specifies pre-arrival query and teleport exchanges between world services. This row requires exchanging particle-system emitters and simulation/rendering parameters that a receiving runtime evaluates. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The _Query_ API call determines the Teleport parameters before the _Teleport_ API is called."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance-recovery",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: IWPS specifies pre-arrival query and teleport exchanges between world services. This row requires locating associated provenance through a supported content fingerprint or watermark when embedded association has been lost. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The _Query_ API call determines the Teleport parameters before the _Teleport_ API is called."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.style",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: IWPS specifies pre-arrival query and teleport exchanges between world services. This row requires separately expressed styling rules that select feature visibility, color, or other supported display properties from content metadata. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The _Query_ API call determines the Teleport parameters before the _Teleport_ API is called."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.variant",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: IWPS specifies pre-arrival query and teleport exchanges between world services. This row requires named alternatives of an asset's authored configuration, with a defined selection mechanism. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The _Query_ API call determines the Teleport parameters before the _Teleport_ API is called."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.voxel",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: IWPS specifies pre-arrival query and teleport exchanges between world services. This row requires interchanging spatial cell volumes and their properties, including updates, as a scene representation. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The _Query_ API call determines the Teleport parameters before the _Teleport_ API is called."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: IWPS specifies pre-arrival query and teleport exchanges between world services. This row requires asking a sensing runtime for ray intersections with its estimate of physical surroundings and receiving hit poses. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The _Query_ API call determines the Teleport parameters before the _Teleport_ API is called."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: IWPS specifies pre-arrival query and teleport exchanges between world services. This row requires receiving typed musical instrument events with channel, note or control identifiers and values through a documented device or recorded-event input interface. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The _Query_ API call determines the Teleport parameters before the _Teleport_ API is called."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: IWPS specifies pre-arrival query and teleport exchanges between world services. This row requires reconstructing a radiance field or Gaussian representation from observed images and camera information, including optimization controls and a trained scene usable for subsequent view synthesis. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The _Query_ API call determines the Teleport parameters before the _Teleport_ API is called."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.objectgen",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: IWPS specifies pre-arrival query and teleport exchanges between world services. This row requires producing an individual three-dimensional object from a text or image prompt, with geometry or another renderable representation available for placement in a separately authored scene. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/oma3dao/iwps-specification/main/IWPS%20Base%20Specification.md",
+          "title": "IWPS Base Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The _Query_ API call determines the Teleport parameters before the _Teleport_ API is called."
+        }
+      ]
+    }
+  ]
+}

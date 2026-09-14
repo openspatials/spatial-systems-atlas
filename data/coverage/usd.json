@@ -1,0 +1,1269 @@
+{
+  "subject_id": "usd",
+  "summary": "The machinery for combining a scene out of many files is standardized. What you put inside the scene is not. The alliance behind it has published exactly one document, the core, version 1.0.1, dated 2025-12-12, and its own public repository lists that single row under available specifications. The core covers data types, the layer document model, paths, resource resolution, composition, value resolution, schemas, colour, collections and three file formats. It excludes geometry, materials and physics by name, and the words geometry and physics each appear exactly once in the whole document, in the sentence that excludes them. Two things a standards audience should carry away. First, the only schemas the core normatively defines are colour and collections, so there is no agreed way to say how big something is or which way is up. Second, the document is published under a licence that forbids distributing derivative works, which constrains how another standards body can build on it. Cite version 1.0.1 and the date: there is no 1.0.0.",
+  "coverage": [
+    {
+      "capability_id": "scene.compose",
+      "level": "native",
+      "note": "This is the heart of the specification: a set of composition operators with a defined strength order, so several files can contribute opinions about the same object and the result is predictable.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Composition",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The shorthand notation for the different types (and strength order) of composition is LIVERPS."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "native",
+      "note": "Defines the layer document model, the path grammar that names every object, and the algorithm that builds a composed scene graph from a root file.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Composition, Scope",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "the process of combining opinions for a prim path in multiple layers via a set of composition operators which themselves are specified in scene description"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "native",
+      "note": "Three formats are normative: a text form, a binary form, and a package that is a restricted zip file. The package rules are unusually specific, including no compression, no encryption, 32-bit zip only, and 64-byte alignment.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Core File Formats",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "USD Packages must be stored without compression and must be stored without encryption."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "native",
+      "note": "A core metadata field marks a location as shareable, so the composition engine builds it once and reuses it. This is sharing at the scene-description level, not the drawing level; nothing here maps to graphics hardware.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Document Data Model, Core Metadata Fields",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "If true, composition and population behaviors at this location may be shared and ignore descendant opinions."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "native",
+      "note": "A three-part version scheme with a stated rule for backward reading, and an explicit escape hatch: a reader may refuse an older file whose version is known to carry a security risk.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Core File Formats, Compatibility with Document Versions",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "All readers, regardless of format, must be able to read all previous versions within the same MAJOR version"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "partial",
+      "note": "Values can vary over time through time samples and through splines, with held and linear interpolation named at the stage level. What is missing is agreement on the result: the specification says outright that interpolation methods are not subject to specification or compliance checking, so two conforming readers may return different values between keys. There are no animation clips, no skeletons and no retargeting; those sit in the unpublished domain specifications.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Compliance Rubric",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Although interpolant methods such as linear interpolation, bezier evaluation and others are common and allowable, they are not subject to specification or compliance validation at the time of this writing."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "partial",
+      "note": "The specification defines what conformance means and names three required tests. What is missing is the tests themselves: the document says they will be made available, in the future tense, and points at the alliance website.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Compliance Rubric",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Conformance tests will be made available at [aousd.org](https://aousd.org/)."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "none",
+      "note": "Named in the exclusion list. The word geometry occurs exactly once in the whole document, in that list. A geometry working group exists; its specification is not among the alliance's published specifications.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Foreword, Domain Specific Specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD, such as: - Geometry - Materials - Physics etc…"
+        },
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/README.md",
+          "title": "AOUSD Specifications repository, Available Specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "| Core | 1.0.1 | 2025-12-12 |"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "none",
+      "note": "Named in the exclusion list. A materials working group exists and has published nothing. The only schemas the core normatively defines are colour and collections.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Schemas, Core Schema Types",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "These schemas include those for [color](#color) and [collections](#collections)."
+        },
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/README.md",
+          "title": "AOUSD Specifications repository, Available Specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "| Core | 1.0.1 | 2025-12-12 |"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "none",
+      "note": "Named in the exclusion list. The word physics occurs exactly once in the whole document, in that list. A physics working group exists and its specification is not published. Do not repeat any ratification date for it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Foreword, Domain Specific Specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD, such as: - Geometry - Materials - Physics etc…"
+        },
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/README.md",
+          "title": "AOUSD Specifications repository, Available Specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "## Available Specifications"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "none",
+      "note": "The ratified text defines no unit of length and no way to declare one. The metres-per-unit field does appear in the document, but only inside example code blocks demonstrating a different feature, so it carries no normative force. Two conforming files can disagree about scale with nothing in the standard to settle it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Value Resolution examples",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "#usda 1.0 ( defaultPrim = \"Geo\" metersPerUnit = 1 upAxis = \"Z\" )"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "none",
+      "note": "No handedness, no up axis and no transform stack in the ratified text. The up-axis field appears only inside example code. Transform semantics belong to the unpublished geometry specification.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Foreword, Domain Specific Specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD, such as: - Geometry - Materials - Physics etc…"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "none",
+      "note": "There is no field for what a recipient may do with the content. The only licence text in the document is the copyright agreement covering the specification itself, which is a no-derivatives licence: you may copy and redistribute it, but you may not distribute a derivative work.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Copyright License Agreement",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "if you create a derivative work from the deliverable, you may not distribute that work"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "none",
+      "note": "The word provenance does not occur in the document, and nothing signs a layer or a package. A package is a plain uncompressed zip file that anyone can rewrite, since the format forbids encryption outright.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Core File Formats, Package",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "USD Packages must be stored without compression and must be stored without encryption."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "none",
+      "note": "A scene can pull in files from arbitrary addresses, and the standard's whole treatment of the risk is a pointer to the security sections of the general web address specifications. There is no limit on what may be fetched, no allowed-list mechanism and no isolation model. This matters for anyone who plans to let strangers publish content.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Resource Interface, Security Considerations",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Refer to Section 7 of RFC 3986 and Section 8 of RFC 3987 for more information about security considerations for URI and IRI identifiers respectively."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "none",
+      "note": "Resources are named by address and resolved to a location, by design. There is no way to refer to content by its hash, so a scene cannot say which exact bytes it meant. The document's uses of the word hash are all about comparing values in memory.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Resource Interface",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Resolving Identifiers to Locations"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "out-of-scope",
+      "note": "A data representation with no execution model. It describes what a scene contains, never what it does.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Foreword",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This document provides a formal specification of the core of the Universal Scene Description (USD) data representation, and scene construction algorithms."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "out-of-scope",
+      "note": "Nothing about drawing. The specification stops at producing a composed view of the scene data.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Foreword",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This core specification describes the make-up of a scene description document, how to read its associated file formats and compose the scene description elements into a final stage."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "The ratified OpenUSD Core Specification is a composition system, and its own foreword says the domain schemas are elsewhere, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Foreword, Domain Specific Specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD, such as: - Geometry - Materials - Physics etc…"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "The ratified OpenUSD Core Specification is a composition system, and its own foreword says the domain schemas are elsewhere, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Foreword, Domain Specific Specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD, such as: - Geometry - Materials - Physics etc…"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "The ratified OpenUSD Core Specification is a composition system, and its own foreword says the domain schemas are elsewhere, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Foreword, Domain Specific Specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD, such as: - Geometry - Materials - Physics etc…"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "none",
+      "note": "No splat schema is in the ratified core, and the core is composition rather than representation. This matters because two device platforms on this map name USD as a container an application might parse splats out of, which is a claim about their own parsers, not about this standard.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Foreword, Domain Specific Specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD, such as: - Geometry - Materials - Physics etc…"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "out-of-scope",
+      "note": "The ratified OpenUSD Core Specification is a composition system, and its own foreword says the domain schemas are elsewhere, and it delivers no captured scene, progressively by region and detail or otherwise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Foreword, Domain Specific Specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD, such as: - Geometry - Materials - Physics etc…"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "The ratified OpenUSD Core Specification is a composition system, and its own foreword says the domain schemas are elsewhere, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Foreword, Domain Specific Specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD, such as: - Geometry - Materials - Physics etc…"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "none",
+      "note": "Points are a geometry schema, and the ratified core text deliberately stops before geometry. There is nothing in the specification that defines how a set of points with attributes is encoded or compressed; a reader who scores this from the wider ecosystem is scoring something the standard does not yet contain.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Foreword, Domain Specific Specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD, such as: - Geometry - Materials - Physics etc…"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "The ratified OpenUSD Core Specification is a composition system, and its own foreword says the domain schemas are elsewhere, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Foreword, Domain Specific Specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD, such as: - Geometry - Materials - Physics etc…"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "out-of-scope",
+      "note": "The ratified OpenUSD Core Specification is a composition system, and its own foreword says the domain schemas are elsewhere, and it produces no image from a viewing position that no capture camera occupied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Foreword, Domain Specific Specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD, such as: - Geometry - Materials - Physics etc…"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "The ratified OpenUSD Core Specification is a composition system, and its own foreword says the domain schemas are elsewhere, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Foreword, Domain Specific Specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD, such as: - Geometry - Materials - Physics etc…"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "The ratified OpenUSD Core Specification is a composition system, and its own foreword says the domain schemas are elsewhere, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Foreword, Domain Specific Specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD, such as: - Geometry - Materials - Physics etc…"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "The ratified OpenUSD Core Specification is a composition system, and its own foreword says the domain schemas are elsewhere, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Foreword, Domain Specific Specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD, such as: - Geometry - Materials - Physics etc…"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "The ratified OpenUSD Core Specification is a composition system, and its own foreword says the domain schemas are elsewhere, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Foreword, Domain Specific Specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD, such as: - Geometry - Materials - Physics etc…"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "The ratified OpenUSD Core Specification is a composition system, and its own foreword says the domain schemas are elsewhere, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Foreword, Domain Specific Specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD, such as: - Geometry - Materials - Physics etc…"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "The ratified OpenUSD Core Specification is a composition system, and its own foreword says the domain schemas are elsewhere, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Foreword, Domain Specific Specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD, such as: - Geometry - Materials - Physics etc…"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "The ratified OpenUSD Core Specification is a composition system, and its own foreword says the domain schemas are elsewhere, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Foreword, Domain Specific Specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD, such as: - Geometry - Materials - Physics etc…"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "out-of-scope",
+      "note": "The ratified OpenUSD Core Specification is a composition system, and its own foreword says the domain schemas are elsewhere, and it carries no full 360-degree view of a place as an image with its projection stated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Foreword, Domain Specific Specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD, such as: - Geometry - Materials - Physics etc…"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "out-of-scope",
+      "note": "A formal specification of a scene description data representation and how its layers compose. It is about authored scenes, not about a device reading the space around it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Foreword",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This document provides a formal specification of the core of the Universal Scene Description (USD) data representation, and scene construction algorithms."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "The core specification deliberately leaves domain uses such as geometry and materials to other documents, and carries no vocabulary for real-world surfaces.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Foreword",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This document provides a formal specification of the core of the Universal Scene Description (USD) data representation, and scene construction algorithms."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "out-of-scope",
+      "note": "No depth image, no camera intrinsics for one and no metric depth channel appears in the core.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Foreword",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This document provides a formal specification of the core of the Universal Scene Description (USD) data representation, and scene construction algorithms."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "Composition in USD means combining layers of scene description, not combining virtual content with a real view.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/aousd/specifications-public/blob/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1, Foreword",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This document provides a formal specification of the core of the Universal Scene Description (USD) data representation, and scene construction algorithms."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "out-of-scope",
+      "note": "OpenUSD authors, composes and streams scene description. What a headset does with the camera view of the room when it draws that scene is the renderer's business and is nowhere in USD.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.face",
+      "level": "out-of-scope",
+      "note": "USD has no input or sensor model. It can store the shapes a face makes, which is scene.morph, but not a live reading of the person in the room.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "none",
+      "note": "USD is a scene description with schema domains for geometry, shading, physics, lighting and composition, and none of them declares walkable surface, bounds or spawn points. A place delivered as USD arrives without saying where a body may stand or where a visitor lands.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/PixarAnimationStudios/OpenUSD/release/README.md",
+          "title": "OpenUSD repository README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Universal Scene Description (USD) is an efficient, scalable system for authoring, reading, and streaming time-sampled scene description for interchange between graphics applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "out-of-scope",
+      "note": "USD carries no published units of logic. Prim paths name things inside one composed stage, and asset resolution finds files; neither is a permanent public address for code.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "out-of-scope",
+      "note": "Nothing is published to an audience through USD itself, so there is no point in it where a review could stand or be recorded.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "USD scenes sit in their own coordinates. Declaring a map of a real place, its version and its transform to another map is a positioning service's job, not a scene description's.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "A USD stage is content, not a service bound to a place; it states no geographic area of application in any stated frame.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.extension",
+      "level": "native",
+      "note": "Core 1.0.1 defines metadata extension fields and schema extensibility, including limits on required extension data; handling unknown extension fields is explicitly implementation-defined.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Extension fields must not be [required](#required-fields) to consume a layer’s contents."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.color",
+      "level": "partial",
+      "note": "Core colorSpace metadata and ColorSpaceDefinitionAPI identify source color spaces and their inheritance; render-settings output color remains outside this core specification.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Defines the color space applicable to the spec for which the value is assigned."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.metadata",
+      "level": "native",
+      "note": "Core metadata fields and typed dictionaries attach structured descriptive properties to scene specs and survive the defined composition and interchange model.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Lightweight name and typed value scene description data."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenUSD Core 1.0.1 specifies composed scene data and its interchange. This row requires evidence and assurance information accompanying a claim, enabling the relying party to assess how the claim was established. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "the representation of the data model in formats for interchange"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenUSD Core 1.0.1 specifies composed scene data and its interchange. This row requires declaring the vocabulary, types, and validation schemas needed to interpret and check the structure of a claim. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "the representation of the data model in formats for interchange"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenUSD Core 1.0.1 specifies composed scene data and its interchange. This row requires pairwise identifiers and presentation mechanisms that reduce correlation across relationships, with their remaining correlation risks stated. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "the representation of the data model in formats for interchange"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.encryption",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenUSD Core 1.0.1 specifies composed scene data and its interchange. This row requires identifying recipient key material and algorithms that permit confidential communication or encrypted content for an intended subject. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "the representation of the data model in formats for interchange"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.key-lifecycle",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenUSD Core 1.0.1 specifies composed scene data and its interchange. This row requires rules for changing, revoking, or recovering identity-control keys and for discovering the applicable verification material. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "the representation of the data model in formats for interchange"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenUSD Core 1.0.1 specifies composed scene data and its interchange. This row requires a defined mechanism to discover the suspension, revocation, or other status of a credential after issuance. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "the representation of the data model in formats for interchange"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenUSD Core 1.0.1 specifies composed scene data and its interchange. This row requires runtime estimates of environmental illumination made available to content for lighting or reflections. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "the representation of the data model in formats for interchange"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenUSD Core 1.0.1 specifies composed scene data and its interchange. This row requires detecting recognized physical markers or images and reporting their tracked pose relative to a runtime reference space. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "the representation of the data model in formats for interchange"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.resolve",
+      "level": "native",
+      "note": "Core resource resolution distinguishes anchored identifiers from search paths, normalizes references and dispatches to a protocol; non-anchored search paths are explicitly less portable.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Apply relative resolution if necessary (RFC 3986 Section 5.2)"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "partial",
+      "note": "Core time samples and interpolation can carry time-varying vector/quaternion data; the core alone does not assign those attributes the pose/frame semantics of a specific scene schema.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Attributes can contain data that can vary over time."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.text",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenUSD Core 1.0.1 specifies composed scene data and its interchange. This row requires receiving character or string entry through a defined input interface, separate from interpreting physical controller actions. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "the representation of the data model in formats for interchange"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenUSD Core 1.0.1 specifies composed scene data and its interchange. This row requires submitting distinct shaped image layers to a display compositor with their placement and composition properties. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "the representation of the data model in formats for interchange"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.collection",
+      "level": "native",
+      "note": "CollectionAPI defines named collections through included/excluded relationships, expansion rules and membership expressions; consumers can consistently resolve their scene-object membership.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "different instance names referring to different sets of included / excluded objects."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenUSD Core 1.0.1 specifies composed scene data and its interchange. This row requires runtime-reported physical play-area bounds and floor-relative reference information available to an application. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "the representation of the data model in formats for interchange"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenUSD Core 1.0.1 specifies composed scene data and its interchange. This row requires interchanging identified spatial zones, typed events scoped to them, and summaries with defined spatial and temporal meaning. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "the representation of the data model in formats for interchange"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenUSD Core 1.0.1 specifies composed scene data and its interchange. This row requires a machine-readable account of a recipient's evaluation and action, with any signature or integrity proof explicitly identified. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "the representation of the data model in formats for interchange"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenUSD Core 1.0.1 specifies composed scene data and its interchange. This row requires a destination's pre-arrival approval or refusal response, including any validity limit and optional explanatory information. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "the representation of the data model in formats for interchange"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenUSD Core 1.0.1 specifies composed scene data and its interchange. This row requires dispatching programmable non-raster GPU workloads against resources available through the graphics-compute API. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "the representation of the data model in formats for interchange"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.frame-timing",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenUSD Core 1.0.1 specifies composed scene data and its interchange. This row requires coordinating frame submission with predicted display timing and the view poses associated with that time. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "the representation of the data model in formats for interchange"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.variant",
+      "level": "native",
+      "note": "Core variant sets name authored alternatives, and the variant-selection composition arc determines the selected opinions in the resulting scene.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "A named group of Variants."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenUSD Core 1.0.1 specifies composed scene data and its interchange. This row requires asking a sensing runtime for ray intersections with its estimate of physical surroundings and receiving hit poses. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "the representation of the data model in formats for interchange"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.privacy",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenUSD Core 1.0.1 specifies composed scene data and its interchange. This row requires sensed-data disclosure controls such as spatial coarsening, payload use/retention declarations, and restricted or pseudonymous pose publication. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "the representation of the data model in formats for interchange"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenUSD Core 1.0.1 specifies composed scene data and its interchange. This row requires receiving typed musical instrument events with channel, note or control identifiers and values through a documented device or recorded-event input interface. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "the representation of the data model in formats for interchange"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenUSD Core 1.0.1 specifies composed scene data and its interchange. This row requires reconstructing a radiance field or Gaussian representation from observed images and camera information, including optimization controls and a trained scene usable for subsequent view synthesis. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "the representation of the data model in formats for interchange"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.objectgen",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: OpenUSD Core 1.0.1 specifies composed scene data and its interchange. This row requires producing an individual three-dimensional object from a text or image prompt, with geometry or another renderable representation available for placement in a separately authored scene. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "the representation of the data model in formats for interchange"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "out-of-scope",
+      "note": "UI-region layout requires a domain schema and display behavior; AOUSD Core 1.0.1 defines the underlying composition/data model while excluding domain-specific rendering specifications. Required function: Layout and presentation of two-dimensional interface regions, including their size, alignment, and relationship to a display or scene.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "out-of-scope",
+      "note": "Picking requires ray/scene-geometry intersection and a runtime result; the ratified USD core data model does not define that renderer/input function. Required function: Picking scene content from pointing input and reporting the intersected object or geometry to the application.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.bounds",
+      "level": "out-of-scope",
+      "note": "A spatial volume/traversal contract depends on geometry schema semantics, expressly outside the frozen core specification; OpenUSD UsdGeom implementation evidence belongs to that separate layer. Required function: Bounding volumes associated with scene content, organized for spatial rejection, traversal, or selection before detailed geometry is loaded.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "out-of-scope",
+      "note": "Node transform constraints require spatial node types and evaluation rules; these are domain/runtime semantics outside the ratified core data/composition contract. Required function: Authored runtime relationships that constrain one node's transform using another node and defined evaluation rules.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "out-of-scope",
+      "note": "Timed audiovisual scene content requires media embedding and presentation synchronization semantics beyond generic time-sampled core values. Required function: Referencing timed audiovisual media inside a scene and defining the synchronization needed to present it as scene content.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "out-of-scope",
+      "note": "An exchanged audio synthesis model requires an audio schema and generator semantics, outside the frozen core specification's domain. Required function: Generating audio during playback from an exchanged synthesis model, supporting data, and changing control parameters.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "out-of-scope",
+      "note": "The core defines abstract prim hierarchy and values, while interoperable pose types, reference frames and spatial transform composition need a geometry-domain specification. Required function: Interchanging linked poses and transforms as chains or graphs so related frames can be reconstructed consistently.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "out-of-scope",
+      "note": "The underlying core data model can store shader references but does not define shader source syntax or execution; those belong to shading-domain specifications. Required function: A specified shader source language and execution semantics enabling implementations to consume the same shader program.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.parametric",
+      "level": "out-of-scope",
+      "note": "Mathematical curve/surface representation and tessellation require a geometry schema expressly beyond the frozen core data model. Required function: Carrying parametric curves and surfaces in mathematical form so a receiver can evaluate or tessellate them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "out-of-scope",
+      "note": "Emitter and particle-simulation exchange requires a domain schema and evaluation model rather than the core's generic composed data. Required function: Exchanging particle-system emitters and simulation/rendering parameters that a receiving runtime evaluates.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.style",
+      "level": "out-of-scope",
+      "note": "Metadata-driven visibility/color rules require display-domain selector and application semantics, beyond core composition/metadata primitives. Required function: Separately expressed styling rules that select feature visibility, color, or other supported display properties from content metadata.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.voxel",
+      "level": "out-of-scope",
+      "note": "Cell-volume properties and spatial update semantics require a volumetric domain representation outside the ratified core model. Required function: Interchanging spatial cell volumes and their properties, including updates, as a scene representation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/aousd/specifications-public/main/core/1.0.1/core_spec.md",
+          "title": "USD Core Specification 1.0.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "It does not describe domain specific uses of USD"
+        }
+      ]
+    }
+  ]
+}

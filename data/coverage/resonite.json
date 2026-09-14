@@ -1,0 +1,2894 @@
+{
+  "subject_id": "resonite",
+  "summary": "Resonite is a social virtual world platform built on a live, fully reflective data model, where a wristwatch and a whole world are the same kind of object and both can be taken apart by hand while other people are standing in them. It reads more file formats than anything else in this map, covering dozens of model, image, audio, video, motion-capture, point-cloud and document types, and writes almost none of them back, so the traffic runs strongly one way; the model export wizard offers only Collada and a plain object format, the glTF transfer format it imports most cleanly is never written, and exported skinned meshes lose their bone weights and shape keys. Two things it does that almost nobody else here does deserve a standards reader's attention: every asset is named by a hash of its own bytes and fetched over an ordinary web address, which is a real shipped content-addressing system rather than an intention, and every person has a cloud inventory that follows them into any world and spawns items there. Its visual language, ProtoFlux, genuinely travels inside the exported object alongside the hierarchy, the components and the bones, which is the portable-behaviour property many standards are reaching for, but it travels only to another Resonite, because the engine, the mesh representation and the session protocol are all closed and unspecified. Four traps: the coordinate frame is left-handed with Y up, the opposite of the transfer format it reads best; the widely adopted portable avatar format VRM is explicitly unsupported on import and cannot be written at all; facial expressions use about ninety names of Resonite's own instead of either open set, while mouth shapes for speech do follow the shared fifteen-entry list; and Resonite does not run on OpenXR, the immersive session standard, targeting SteamVR and vendor runtimes instead. Content-addressed links are also unauthenticated, so holding a hash is holding the content.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "native",
+      "note": "FrooxEngine does not rasterize itself. It runs as a separate .NET process and drives a Unity renderer over inter-process communication and shared memory. The renderer is deliberately replaceable and its source is published under MIT, so a third party can in principle write a substitute renderer against the published IPC contract — but the contract only serves Resonite's own engine, it is not a general rendering standard.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Yellow-Dog-Man/Renderite",
+          "title": "Renderite README",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Resonite uses a unique multi-process architecture, where the majority of Resonite is a fully custom engine running with a modern .NET 10 runtime. The engine communicates with the Unity Renderer process via IPC (inter process communication) and shared memory"
+        },
+        {
+          "url": "https://github.com/Yellow-Dog-Man/Renderite.Unity.Renderer",
+          "title": "Renderite.Unity.Renderer README",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This architecture allows for much higher performance and properly isolates the renderer from the rest of the engine, allowing it to be replaced in the future."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "partial",
+      "note": "Direct3D 11 through Unity, stated plainly in the optimisation documentation. That means Windows-first, and no Vulkan or Metal path is documented. Nothing about the graphics interface is exposed to creators — it is an implementation detail of the replaceable renderer process.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Optimization_guidelines",
+          "title": "Optimization guidelines",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Resonite currently uses Direct3D 11 for rendering in Unity."
+        },
+        {
+          "url": "https://wiki.resonite.com/Material",
+          "title": "Material",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Resonite uses many standard shaders with some custom ones requested by the community. If you want any sort of documentation, using the following link would be ideal until a more custom renderer is fleshed out."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "native",
+      "note": "Materials are first-class data-model components backed by a fixed set of built-in shaders. Custom shaders are explicitly not supported, which caps what an imported material can be reproduced as. This is a closed material set, not an exchangeable material description.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Material",
+          "title": "Material",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Resonite currently does not support custom shaders; this feature is on Resonite's roadmap once the game's rendering engine is replaced with a custom solution."
+        },
+        {
+          "url": "https://github.com/Yellow-Dog-Man/Renderite.Unity.Renderer",
+          "title": "Renderite.Unity.Renderer README",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Custom shaders will require us to move away from Unity completely - it's not possible to compile and load shaders dynamically with Unity in a reasonable way"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "partial",
+      "note": "The engine does frustum culling for rendering only; it does not cull CPU work, and there is no general level-of-detail or streaming-order system. Creators are told to build their own world culling. There is an LOD component but the documentation frames real LOD systems as future work.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Culling",
+          "title": "Culling",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Resonite currently performs a form of frustrum culling such that objects that are outside the field of view are usually not rendered."
+        },
+        {
+          "url": "https://wiki.resonite.com/Culling",
+          "title": "Culling",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This frustrum culling is only done for rendering and not for any world items, meaning that ProtoFlux and components are unaffected by this."
+        },
+        {
+          "url": "https://wiki.resonite.com/Optimization_guidelines",
+          "title": "Optimization guidelines",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It is recommended to set up some sort of additional world-based culling if your world is large and complex."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "native",
+      "note": "Gaussian splats are a real shipped feature with both an importer and an exporter, and this is the ONE genuinely round-trippable open 3D data path in Resonite. Both PLY and Niantic's SPZ are read and written; PLY can be recompressed to SPZ on import. Rendering is based on a published open-source Unity splat renderer. Radiance fields other than Gaussian splatting are not documented — do not read NeRF support into this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Beta_2025.3.4.1407",
+          "title": "release notes",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Added initial support for Gaussian Splat importing & rendering\" and \"PLY & SPZ file formats are supported"
+        },
+        {
+          "url": "https://wiki.resonite.com/Beta_2025.3.4.1407",
+          "title": "release notes",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Added GaussianSplatExportable to allow exporting gaussian splats from Resonite\" and \"Exporting both in PLY & SPZ is supported"
+        },
+        {
+          "url": "https://wiki.resonite.com/Gaussian_Splat",
+          "title": "Gaussian Splat",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A Gaussian Splat is a volumetric 3D point cloud cluster Asset that looks like a regular Mesh from a distance, but may look more fuzzy up close."
+        },
+        {
+          "url": "https://wiki.resonite.com/Gaussian_Splat_Import",
+          "title": "Gaussian Splat Import",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "These are the supported formats in Resonite: * PLY files [reading, writing]"
+        }
+      ],
+      "direction": "both"
+    },
+    {
+      "capability_id": "render.text",
+      "level": "native",
+      "note": "Text is a component taking an imported font set, with size in display units, auto-sizing on both axes and rich-text formatting tags. Fonts import from TTF, OTF, TTC, OTC and WOFF. Yellow Dog Man maintains forks of msdfgen and SharpFont, which strongly suggests signed-distance-field rendering, but no Resonite documentation states that — treat the underlying technique as inferred from the dependency list, not documented.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Component:Text",
+          "title": "Component:Text",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Size | The size to render text at, in display units"
+        },
+        {
+          "url": "https://wiki.resonite.com/Supported_Formats",
+          "title": "Supported Formats",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "= Font = Fonts are supported for import. ... * .ttf * .otf * .ttc * .otc * .woff"
+        },
+        {
+          "url": "https://github.com/Yellow-Dog-Man/Msdfgen.NET",
+          "title": "Msdfgen.NET",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": ".NET wrapper for custom fork of the msdfgen library using P/Invoke"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "native",
+      "note": "Resonite's scene graph is a tree of Slots holding Components, and everything in it — down to individual fields — is a data-model element with a reference ID that can be saved, loaded and synchronized. This is a genuinely uniform reflective model, but it is entirely Resonite's own; there is no published mapping onto any external scene-graph standard.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Data_model",
+          "title": "Data model",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The data model allows for change detection, value synchronization, unified structure, and serialization of any and all types that FrooxEngine encounters."
+        },
+        {
+          "url": "https://wiki.resonite.com/Data_model",
+          "title": "Data model",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Workers are, in essence, containers for sync elements and other workers to provide a specific, individual task for the engine. Examples of workers include slots, components, sub-classes of components, and streams."
+        },
+        {
+          "url": "https://wiki.resonite.com/World",
+          "title": "World",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A world is made up of a single Slot -- the Root slot -- and metadata, like the name and owner of the world."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "conflicts",
+      "note": "Resonite uses a LEFT-handed, Y-up, +Z-forward frame, matching Unity. glTF — the format Resonite imports most cleanly — is right-handed with -Z forward, so every transform, rotation sign and winding order has to be flipped on the way in and on the way out. Rotations are quaternions internally. Positions, rotations and scales live on every slot whether or not it renders anything.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Rotation",
+          "title": "Rotation",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Resonite uses a left-handed coordinate system. Rotation about any axis is, therefore, positive in the clockwise direction, and negative in the counterclockwise direction."
+        },
+        {
+          "url": "https://wiki.resonite.com/Slot_transforms",
+          "title": "Slot transforms",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This makes Resonite's coordinate system follow the same convention as Unity."
+        },
+        {
+          "url": "https://wiki.resonite.com/Slot_transforms",
+          "title": "Slot transforms",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Forwards |  | Positive Z (+Z) |  | [0; 0; 1]"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "partial",
+      "note": "Resonite's own container is `.resonitepackage`, a ZIP holding record files plus an Assets folder of SHA256-named blobs. It is documented, and it is explicitly a distribution format — but the docs state outright that compatibility with Unity packages and with other VR platforms is a NON-goal, and that it is not meant to be produced by third-party tools. So it carries Resonite content out of Resonite for backup and re-import into Resonite, and nothing else. The raw data-model file is `.brson`: Brotli-compressed BSON, no assets embedded.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/ResonitePackage",
+          "title": "ResonitePackage",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Allow creators to share creations outside of Resonite"
+        },
+        {
+          "url": "https://wiki.resonite.com/ResonitePackage",
+          "title": "ResonitePackage",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Compatibility with Unity/Unitypackage"
+        },
+        {
+          "url": "https://wiki.resonite.com/Supported_Formats",
+          "title": "Supported Formats",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "FrooxEngine data tree files are compressed with Brotli and are serialized in the BRSON format. These files do not contain any referenced assets such as meshes and textures."
+        }
+      ],
+      "direction": "both"
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "conflicts",
+      "note": "Every mesh that enters Resonite is converted to Resonite's own MeshX representation and the link to the source file is dropped. MeshX has no published specification and the code that reads and writes it is closed — `Elements.Assets` and `FrooxEngine` are not public repositories. On the way out, the export wizard offers Collada and OBJ only; FBX is listed as currently disabled and glTF is not offered at all. Exported skinned meshes lose bone weights and shape keys, which Resonite's own docs concede. Draco is explicitly unsupported on import, which is also why VRM 1.x cannot be loaded, and meshopt appears nowhere in the documentation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/3D_Model_Import",
+          "title": "3D Model Import",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The job of the importer is to read the input format and translate it into Resonite's native MeshX format for representing mesh data"
+        },
+        {
+          "url": "https://wiki.resonite.com/3D_Model_Import",
+          "title": "3D Model Import",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Once the import is complete, the imported object isn't dependent on the source file anymore and exists as any other Resonite object."
+        },
+        {
+          "url": "https://wiki.resonite.com/Default_file_formats",
+          "title": "Default file formats",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "All procedural meshes bake to MeshX. Additionally, all meshes imported into Resonite will be automatically converted to MeshX."
+        },
+        {
+          "url": "https://wiki.resonite.com/3D_Model_Export",
+          "title": "3D Model Export",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Autodesk ( .fbx ) (currently disabled) / Collada ( .dae ) / Wavefront Object ( .obj )"
+        },
+        {
+          "url": "https://wiki.resonite.com/Guide_for_VRChat_users",
+          "title": "Guide for VRChat users",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Skinned meshes currently don't export in a usable condition, but this is considered a missing feature rather than deliberate protection."
+        },
+        {
+          "url": "https://wiki.resonite.com/Avatar_Importing_Guide",
+          "title": "Avatar Importing Guide",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Draco mesh compression extension is not supported. You may have to re-export without Compression setting from Blender."
+        },
+        {
+          "url": "https://github.com/Yellow-Dog-Man/Resonite-Issues/issues/2778",
+          "title": "Issue 2778 (open, no team reply)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Implement support for glTF as an interchange format (import/export, Khronos/OMI extensions)"
+        }
+      ],
+      "direction": "both"
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "native",
+      "note": "Image import goes through FreeImage and covers a very wide format list, and the same library is used for texture export, so most common image formats round-trip. Internally Resonite re-encodes: lossless WebP for destructive edits on standard images, EXR for high-bit-depth. GPU texture compression is done with AMD Compressonator and Crunch forks. DDS is read-only. KTX2 / Basis are not documented.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Image_import",
+          "title": "Image import",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Resonite' image import support is primarily based on the open source FreeImage library, which supports 33 different image formats."
+        },
+        {
+          "url": "https://wiki.resonite.com/Image_import",
+          "title": "Image import",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Resonite supports using FreeImage to export any textures as well in the supported formats"
+        },
+        {
+          "url": "https://wiki.resonite.com/Image_import",
+          "title": "Image import",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "DDS files [reading, allows custom mipmaps]"
+        },
+        {
+          "url": "https://wiki.resonite.com/Default_file_formats",
+          "title": "Default file formats",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Destructive operations on images, such as resizing an image, will encode the image as a lossless webp."
+        },
+        {
+          "url": "https://wiki.resonite.com/Texture_compression_formats",
+          "title": "Texture compression formats",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Textures imported into Resonite will have BCn compression to them applied by default."
+        },
+        {
+          "url": "https://wiki.resonite.com/Texture_compression_formats",
+          "title": "Texture compression formats",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This format is exclusive to Resonite."
+        },
+        {
+          "url": "https://wiki.resonite.com/Texture_compression_formats",
+          "title": "Texture compression formats",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "While the option is available, these formats cannot be utilized as mobile platforms are currently not supported by Resonite."
+        }
+      ],
+      "direction": "both"
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "partial",
+      "note": "There is no material exchange format. Because model formats disagree about PBR, Resonite works around it with a filename convention: put textures next to the model named `_albedo`, `_normal`, `_metallic` and so on, and the importer wires them into a material. That is a local heuristic, not an interchange mechanism, and it only works for single-material models each in their own folder. Nothing carries material definitions back out.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/3D_Model_Import",
+          "title": "3D Model Import",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Because there's no well supported standard for PBR materials in model files, Resonite's model importer allows using a naming convention to automatically map texture files to the material based on the file naming."
+        },
+        {
+          "url": "https://wiki.resonite.com/3D_Model_Import",
+          "title": "3D Model Import",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Works only with single-material models for now"
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "partial",
+      "note": "Resonite is metre-scaled, and says so — but only in one sentence, on a community-written avatar guide, not on any core reference page. The importer does not normalise scale for you: the user is told to export at the correct unit scale from their authoring tool. So the convention exists and matches glTF's metre convention, but it is not stated anywhere authoritative enough to build against.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Avatar_Importing_Guide",
+          "title": "Avatar Importing Guide",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Resonite uses meter scale."
+        },
+        {
+          "url": "https://wiki.resonite.com/Avatar_Importing_Guide",
+          "title": "Avatar Importing Guide",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "ideal to export the model with the correct Unit scale. Some tools like Blender allow you to adjust this Unit scale for the project as well as on export."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "none",
+      "note": "Assets carry no licence or rights metadata. The wiki's own guidance on protecting your work says in-app obfuscation is easy to defeat, and points at two unimplemented GitHub roadmap issues — \"Hard Permissions\" and \"Object ID / Licenses\" — as the future answer. So this is openly acknowledged as missing.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Things_to_avoid",
+          "title": "Things to avoid",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "While, this may seem like a way to protect your creation it doesn't do much for a knowledgeable user who has Builder permissions. Regardless of your methodology any in-app obfuscation is relatively easy to break in this manner."
+        },
+        {
+          "url": "https://wiki.resonite.com/Things_to_avoid",
+          "title": "Things to avoid",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Object ID / Licenses (#626) - Protects assets, avatars, items, worlds etc. from being saved."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "partial",
+      "note": "Cloud records record an owner and a record ID, so there is an authorship claim attached to anything saved to the cloud. It is an account-level ownership field on the operator's own database, not a signed provenance record, and it does not survive export into a `.resonitepackage` in any verifiable form.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Record",
+          "title": "Record",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Records are identified by an owner and record ID. The owner can be a user or group."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.determinism",
+      "level": "none",
+      "note": "Resonite makes no determinism claim. The whole networking design removes the need for it: one machine is the host and its data model is replicated to everyone else, so clients do not independently simulate and do not need to agree bit-for-bit.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Architecture_Overview",
+          "title": "Architecture Overview",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "When a user starts a new session for a world, they become the host, with other users connecting to them as clients."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "native",
+      "note": "This is Resonite's single most distinctive property. Replication is not something a developer opts into per object — the data-model primitives are built so that everything in them replicates and persists automatically, over a binary protocol. Fields marked as \"driven\" are the documented exception and stay local. It is a genuine full-data-model sync, and it is entirely proprietary: nothing outside Resonite speaks it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Architecture_Overview",
+          "title": "Architecture Overview",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Resonite is built on a novel engine architecture, which makes real-time networking, persistence and interoperability a solid guarantee without any extra work involved."
+        },
+        {
+          "url": "https://wiki.resonite.com/Architecture_Overview",
+          "title": "Architecture Overview",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "At the core are various programming primitives, which are equivalents of variables, references, arrays, dictionaries, trees and other common building blocks, but designed so they can be automatically replicated over network or persisted."
+        },
+        {
+          "url": "https://wiki.resonite.com/Architecture_Overview",
+          "title": "Architecture Overview",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Real-time replication uses a highly efficient binary protocol, designed to save processing and memory resources as well as network bandwidth."
+        },
+        {
+          "url": "https://wiki.resonite.com/Data_model",
+          "title": "Data model",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "the value of a driven field will not be synchronized across the network. This allows for per-user values or local calculations of things that would otherwise be expensive to network."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "partial",
+      "note": "There is a synchronized world time available to in-world scripting, exposed through a component that outputs current world time and through ProtoFlux nodes. It is a session-local clock for ordering in-world events, not a cross-operator time standard.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/World_Creation_Hub",
+          "title": "World Creation Hub",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Component:AuthorityTimeBase: A component used to control the world time."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "partial",
+      "note": "Resonite has a real, documented, human-readable addressing scheme for saved content: `resrec:///[OWNER]/[RECORD_ID]` or `resrec:///[OWNER]/[PATH/TO/RECORD]`. It is registered as an operating-system protocol handler so a link in a browser opens the item in game, and public records resolve over the HTTP API without authentication. It resolves only against Resonite's cloud, so it names places and things inside one operator's namespace.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Record",
+          "title": "Record",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "resrec:///[OWNER]/[RECORD_ID] identifies a record by its owner and ID."
+        },
+        {
+          "url": "https://wiki.resonite.com/Record",
+          "title": "Record",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "These links are also associated with Resonite on the operating system level, so clicking a recrec:/// URL in a browser will spawn out the item in-game."
+        },
+        {
+          "url": "https://wiki.resonite.com/Record",
+          "title": "Record",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Records may be accessed externally via the API. Records that are public can be accessed without authorization, while records that are private require appropriate authorization to access."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "partial",
+      "note": "In-world programming is ProtoFlux only. There is also a documented C# plugin path loaded with a `-LoadAssembly` command-line argument, but the docs are blunt that a plugin touching the data model makes your session unjoinable for anyone without the identical plugin, and there is no distribution system. So plugins are a local extension mechanism, not a portable scripting runtime.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Plugins",
+          "title": "Plugins",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A plugin is a compiled Assembly / DLL written in C# that can be loaded into Resonite at runtime with a launch argument."
+        },
+        {
+          "url": "https://wiki.resonite.com/Plugins",
+          "title": "Plugins",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "If you use plugins that modify the Data model, other players will not be able to join sessions you host with them active, unless they have the same version of each applicable plugin."
+        },
+        {
+          "url": "https://wiki.resonite.com/Plugins",
+          "title": "Plugins",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "There is no built-in distribution system. You are in charge of distribution"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "partial",
+      "note": "There is no engine-level sandbox with limits. What exists is a per-world role permission system expressed as components in the world graph — Admin, Builder, Moderator, Guest, Spectator, each inheriting the one below, governing saving, spawning, transferring objects out, avatar swapping and streaming. Above that sits one coarse gate, \"Unsafe Mode\", which a world must opt into before experimental nodes such as writing files to disk will run, and which can be restricted by a startup-config allowlist. Below it there is nothing: no memory cap, no CPU quota, no execution timeout for guest ProtoFlux, and an impulse chain that does not yield will stall the whole engine. The documented advice for protecting content is social — do not give strangers Builder rights. Note also that Resonite's own security policy does not treat your IP address as private, because sessions are peer to peer.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Permission_system",
+          "title": "Permission system",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "There are a handful of default roles in a world. Each role includes the capabilities of the last."
+        },
+        {
+          "url": "https://wiki.resonite.com/Create_New_World",
+          "title": "Create New World",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Unsafe Mode: Allows the usage of experimental components and nodes deemed unsafe, it's recommended to not check this unless you know what you're doing!"
+        },
+        {
+          "url": "https://wiki.resonite.com/Impulses",
+          "title": "Impulses",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A non-async impulse chain will run entirely in one engine update, halting the engine for as long as it takes to complete."
+        },
+        {
+          "url": "https://wiki.resonite.com/Data_model",
+          "title": "Data model",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The data model can only function without issue when everyone in a session agrees on what the data model should be."
+        },
+        {
+          "url": "https://wiki.resonite.com/Things_to_avoid",
+          "title": "Things to avoid",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Avoid setting users as Builder in a world you want protected\" and \"Avoid spawning items in sessions with users you do not know or trust"
+        },
+        {
+          "url": "https://wiki.resonite.com/Things_to_avoid",
+          "title": "Things to avoid",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Hard Permissions (#1103) - Protects assets, items and ProtoFlux within a World."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "none",
+      "note": "There is no enforced resource budget for guest content. All the substantial documentation is advisory optimisation guidance — what makes worlds slow and how to profile it — with no engine-side cap on memory, node count, polygon count or CPU time. The only hard numeric limits documented anywhere are administrative rather than runtime: cloud storage starting at one gigabyte, 256 cloud-variable definitions per user and 8192 per group, a default of 64 audio voices, and a 128-triangle cap on custom 3D badges. Nothing bounds an imported avatar or a spawned item.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Optimization_guidelines",
+          "title": "Optimization guidelines",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "In general, slot count does not inherently matter for the performance of an object."
+        },
+        {
+          "url": "https://wiki.resonite.com/Cloud_variables",
+          "title": "Cloud variables",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A user can own up to 256 unique definitions (cloud variable paths), while a group can own 8192."
+        },
+        {
+          "url": "https://wiki.resonite.com/Badges",
+          "title": "Badges",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A maximum of 128 triangles or 256 vertices."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "native",
+      "note": "This is a real, shipped content-addressing implementation, not a design intention. Every asset is named by the SHA-256 hash of its own bytes, referenced as `resdb:///<hash>.<ext>`, de-duplicated on upload and against the user's storage quota, and fetchable over plain HTTPS at `assets.resonite.com/<hash>`. Two caveats matter: the links are unauthenticated, so possession of a hash is possession of the content; and Resonite's own release notes advise creators to prefer `resrec:///` because `resdb:///` links are not guaranteed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Asset",
+          "title": "Asset",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "computes the 'cloud signature' resdb url, which is a sha-256 hash of the asset's data"
+        },
+        {
+          "url": "https://wiki.resonite.com/Resonite_database_link",
+          "title": "Resonite database link",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Resonite database links normally start with resdb:/// and are followed by their Hash and file extension."
+        },
+        {
+          "url": "https://wiki.resonite.com/Resonite_database_link",
+          "title": "Resonite database link",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Resdb links are unauthenticated and anyone with a resdb link can access its content"
+        },
+        {
+          "url": "https://wiki.resonite.com/Asset",
+          "title": "Asset",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Assets are de-duplicated, an asset saved in your inventory multiple times will only be counted against your storage quota once."
+        },
+        {
+          "url": "https://wiki.resonite.com/API",
+          "title": "API",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Lets you access the content of Resonite Database Links where {hash} is the resdb without its protocol or file extension."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "partial",
+      "note": "`.resonitepackage` is a documented ZIP bundle carrying record metadata plus a SHA256-named asset store, and it does package a complete runnable thing — hierarchy, components, ProtoFlux, all assets. But it is only runnable inside Resonite. The docs list offline editing and third-party export as explicit non-goals.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/ResonitePackage",
+          "title": "ResonitePackage",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "All Assets (Images, Sounds, Meshes, Videos, Fonts, And others...)\" and \"Slot Hierarchies (Including Bones, Including all components, ProtoFlux)"
+        },
+        {
+          "url": "https://wiki.resonite.com/ResonitePackage",
+          "title": "ResonitePackage",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Offline Editing"
+        }
+      ],
+      "direction": "write"
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "native",
+      "note": "Three documented delivery paths: ordinary HTTP(S)/FTP URLs fetched by each client directly; Resonite's own hash-addressed asset store at `assets.resonite.com`; and `local://` assets that never touch the cloud and move inside the session between participants. Saving to the cloud rewrites `local://` references to `resdb://`.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Architecture_Overview",
+          "title": "Architecture Overview",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Assets can be stored on common http(s) and ftp servers and directly download from those by each client, or in the Resonite asset storage (resdb:// URL)."
+        },
+        {
+          "url": "https://wiki.resonite.com/Architecture_Overview",
+          "title": "Architecture Overview",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "When a new asset is first imported, a unique URL with the local:// scheme is generated. Those are transferred completely within the session itself, without going through any Resonite's cloud storage servers."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "native",
+      "note": "Long-term compatibility of saved content is a stated engine commitment, and there is machinery behind it: the open-source Elements.Data library exists partly to handle type upgrades, carrying attributes for old type names, old namespaces, old assemblies and type replacement. The stated flip side is that content built on unimplemented hacks or on bug behaviour is not covered.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Things_to_avoid",
+          "title": "Things to avoid",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "For any official features we always put great care into ensuring long term content compatibility over faster implementation, to ensure that future updates will keep your content functional."
+        },
+        {
+          "url": "https://github.com/Yellow-Dog-Man/Elements.Data",
+          "title": "Elements.Data README",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It contains a number of marking components / attributes for Resonite's data model and for handling type upgrades."
+        },
+        {
+          "url": "https://wiki.resonite.com/Things_to_avoid",
+          "title": "Things to avoid",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "those approaches will very likely break, without guaranteed prior warning and official implementation in place."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "none",
+      "note": "There is no specification to conform to and no conformance suite. The only published JSON schemas are for headless-server and client configuration files, not for the data model or any wire format, and they are generated from Resonite's source rather than being an independent spec.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Yellow-Dog-Man/JSONSchemas",
+          "title": "JSONSchemas README",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Public repository of Resonite JSON schemas that are automatically generated from Resonite's Source"
+        },
+        {
+          "url": "https://github.com/Yellow-Dog-Man/JSONSchemas",
+          "title": "JSONSchemas README",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "HeadlessConfig.schema.json - For headless configuration\" and \"Config.schema.json - For client configuration files"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "out-of-scope",
+      "note": "A wiki search for GPS, latitude, geospatial and real-world location returned zero hits. Resonite is a virtual sandbox with no Earth-referenced positioning concept.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/api.php?action=query&list=search&srsearch=GPS%20OR%20latitude%20OR%20geospatial",
+          "title": "wiki search API",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "totalhits: 0"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "out-of-scope",
+      "note": "No geospatial coordinate reference system concept exists. Resonite documents exactly two coordinate spaces, global and local, both relative to the world root.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Slot_transforms",
+          "title": "Slot transforms",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The global coordinate space is the base coordinate space and is measured relative to the world root. It can not be changed."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "out-of-scope",
+      "note": "No anchoring-to-physical-place concept is documented. Resonite is a fully virtual platform without a passthrough or world-mapping feature set.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "out-of-scope",
+      "note": "No shared or persistent physical-space anchors are documented.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.vps",
+      "level": "out-of-scope",
+      "note": "No visual positioning capability is documented. The only camera-derived 3D capability is importing pre-made Gaussian splat scans, which is content import, not localization.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "out-of-scope",
+      "note": "No tiled terrain or city streaming is documented.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.indoor",
+      "level": "out-of-scope",
+      "note": "No structured indoor-space description is documented. ---",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "conflicts",
+      "note": "There is no portable avatar description. An avatar is an ordinary Resonite slot hierarchy with Resonite components on it, saved as a record or a `.resonitepackage`. Resonite READS FBX, glTF and Blender rigs and turns them into its own structure; it cannot WRITE any avatar format back out, and VRM — the one widely adopted portable avatar standard — is explicitly not supported on import. Community tooling converts VRM to `.resonitepackage` outside the platform.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Humanoid_rig_requirements_for_IK",
+          "title": "Humanoid rig requirements for IK",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Supported Humanoid Avatar formats: * FBX * GLTF * Blender"
+        },
+        {
+          "url": "https://wiki.resonite.com/Humanoid_rig_requirements_for_IK",
+          "title": "Humanoid rig requirements for IK",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "As a reminder, we don't currently support the importing of Unity proprietary formats (.unitypackage / .asset / .mesh / .prefab) and the VRM (.vrm) files."
+        },
+        {
+          "url": "https://wiki.resonite.com/Avatar_Importing_Guide",
+          "title": "Avatar Importing Guide",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It is recommended to use the community built importing tool: ResoPon VRM and import the resulting ResonitePackage"
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "partial",
+      "note": "Resonite does not require an agreed bone standard — it guesses. On import it runs case-insensitive, substring-tolerant name heuristics (\"cheese_hips\" resolves to the hip bone) and fills in its own `BodyNode` enum, which is close to but not the same as Unity's HumanBodyBones: it adds Root, View, LeftController, RightController, palms and per-finger tips. The heuristic is what makes rigs built for other platforms work, so in practice it interoperates well, but nothing is guaranteed and there is no declared bone standard to conform to. Digitigrade legs are not supported.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Humanoid_rig_requirements_for_IK",
+          "title": "Humanoid rig requirements for IK",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "When you import a model, Resonite uses pattern matching and heuristics to figure out the layout of your Model's Bones. This means that bone names are largely case insensitive and can have additional data around the name."
+        },
+        {
+          "url": "https://wiki.resonite.com/Humanoid_rig_requirements_for_IK",
+          "title": "Humanoid rig requirements for IK",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "If you have a rigged model that's compatible with other VR Platforms such as VRChat etc, then it should work out of the box."
+        },
+        {
+          "url": "https://wiki.resonite.com/Type:BodyNode",
+          "title": "Type:BodyNode",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "BodyNode is an Enum, which refers to a part of the body within the Standard Resonite Avatar System. It has a lot of values which loosely map to a human skeleton."
+        },
+        {
+          "url": "https://wiki.resonite.com/Component:BipedRig",
+          "title": "Component:BipedRig",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This is created and assigned to by the Assimp import system that FrooxEngine uses internally, and cannot be edited in game without mods."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "conflicts",
+      "note": "Two halves, and they point opposite ways. Visemes ARE an external set: Resonite's Viseme enum is index-for-index the Oculus/OVR LipSync fifteen, proven by Yellow Dog Man's own OVRCompat source. Facial EXPRESSIONS are not: Resonite ships roughly ninety proprietary AvatarExpression names and deliberately does not adopt ARKit or VRCFT Unified Expressions. Adding Unified Expressions to the matching heuristics is an open, unimplemented issue in Resonite's own tracker, and users currently bridge the gap with a third-party mod. Blendshape auto-assignment does opportunistically match VRChat's `vrc.` prefix and some Japanese kana.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Visemes",
+          "title": "Visemes",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "In Resonite we use a fairly standard list of Visemes loosely based on similar platforms and products in the space"
+        },
+        {
+          "url": "https://github.com/Yellow-Dog-Man/OpenLipSync",
+          "title": "OVRCompat/Viseme.cs",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "public enum Viseme { sil, PP, FF, TH, DD, kk, CH, SS, nn, RR, aa, E, ih, oh, ou }"
+        },
+        {
+          "url": "https://wiki.resonite.com/Visemes",
+          "title": "Visemes",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Due to the prevalence of the prefix vrc. on a large amount of commonly found avatars, when a blend shape that contains the prefix vrc. is found, it takes preference over all over blend shapes for that one Viseme."
+        },
+        {
+          "url": "https://github.com/Yellow-Dog-Man/Resonite-Issues/issues/2292",
+          "title": "Issue 2292 (open)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "our auto heuristics dosen't look for those names leading to manual setup"
+        },
+        {
+          "url": "https://wiki.resonite.com/Face_and_Eye_Tracking_(Avatar)",
+          "title": "Face and Eye Tracking (Avatar)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "As Resonite doesn't fully support the same set of naming some imports made for other games have (GH Issue# 2292) it can sometimes miss or not auto assign some blendshapes."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "none",
+      "note": "Resonite has no humanoid animation retargeting. Its animation format binds tracks to a node name and a field name, not to a body-part abstraction, so an animation authored for one body does not transfer to another. The documentation goes further and says you cannot drive a VRIK rig with an animation at all — the engine fights it — and recommends posing users with anchors instead.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Component:Animator",
+          "title": "Component:Animator",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "To drive a VRIK like a person however, you cannot currently drive one directly or switch out the drivers with a VRIK at runtime. The game will actively fight what you are doing."
+        },
+        {
+          "url": "https://wiki.resonite.com/Component:Animator",
+          "title": "Component:Animator",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "the animation being imported onto a full VRIK rig will prevent the VRIK from being generated."
+        },
+        {
+          "url": "https://wiki.resonite.com/AnimJ",
+          "title": "AnimJ",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Node indicates which object in the hierarchy given track controls, while Property specifies which of its fields will be controlled when the animation is bound to a scene objects."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "partial",
+      "note": "The engine gives you attachment machinery — AvatarObjectSlot and AvatarPoseNode let separate avatar pieces bind to named body nodes, and Snapper handles accessories such as hats and glasses — so items genuinely do travel with a user between worlds inside their inventory. What is missing is an agreed convention for fitting a garment to an unfamiliar body. The wiki's \"Avatar standard\" page is explicitly a user proposal, with at least one widely used competing fork, and it admits blendshape names are avatar-specific.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Component:AvatarPoseNode",
+          "title": "Component:AvatarPoseNode",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This can be used to make avatars, with only single parts like hands or arms and be mixed and matched with other parts."
+        },
+        {
+          "url": "https://wiki.resonite.com/Component:Snapper",
+          "title": "Component:Snapper",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Snapper component allows a slot to parent to Snap Target slots. These are popular for accessories such as hats/glasses"
+        },
+        {
+          "url": "https://wiki.resonite.com/Avatar_standard",
+          "title": "Avatar standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This is a proposal made by User:Colin The Cat which standardizes a list of Dynamic Variables on the \"Avatar\" namespace to make avatar systems interoperable and portable"
+        },
+        {
+          "url": "https://wiki.resonite.com/Avatar_standard",
+          "title": "Avatar standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Since blenshapes are usually very specific to an avatar base, just like bones, they should follow the exact naming scheme of the avatar mesh(es)."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "none",
+      "note": "There is no avatar level of detail, no avatar performance ranking, and no built-in avatar culling. Crowd handling is left entirely to user-built systems, and the documentation says plainly that none of them work properly. Resonite's own comparison table for incoming VRChat users lists avatar performance blocking as not applicable.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Culling",
+          "title": "Culling",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "There is no perfect user culling system. All of them have some disadvantage or oddity due to a current lack of flexibility in Resonite to make something that works consistently, for every avatar, and in a reliable and simple way."
+        },
+        {
+          "url": "https://wiki.resonite.com/Guide_for_VRChat_users",
+          "title": "Guide for VRChat users",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Avatar performance blocking | N/A; some worlds have user culling systems"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "partial",
+      "note": "An avatar can be bound to one cloud user for permission purposes — SimpleAvatarProtection names a single user who may wear, save or export it — but that is asset ownership, not identity. Resonite's docs explicitly warn that what an avatar displays about who you are is not trustworthy: nameplates and badges are avatar-author-controlled and can be faked, and users are told to check the server-side Session screen instead. There is no credential or attestation concept.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Component:SimpleAvatarProtection",
+          "title": "Component:SimpleAvatarProtection",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "the SimpleAvatarProtection component prevents all users, other than the single user listed on the component, from saving the avatar, grabbing materials off of it, or equipping it."
+        },
+        {
+          "url": "https://wiki.resonite.com/Badges",
+          "title": "Badges",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "it is possible for a user to pretend to be a Mentor, Moderator, or Resonite Team member."
+        },
+        {
+          "url": "https://wiki.resonite.com/Nameplate",
+          "title": "Nameplate",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Since a custom nameplate is controlled entirely by the avatar's creator, the displayed name or even badges may not reflect the username."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "partial",
+      "note": "Resonite has its own animation formats: AnimX, a raw binary format with an \"AnimX\" magic word and optional LZ4 or LZMA encoding, and AnimJ, a JSON authoring format that must be imported and converted to AnimX before it can be used. AnimJ is a genuine third-party authoring route — you can write animation as JSON outside Resonite and bring it in. But neither has a vendor-published specification: the AnimX binary layout on the wiki is community reverse-engineering, `Elements.Assets` is not a public repository, and there is no AnimX repo in the Yellow Dog Man organisation. Bezier tracks are documented as not yet supported.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/AnimJ",
+          "title": "AnimJ",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "AnimJ is a custom import format for Animation asset files in Resonite. It allows you to build arbitrary animation tracks as external JSON files and import them as native Animation assets."
+        },
+        {
+          "url": "https://wiki.resonite.com/AnimJ",
+          "title": "AnimJ",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "They must first be converted to AnimX by importing them into Resonite."
+        },
+        {
+          "url": "https://wiki.resonite.com/AnimX",
+          "title": "AnimX",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "An Animx is encoded in raw binary, and as such is a little difficult to decode."
+        },
+        {
+          "url": "https://wiki.resonite.com/AnimX",
+          "title": "AnimX",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Magic Word | String | \"AnimX\" to specify this file is Animx"
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "partial",
+      "note": "Skeletons come in through Assimp from FBX, glTF or Blender and are mapped by name heuristics into Resonite's BodyNode enum, stored on a BipedRig component as a dictionary from body node to slot. Bones do survive an export to `.resonitepackage`. There is no way to write a skeleton back out to an interchange format — the model export wizard offers Collada and OBJ, and OBJ carries no rig at all.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Component:BipedRig",
+          "title": "Component:BipedRig",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Bones | SyncRefDictionary<BodyNode, Slot> | A list of bones this component has stored and mapped in the form of body nodes to slot assignments."
+        },
+        {
+          "url": "https://wiki.resonite.com/ResonitePackage",
+          "title": "ResonitePackage",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Slot Hierarchies ** Including Bones ** Including all components"
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "partial",
+      "note": "Blend shapes are supported and are the mechanism behind visemes and facial expressions, with heuristic auto-assignment by name. They are also called out in the optimisation guidance as a cost. As with meshes, they enter through Assimp and cannot be written back out to an interchange format.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Visemes",
+          "title": "Visemes",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "We split all blend shape names by any non-letter character into segments for searching."
+        },
+        {
+          "url": "https://wiki.resonite.com/Culling",
+          "title": "Culling",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "SlowRealtimeAccurate uses the actual transformed geometry for bounds calculation ... it will respect things like blendshapes in addition to bones."
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "native",
+      "note": "GPU mesh instancing happens automatically where a static mesh and material combination repeats, and the docs are specific about what defeats it: skinned mesh renderers are never instanced, and differing material property blocks break instancing across copies. Procedural assets are not instanced across copies; baking them to static meshes enables instancing and lets one copy live in memory.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Optimization_guidelines",
+          "title": "Optimization guidelines",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "If you have multiple instances of the same static mesh/material combination, they will be instanced on most shaders."
+        },
+        {
+          "url": "https://wiki.resonite.com/Optimization_guidelines",
+          "title": "Optimization guidelines",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "SkinnedMeshRenderers are not eligible for GPU instancing. Additionally, different material property blocks will prevent instancing across different copies of the same mesh, even if the underlying material is the same."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.eye",
+      "level": "native",
+      "note": "Eye tracking is a strong, first-class feature rather than a bolt-on. The EyeManager component is set up automatically for avatars with detectable eyes and exposes a detailed per-eye model — openness, widen, squeeze, frown, brow verticals, and pupil size in millimetres — plus simulated saccades when no hardware is present. Several trackers are natively integrated. The data model is Resonite's own; the only external piece is OSC used as a transport for Steam Link data.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Component:EyeManager",
+          "title": "Component:EyeManager",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Both supporting simulated eye-movement, and real eye tracking using a headset with built in eye tracking sensors such as the HTC Vive pro eye."
+        },
+        {
+          "url": "https://wiki.resonite.com/Component:EyeManager",
+          "title": "Component:EyeManager",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "how big the left eye's pupil is in millimeters currently"
+        },
+        {
+          "url": "https://wiki.resonite.com/Face_and_Eye_Tracking_(Setup)",
+          "title": "Face and Eye Tracking (Setup)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Resonite supports a number of Face and Eye Tracking systems, via native integration, plugins or mods:"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "partial",
+      "note": "Point clouds import from LiDAR LAS/LAZ and ASCII PTS, and from ordinary 3D formats in a vertex-extraction mode. Internally they are MeshX with point topology rather than triangles. There is no documented point-cloud EXPORT at any format, so LiDAR data goes in and cannot come back out. Volumetric video is not documented.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Point_Cloud_Import",
+          "title": "Point Cloud Import",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "point cloud support is based on the same MeshX class, using vertices with a point topology submesh instead of triangles."
+        },
+        {
+          "url": "https://wiki.resonite.com/Point_Cloud_Import",
+          "title": "Point Cloud Import",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Unfortunately currently the Assimp library doesn't recognize point cloud topology in traditional 3D formats (e.g. OBJ, PLY) very well, so it has to be specified manually."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "partial",
+      "note": "Cameras exist as in-world objects and worlds define spawn points, but the documentation treats viewpoints as ordinary slots with components rather than as a defined, bindable camera model. Nothing describes moving a viewpoint between systems.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/World_Creation_Hub",
+          "title": "World Creation Hub",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A component used to spawn a user where you want them to in the world."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "partial",
+      "note": "Three documented session transports — LiteNetLib over UDP, QUIC (experimental, still missing NAT punch-through), and Steam Sockets — plus a NAT punch-through service and regional relay fallback. All ports are dynamic; port forwarding and UPnP are explicitly unsupported. The transports are ordinary technology but what rides on them is a closed binary protocol, so a third party cannot speak it. Live session traffic is documented as unencrypted by default.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Networking_information",
+          "title": "Networking information",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Depending on your settings and the settings of the session host you'll connect with either one of the following protocols:\" listing \"LNL (LiteNetLib)\", \"QUIC\", \"Steam Sockets"
+        },
+        {
+          "url": "https://wiki.resonite.com/Networking_information",
+          "title": "Networking information",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Resonite does not currently offer support for port forwarding or uPNP/NAT-PMP."
+        },
+        {
+          "url": "https://wiki.resonite.com/Networking_information",
+          "title": "Networking information",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The relay acts as a third point between both clients, and all traffic is routed through it."
+        },
+        {
+          "url": "https://wiki.resonite.com/Privacy_information",
+          "title": "Privacy information",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "All live session traffic, such as Data model updates, voice streams, audio streams and locally shared files, are not encrypted."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "partial",
+      "note": "Authority is coarse and centralised: exactly one host per session, and if the host leaves the session ends. There is no documented host migration. Below that, exclusive write control over an individual element is expressed as \"linkage\" — a driver takes exclusive control of a field — rather than as transferable per-object ownership. Roles (Admin, Builder, Moderator, Guest, Spectator) govern what a user may do, not who owns what.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Session",
+          "title": "Session",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A session has exactly one host; if the host quits the game, the session will close."
+        },
+        {
+          "url": "https://wiki.resonite.com/Data_model",
+          "title": "Data model",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Linkage is a way to give exclusive control of a sync element to one source, often referred to a driver."
+        },
+        {
+          "url": "https://wiki.resonite.com/Permission_system",
+          "title": "Permission system",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Builder: Full editing permissions of the world."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "none",
+      "note": "There is no interest management. The design replicates the whole world to everyone, and the documented consequences follow: initial world synchronization time scales with total element count, and voice is sent to every user in the session regardless of whisper range — whisper only changes how far it can be HEARD, not who receives the stream. Video is relayed through the host to all clients.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Slot_count",
+          "title": "Slot count",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Initial synchronization of a world. The more slots, components, whatever elements there are in a world, the longer it will take to synchronize the world state."
+        },
+        {
+          "url": "https://wiki.resonite.com/Privacy_information",
+          "title": "Privacy information",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Changing your microphone to whisper mode will only change the max range it can be heard, the data stream will still be sent to all users in a session."
+        },
+        {
+          "url": "https://wiki.resonite.com/Tutorial:Video_Streaming",
+          "title": "Tutorial:Video Streaming",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Because steams are sent to the host and from there to each client, be aware that this can use a lot of bandwidth"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "native",
+      "note": "Session establishment is fully documented and works: six access levels from Private through Anyone, bearer-token authentication with optional TOTP two-factor, and a public unauthenticated listing endpoint. The catch is the compatibility hash — a client can only join if its data-model hash matches the host's exactly, which locks joining to one build of one implementation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Headless_server_software/Configuration_file",
+          "title": "Headless configuration",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "SessionAccessLevel controls the access level of a session. Possible values are: Private / LAN / Contacts / ContactsPlus / RegisteredUsers / Anyone"
+        },
+        {
+          "url": "https://wiki.resonite.com/API",
+          "title": "API",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Authorization: res <user-id>:<token>"
+        },
+        {
+          "url": "https://wiki.resonite.com/API",
+          "title": "API",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The compatibility-hash sessions needs to have. A Resonite client can only join a session if this hash matches between client and server."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "native",
+      "note": "Public session discovery is real and open: `GET /sessions` returns running public sessions and needs no authentication, worlds are searchable through a paged search endpoint, and there is an MIT-licensed official web browser listing every public world and session. Discovery covers Resonite's own cloud only, and Universes deliberately partition it — a Universe's sessions are invisible from the main list and vice versa.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/API",
+          "title": "API",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "GET /sessions — Returns a list of public sessions filtered by the given parameters. Does not require authentication"
+        },
+        {
+          "url": "https://wiki.resonite.com/Go.resonite.com",
+          "title": "Go.resonite.com",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It features a list of all worlds and all currently running public sessions in Resonite, allowing you to quickly open them inside Resonite."
+        },
+        {
+          "url": "https://wiki.resonite.com/Universes",
+          "title": "Universes",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Users in your universe will not be able to see Sessions from other universes or the regular Resonite session list."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "partial",
+      "note": "Presence works well inside Resonite: a SignalR connection over WebSocket carries status updates, session updates and contact changes, and contacts are bilateral. It is single-operator. Nothing federates presence across operators, and Universes explicitly hide their users from the main network.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/API",
+          "title": "API",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Resonite API uses the SignalR protocol for server-driven notifications such as informing the client of new chat messages or status changes."
+        },
+        {
+          "url": "https://wiki.resonite.com/API",
+          "title": "API",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Resonite considers two users to be contacts when both users have each other as a contact with the status 'Accepted'"
+        },
+        {
+          "url": "https://wiki.resonite.com/Universes",
+          "title": "Universes",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Users not in your universe will not be able to see your Sessions"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "partial",
+      "note": "You can carry state between worlds, in two ways. Your cloud inventory follows you everywhere. And \"transfer grabbing\" lets you literally hold an object while changing worlds and arrive with it — but the docs warn that anything referenced in the world's Assets slot is lost because the references break. So objects move; the things they point at do not reliably move with them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Transfer_grabbing",
+          "title": "Transfer grabbing",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Transfer Grabbing (sometimes called \"grab smuggling\") is a Resonite feature that allows a user to transfer items (Slot's ObjectRoot or Grabbable) from one world to another."
+        },
+        {
+          "url": "https://wiki.resonite.com/Transfer_grabbing",
+          "title": "Transfer grabbing",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "You can transfer anything, but the down side is that anything referenced in the Assets Slot will be lost as references will be broken"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.media",
+      "level": "partial",
+      "note": "Live video sharing exists and is host-relayed over the session's own transport, needing no external server. Ingest is a fixed localhost RTMP endpoint with h264 video and AAC audio and no negotiation — not WebRTC, not SRT. Inbound remote streams accept RTMP and RTSP but not their encrypted variants. Streaming can be disabled per role.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Tutorial:Video_Streaming",
+          "title": "Tutorial:Video Streaming",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "this feature allows sharing of either your desktop or of a custom video stream(For example, from OBS or FFmpeg) to other uses in the session through Resonite's internal networking, requiring no external servers or setup."
+        },
+        {
+          "url": "https://wiki.resonite.com/Tutorial:Video_Streaming",
+          "title": "Tutorial:Video Streaming",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "URI: rtmp://127.0.0.1:1935/Resonite\" / \"Video: h264\" / \"Audio: AAC"
+        },
+        {
+          "url": "https://wiki.resonite.com/Privacy_information",
+          "title": "Privacy information",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Neither the Unity Native or the libvlc backend support the encrypted variants, rtmps and rtsps."
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "native",
+      "note": "Voice is Opus, from a Yellow Dog Man fork of the reference library, with RNNoise for noise suppression. Five modes: Mute, Whisper, Normal, Shout and Broadcast, where Broadcast turns spatialization off entirely. The codec is a real standard; the transport is Resonite's own unencrypted session stream, and voice goes to everyone in the session regardless of mode.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Beta_2024.11.12.1329",
+          "title": "release notes",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Update opus library (used for encoding voice & audio streams) from 1.3.1 to latest 1.5.2"
+        },
+        {
+          "url": "https://wiki.resonite.com/Frequently_Asked_Questions",
+          "title": "FAQ",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Normal is the typical spatialized voice mode, Shout has increased volume, and range- good for large maps, and Broadcast disables spatialization"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.prediction",
+      "level": "none",
+      "note": "No client-side prediction, reconciliation, rollback or lag compensation is documented anywhere. Wiki searches for those terms return nothing in the article namespace, and none of the architecture, data-model or update pages mention any latency-hiding mechanism. This is an absence of documentation rather than proof of absence in the code.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "partial",
+      "note": "Persistence is explicit, not automatic. Nothing survives a session unless someone saves it, and a session ends the moment its host leaves. Autosave exists but is off by default on headless servers. Individual slots carry a `Persistent` boolean, and turning it off excludes that slot and everything under it from the save. The persistence serialization is a deliberately different mode from the network protocol and is built for forwards and backwards compatibility.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Slot",
+          "title": "Slot",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Persistent | Bool | Whether this slot will be saved, for example to the Inventory. If this is disabled, the slot and all its descendants will not be saved."
+        },
+        {
+          "url": "https://wiki.resonite.com/Architecture_Overview",
+          "title": "Architecture Overview",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "For persistence, a different binary serialization mode is used than the real-time synchronization, which is designed for both forwards and backwards compatibility across Resonite versions."
+        },
+        {
+          "url": "https://wiki.resonite.com/Headless_server_software/Managing_worlds",
+          "title": "Managing worlds",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Saving must be configured or invoked, saving is not automatic."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "native",
+      "note": "This is one of the few real cross-world inventory implementations in the study. Every user gets a cloud-backed, folder-structured inventory that follows them to any machine after login, and items spawn into any world. Items CAN leave the platform, as `.resonitepackage` archives — but only back into Resonite. Sharing is by public folder, which works as a capability handed out by link rather than a listing, and content in a shared folder counts only against the owner's quota. Free accounts start with one gigabyte.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Inventory",
+          "title": "Inventory",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It allows you to save and browse objects—such as tools, avatars, decorations, and more."
+        },
+        {
+          "url": "https://wiki.resonite.com/Inventory",
+          "title": "Inventory",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "All accounts start with 1 gigabyte (GB) of storage space on the cloud. Your storage space can be increased by subscribing."
+        },
+        {
+          "url": "https://wiki.resonite.com/Public_folders",
+          "title": "Public folders",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Anything in a public folder can be spawned and used by anyone who has the folder, but only the owner can save new items to it"
+        },
+        {
+          "url": "https://wiki.resonite.com/Public_folders",
+          "title": "Public folders",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "When a public folder is created it is not immediately available for all Resonite users. It cannot be found on any public listings or systems unless it is shared with those systems."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "partial",
+      "note": "Some settings do follow the user rather than the machine — full-body-tracking calibration is documented as tied to the account. There is a full account data export tool published by Yellow Dog Man, so preferences and content can be pulled out. But nothing is portable to another platform: the export tool's README names cross-engine compatibility as an explicit non-goal.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Full_Body_Tracking",
+          "title": "Full Body Tracking",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This is saved automatically and is tied to your account/settings."
+        },
+        {
+          "url": "https://github.com/Yellow-Dog-Man/ResoniteAccountDownloader",
+          "title": "ResoniteAccountDownloader README",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "We do not intend to process the contents in a way that makes it compatible with other engines such as Unity, Unreal etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "partial",
+      "note": "Identity is a Resonite account: an immutable `U-` prefixed user ID, distinct from the display username, plus a per-installation Machine ID derived from an RSA keypair hashed with SHA-256. It is a single-operator identifier with no external resolution. Notably, SAML single sign-on IS available at every tier, so an enterprise can authenticate its own people INTO Resonite — but the resulting identity is still a Resonite record and nothing exports outward.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/User_ID",
+          "title": "User ID",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A user's User ID (also written userid) is an immutable ID linked to their user account."
+        },
+        {
+          "url": "https://wiki.resonite.com/User_ID",
+          "title": "User ID",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Never ever assume a user ID will match a username."
+        },
+        {
+          "url": "https://wiki.resonite.com/Universes",
+          "title": "Universes",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "SAML Login | ✅ | ✅ | ✅ | ✅"
+        },
+        {
+          "url": "https://wiki.resonite.com/Machine_ID",
+          "title": "Machine ID",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "On first launch the game generates a random RSA keypair and stores it in this file."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "none",
+      "note": "There is no verifiable credential format. Authentication is a bespoke bearer token — `Authorization: res <user-id>:<token>` — with a hardware-derived UID header, plus optional TOTP two-factor. Resonite's own two-factor page names FIDO keys, magic links and web3 authentication as things it does NOT support and points people at the issue tracker. No W3C verifiable credential or decentralised identifier concept appears anywhere.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/API",
+          "title": "API",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Authorization: res <user-id>:<token>"
+        },
+        {
+          "url": "https://wiki.resonite.com/2FA",
+          "title": "2FA",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "If you want support for something like a Yubikey/FIDO Key, Email codes, Magic links, Web3 Authentication etc. then please check out GitHub."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "partial",
+      "note": "The only credential-exchange protocols documented are inbound authentication ones: SAML for enterprise sign-in, and an OAuth path that Yellow Dog Man's own sample repository describes as still under construction with credentials handed out manually. Neither is a mechanism for two worlds to request and present claims about a user.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Yellow-Dog-Man/resonite-oauth-example",
+          "title": "resonite-oauth-example README",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Resonite's OAuth is still under construction."
+        },
+        {
+          "url": "https://github.com/Yellow-Dog-Man/resonite-oauth-example",
+          "title": "resonite-oauth-example README",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "These aren't easy to get right now and are given out manually to select applications or scenarios."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "partial",
+      "note": "Permission grants exist as world roles — Admin, Builder, Moderator, Guest, Spectator — and are enforced by the session host. They are not readable by any party that did not issue them; they live inside one session's data model. Separately, `resdb:///` links function as unauthenticated bearer capabilities, which is a capability grant of a sort but one that cannot be scoped, audited or revoked.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Permission_system",
+          "title": "Permission system",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Moderator: Ability to kick, silence, respawn, and change the role of users."
+        },
+        {
+          "url": "https://wiki.resonite.com/Resonite_database_link",
+          "title": "Resonite database link",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Resdb links are unauthenticated and anyone with a resdb link can access its content"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "none",
+      "note": "There is no selective disclosure mechanism. Identity is a single account record held by one operator; there is no notion of revealing a subset of claims to a receiving world, because there are no claims and there are no independent receiving worlds.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.social",
+      "level": "partial",
+      "note": "A bilateral contacts graph exists and is queryable through the API for your own account, and Yellow Dog Man publishes an account downloader specifically so users can exercise data rights and take a copy out. So the graph is exportable. It is not portable in any operational sense — nothing consumes it elsewhere, and the exporter's stated non-goal is cross-engine compatibility.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Yellow-Dog-Man/ResoniteAccountDownloader",
+          "title": "ResoniteAccountDownloader README",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "as a part of a user's data rights they have the right to a copy of the data on our platform about them"
+        },
+        {
+          "url": "https://wiki.resonite.com/API",
+          "title": "API",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "GET /users/{userId}/contacts — Requires authentication. {userId} has to be your own."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "partial",
+      "note": "There is exactly one enforcement primitive and it is narrow: SimpleAvatarProtection names a single permitted user and blocks everyone else from wearing, saving or exporting that avatar, and it survives into a `.resonitepackage`. Resonite's own documentation says it is not bulletproof. The world read-only flag is explicitly disclaimed as \"not a security/permission mechanism\". Everything stronger — asset-level protection, hard permissions — is an open issue. The real remedy is a manually reviewed DMCA process.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Component:SimpleAvatarProtection",
+          "title": "Component:SimpleAvatarProtection",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "SimpleAvatarProtection prevents other users from wearing an avatar or saving it."
+        },
+        {
+          "url": "https://wiki.resonite.com/Beta_2024.10.4.923",
+          "title": "release notes",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Please note that this is only \"soft\" prevention and not a security/permission mechanism."
+        },
+        {
+          "url": "https://github.com/Yellow-Dog-Man/Resonite-Issues/issues/626",
+          "title": "Issue 626 (open)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Currently, it is not possible to apply strong protection to Static 3D model, 2D textures, audio files like wav, ogg etc. So, anyone can save and export assets them."
+        },
+        {
+          "url": "https://wiki.resonite.com/DMCA",
+          "title": "DMCA",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Resonite Team, reviews DMCA claims manually."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "native",
+      "note": "Real-time lights with shadows, deferred shading for opaque and cutout materials and forward for transparent ones, plus baked and real-time reflection probes storing cube maps. All of it is authored as Resonite components with no exchange representation. There is no documented lightmap baking or light-probe workflow — global illumination is handled through reflection probes and ambient spherical harmonics rather than baked lighting.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Optimization_guidelines",
+          "title": "Optimization guidelines",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Using the Opaque or Cutout blend mode on a material is generally advised whenever possible, as these blend modes use the deferred rendering pipeline and handle dynamic lights better."
+        },
+        {
+          "url": "https://wiki.resonite.com/Optimization_guidelines",
+          "title": "Optimization guidelines",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Point lights with shadows are very expensive, as they render the surrounding scene six times."
+        },
+        {
+          "url": "https://wiki.resonite.com/Optimization_guidelines",
+          "title": "Optimization guidelines",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Baked reflection probes are quite cheap, especially at the default resolution of 128x128."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.post",
+      "level": "partial",
+      "note": "Post-processing exists and is a user-side graphics setting — motion blur intensity, bloom, ambient occlusion — but a world cannot author or change it. Resonite's own Limitations page states this outright. So post effects are a viewer preference, not part of the content, and nothing about them travels with a scene.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Limitations",
+          "title": "Limitations",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "You cannot, edit the post-processing settings of Resonite. This includes things like: * Bloom * Ambient Occlusion"
+        },
+        {
+          "url": "https://wiki.resonite.com/Beta_2024.4.17.1420",
+          "title": "release notes",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Added post processing settings (under Graphics) Motion Blur intensity"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "partial",
+      "note": "There is no layering, referencing or override system in the sense of composed scenes. A world is one slot tree; a record can reference other records, and public folders let one owner publish an item everyone else links to and receives updates for, which is the closest thing to a live reference. But there is no override mechanism, and Resonite's Limitations page notes there is no generic dynamic component or property access to build one on.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Public_folders",
+          "title": "Public folders",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This lets people get the latest versions of your objects, rather than having to find and save new copies every time they change."
+        },
+        {
+          "url": "https://wiki.resonite.com/Limitations",
+          "title": "Limitations",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "You cannot currently dynamically access the properties or elements of an object."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "partial",
+      "note": "Audio streams ride the same session transport as everything else and are Opus-encoded, and audio files are delivered as ordinary content-addressed assets over HTTPS. There is no separate scalable audio-streaming path — like voice, streamed audio goes to every client through the host, so it does not scale independently of session size.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Beta_2024.11.12.1329",
+          "title": "release notes",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Update opus library (used for encoding voice & audio streams)"
+        },
+        {
+          "url": "https://wiki.resonite.com/Privacy_information",
+          "title": "Privacy information",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "All live session traffic, such as Data model updates, voice streams, audio streams and locally shared files, are not encrypted."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "partial",
+      "note": "There is no autonomous-agent concept in the engine, but there are two documented doors an external program can drive a world through: ResoniteLink, an MIT-licensed WebSocket and JSON protocol built for exactly this, and C# plugins. Yellow Dog Man name external scripts controlling a live event as a use case. ResoniteLink is explicitly not for real-time control — reads and writes happen \"eventually\" — and it requires you to be the session host.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Yellow-Dog-Man/ResoniteLink",
+          "title": "ResoniteLink README",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "External scripts controlling a world during live events"
+        },
+        {
+          "url": "https://github.com/Yellow-Dog-Man/ResoniteLink",
+          "title": "ResoniteLink README",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "it does not provide mechanisms to synchronize with game updates - any reads/writes happen \"eventually\""
+        },
+        {
+          "url": "https://github.com/Yellow-Dog-Man/ResoniteLink",
+          "title": "ResoniteLink README",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Using this to control things requires running an external program and to be the host of the session"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "native",
+      "note": "This is the capability Resonite scores best on in spirit and worst on in portability. ProtoFlux is a node-based visual language that is part of the object: when you export an item as a `.resonitepackage`, the ProtoFlux goes with it, alongside the hierarchy, components and bones. Behaviour genuinely travels with the asset. But it travels only to another Resonite. ProtoFlux runs on a proprietary stack-based virtual machine inside closed-source FrooxEngine, there is no specification, no serialization format anyone else can read, and no standalone runtime. Roughly 1,089 node pages are publicly documented on the wiki, which is a real reference, but a reference is not a spec.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/ProtoFlux",
+          "title": "ProtoFlux",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "ProtoFlux is a Node based scripting language that can be manipulated in 3D space using the ProtoFlux Tool."
+        },
+        {
+          "url": "https://wiki.resonite.com/ResonitePackage",
+          "title": "ResonitePackage",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Slot Hierarchies ** Including Bones ** Including all components ** ProtoFlux"
+        },
+        {
+          "url": "https://github.com/Yellow-Dog-Man/Resonite-Issues/discussions/1392",
+          "title": "Frooxius comment",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Yes, it's a type of virtual stack-based VM."
+        },
+        {
+          "url": "https://wiki.resonite.com/ResonitePackage",
+          "title": "ResonitePackage",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "ResonitePackage files will not be supported by other VR Platforms."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "none",
+      "note": "The engine ships BepuPhysics2, but rigid bodies are NOT exposed to creators. Resonite's own wiki page for the physics library carries a note on its demonstration video reading that this is what the engine can do, not what is available in Resonite, and points at an open GitHub issue as the tracker for exposing it. What creators actually have is a character controller and collision events. Full rigid-body physics is a named future feature.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Bepuphysics",
+          "title": "Bepuphysics",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Large parts of the engine will be eventually exposed within game with the future RigidBody Physics features: GH# 418"
+        },
+        {
+          "url": "https://wiki.resonite.com/Bepuphysics",
+          "title": "Bepuphysics",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "NOTE: This is is what the physics engine can do, not what is exposed in Resonite"
+        },
+        {
+          "url": "https://wiki.resonite.com/FrooxEngine",
+          "title": "FrooxEngine",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "BepuPhysics2 for physics calculations"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "native",
+      "note": "Eight collider shapes are exposed as components — box, capsule, cone, convex hull, cylinder, mesh, sphere and triangle — each with an offset, a type, a mass and a flag for whether avatars are blocked by it. Collision shapes are authored separately from visible geometry, which is what the capability asks for. There are documented behavioural gaps: active colliders do not raise events against other active colliders, and mesh colliders only collide with primitive colliders.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Collider",
+          "title": "Collider",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "BoxCollider ... CapsuleCollider ... ConeCollider ... ConvexHullCollider ... CylinderCollider ... MeshCollider ... SphereCollider ... TriangleCollider"
+        },
+        {
+          "url": "https://wiki.resonite.com/Collider",
+          "title": "Collider",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Note that active colliders do not cause collision events with other active collider types (possibly due to the computational costs involved)."
+        },
+        {
+          "url": "https://wiki.resonite.com/Template:ColliderCharacterColliderField",
+          "title": "collider field template",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Whether an avatar should be prevented from moving into the collider's volume."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "none",
+      "note": "No joints or constraints are exposed. There is no wiki page for joints, hinges or constraints, and searches turn up only podcast discussion. This follows from rigid bodies not being exposed — with no dynamic bodies there is nothing to constrain. The nearest thing is dynamic bone chains for wiggle, which is a procedural effect rather than a constraint solver.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "physics.material",
+      "level": "none",
+      "note": "No physics materials. Colliders expose a mass field and nothing else about surface response; there is no documented friction or restitution anywhere. Again a consequence of rigid bodies not being exposed.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "none",
+      "note": "No cloth and no soft-body simulation is documented. Dynamic bone chains provide secondary motion on skeletal chains, which is a different thing and does not solve deformable surfaces.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "native",
+      "note": "Trigger volumes are properly supported and are the main way physics is actually used in Resonite content. Collider types include Trigger, StaticTrigger and haptic trigger variants, and a generalized event system raises contact start, contact stay and contact end. Events are surfaced through relay and listener components that in-world scripting can hook.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Collider_Events",
+          "title": "Collider Events",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Collider events are a generalized event system for physical collider interactions"
+        },
+        {
+          "url": "https://wiki.resonite.com/Collider_Events",
+          "title": "Collider Events",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Contact Start: Fires once when two colliders first make contact. Contact Stay: Fires every frame while two colliders remain in contact. Contact End: Fires once when two colliders in contact separate."
+        },
+        {
+          "url": "https://wiki.resonite.com/Template:ColliderTypesTable",
+          "title": "collider types",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Trigger | 2 | Interacts with other active colliders and user locomotion."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "native",
+      "note": "Positioned audio sources are a first-class component with the expected controls: volume, spatial blend between 3D and 2D, Doppler level, logarithmic or linear rolloff, minimum and maximum distance, priority, and per-user exclusion. Sources are grouped by type — sound effects, multimedia, voice, user interface — so users can mix categories independently. All of it is Resonite components; nothing exports.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Component:AudioOutput",
+          "title": "Component:AudioOutput",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "SpatialBlend | Blends the the audio between 3D & 2D"
+        },
+        {
+          "url": "https://wiki.resonite.com/Component:AudioOutput",
+          "title": "Component:AudioOutput",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "RolloffMode | Switches between logarithmic and Linear audio falloff"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "native",
+      "note": "Resonite replaced its old hybrid audio path with Awwdio, an in-house multi-threaded audio system, and spatialization comes from a direct integration of Valve's Steam Audio. An explicit AudioListener component decides where audio is heard from and can double as a virtual microphone, and sources expose a spatialization start distance and transition range. Steam Audio does head-related transfer function rendering, but Resonite's documentation never says the words HRTF or ambisonics, so do not claim either specifically.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Awwdio",
+          "title": "Awwdio",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Awwdio is responsible for mixing audio sources, and directly integrates Steam Audio for spatialization."
+        },
+        {
+          "url": "https://wiki.resonite.com/Beta_2025.5.9.23",
+          "title": "release notes",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Spatialization is provided by Steam Audio with direct integration"
+        },
+        {
+          "url": "https://wiki.resonite.com/Beta_2025.5.9.23",
+          "title": "release notes",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Added AudioListener component which provides an explicit way to determine where audio is rendered from"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "native",
+      "note": "Reverb is real and recently reworked: Zita Reverb replaced the legacy reverb zones, it is a stereo effect, and reverb zones now apply to spatialized sources including user voices in normal mode. Sources can opt out with an ignore-reverb-zones flag. It is a reverb-zone model rather than a simulated-acoustics model, and it is authored as Resonite components with no exchange representation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Awwdio",
+          "title": "Awwdio",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It also integrates Zita Reverb for reverb effects."
+        },
+        {
+          "url": "https://wiki.resonite.com/Beta_2025.5.9.23",
+          "title": "release notes",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Reverb zones now work with spatialized audio sources - including user voices in normal mode!"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "none",
+      "note": "Sound is not blocked or muffled by geometry. The audio listener's effect chain is documented as carrying reverb zones only, with more described as future work, and there is no occlusion or obstruction component. Steam Audio can do occlusion; Resonite's integration does not document using it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Beta_2025.5.9.23",
+          "title": "release notes",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The listener has a list of effects that are applied to the audio it hears (currently just reverb zones, but there will be more in the future)"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "conflicts",
+      "note": "Resonite does NOT run on OpenXR. It targets SteamVR/OpenVR plus vendor runtimes, selected with command-line device flags, and OpenXR support is explicitly named by the lead developer as something the Unity renderer replacement will unlock in future. This is the single most consequential input finding for a standards study: any assumption that Resonite is OpenXR-conformant today is wrong. There is also no standalone headset client — Quest works only tethered to a PC.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Yellow-Dog-Man/Resonite-Issues/discussions/5830",
+          "title": "Frooxius, \"The road to a New Renderer\"",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "replacing it with a completely different renderer ... will allow us to implement new features, such as OpenXR support or custom shaders"
+        },
+        {
+          "url": "https://wiki.resonite.com/Frequently_Asked_Questions",
+          "title": "FAQ",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It supports all of the major headsets, including SteamVR/OpenVR, Oculus, and Windows Mixed Reality (via SteamVR)."
+        },
+        {
+          "url": "https://wiki.resonite.com/Create_New_World",
+          "title": "Create New World",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Note that currently Resonite does not have a mobile client."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "native",
+      "note": "Controller input works through SteamVR and vendor runtimes and is selectable with launch flags for SteamVR, Windows Mixed Reality, Oculus Rift and Oculus Quest, with a legacy SteamVR input path also available. Gamepad support exists but is documented as preliminary — movement, turning, jumping and the context menu. Since the binding goes through SteamVR rather than OpenXR, controller profiles are inherited from Valve's ecosystem rather than from a cross-vendor standard.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Command_line_arguments",
+          "title": "Command line arguments",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "-Device SteamVR - Forces SteamVR.\" and \"-Device OculusQuest - Forces Oculus Quest and Touch controllers."
+        },
+        {
+          "url": "https://wiki.resonite.com/Frequently_Asked_Questions",
+          "title": "FAQ",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Resonite currently offers preliminary support for gamepads, e.g. basic functionality such as moving, turning, jumping, and using the context menu."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "partial",
+      "note": "Finger tracking is received and displayed — from Leap Motion and from Index controllers — but it is display only. Resonite states plainly that there is no official way to move or interact using hand tracking alone. So hands are an expressive channel, not an input source in the sense the capability describes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Hand_Tracking",
+          "title": "Hand Tracking",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "While Resonite currently supports individual finger tracking via hardware like the Leap Motion and Valve Index Controllers, there is no official way to move or interact with the game with hand tracking alone."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "partial",
+      "note": "There is a real haptics system with authored haptic volumes, stacking multiplicative filters, and a sampler abstraction so world content can drive feedback. Devices reach it two ways: directly for VR controllers, or over OSC and WebSocket for vests and other hardware. The OSC path is the genuinely open part. The wiki's own status notes are candid that several device integrations are broken or recently repaired.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Haptics",
+          "title": "Haptics",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Haptics system in Resonite allows users to define volumes or positions where a user can receive haptics sensations from in the world."
+        },
+        {
+          "url": "https://wiki.resonite.com/Haptics",
+          "title": "Haptics",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Some connect directly, such as VR controllers, some via OSC."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "partial",
+      "note": "The engine does track per-user device capability — logs show finger, eye and lip tracking flags carried against each user — and world content can react to what a user's hardware can do. There is no documented capability-description format and no negotiation protocol; it is an internal flag set surfaced in logs, not something another system can query or that a standard could bind to.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Face_and_Eye_Tracking_(Setup)",
+          "title": "Face and Eye Tracking (Setup)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "User [redacted] Role: , HasFingerTracking: True, HasEyeTracking: False, HasLipTracking: False"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "Resonite is a platform whose import and export paths are unusually open for a hosted world, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Gaussian_Splat",
+          "title": "Gaussian Splat, Resonite wiki",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A Gaussian Splat is a volumetric 3D point cloud cluster Asset that looks like a regular Mesh from a distance, but may look more fuzzy up close."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "Resonite is a platform whose import and export paths are unusually open for a hosted world, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Gaussian_Splat",
+          "title": "Gaussian Splat, Resonite wiki",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A Gaussian Splat is a volumetric 3D point cloud cluster Asset that looks like a regular Mesh from a distance, but may look more fuzzy up close."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "Resonite is a platform whose import and export paths are unusually open for a hosted world, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Gaussian_Splat",
+          "title": "Gaussian Splat, Resonite wiki",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A Gaussian Splat is a volumetric 3D point cloud cluster Asset that looks like a regular Mesh from a distance, but may look more fuzzy up close."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "native",
+      "note": "This is the one genuinely round-trippable open capture path on the whole map. Both the plain PLY form and Niantic's SPZ are read and written, and a PLY can be recompressed to SPZ on import. Radiance fields other than Gaussian splatting are not documented, so do not read a wider claim into it.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Gaussian_Splat_Import",
+          "title": "Gaussian Splat Import, Resonite wiki",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "These are the supported formats in Resonite: * PLY files [reading, writing]"
+        },
+        {
+          "url": "https://wiki.resonite.com/Gaussian_Splat",
+          "title": "Gaussian Splat, Resonite wiki",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A Gaussian Splat is a volumetric 3D point cloud cluster Asset that looks like a regular Mesh from a distance, but may look more fuzzy up close."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "out-of-scope",
+      "note": "Resonite is a platform whose import and export paths are unusually open for a hosted world, and it delivers no captured scene, progressively by region and detail or otherwise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Gaussian_Splat",
+          "title": "Gaussian Splat, Resonite wiki",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A Gaussian Splat is a volumetric 3D point cloud cluster Asset that looks like a regular Mesh from a distance, but may look more fuzzy up close."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "Resonite is a platform whose import and export paths are unusually open for a hosted world, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Gaussian_Splat",
+          "title": "Gaussian Splat, Resonite wiki",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A Gaussian Splat is a volumetric 3D point cloud cluster Asset that looks like a regular Mesh from a distance, but may look more fuzzy up close."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "partial",
+      "note": "Point clouds come in from the lidar interchange formats and from an ASCII form, and internally become the same mesh class with a point topology rather than triangles. The direction is one way: no point cloud export is documented at any format, so scanned data goes in and cannot come back out.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Point_Cloud_Import",
+          "title": "Point Cloud Import, Resonite wiki",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "point cloud support is based on the same MeshX class, using vertices with a point topology submesh instead of triangles."
+        },
+        {
+          "url": "https://wiki.resonite.com/Point_Cloud_Import",
+          "title": "Point Cloud Import, Resonite wiki",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Unfortunately currently the Assimp library doesn't recognize point cloud topology in traditional 3D formats (e.g. OBJ, PLY) very well, so it has to be specified manually."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "Resonite is a platform whose import and export paths are unusually open for a hosted world, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Gaussian_Splat",
+          "title": "Gaussian Splat, Resonite wiki",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A Gaussian Splat is a volumetric 3D point cloud cluster Asset that looks like a regular Mesh from a distance, but may look more fuzzy up close."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "native",
+      "note": "Drawing an imported capture from any viewpoint is what the splat asset does, and the platform ships the renderer for it rather than pointing at someone else's.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Gaussian_Splat",
+          "title": "Gaussian Splat, Resonite wiki",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A Gaussian Splat is a volumetric 3D point cloud cluster Asset that looks like a regular Mesh from a distance, but may look more fuzzy up close."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "Resonite is a platform whose import and export paths are unusually open for a hosted world, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Gaussian_Splat",
+          "title": "Gaussian Splat, Resonite wiki",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A Gaussian Splat is a volumetric 3D point cloud cluster Asset that looks like a regular Mesh from a distance, but may look more fuzzy up close."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "Resonite is a platform whose import and export paths are unusually open for a hosted world, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Gaussian_Splat",
+          "title": "Gaussian Splat, Resonite wiki",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A Gaussian Splat is a volumetric 3D point cloud cluster Asset that looks like a regular Mesh from a distance, but may look more fuzzy up close."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "Resonite is a platform whose import and export paths are unusually open for a hosted world, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Gaussian_Splat",
+          "title": "Gaussian Splat, Resonite wiki",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A Gaussian Splat is a volumetric 3D point cloud cluster Asset that looks like a regular Mesh from a distance, but may look more fuzzy up close."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "Resonite is a platform whose import and export paths are unusually open for a hosted world, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Gaussian_Splat",
+          "title": "Gaussian Splat, Resonite wiki",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A Gaussian Splat is a volumetric 3D point cloud cluster Asset that looks like a regular Mesh from a distance, but may look more fuzzy up close."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "Resonite is a platform whose import and export paths are unusually open for a hosted world, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Gaussian_Splat",
+          "title": "Gaussian Splat, Resonite wiki",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A Gaussian Splat is a volumetric 3D point cloud cluster Asset that looks like a regular Mesh from a distance, but may look more fuzzy up close."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "Resonite is a platform whose import and export paths are unusually open for a hosted world, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Gaussian_Splat",
+          "title": "Gaussian Splat, Resonite wiki",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A Gaussian Splat is a volumetric 3D point cloud cluster Asset that looks like a regular Mesh from a distance, but may look more fuzzy up close."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "Resonite is a platform whose import and export paths are unusually open for a hosted world, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Gaussian_Splat",
+          "title": "Gaussian Splat, Resonite wiki",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A Gaussian Splat is a volumetric 3D point cloud cluster Asset that looks like a regular Mesh from a distance, but may look more fuzzy up close."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "out-of-scope",
+      "note": "Resonite is a platform whose import and export paths are unusually open for a hosted world, and it carries no full 360-degree view of a place as an image with its projection stated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Gaussian_Splat",
+          "title": "Gaussian Splat, Resonite wiki",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A Gaussian Splat is a volumetric 3D point cloud cluster Asset that looks like a regular Mesh from a distance, but may look more fuzzy up close."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "out-of-scope",
+      "note": "A fully virtual social platform whose base coordinate space is its own world root and cannot be changed. Sessions hold authored and imported content; there is no reading of the physical room around a headset.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Slot_transforms",
+          "title": "Resonite wiki, Slot transforms",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The global coordinate space is the base coordinate space and is measured relative to the world root. It can not be changed."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "Its labels describe its own data model — slots, components and assets — not real surfaces. Nothing classifies a floor or a wall that a camera can see.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Slot_transforms",
+          "title": "Resonite wiki, Slot transforms",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The global coordinate space is the base coordinate space and is measured relative to the world root. It can not be changed."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "out-of-scope",
+      "note": "No depth of the physical world enters the platform. Depth in Resonite is the depth of its own rendered scene, which is a different thing from a measurement of the room.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Slot_transforms",
+          "title": "Resonite wiki, Slot transforms",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The global coordinate space is the base coordinate space and is measured relative to the world root. It can not be changed."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "Content is composited against the virtual world only. Without a passthrough view or real-world depth, hiding virtual objects behind real ones does not arise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Slot_transforms",
+          "title": "Resonite wiki, Slot transforms",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The global coordinate space is the base coordinate space and is measured relative to the world root. It can not be changed."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "none",
+      "note": "Resonite's published feature list is about headsets, tracking systems and platforms it runs on; no component or world setting mixes a live camera view of the room into the render, and the wiki's uses of the word passthrough are about interaction and teleport targets. Read off the feature and component documentation rather than stated by the project, so recorded unverified.",
+      "confidence": "unverified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Supported_Features",
+          "title": "Supported Features, Resonite Wiki",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Windows Mixed Reality"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.face",
+      "level": "native",
+      "note": "Among the strongest on this row. Resonite supports a range of face and eye tracking systems through native integration as well as plug-ins and mods, and the eye model it exposes is detailed enough to include pupil size, which is a genuine live sensor stream of the person rather than a stored expression. The privacy terms are the platform's own, and a session's participants see the result on the avatar.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Face_and_Eye_Tracking_(Setup)",
+          "title": "Face and Eye Tracking (Setup), Resonite Wiki",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Resonite supports a number of Face and Eye Tracking systems, via native integration, plugins or mods:"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "partial",
+      "note": "Arrival is declared and the floor is not. A component in the world creation set spawns a user where the author wants them, so a world says where a visitor appears; nothing declares walkable surface or bounds, and a body's movement is decided by the physics of whatever geometry is there.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/World_Creation_Hub",
+          "title": "World Creation Hub, Resonite Wiki",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A component used to spawn a user where you want them to in the world."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "partial",
+      "note": "Every item is a record with its own durable address, and those addresses are registered with the operating system so a link spawns the item in the session — a real permanent name for a published thing, including one that carries logic. It is ownership by account and folder rather than a namespace: names are not reserved to an author across the platform, and nothing guarantees the record behind an address is unchanged.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Record",
+          "title": "Record, Resonite Wiki",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "These links are also associated with Resonite on the operating system level, so clicking a recrec:/// URL in a browser will spawn out the item in-game."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "partial",
+      "note": "Review happens after publication and by hand: the Resonite team reviews copyright claims manually, and nothing stands between an item leaving a creator's folder and another person spawning it. A receiving session learns nothing about what review an arriving item has had.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/DMCA",
+          "title": "DMCA, Resonite Wiki",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Resonite Team, reviews DMCA claims manually."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "Resonite worlds are virtual. There is no map of a real place, so nothing to version or align.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "No world or service in Resonite declares a region of the Earth where it applies.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.extension",
+      "level": "native",
+      "note": "The plugin system declares runtime assemblies and warns that data-model changes require participants to have the same plugins to join.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Special:MyLanguage/Plugins",
+          "title": "Plugins - Resonite Wiki",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "unless they have the same plugins as you"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "native",
+      "note": "UIX defines canvases, fractional anchors and automatic layouts for interfaces.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Special:MyLanguage/UIX",
+          "title": "UIX - Resonite Wiki",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "The Canvas defines the size of the UI."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "native",
+      "note": "GetRawDataToolHit reports raycast hits from a user's tool.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Category:ProtoFlux:Tools",
+          "title": "Category:ProtoFlux:Tools - Resonite Wiki",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "this node will make a raycast and detect hits"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.text",
+      "level": "native",
+      "note": "The UIX TextField component receives text entry and exposes user interaction through ProtoFlux UI nodes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Special:MyLanguage/UIX",
+          "title": "UIX - Resonite Wiki",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "allow the user to enter text within it"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.bounds",
+      "level": "partial",
+      "note": "The official slot-performance documentation describes computing a slot bounding box for gizmos; it does not establish pre-load rejection or spatial indexing.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Special:MyLanguage/Slot_Count",
+          "title": "Slot count - Resonite Wiki",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Computing the bounding box of a slot."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "native",
+      "note": "ProtoFlux exposes playable media controls and SyncPlayback position or speed driving for scene playback.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Category:ProtoFlux:Media",
+          "title": "Category:ProtoFlux:Media - Resonite Wiki",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Forces a SyncPlayback to play at the speed or position provided"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "partial",
+      "note": "Join Verify provides allow and deny responses before a user joins; the captured category does not settle response validity limits or a portable response format.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Category:ProtoFlux:Security",
+          "title": "Category:ProtoFlux:Security - Resonite Wiki",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Prevent a User from joining a world"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "partial",
+      "note": "The official OSC guide names the ofxOscMidi bridge for receiving instrument MIDI as OSC; the captured integration description does not define the resulting typed channel, note and control interface.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Special:MyLanguage/OSC",
+          "title": "OSC - Resonite Wiki",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "convert them to OSC messages which Resonite can understand."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.color",
+      "level": "partial",
+      "confidence": "verified",
+      "note": "ColorX carries color-profile metadata and provides profile conversion nodes; this type page does not establish the complete rendering-surface output-range contract.",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Type:ColorX",
+          "title": "Type:ColorX - Resonite Wiki",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The ColorX type stores a Color along with associated Color Profile information."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "native",
+      "confidence": "verified",
+      "note": "CopyGlobalTransform drives an object's global position and rotation from another slot, with source fields, update order and pre-physics evaluation documented.",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Component:CopyGlobalTransform",
+          "title": "Component:CopyGlobalTransform - Resonite Wiki",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This component also runs before any physics calculations"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.thumbnail",
+      "level": "native",
+      "confidence": "verified",
+      "note": "WorldTextureThumbnailSource attaches a chosen image texture to a world as its thumbnail, avoiding the need for the recipient to render the world for a preview.",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Component:WorldTextureThumbnailSource",
+          "title": "Component:WorldTextureThumbnailSource - Resonite Wiki",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The WorldTextureThumbnailSource specifies a completely customized texture to use for the world thumbnail."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.parametric",
+      "level": "native",
+      "confidence": "verified",
+      "note": "BezierCurve stores controlling curve points and coordinate space and drives a synchronized curve used by BezierTubeMesh; the component can be saved with scene content.",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Component:BezierCurve",
+          "title": "Component:BezierCurve - Resonite Wiki",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "A list of controlling Curve Points."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "native",
+      "confidence": "verified",
+      "note": "The saved ParticleSystem component references emitters and ParticleStyle, with maximum particle count and simulation coordinate space defined.",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Component:ParticleSystem",
+          "title": "Component:ParticleSystem - Resonite Wiki",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The ParticleSystem component acts as the interface between a particle style and one or more particle emitter."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "none",
+      "confidence": "verified",
+      "note": "The official wiki explicitly excludes custom shader programs, including Unity shaders; a future node-based shader plan does not supply a current portable shader language.",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Special:MyLanguage/Custom_Shaders",
+          "title": "Custom shaders - Resonite Wiki",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Resonite currently does not support any form of Custom Shaders."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.consent",
+      "level": "partial",
+      "confidence": "verified",
+      "note": "The early OAuth service requires user consent and named profile/email/offline scopes, but this page does not define complete grant-purpose, expiry and withdrawal records; registration needs manual approval.",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Special:MyLanguage/OAuth",
+          "title": "OAuth - Resonite Wiki",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "OAuth provides a consent based process"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.resolve",
+      "level": "partial",
+      "confidence": "verified",
+      "note": "Assets have URI references and explicit loading behavior; this overview does not specify all context-dependent scheme-resolution rules.",
+      "sources": [
+        {
+          "url": "https://wiki.resonite.com/Type:Uri",
+          "title": "Type:Uri - Resonite Wiki",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "URI is known as a Uniform Resource Identifier, and is used to identify assets and their locations"
+        }
+      ],
+      "direction": "read"
+    }
+  ]
+}

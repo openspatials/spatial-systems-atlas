@@ -1,0 +1,2580 @@
+{
+  "subject_id": "marble",
+  "summary": "Marble is World Labs' hosted generative world model and the product built on it: give it a sentence, one or several photographs, a 360 panorama, a short video or a coarse block-out you draw in its own modelling tool, and about five minutes later you get back a three-dimensional place you can walk around in a browser. The place is stored as several million three-dimensional Gaussian splats, which the vendor calls its highest-fidelity form, and it can also be handed over as a coarse mesh for physics, as two higher-quality meshes for drawing, as a panorama, or as a recorded video. It can be edited by describing the change, grown past its original edges, varied by changing a seed, and several worlds can be placed beside one another into a larger one. Everything else a shared world needs is absent by design: no session, no participants, no identity, no rules, no sound and no position on the Earth, which is why fifty-eight of the eighty-nine rows here are honestly out of scope. Two traps matter for a standards audience. The first is that Marble writes an open splat format in a coordinate frame that format does not expect, corrects for it in its own viewer, and describes the frame three different ways across three of its own pages - so a conforming reader gets an upside-down world. The second is that the words reconstruct, generate and simulate are used together in the vendor's own framing, while what actually ships simulates nothing: it produces a static asset for someone else's engine to run, and the vendor's own writing places interactivity in the future.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "out-of-scope",
+      "note": "Marble is a hosted generative service and a web viewer, not a renderer: it publishes no pass structure, no render graph and no rasterisation rules. The renderer it names, for its own site and for everyone else, is Spark, a separate MIT-licensed library built on three.js.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/api/examples",
+          "title": "Tools and examples, World API documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "SparkJS is a high-performance 3D Gaussian splatting renderer built on top of THREE.js."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/gaussian-splat/spark",
+          "title": "Exporting to dev frameworks, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "It is also what our own website is built off of, so you'll have the most native experience utilitizing this library."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "out-of-scope",
+      "note": "Marble targets no graphics interface of its own. Its worlds are viewed in a browser, and the renderer World Labs ships for that job aims at the web's graphics interface across as many devices as it can reach.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/sparkjsdev/spark",
+          "title": "Spark, World Labs' Gaussian splat renderer for three.js, project README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Portable: Works across almost all devices, targeting 98%+ WebGL2 support"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "none",
+      "note": "Nothing Marble produces carries a material. Appearance is baked into the splats as semitransparent particles; the highest-fidelity mesh carries texture images and the other carries vertex colours, and neither is a material description a second renderer could evaluate.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.worldlabs.ai/blog/marble-world-model",
+          "title": "Marble: A Multimodal World Model, World Labs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "They represent 3D scenes as a large set of semitransparent particles."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs",
+          "title": "Export file specs, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "One glb around 600k triangles, with texture information"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "none",
+      "note": "Light is baked in at generation time and no light description leaves the service. The vendor's own guidance treats relighting as a third-party plug-in problem, naming a paid path-tracer as the way to get shadows, global illumination and reflection with its splats.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/gaussian-splat/blender",
+          "title": "Exporting to Blender, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Octane enables support for shadows, global illumination, and reflection/refraction with splats, producing more cohesive results when combining Marble worlds with other traditional assets."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/gaussian-splat/blender",
+          "title": "Exporting to Blender, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This plugin also give you a little bit of lighting interaction where splats can produce lighting onto viewport meshes."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.post",
+      "level": "none",
+      "note": "There is no post-process chain and nothing to configure. What exists is Enhance, a second generative pass over an already-recorded video, which is a different act from an effect applied after a render pass.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/create/studio-tools/record",
+          "title": "Record, Marble Studio documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Enhance applies post-processing effects like improved lighting, color grading, and visual effects to make your video look more professional and cinematic."
+        },
+        {
+          "url": "https://www.worldlabs.ai/blog/marble-world-model",
+          "title": "Marble: A Multimodal World Model, World Labs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Enhanced videos can add detail, remove artifacts, and add dynamic elements to the scene, while maintaining pixel-perfect camera control and adhering to the structure of the generated 3D world."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "partial",
+      "note": "Detail levels exist as whole-scene alternates: about two million splats, about five hundred thousand, and, through the export interface, one hundred and fifty or one hundred thousand; Studio renders compositions through a level-of-detail backend. What is missing is the interoperability half - no per-region detail, no streaming order, and nothing that tells a receiver what to fetch first.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs",
+          "title": "Export file specs, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Splat-based format optimized for Marble's rendering system, about 500k splats"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/api/reference/openapi.yaml",
+          "title": "Marble Public API v1, OpenAPI 3.1 specification",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "description: Splat resolution to convert when exporting splats as PLY."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/release-notes",
+          "title": "Release notes, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Marble Studio now supports editing and composing significantly larger worlds using a new Level-of-Detail splat-rendering backend."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "native",
+      "note": "This is the one row Marble owns outright. A Marble world is a set of three-dimensional Gaussian splats, which the vendor states is its highest-fidelity representation, viewed in its own browser viewer and exported as files other runtimes can draw. The support runs outward only: Marble writes splats, and the documentation describes no path for loading a splat file made anywhere else.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://www.worldlabs.ai/blog/marble-world-model",
+          "title": "Marble: A Multimodal World Model, World Labs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Gaussian splats are the highest-fidelity representation for Marble worlds."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs",
+          "title": "Export file specs, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Splat-based format optimized for Marble's rendering system, about 2M splats"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/mesh",
+          "title": "Mesh export, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Meshes are derived from the world, while the Gaussian splat is Marble's highest-fidelity representation, so some reconstruction artifacts are expected."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "out-of-scope",
+      "note": "Marble emits splats and triangle meshes. Nothing it produces is a point cloud, a voxel grid or volumetric video, and it defines no way to draw one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.worldlabs.ai/blog/marble-world-model",
+          "title": "Marble: A Multimodal World Model, World Labs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Marble can export generated worlds as Gaussian splats or triangle meshes"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs",
+          "title": "Export file specs, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "coarse mesh optimized for simple physics calculations"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "out-of-scope",
+      "note": "Marble neither lays out nor draws text in three dimensions. Text is an input to generation - a prompt of up to two thousand characters - not something the world carries.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/create/prompt-guides/index",
+          "title": "Prompt guidelines, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Up to 2,000 characters"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "partial",
+      "note": "Marble has a real camera model in one place only: Studio's Record tool, with keyframes, a timeline, a visible frustum and field-of-view keys. It is not a portable viewpoint definition - the trajectory is lost when the page is left, the only output is a video file, and the generation interface takes no camera argument at all.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/create/studio-tools/record",
+          "title": "Record, Marble Studio documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The Camera frustum (yellow wireframe cone) shows exactly what your camera sees at each moment, including the field of view and viewing direction."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/create/studio-tools/record",
+          "title": "Record, Marble Studio documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Currently the trajectory does not persist. You WILL lose the keyframes when you leave the page."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/create/studio-tools/record",
+          "title": "Record, Marble Studio documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "What file formats can I export?"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "partial",
+      "note": "Studio's composition surface has a tree - a scene panel, a layer panel that controls visibility per world, and parent-child nodes whose visibility cascades. None of it leaves the service: no exported file carries the tree, so the graph is an editing convenience rather than an interchange structure.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/create/studio-tools/compose",
+          "title": "Compose, Marble Studio documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The Layer panel lets you organize and manage the visibility of different worlds in your composition."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/release-notes",
+          "title": "Release notes, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Fixed an issue with visibility not cascading into child nodes in Studio"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "conflicts",
+      "note": "Marble writes files in an open splat format but not in that format's frame. The format stores right-up-back by default, following the graphics and three.js convention; Marble's generated files declare a raw computer-vision frame, and Marble's own viewer corrects for it with a half-turn about the X axis before drawing. A conforming reader that follows the format therefore renders a Marble world upside down, which is exactly the question the vendor's own export page answers. Worse for a reader trying to comply, three vendor pages disagree: a release note says exports moved to the graphics frame in December 2025, the export specification page still states the computer-vision frame, and the developer page names a raw computer-vision convention for generated files.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nianticlabs/spz",
+          "title": "spz, the compressed Gaussian splat file format Marble writes, project README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "By default, SPZ stores data in an RUB coordinate system following the OpenGL and three.js convention."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/api/rendering-spz",
+          "title": "Rendering Marble SPZ files in third-party engines, World API documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Generated Marble SPZ assets use the `marble_raw_opencv` convention."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/api/rendering-spz",
+          "title": "Rendering Marble SPZ files in third-party engines, World API documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Marble's web viewer applies a 180 degree rotation around the X axis for generated SPZ assets."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs",
+          "title": "Export file specs, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Default world labs worlds are in OpenCV coordinate system (+x left, +y down, +z forward)."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/release-notes",
+          "title": "Release notes, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "World generations now export in the OpenGL coordinate system (previously OpenCV) for both splats and meshes."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "partial",
+      "note": "Marble carries scenes in other people's containers and defines none of its own. It reads glTF binary and Filmbox files as coarse three-dimensional input to Chisel, and writes splats as SPZ or PLY and meshes as glTF binary. There is no single file for a Marble world: what a recipient gets is several separate downloads with no manifest tying them together.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/create/prompt-guides/index",
+          "title": "Prompt guidelines, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "3D structure uploads (\"Chisel\" import)"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/create/prompt-guides/index",
+          "title": "Prompt guidelines, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Supported formats: glb, fbx"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/api/reference/openapi.yaml",
+          "title": "Marble Public API v1, OpenAPI 3.1 specification",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "description: Requested export format."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs",
+          "title": "Export file specs, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Splat file with broader software compatibility, about 2M splats"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "partial",
+      "note": "Meshes come out as glTF binary at three stated budgets - a collider of one to two hundred thousand triangles, a textured mesh of about six hundred thousand, and a vertex-coloured mesh of about a million - and Chisel takes uploaded geometry in. Marble specifies no encoding or compression of its own; it inherits whatever the container gives it, and the vendor tells users the coarse mesh is not for drawing.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs",
+          "title": "Export file specs, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "100-200k triangles"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/mesh",
+          "title": "Mesh export, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Collider meshes are optimized for physics interactions and have simplified geometry."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/mesh",
+          "title": "Mesh export, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Download detailed meshes, one around 600k triangles and texture maps, another around 1M triangles with vertex colors."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "partial",
+      "note": "The high-quality mesh carries texture images and the panorama comes out as a fixed-size equirectangular image. Nothing is said about colour space, and no device-ready compressed texture format is offered, so a runtime must re-encode before it can put these on a mobile graphics processor.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs",
+          "title": "Export file specs, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Equirectangular png of 2560 x 1280 pixels"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/mesh",
+          "title": "Mesh export, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "High-quality meshes include detailed geometry (around 600k triangles), and texture maps"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "none",
+      "note": "No material definition crosses the boundary in either direction. Splats bake appearance into per-particle colour, and where a receiving engine needs a material the vendor's guidance is to edit that engine's material by hand - swapping a blend mode inside a particle system to make depth of field work.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/gaussian-splat/unreal",
+          "title": "Exporting to Unreal Engine, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "You can change the splat material from translucent to masked with AA Temporal Dither."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs",
+          "title": "Export file specs, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Another glb around 1M triangles, with vertex colors"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "none",
+      "note": "Nothing in a Marble world moves, and the one animation Marble does author - a camera path in Record - is explicitly not saved and leaves only as a video file. So there is no animation to encode and no way to carry one out.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/create/studio-tools/record",
+          "title": "Record, Marble Studio documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Currently the trajectory does not persist. You WILL lose the keyframes when you leave the page."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/create/studio-tools/record",
+          "title": "Record, Marble Studio documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A mp4 video."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "out-of-scope",
+      "note": "Marble generates places, not bodies. No bone hierarchy is authored, carried or read; the vendor directs users who want characters to a separate renderer.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/support/faq",
+          "title": "FAQ, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Currently, this can be done by exporting to Spark or other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "out-of-scope",
+      "note": "No shape deformation of any kind. Marble's editing acts on whole regions of a world by regenerating them from a prompt, not by deforming stored geometry.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/edit/pano-edit",
+          "title": "Pano edit, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Use Pano Edit to modify existing worlds by editing their 360° panoramic representation."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "out-of-scope",
+      "note": "There are no repeated objects to instance. A generated world is one undifferentiated field of splats plus a derived mesh; the model does not emit objects at all.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/mesh",
+          "title": "Mesh export, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Meshes are derived from the world, while the Gaussian splat is Marble's highest-fidelity representation, so some reconstruction artifacts are expected."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "partial",
+      "note": "Studio's Compose places, rotates and scales whole worlds into one larger environment against a splat budget, and meshes can be brought in too. It is composition by placement only: there is no referencing of external content, no override of a referenced part, no layer semantics, and the composition itself is not published in any format a second tool could read.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/create/studio-tools/compose",
+          "title": "Compose, Marble Studio documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Use Studio Compose to connect multiple existing worlds into larger, seamless environments."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/create/studio-tools/compose",
+          "title": "Compose, Marble Studio documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Monitor splats: Keep track of your splat usage (500,000 / 2,000,000 limit shown)"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/release-notes",
+          "title": "Release notes, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Meshes can now be imported into Composer"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "partial",
+      "note": "Every world now comes back with two numbers that put it in metres and stand its ground plane at zero, which is more than most generative systems offer. It is partial because the vendor calls the result rough, the asset itself is in arbitrary units until the numbers are applied, and a value of one means the scale could not be worked out at all and is not flagged as a failure anywhere else in the response.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/api/faq",
+          "title": "Frequently asked questions, World API documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Generated splat assets are exported in arbitrary model units, not meters."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/api/reference/openapi.yaml",
+          "title": "Marble Public API v1, OpenAPI 3.1 specification",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Multiplicative factor that converts raw asset coordinates to meters. Multiply all XYZ positions (and isotropic scales) by this value. A value of 1.0 means scale could not be inferred and the asset was left in model units."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/release-notes",
+          "title": "Release notes, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Assets are now roughly scaled and grounded to better match real-world units"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "none",
+      "note": "What a recipient may do with a Marble world is decided by the account tier that generated it and is written in the terms of service, not in the file. A free account's output may be used only for non-commercial purposes and a paid account's may be used commercially, and the status is fixed at the moment of generation - but nothing in the splat file, the mesh or the interface response records which of those applies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.worldlabs.ai/terms-of-service",
+          "title": "World Labs Terms of Service",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "World Labs retains all rights in and to any Output generated by Free Account Users, excluding any portion of User Inputs incorporated into the Output."
+        },
+        {
+          "url": "https://www.worldlabs.ai/terms-of-service",
+          "title": "World Labs Terms of Service",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Output generated while an Account has Free Account status remains subject to Section 3.3(a). Output generated while an Account has Paid Account status remains subject to Sections 3.3(b) and (d). Account status is determined at the time of Output generation."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "none",
+      "note": "There is no signed record of who made a world or how. The terms imply some marking may be embedded and forbid removing it, and paid users may be asked to credit the service in public use, but no machine-readable provenance format is named anywhere in the documentation or the interface.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.worldlabs.ai/terms-of-service",
+          "title": "World Labs Terms of Service",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Users shall not remove, obscure, or alter any proprietary notices, watermarks, or attribution indicators embedded in Outputs by World Labs."
+        },
+        {
+          "url": "https://www.worldlabs.ai/terms-of-service",
+          "title": "World Labs Terms of Service",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "upon World Labs' reasonable request, Paid Account Users shall include attribution to World Labs as the service provider"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "out-of-scope",
+      "note": "Marble makes places, not people. Its own answer to the question of characters is to leave the product: take the world elsewhere and add them there.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/support/faq",
+          "title": "FAQ, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "How can I insert characters?"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/support/faq",
+          "title": "FAQ, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Currently, this can be done by exporting to Spark or other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "out-of-scope",
+      "note": "No avatar skeleton is defined, read or written, for the same reason: no avatars.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/support/faq",
+          "title": "FAQ, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "How can I insert characters?"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/support/faq",
+          "title": "FAQ, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Currently, this can be done by exporting to Spark or other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "out-of-scope",
+      "note": "No faces, no visemes, no named expressions anywhere in the model or the service.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/support/faq",
+          "title": "FAQ, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "How can I insert characters?"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/support/faq",
+          "title": "FAQ, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Currently, this can be done by exporting to Spark or other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "out-of-scope",
+      "note": "Nothing to retarget: Marble authors no animation and no bodies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/support/faq",
+          "title": "FAQ, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "How can I insert characters?"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/support/faq",
+          "title": "FAQ, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Currently, this can be done by exporting to Spark or other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "out-of-scope",
+      "note": "No attachment points and no worn items, since there is no body to attach to.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/support/faq",
+          "title": "FAQ, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "How can I insert characters?"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/support/faq",
+          "title": "FAQ, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Currently, this can be done by exporting to Spark or other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "out-of-scope",
+      "note": "Marble's detail levels apply to a whole scene of splats. It has no avatars, so it has no reduced form of one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs",
+          "title": "Export file specs, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Splat-based format optimized for Marble's rendering system, about 500k splats"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "out-of-scope",
+      "note": "No avatar exists to bind to an identity.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/support/faq",
+          "title": "FAQ, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "How can I insert characters?"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/support/faq",
+          "title": "FAQ, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Currently, this can be done by exporting to Spark or other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "out-of-scope",
+      "note": "Marble simulates nothing, despite the word appearing in its own first sentence. A generated world is a static asset and the physics is expected to happen in whatever engine receives it, which is precisely why the service ships a mesh whose only job is to be collided with. Simulation is what the vendor's next model is for, and that model does not power Marble yet.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/index",
+          "title": "Welcome to Marble, World Labs Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Marble is the first product from World Labs and is powered by our multimodal world models that can reconstruct, generate, and simulate 3D worlds."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/mesh",
+          "title": "Mesh export, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "You can export collider mesh along with a splat to provide simple physics for games."
+        },
+        {
+          "url": "https://www.worldlabs.ai/blog/atlas",
+          "title": "Atlas: A World Model for Spatial Intelligence, World Labs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Atlas will power future versions of Marble and other products from World Labs."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "partial",
+      "note": "One real contribution, in one direction. Marble derives a coarse triangle mesh of one to two hundred thousand triangles whose stated purpose is physics, and hands it over as glTF binary alongside the splats. It stops there: no collision primitives, no convex decomposition, no surface classification, and the vendor warns the mesh must never be drawn.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs",
+          "title": "Export file specs, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "coarse mesh optimized for simple physics calculations"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/mesh",
+          "title": "Mesh export, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Can I use collider meshes for visual rendering?"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/api/reference/openapi.yaml",
+          "title": "Marble Public API v1, OpenAPI 3.1 specification",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "description: Collider mesh URL"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "out-of-scope",
+      "note": "No bodies, therefore no links between them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/mesh",
+          "title": "Mesh export, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "You can export collider mesh along with a splat to provide simple physics for games."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.material",
+      "level": "out-of-scope",
+      "note": "The collider carries geometry and nothing else - no friction, no restitution, no per-surface response.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs",
+          "title": "Export file specs, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "coarse mesh optimized for simple physics calculations"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.determinism",
+      "level": "out-of-scope",
+      "note": "There is no simulation to reproduce. The service does expose a seed, but it governs which world gets generated, not how a world behaves once it exists.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/api/reference/worlds/generate",
+          "title": "Generate a world, World API reference",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The world generation request containing world_prompt, display_name, tags, model, seed, and permission settings."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/edit/variations",
+          "title": "Variations, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Each new seed introduces randomized background variations."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "out-of-scope",
+      "note": "Nothing deformable is modelled or exported.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs",
+          "title": "Export file specs, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "coarse mesh optimized for simple physics calculations"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "out-of-scope",
+      "note": "No event regions and no event model; a Marble world fires nothing.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/mesh",
+          "title": "Mesh export, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "You can export collider mesh along with a splat to provide simple physics for games."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "out-of-scope",
+      "note": "A Marble world carries no sound. Where the vendor's own sample project has positioned audio, that audio comes from the three.js and physics stack the sample is built on, not from anything Marble produced.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/api/interactive-world-examples",
+          "title": "Interactive World Examples, World API documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "It includes first-person controls, projectile collisions, animated characters, spatial audio, and a debug view for the collision mesh."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "out-of-scope",
+      "note": "No spatialisation model is defined or emitted.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/api/interactive-world-examples",
+          "title": "Interactive World Examples, World API documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "It includes first-person controls, projectile collisions, animated characters, spatial audio, and a debug view for the collision mesh."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "out-of-scope",
+      "note": "Marble generates rooms in the visual sense and says nothing about how they would sound; no acoustic description is produced.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/api/interactive-world-examples",
+          "title": "Interactive World Examples, World API documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "It includes first-person controls, projectile collisions, animated characters, spatial audio, and a debug view for the collision mesh."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "out-of-scope",
+      "note": "No acoustic occlusion, since there is no audio model to occlude.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/api/interactive-world-examples",
+          "title": "Interactive World Examples, World API documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "It includes first-person controls, projectile collisions, animated characters, spatial audio, and a debug view for the collision mesh."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "out-of-scope",
+      "note": "No audio is delivered. The only timed media Marble produces is a video file the user downloads.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/create/studio-tools/record",
+          "title": "Record, Marble Studio documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A mp4 video."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "out-of-scope",
+      "note": "There is no session and no participants, so there is no voice to carry.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/api/interactive-world-examples",
+          "title": "Interactive World Examples, World API documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "It includes first-person controls, projectile collisions, animated characters, spatial audio, and a debug view for the collision mesh."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "out-of-scope",
+      "note": "Nobody is ever in a Marble world at the same time as anybody else. Marble makes an asset; it runs no shared session, so there is no state to replicate.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/index",
+          "title": "Welcome to Marble, World Labs Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Marble helps you create high-fidelity, persistent 3D worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "out-of-scope",
+      "note": "No shared session means no contested objects and no authority model.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/index",
+          "title": "Welcome to Marble, World Labs Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Marble helps you create high-fidelity, persistent 3D worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "out-of-scope",
+      "note": "There are no clients to filter for. Detail selection here is a choice of which whole file to download, not a per-client view of a running world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs",
+          "title": "Export file specs, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Splat-based format optimized for Marble's rendering system, about 500k splats"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.prediction",
+      "level": "out-of-scope",
+      "note": "No live traffic and no latency to hide.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/index",
+          "title": "Welcome to Marble, World Labs Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Marble helps you create high-fidelity, persistent 3D worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "out-of-scope",
+      "note": "The only wire protocol here is an ordinary request-and-response interface over the web with a key in a header, and long jobs are followed by polling. That is service access, not session traffic.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/api/reference/openapi.yaml",
+          "title": "Marble Public API v1, OpenAPI 3.1 specification",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "description: World API url: https://api.worldlabs.ai"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/api/reference/openapi.yaml",
+          "title": "Marble Public API v1, OpenAPI 3.1 specification",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "name: WLT-Api-Key"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.media",
+      "level": "out-of-scope",
+      "note": "No live media is carried. A recorded flythrough is downloaded as a file after it has been produced.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/create/studio-tools/record",
+          "title": "Record, Marble Studio documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A mp4 video."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "out-of-scope",
+      "note": "There is no world to join. Authentication exists, but it authenticates a caller to a generation service, not a participant to a place.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/api/reference/openapi.yaml",
+          "title": "Marble Public API v1, OpenAPI 3.1 specification",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "description: API key for authentication. Get your key from the developer portal."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "out-of-scope",
+      "note": "No portaling and no arriving with state. Joining two worlds happens at authoring time, by placing one next to the other in an editor.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/create/studio-tools/compose",
+          "title": "Compose, Marble Studio documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Use Studio Compose to connect multiple existing worlds into larger, seamless environments."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "out-of-scope",
+      "note": "Nothing tracks who is where, because nobody is anywhere.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/index",
+          "title": "Welcome to Marble, World Labs Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Marble helps you create high-fidelity, persistent 3D worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "partial",
+      "note": "Every world has an identifier and a stable web address at that identifier, shareable as a link and as a headset link, with per-world visibility settings behind it. It is a product URL, not an addressing scheme: there is no name to resolve, no way to reach a world outside this one operator, and no notion of a destination beyond a page in this viewer.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/api/index",
+          "title": "Quickstart, World API documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "You can view the generated world in Marble at `https://marble.worldlabs.ai/world/{world_id}`."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/support/faq",
+          "title": "FAQ, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Click on your world card to open the preview, then use the \"Copy link\" button to share a web link that others can view in their browser."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/api/reference/openapi.yaml",
+          "title": "Marble Public API v1, OpenAPI 3.1 specification",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "description: Access control permissions for a resource."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "partial",
+      "note": "Two discovery surfaces exist and both stop at the service boundary: a community gallery for people, and a list interface for programs, with filters on tags, visibility, model and time plus paging. Neither can find anything that is not a World Labs world, and nothing outside can query them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/index",
+          "title": "Welcome to Marble, World Labs Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Gallery - Browse and explore worlds created by the community, discover inspiration, and access your own created worlds"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/api/reference/worlds/list",
+          "title": "List worlds, World API reference",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "- tags: Filter by tags (matches worlds with any tag)"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "out-of-scope",
+      "note": "No shared clock and no ordering problem: the only timestamps are the creation and expiry times of a generation job.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/api/reference/openapi.yaml",
+          "title": "Marble Public API v1, OpenAPI 3.1 specification",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "description: Expiration timestamp"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "out-of-scope",
+      "note": "Identity here is an account and a service key. Marble defines no identifier for a person, agent or thing that any other party could use.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/api/reference/openapi.yaml",
+          "title": "Marble Public API v1, OpenAPI 3.1 specification",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "description: API key for authentication. Get your key from the developer portal."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "out-of-scope",
+      "note": "No verifiable claims are expressed or consumed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/api/reference/openapi.yaml",
+          "title": "Marble Public API v1, OpenAPI 3.1 specification",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "description: API key for authentication. Get your key from the developer portal."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "out-of-scope",
+      "note": "No credential presentation protocol; the only exchange is a key in a request header.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/api/reference/openapi.yaml",
+          "title": "Marble Public API v1, OpenAPI 3.1 specification",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "name: WLT-Api-Key"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "partial",
+      "note": "There is a real permission object on every world - public or not, reachable by identifier or not, with named readers and named writers. It fails the second half of the definition: the grant lives inside one operator's service, is enforced only there, and no party that did not issue it can read or verify it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/api/reference/openapi.yaml",
+          "title": "Marble Public API v1, OpenAPI 3.1 specification",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "description: Access control permissions for a resource."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/api/reference/openapi.yaml",
+          "title": "Marble Public API v1, OpenAPI 3.1 specification",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "title: Allowed Writers"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/api/reference/worlds/list",
+          "title": "List worlds, World API reference",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "- is_public: Filter by visibility (true=public, false=private, null=all)"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "out-of-scope",
+      "note": "Nothing is disclosed selectively, because no claims travel with a world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/api/reference/openapi.yaml",
+          "title": "Marble Public API v1, OpenAPI 3.1 specification",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "description: Access control permissions for a resource."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.social",
+      "level": "out-of-scope",
+      "note": "A public gallery is not a social graph: no relationships are modelled and nothing about standing is portable.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/index",
+          "title": "Welcome to Marble, World Labs Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Gallery - Browse and explore worlds created by the community, discover inspiration, and access your own created worlds"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "partial",
+      "note": "Licence terms genuinely are acted on at the point of use, but only inside this service: the free tier cannot export at all, splat and collider export needs the standard tier, high-quality mesh export and commercial rights need the tier above, and a mesh can only be built for a world the caller owns. Once a file is downloaded, nothing enforces or even records any of it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/gaussian-splat/index",
+          "title": "Exporting from Marble",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The Free plan can generate worlds but not export them."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/support/account-billing",
+          "title": "Subscriptions and billing, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Exporting high-quality textured meshes"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/support/account-billing",
+          "title": "Subscriptions and billing, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Includes commercial rights to generated worlds"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs",
+          "title": "Export file specs, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "You can only generate high quality mesh on worlds you own"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "out-of-scope",
+      "note": "A generated world sits nowhere on Earth. Even when the input is photographs of a real place, what comes back is a world with elements of that place and no position or orientation against the planet.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.worldlabs.ai/blog/marble-world-model",
+          "title": "Marble: A Multimodal World Model, World Labs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Marble can input a few photos or a short video depicting a real-world location from different angles, and it will combine them to generate a 3D world with elements of the real-world space."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "out-of-scope",
+      "note": "The only frame Marble names is a local one: metres, with the ground plane at zero. There is no geographic reference system anywhere in the product.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/api/faq",
+          "title": "Frequently asked questions, World API documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "`ground_plane_offset`: after scaling, subtract this from the Y coordinate to place the ground plane at y=0."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "out-of-scope",
+      "note": "Nothing is fixed to a place on a device; Marble never runs on the device that sees the real world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.worldlabs.ai/blog/marble-world-model",
+          "title": "Marble: A Multimodal World Model, World Labs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Marble can input a few photos or a short video depicting a real-world location from different angles, and it will combine them to generate a 3D world with elements of the real-world space."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "out-of-scope",
+      "note": "No anchors of any kind, so none that persist across devices or sessions.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.worldlabs.ai/blog/marble-world-model",
+          "title": "Marble: A Multimodal World Model, World Labs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Marble can input a few photos or a short video depicting a real-world location from different angles, and it will combine them to generate a 3D world with elements of the real-world space."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.vps",
+      "level": "out-of-scope",
+      "note": "Marble takes camera imagery of a real place and returns a world, which looks adjacent to visual positioning and is not it: no pose is recovered and nothing is localised. This is the clearest case on the map of a subject that consumes the same input as a positioning service and answers a different question.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.worldlabs.ai/blog/marble-world-model",
+          "title": "Marble: A Multimodal World Model, World Labs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Marble can input a few photos or a short video depicting a real-world location from different angles, and it will combine them to generate a 3D world with elements of the real-world space."
+        },
+        {
+          "url": "https://www.worldlabs.ai/blog/announcing-the-world-api",
+          "title": "Announcing the World API, World Labs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Each request returns a navigable 3D world that captures layout, depth, lighting, and spatial structure"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "out-of-scope",
+      "note": "There is no tiling. Large worlds are made by generating several and placing them beside each other in an editor, and the result is still whole files.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/create/studio-tools/compose",
+          "title": "Compose, Marble Studio documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Use Studio Compose to connect multiple existing worlds into larger, seamless environments."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.indoor",
+      "level": "none",
+      "note": "This is the sharpest gap in the subject. Interiors are Marble's core case and its Chisel input is literally walls and rooms, but nothing structured comes back: the output is splats, a triangle soup and a panorama, with no rooms, no openings, no storeys and no labels. The structure the user drew going in is not in what comes out.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/create/chisel-tools/chisel-basics",
+          "title": "Chisel basics, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The wall tool (X key) specifically creates vertical wall segments, perfect for defining room boundaries and architectural elements."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs",
+          "title": "Export file specs, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "coarse mesh optimized for simple physics calculations"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/create/studio-tools/compose",
+          "title": "Compose, Marble Studio documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Marble's image and Auto Layout inputs reconstruct a single space, so a whole house comes together by generating each room on its own and joining them here."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "partial",
+      "note": "A world can be opened in a headset from a link, which is a real immersive session and the only one Marble offers. Nothing else about it is specified: no session interface, no named device runtime, no reference frame negotiation, and no statement of what happens when the session ends.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/support/faq",
+          "title": "FAQ, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Open your world card and use the \"Copy VR link\" button to get a VR-compatible link, or click the VR icon to open the world directly in your VR headset."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "out-of-scope",
+      "note": "Marble reads keyboard and mouse in its own editors and defines no controller input at all.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/create/studio-tools/record",
+          "title": "Record, Marble Studio documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Navigate your 3D world while setting up animations"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "out-of-scope",
+      "note": "No hand tracking is consumed or produced.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/create/studio-tools/record",
+          "title": "Record, Marble Studio documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Navigate your 3D world while setting up animations"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.eye",
+      "level": "out-of-scope",
+      "note": "No gaze input, and no privacy statement about one, because there is none.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/create/studio-tools/record",
+          "title": "Record, Marble Studio documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Navigate your 3D world while setting up animations"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "out-of-scope",
+      "note": "No touch feedback anywhere in the product.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/create/studio-tools/record",
+          "title": "Record, Marble Studio documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Navigate your 3D world while setting up animations"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "out-of-scope",
+      "note": "Device differences are handled in prose for humans - some features do not work on a phone - rather than by anything a client could query.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/index",
+          "title": "Welcome to Marble, World Labs Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Marble is available on the web for both desktop and mobile."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "out-of-scope",
+      "note": "There is no world runtime and therefore no language for world rules. The only programmable surface is the generation interface, which makes worlds rather than running them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.worldlabs.ai/blog/announcing-the-world-api",
+          "title": "Announcing the World API, World Labs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The World API turns world creation into a programmable capability"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "out-of-scope",
+      "note": "No declarative interactivity travels with a world; nothing in the exported files can describe what should happen when something is touched.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs",
+          "title": "Export file specs, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "coarse mesh optimized for simple physics calculations"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "out-of-scope",
+      "note": "Marble runs no guest content, so it has nothing to isolate. Its safety surface is content policy applied to inputs before generation starts.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/api/errors",
+          "title": "Errors and troubleshooting, World API documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A prompt or input image or video can be rejected for content-policy reasons, also as a `400`."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "none",
+      "note": "This is the row a standards audience should read most carefully. The vendor's framing is that agents will act in generated worlds, and its own writing puts that in the future while robotics work happens by exporting the world into someone else's simulator. Nothing runs inside a Marble world today: no agent interface, no action space, no state to observe.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.worldlabs.ai/blog/marble-world-model",
+          "title": "Marble: A Multimodal World Model, World Labs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Going forward, a key opportunity is interactivity"
+        },
+        {
+          "url": "https://www.worldlabs.ai/blog/announcing-the-world-api",
+          "title": "Announcing the World API, World Labs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Humans and agents can reason, interact, and collaborate inside generated spaces"
+        },
+        {
+          "url": "https://www.worldlabs.ai/blog/announcing-the-world-api",
+          "title": "Announcing the World API, World Labs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "In robotics and embodied AI, progress is limited by the lack of training data and plausible evaluation environments."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "out-of-scope",
+      "note": "There is no guest content to bound. What the service does bound is the caller: start-rate limits of roughly three requests a minute by default, and a credit cost per generation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/api/rate-limits",
+          "title": "Rate limits, World API documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "About 3 requests per minute and 60 requests per hour"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/api/pricing",
+          "title": "Pricing, World API documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "World generation | 1,500"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "partial",
+      "note": "Worlds are durable: the service calls them persistent, each one is an owned record that can be listed, fetched by identifier and permanently deleted, and every edit makes a new version while keeping the old. What is absent is the thing the row is really asking about - there is no running world with mutable state, so nothing survives a restart because nothing was ever live.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/index",
+          "title": "Welcome to Marble, World Labs Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Marble helps you create high-fidelity, persistent 3D worlds."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/edit/pano-edit",
+          "title": "Pano edit, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Each edit creates a new version while preserving the original."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/api/reference/worlds/delete",
+          "title": "Delete a world, World API reference",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Permanently deletes a world and its associated assets."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "out-of-scope",
+      "note": "No items and no holders. A user has a library of worlds, which is an account listing, not an inventory that could travel.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/api/reference/worlds/list",
+          "title": "List worlds, World API reference",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Returns worlds created through the API with optional filtering and pagination."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "out-of-scope",
+      "note": "Settings exist and stay inside the account - an export preference for which kind of high-quality mesh to produce, for instance. None of it is a portable user preference and none of it follows the user anywhere.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/release-notes",
+          "title": "Release notes, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Customize export preferences for high-quality meshes (vertex-colored vs textured)"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "none",
+      "note": "Everything is addressed by location and by identifier, never by content. Worlds carry generated identifiers, downloads arrive as signed links that expire, and no hash of any asset appears anywhere in the interface - so two parties cannot agree they hold the same world without comparing bytes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/api/faq",
+          "title": "Frequently asked questions, World API documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "PLY conversions usually return with `done: true` and a signed download URL in `response.url`."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/api/reference/openapi.yaml",
+          "title": "Marble Public API v1, OpenAPI 3.1 specification",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "description: Download URL for the exported asset"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/api/reference/openapi.yaml",
+          "title": "Marble Public API v1, OpenAPI 3.1 specification",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "description: Expiration timestamp"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "none",
+      "note": "A Marble world is not packaged. It arrives as separate downloads - splats at several resolutions, up to three meshes, a panorama, a thumbnail and a written caption - with no manifest, no index and nothing that says which files belong to the same world beyond the identifier in the response that listed them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/api/index",
+          "title": "Quickstart, World API documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "`assets.mesh.hq_mesh_url`: High-quality textured mesh in GLB format, once exported"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/api/index",
+          "title": "Quickstart, World API documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "`assets.caption`: AI-generated description of the world"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs",
+          "title": "Export file specs, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Equirectangular png of 2560 x 1280 pixels"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "partial",
+      "note": "Assets are served from a content network on signed links, and the vendor publishes a set of example exports at fixed addresses for people to test against. It is partial because the delivery contract is not described anywhere: the links expire, and nothing states caching, range or resumption behaviour.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs",
+          "title": "Export file specs, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "https://wlt-ai-cdn.art/example_exports/rustic_kitchen_with_natural_light/rustic_kitchen_with_natural_light_2m.spz"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/api/faq",
+          "title": "Frequently asked questions, World API documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "PLY conversions usually return with `done: true` and a signed download URL in `response.url`."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "partial",
+      "note": "Versioning is real on two axes and missing on a third. Models are named and versioned, with a documented legacy naming that is being withdrawn and a documented plan to change which model is the default; the splat format has versions, with one shipped by default and another available on request. The world record itself carries no version, so a receiver cannot tell whether the file in hand predates a change such as the December 2025 frame switch.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/api/models",
+          "title": "Models, World API documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The API still supports the legacy `model` value for Marble 1.0 models. Support for these legacy values will be removed in a future release."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/api/models",
+          "title": "Models, World API documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The API currently supports a default model of `marble-1.0` if no model is specified in order to maintain compability. This will change in a future release to default to `marble-1.1`."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/release-notes",
+          "title": "Release notes, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "SPZ splats in Studio now export by default in SPZ v2 format (v3 still available as opt-in)."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "none",
+      "note": "Nothing proves an implementation matches anything. The vendor publishes example scenes and export files to try, which is a sample set rather than a test suite: no expected results, no pass criterion, and no specification for anything to conform to.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs",
+          "title": "Export file specs, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Here we provide a few example scenes and export files to test against."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/gaussian-splat/index",
+          "title": "Exporting from Marble",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Here is a non-exhaustive subset of tools and platforms that we've either tested ourselves or received positive feedback from our user community about."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "native",
+      "note": "The full form of this row. Text, one image, several images with a stated direction, a panorama, a video and an uploaded coarse block-out all produce a navigable world, and what comes out is a scene the receiver keeps: Gaussian splats or triangle meshes, exported as files other runtimes draw.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://www.worldlabs.ai/blog/marble-world-model",
+          "title": "Marble world model, World Labs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Marble can export generated worlds as Gaussian splats or triangle meshes"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs",
+          "title": "Export file specs, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Splat-based format optimized for Marble's rendering system, about 2M splats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "none",
+      "note": "This is the row that separates the three world models from each other, and Marble sits on the far side of it. It hands over an asset and then stops; nothing continues the world under a viewer's actions or produces the next moment, because there is no model in the loop once the world exists.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.worldlabs.ai/blog/marble-world-model",
+          "title": "Marble world model, World Labs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Marble can export generated worlds as Gaussian splats or triangle meshes"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "World Labs' Marble is a hosted world model whose output is a scene a receiver keeps rather than frames it watches, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.worldlabs.ai/blog/marble-world-model",
+          "title": "Marble world model, World Labs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Marble can export generated worlds as Gaussian splats or triangle meshes"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "native",
+      "note": "Splats are the highest-fidelity representation of a Marble world in the vendor's own words, and they leave as files at two stated sizes. The direction is one way: Marble writes splats and the documentation describes no path for loading a splat file made anywhere else.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://www.worldlabs.ai/blog/marble-world-model",
+          "title": "Marble world model, World Labs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Gaussian splats are the highest-fidelity representation for Marble worlds."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs",
+          "title": "Export file specs, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Splat-based format optimized for Marble's rendering system, about 2M splats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "none",
+      "note": "Three whole-file resolutions are not streaming. A world is fetched entire at one of the offered sizes; nothing is delivered by region, nothing states what should arrive first, and large worlds are made by composing several rather than by subdividing one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/api/reference/openapi.yaml",
+          "title": "Marble Public API v1, OpenAPI 3.1 specification",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "description: Splat resolution to convert when exporting splats as PLY."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/create/studio-tools/compose",
+          "title": "Studio Compose, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Use Studio Compose to connect multiple existing worlds into larger, seamless environments."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "World Labs' Marble is a hosted world model whose output is a scene a receiver keeps rather than frames it watches, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.worldlabs.ai/blog/marble-world-model",
+          "title": "Marble world model, World Labs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Marble can export generated worlds as Gaussian splats or triangle meshes"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "none",
+      "note": "Marble emits splats and triangle meshes and nothing it produces is a point cloud, even though its highest-fidelity form is point-shaped. No point encoding is offered on either side.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.worldlabs.ai/blog/marble-world-model",
+          "title": "Marble world model, World Labs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Marble can export generated worlds as Gaussian splats or triangle meshes"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs",
+          "title": "Export file specs, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "coarse mesh optimized for simple physics calculations"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "World Labs' Marble is a hosted world model whose output is a scene a receiver keeps rather than frames it watches, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.worldlabs.ai/blog/marble-world-model",
+          "title": "Marble world model, World Labs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Marble can export generated worlds as Gaussian splats or triangle meshes"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "native",
+      "note": "A Marble world is viewed from anywhere the viewer walks, in the vendor's own browser viewer and in whatever runtime opens the exported splats. No capture camera occupied any of those positions.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.worldlabs.ai/blog/marble-world-model",
+          "title": "Marble world model, World Labs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Gaussian splats are the highest-fidelity representation for Marble worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "none",
+      "note": "Nothing Marble makes moves. A world is a static scene, so there is no rate to state and no time axis to carry, which is the same absence the splat format family has and here it is the product's own boundary.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.worldlabs.ai/blog/marble-world-model",
+          "title": "Marble world model, World Labs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Marble can export generated worlds as Gaussian splats or triangle meshes"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "none",
+      "note": "A Marble world arrives lit as it was generated. Nothing separates the light from the surface and nothing responds to the lighting of the place the world is dropped into; the mesh exports carry vertex colours, which bake the original lighting in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs",
+          "title": "Export file specs, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Another glb around 1M triangles, with vertex colors"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "partial",
+      "note": "Direct manipulation of the splat data is one brush: splats can be removed in the composition tool, and nothing else about the data can be changed. That is a different act from the generative editing above, which is why both rows exist and why this one is only partial.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/support/faq",
+          "title": "FAQ, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Currently, this can be done by exporting to Spark or other software."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/mesh",
+          "title": "Mesh export, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Meshes are derived from the world, while the Gaussian splat is Marble's highest-fidelity representation, so some reconstruction artifacts are expected."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "native",
+      "note": "Half of what Marble sells. An existing world is changed by editing its 360-degree panoramic representation, and it can be grown past its current boundaries; each edit makes a new version and preserves the original, which is the clause this row asks for. The interoperability question underneath is the one to carry to a meeting: a world editable only by the service that made it means a receiving tool can offer none of it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/edit/pano-edit",
+          "title": "Pano Edit, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Use Pano Edit to modify existing worlds by editing their 360° panoramic representation."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/edit/pano-edit",
+          "title": "Pano Edit, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Each edit creates a new version while preserving the original."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/create/prompt-guides/expand",
+          "title": "Expand, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Use Expand to extend your existing worlds beyond their current boundaries."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "native",
+      "note": "The richest evidence on the map for this row, and the answer turns on formats: coarse structure is uploaded as binary glTF or Filmbox, a reference image carries an azimuth so a caller can say which way it faces, a panorama is accepted as a full 360-degree equirectangular image at two to one, and a seed makes a variation repeatable. An existing authoring pipeline can drive this generator with files it already has.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/create/prompt-guides/index",
+          "title": "Prompt guides, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Supported formats: glb, fbx"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/create/prompt-guides/index",
+          "title": "Prompt guides, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "full 360 degree equirectangular projection, in 2:1 aspect ratio."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/api/reference/openapi.yaml",
+          "title": "Marble Public API v1, OpenAPI 3.1 specification",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "description: Azimuth angle in degrees"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/edit/variations",
+          "title": "Variations, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Each new seed introduces randomized background variations."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "native",
+      "note": "The row was proposed for this subject and it is unusually honest evidence. Two meshes are produced because their artefacts fall in different places, a coarse one for physics and a denser one with vertex colours for drawing, plus an equirectangular panorama; the vendor states the loss in its own words and forbids drawing the collider.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/mesh",
+          "title": "Mesh export, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Meshes are derived from the world, while the Gaussian splat is Marble's highest-fidelity representation, so some reconstruction artifacts are expected."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs",
+          "title": "Export file specs, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "coarse mesh optimized for simple physics calculations"
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs",
+          "title": "Export file specs, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Another glb around 1M triangles, with vertex colors"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "World Labs' Marble is a hosted world model whose output is a scene a receiver keeps rather than frames it watches, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.worldlabs.ai/blog/marble-world-model",
+          "title": "Marble world model, World Labs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Marble can export generated worlds as Gaussian splats or triangle meshes"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "native",
+      "note": "Both directions. A full 360-degree equirectangular image at two to one is accepted as an input, and an equirectangular panorama at a stated pixel size comes back with every world, which makes this subject one of the few places on the map where a panorama's projection is written down on both sides.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/create/prompt-guides/index",
+          "title": "Prompt guides, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "full 360 degree equirectangular projection, in 2:1 aspect ratio."
+        },
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs",
+          "title": "Export file specs, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Equirectangular png of 2560 x 1280 pixels"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "out-of-scope",
+      "note": "A generative service that returns a navigable 3D world from a prompt or a few images. The world is made, not sensed: there is no device session and no live reading of a real room.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.worldlabs.ai/blog/announcing-the-world-api",
+          "title": "World Labs, announcing the World API",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Each request returns a navigable 3D world that captures layout, depth, lighting, and spatial structure"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "What it produces is geometry and appearance. It does not hand an application a labelled reading of real surfaces.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.worldlabs.ai/blog/announcing-the-world-api",
+          "title": "World Labs, announcing the World API",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Each request returns a navigable 3D world that captures layout, depth, lighting, and spatial structure"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "out-of-scope",
+      "note": "Depth is part of what its generated world captures, but as a property of the invented scene rather than a metric measurement of the space around a device.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.worldlabs.ai/blog/announcing-the-world-api",
+          "title": "World Labs, announcing the World API",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Each request returns a navigable 3D world that captures layout, depth, lighting, and spatial structure"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "Its results are exported and viewed elsewhere, so how they sit against a real view is the viewer's business.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.worldlabs.ai/blog/announcing-the-world-api",
+          "title": "World Labs, announcing the World API",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Each request returns a navigable 3D world that captures layout, depth, lighting, and spatial structure"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "out-of-scope",
+      "note": "Marble makes a world and exports it. How a runtime later blends that world with a camera view of a room is the runtime's business.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.face",
+      "level": "out-of-scope",
+      "note": "The service takes text, images and panoramas as input. It reads no live stream of the user's face or body.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "none",
+      "note": "An exported world is appearance and shape — splats, meshes, and a collider mesh for physics — and physics is as far as it goes. Nothing in the export declares which surface is walkable, where the bounds of a visitor's movement are, or where somebody arrives, so every runtime opening a Marble world decides that for itself.",
+      "confidence": "unverified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs",
+          "title": "Export file specs, Marble documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "You can only generate high quality mesh on worlds you own"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "out-of-scope",
+      "note": "Worlds are content with a shareable link. No unit of logic is published under a name another author resolves.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "partial",
+      "note": "The gate is contractual rather than a review: a user must ensure that their access and their content comply with an acceptable use policy and a copyright policy, and World Labs keeps the right to act. No review is described as standing between a finished world and the people who open its link, and nothing about review travels with an exported world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.worldlabs.ai/terms-of-service",
+          "title": "World Labs Terms of Service",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Ensure that your access to and use of the Services, and any User Content, complies with the AUP and DMCA Policy"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "A generated world is not a map of a real place and carries no transform to one.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "Nothing declares a region of the Earth where a generated world applies.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.metadata",
+      "level": "native",
+      "note": "The World API returns typed world-level names, tags, timestamps, prompts and asset fields; this is descriptive metadata, not stable identity for arbitrary internal objects.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/api/reference/worlds/get.md",
+          "title": "Get World — Marble Public API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "World object with world_id, display_name, tags, assets, created_at,"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "out-of-scope",
+      "note": "World Labs Marble is assessed here as hosted 3D world generation and authoring with downloadable world assets. The subject does not issue or exchange trust claims whose establishment a relying party evaluates; reconstruction confidence is a different quantity.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "out-of-scope",
+      "note": "World Labs Marble is assessed here as hosted 3D world generation and authoring with downloadable world assets. The subject's scene or model data types are not a vocabulary for identity claims exchanged with a relying party.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "out-of-scope",
+      "note": "World Labs Marble is assessed here as hosted 3D world generation and authoring with downloadable world assets. The subject is not an identity-presentation system with pairwise relationship identifiers and correlation guarantees.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.thumbnail",
+      "level": "native",
+      "note": "WorldAssets exposes an optional thumbnail_url for a generated world independently of loading its three-dimensional contents.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/api/reference/worlds/get.md",
+          "title": "Get World — Marble Public API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "description: Thumbnail URL for the world"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.encryption",
+      "level": "out-of-scope",
+      "note": "World Labs Marble is assessed here as hosted 3D world generation and authoring with downloadable world assets. Image, geometry and device processing do not define recipient identity keys or confidential identity delivery.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.key-lifecycle",
+      "level": "out-of-scope",
+      "note": "World Labs Marble is assessed here as hosted 3D world generation and authoring with downloadable world assets. The subject does not govern identity-control key rotation, revocation or recovery; account administration belongs to its host.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "out-of-scope",
+      "note": "World Labs Marble is assessed here as hosted 3D world generation and authoring with downloadable world assets. The subject does not issue portable credentials with a post-issuance status-discovery mechanism.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "out-of-scope",
+      "note": "World Labs Marble is assessed here as hosted 3D world generation and authoring with downloadable world assets. Captured appearance and inferred training exposure are not runtime environmental illumination estimates supplied to content.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "out-of-scope",
+      "note": "World Labs Marble is assessed here as hosted 3D world generation and authoring with downloadable world assets. Offline calibration targets or reference photos do not expose runtime physical-marker detection with tracked poses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "native",
+      "note": "Studio Record authors camera keyframes on a seconds-based timeline and previews the path; the documentation explicitly says that trajectory keyframes do not persist when leaving the page.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/create/studio-tools/record.md",
+          "title": "Record — Marble Studio",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "**Adjust keyframe timing**: Move keyframes along the timeline to change pacing"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "out-of-scope",
+      "note": "World Labs Marble is assessed here as hosted 3D world generation and authoring with downloadable world assets. Editor selection or image masking is not an exposed runtime picking interface that returns the intersected scene object or geometry.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.text",
+      "level": "out-of-scope",
+      "note": "World Labs Marble is assessed here as hosted 3D world generation and authoring with downloadable world assets. Prompt strings or command-line parameters are authoring inputs, not a defined runtime character-entry interface for scene applications.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "out-of-scope",
+      "note": "World Labs Marble is assessed here as hosted 3D world generation and authoring with downloadable world assets. The selected interface is not a display compositor accepting independently shaped image layers and composition properties.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "out-of-scope",
+      "note": "World Labs Marble is assessed here as hosted 3D world generation and authoring with downloadable world assets. Fitted motion and ordinary parenting are not authored node-to-node transform constraints with runtime evaluation rules.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "out-of-scope",
+      "note": "World Labs Marble is assessed here as hosted 3D world generation and authoring with downloadable world assets. Image sequences used as reconstruction observations do not reference synchronized audiovisual media as content within a separately authored scene.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "out-of-scope",
+      "note": "World Labs Marble is assessed here as hosted 3D world generation and authoring with downloadable world assets. Capture extents or a training region do not report the user's usable physical play area and floor-relative reference.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "out-of-scope",
+      "note": "World Labs Marble is assessed here as hosted 3D world generation and authoring with downloadable world assets. The selected reconstruction or sensing interface does not exchange a sound-synthesis model for evaluation during playback.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "out-of-scope",
+      "note": "World Labs Marble is assessed here as hosted 3D world generation and authoring with downloadable world assets. The subject does not publish an exchange of identified spatial zones and typed, temporally scoped events; scene bounds or capture locations are not that protocol.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.consent",
+      "level": "out-of-scope",
+      "note": "World Labs Marble is assessed here as hosted 3D world generation and authoring with downloadable world assets. An application permission dialog or dataset licence does not carry a subject-bound grant with scope, purpose, validity and withdrawal information.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "out-of-scope",
+      "note": "World Labs Marble is assessed here as hosted 3D world generation and authoring with downloadable world assets. Training metrics and processing status are not machine-readable accounts of a recipient evaluating and acting on an arriving subject or claim.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "World Labs Marble is assessed here as hosted 3D world generation and authoring with downloadable world assets. The selected subject does not define arrival between independent destinations; local API setup and asset loading are not pre-arrival admission responses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.frame-timing",
+      "level": "out-of-scope",
+      "note": "World Labs Marble is assessed here as hosted 3D world generation and authoring with downloadable world assets. Offline fitting or ordinary preview playback does not coordinate application frame submission with a predicted headset display time and matching view poses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "out-of-scope",
+      "note": "World Labs Marble is assessed here as hosted 3D world generation and authoring with downloadable world assets. Implementation shaders or learned weights do not make the subject a specified shader language with common execution semantics.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.parametric",
+      "level": "out-of-scope",
+      "note": "World Labs Marble is assessed here as hosted 3D world generation and authoring with downloadable world assets. The selected representation is sampled imagery, points, splats or meshes; it does not carry exact parametric curves and surfaces for another system to evaluate.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "out-of-scope",
+      "note": "World Labs Marble is assessed here as hosted 3D world generation and authoring with downloadable world assets. Gaussian primitives and optimized point samples are a representation, not exchanged emitters with runtime particle simulation parameters.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.style",
+      "level": "out-of-scope",
+      "note": "World Labs Marble is assessed here as hosted 3D world generation and authoring with downloadable world assets. Capture edits and model appearance are not separate metadata-driven rules for selecting scene-feature visibility or color.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "out-of-scope",
+      "note": "World Labs Marble is assessed here as hosted 3D world generation and authoring with downloadable world assets. Offline reconstructed geometry is not a sensing runtime that answers physical-environment ray queries with hit poses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "out-of-scope",
+      "note": "World Labs Marble is assessed here as hosted 3D world generation and authoring with downloadable world assets. The subject does not expose a musical-instrument device or recorded-event input interface with channels, notes and controllers.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "partial",
+      "note": "Marble reconstructs worlds from image/video inputs and exposes splat assets, but its public documentation does not expose camera-calibration inputs or per-scene optimization controls.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/index.md",
+          "title": "Welcome to Marble",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "multimodal world models that can reconstruct, generate, and simulate 3D worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.resolve",
+      "level": "native",
+      "note": "The Marble API resolves a world identifier to its resource representation and asset-reference URLs for access.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/api/reference/worlds/get.md",
+          "title": "Get a world",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Retrieves a world's details including generated assets if available."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "partial",
+      "note": "A public collider GLB linked by Marble export documentation contains a world node with a geometry child. The glTF node hierarchy gives that child a reconstructible local-to-parent relation, using default identity transforms in this example. This is a verified exported hierarchy, but the inspected example does not establish preservation of user-authored non-identity pose chains or arbitrary composed-world hierarchies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.worldlabs.ai/marble/export/specs.md",
+          "title": "marble export specs",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "rustic_kitchen_with_natural_light_collider.glb"
+        },
+        {
+          "url": "https://wlt-ai-cdn.art/example_exports/rustic_kitchen_with_natural_light/rustic_kitchen_with_natural_light_collider.glb",
+          "title": "marble collider sample",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "\"name\": \"world\", \"children\": [ 1 ]"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/main/specification/2.0/Specification.adoc",
+          "title": "gltf node spec",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The global transformation matrix of a node is the product"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/main/specification/2.0/schema/node.schema.json",
+          "title": "gltf node schema",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "If none are provided, the transform is the identity."
+        }
+      ],
+      "direction": "write"
+    }
+  ]
+}

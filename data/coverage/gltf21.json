@@ -1,0 +1,1371 @@
+{
+  "subject_id": "gltf21",
+  "summary": "A planned backward-compatible revision of the glTF core, announced on 2026-06-11 and still being written. Its purpose is to let one file deliver a whole assembled scene instead of a single model: a file may reference other glTF files and instantiate them, package them inside itself, carry simple shapes such as boxes and spheres, and hang bounding volumes on nodes. Only those four features have draft specification text, and only on the working group's draft-2.1 branch; the published Khronos registry still has no 2.1 document, and no primary source states a ratification target date. Everything else on the announced list - thumbnails, a 64-bit binary container, unique identifiers, promoted extensions, wider number types, and dropping multiple scenes - is announced only, and is scored partial here for that reason. The shape work is the one to watch: the same box, sphere, capsule, cylinder and plane vocabulary that the physics and collision extensions were going to supply now sits in the core, and the working group has stated that the pending KHR_implicit_shapes extension is superseded by it - though that extension's pull request is still open and the extension registry has not been changed to say so. This is also the format that the international scene description standard extends: MPEG-I Scene Description, ISO/IEC 23090-14:2025, defines no scene format of its own and states in its own abstract that its extensions are provided for ISO/IEC 12113, which is glTF 2.0 - so the two overlap across the whole asset side, with glTF owning the container, geometry, materials and animation and the MPEG part owning timed media on top, and with interactivity now being defined twice, once by each body. Those MPEG extensions are pinned to glTF 2.0, so a core revision is something that standard has to catch up with rather than something it inherits.",
+  "coverage": [
+    {
+      "capability_id": "scene.container",
+      "level": "native",
+      "note": "The draft is a complete core asset delivery specification carrying scenes and models between tools, with assets declaring version 2.1; it exists only as draft text on the draft-2.1 branch and is not yet published to the Khronos registry.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/draft-2.1/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 Specification (draft-2.1 branch)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "= glTF 2.1 Specification"
+        },
+        {
+          "url": "https://github.com/KhronosGroup/glTF/issues/2585",
+          "title": "glTF 2.1 tracking issue, Khronos glTF repository",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The specification is under active development. Feature explainers are the current stable reference; schema and normative text to follow."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "partial",
+      "note": "Referencing and layering are in the draft - a file lists other glTF files in a files array and instantiates them through externalAssets on a node - but overriding parts of a referenced asset is not defined and is deferred to future extensions.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/draft-2.1/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 Specification, Referencing external assets (draft-2.1 branch)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Future specification versions or extensions may introduce mechanisms to allow better sharing of object definitions across external asset instances."
+        },
+        {
+          "url": "https://github.com/KhronosGroup/glTF/issues/2597",
+          "title": "[glTF 2.1] Unique IDs, Khronos glTF repository",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF 2.1 does not define a specific syntax or mechanism for external referencing."
+        },
+        {
+          "url": "https://github.com/KhronosGroup/glTF/pull/2618",
+          "title": "Draft changes for External Assets and Unified File References in glTF 2.1 (merged into draft-2.1 on 2026-08-19)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This PR currently points towards the `draft-2.1` branch and should be safe to merge to that branch."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "native",
+      "note": "A mesh is reused by index from many nodes, and the draft adds reuse of a whole external file from many nodes so a repeated model is fetched once; hardware instancing remains the separately ratified EXT_mesh_gpu_instancing extension.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/draft-2.1/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 Specification, Instantiation and Referencing external assets (draft-2.1 branch)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Multiple objects in the `externalAssets` array may refer to the same `file`."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/main/extensions/README.md",
+          "title": "glTF Extension Registry",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The following extensions have been ratified by the Khronos Group"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "partial",
+      "note": "One file can carry a whole multi-file scene and its shared resources by embedding referenced files in buffer views and remapping their paths through aliases, but this packages assets only - there is no code, runtime or behaviour manifest, so it is not a runnable experience.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/draft-2.1/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 Specification, File references (draft-2.1 branch)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This allows for efficient packing of resources shared across several referenced files, or overriding inner data."
+        },
+        {
+          "url": "https://www.khronos.org/blog/introducing-gltf-2.1-with-complex-scenes",
+          "title": "Introducing glTF 2.1 with Complex Scenes, Khronos 3D Formats Working Group, 2026-06-11",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "without turning glTF into an authoring or interchange format"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "native",
+      "note": "The core states a compatibility rule for minor versions in both directions and allows deprecation but not removal, and every asset declares a version and an optional minimum version.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/draft-2.1/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 Specification, Versioning (draft-2.1 branch)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Any updates made to the glTF Specification in a minor version **MUST** be backward and forward compatible."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "native",
+      "note": "Fixes handedness and axis meaning and the order in which node transforms compose; unchanged from the ratified 2.0 core.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/draft-2.1/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 Specification, Coordinate System and Units (draft-2.1 branch)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF uses a right-handed coordinate system. glTF defines +Y as up, +Z as forward, and -X as right"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "native",
+      "note": "Real-world scale is fixed by the core; unchanged from the ratified 2.0 core.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/draft-2.1/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 Specification, Coordinate System and Units (draft-2.1 branch)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The units for all linear distances are meters."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "native",
+      "note": "Meshes, primitives and accessors are defined in the core, carried over unchanged from 2.0; mesh compression stays in ratified extensions.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/draft-2.1/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 Specification, Geometry (draft-2.1 branch)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "native",
+      "note": "Animation channels and samplers are defined in the core, carried over unchanged from 2.0.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/draft-2.1/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 Specification, Animations (draft-2.1 branch)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "native",
+      "note": "Skins, joints and inverse bind matrices are defined in the core, carried over unchanged from 2.0; bone naming is not fixed, which is a separate row.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/draft-2.1/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 Specification, Skins (draft-2.1 branch)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF 2.1 meshes support Linear Blend Skinning via skin objects, joint hierarchies, and designated vertex attributes."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "partial",
+      "note": "Morph targets and their weights are in the core, but the draft still gives no way to name a target, so tools keep names in a non-standard extras field - which is exactly what facial expression transfer needs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/draft-2.1/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 Specification, Morph Targets (draft-2.1 branch)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "the glTF 2.1 specification currently does not provide a way to specify names, most tools use an array of strings, `mesh.extras.targetNames`, for this purpose"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "native",
+      "note": "A metallic-roughness surface model with a normative appendix describing how to evaluate it; the richer material set stays in the ratified material extensions rather than the core.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/draft-2.1/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 Specification, Materials and BRDF Implementation (draft-2.1 branch)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "partial",
+      "note": "The core carries only PNG and JPEG; device-compressed and modern formats stay in extensions, and the announced promotion of EXT_texture_webp to required in 2.1 has no draft specification text yet.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/draft-2.1/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 Specification, File Extensions and Media Types (draft-2.1 branch)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "PNG images **SHOULD** use `.png` file extension with `image/png` Media Type"
+        },
+        {
+          "url": "https://www.khronos.org/blog/introducing-gltf-2.1-with-complex-scenes",
+          "title": "Introducing glTF 2.1 with Complex Scenes, 2026-06-11",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The exact syntax for using this functionality in glTF 2.1 assets will be defined as the specification develops."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "native",
+      "note": "Perspective and orthographic cameras attached to nodes, carried over unchanged from 2.0; there is no notion of moving between viewpoints.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/draft-2.1/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 Specification, Cameras (draft-2.1 branch)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A camera is instantiated within a node using the `node.camera` property."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "partial",
+      "note": "The shape vocabulary that contact tests need - box, capsule, cylinder, plane, sphere, kept apart from visible geometry - is now core draft text, but the core gives shapes no collision behaviour at all; that is left to extensions, and the extension meant to supply it is still an unmerged pull request.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/draft-2.1/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 Specification, Shapes (draft-2.1 branch)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "shapes in this array do not automatically have behavior. Other objects in the glTF document may use these shapes to instance them in the scene, providing the geometry data required for the behavior of that object, such as bounding volumes, or extension-defined physics colliders."
+        },
+        {
+          "url": "https://github.com/KhronosGroup/glTF/issues/2588",
+          "title": "[glTF 2.1] Shapes, Khronos glTF repository",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF 2.1 adds a new `shapes` array to the top-level. This provides the same data as the pending `KHR_implicit_shapes` extension, which is now superseded by glTF 2.1."
+        },
+        {
+          "url": "https://github.com/KhronosGroup/glTF/pull/2370",
+          "title": "KHR_implicit_shapes extension Draft Proposal, pull request 2370 (open, unmerged)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Draft of an extension which describes generic, non-renderable shapes suitable for collision detection."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "none",
+      "note": "Not in the core draft. KHR_physics_rigid_bodies is a review draft in an open, unmerged pull request with no activity since January 2026, and its shape foundation is being moved into the 2.1 core underneath it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/main/extensions/README.md",
+          "title": "glTF Extension Registry, in-progress table",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The items listed are felt to show enough consensus to be considered for future ratification."
+        },
+        {
+          "url": "https://github.com/KhronosGroup/glTF/pull/2424",
+          "title": "KHR_physics_rigid_bodies Draft Proposal, pull request 2424 (open, unmerged)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "none",
+      "note": "The announcement names trigger volumes as a thing the new core shapes are meant to serve, but only through future extensions; no trigger volume appears in the draft core text.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.khronos.org/blog/introducing-gltf-2.1-with-complex-scenes",
+          "title": "Introducing glTF 2.1 with Complex Scenes, 2026-06-11",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "the same definitions are ready to serve physics colliders, trigger volumes, and procedural workflows through extensions"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "partial",
+      "note": "Bounding volumes on nodes give the machinery to defer loading and to cull, but the draft defines no level-of-detail representation, no selection rule and no streaming order - the announcement puts those on top of 2.1 rather than in it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/draft-2.1/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 Specification, Bounding Volumes (draft-2.1 branch)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Bounding volumes may be used to defer loading of content based on application-specific criteria, such as the angular size on a player's camera, or any other metric."
+        },
+        {
+          "url": "https://www.khronos.org/blog/introducing-gltf-2.1-with-complex-scenes",
+          "title": "Introducing glTF 2.1 with Complex Scenes, 2026-06-11",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "can build on complex scenes as the foundation for progressive delivery, including the spatial subdivision, availability maps, LOD and quality metrics, and streaming hints"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "partial",
+      "note": "Splats travel in glTF through KHR_gaussian_splatting, which is ratified - its status line read Complete, Ratified by the Khronos Group on 2026-09-06 - and which is written against 2.0, so 2.1 inherits it and defines nothing of its own. The 64-bit container a large capture needs is drafted rather than absent: the pull request carrying it was merged into this repository's draft-2.1 branch on 2026-08-28, and a specification/2.1 folder stands on that branch and on no other.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/KhronosGroup/glTF/blob/main/extensions/2.0/Khronos/KHR_gaussian_splatting/README.md#status",
+          "title": "KHR_gaussian_splatting, the specification's own status line",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Complete, Ratified by the Khronos Group"
+        },
+        {
+          "url": "https://github.com/KhronosGroup/glTF/blob/main/extensions/2.0/Khronos/KHR_gaussian_splatting/README.md#dependencies",
+          "title": "KHR_gaussian_splatting, the dependencies line that ties it to 2.0",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Written against the glTF 2.0 spec."
+        },
+        {
+          "url": "https://github.com/KhronosGroup/glTF/pull/2628",
+          "title": "Draft changes for 64-bit Upgrade to Binary Format in glTF 2.1, pull request 2628, merged into the draft-2.1 branch on 2026-08-28",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Draft changes for 64-bit Upgrade to Binary Format in glTF 2.1"
+        },
+        {
+          "url": "https://github.com/KhronosGroup/glTF/tree/draft-2.1/specification/2.1",
+          "title": "The specification/2.1 folder, which exists on the draft-2.1 branch and on no other",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "partial",
+      "note": "Not in the 2.1 core. KHR_interactivity carries behaviour graphs, is written against 2.0, and was submitted for ratification on 2026-07-16 - submitted is not ratified; 2.1's new files array does list behaviour graphs among the file types it expects to reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.khronos.org/news/press",
+          "title": "Khronos press releases",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF Interactivity Extension Submitted for Ratification"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/main/extensions/README.md",
+          "title": "glTF Extension Registry, in-progress table",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        },
+        {
+          "url": "https://www.khronos.org/blog/introducing-gltf-2.1-with-complex-scenes",
+          "title": "Introducing glTF 2.1 with Complex Scenes, 2026-06-11",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Name, locate, and resolve external, embedded, and packaged resources, including glTF assets, textures, audio, behavior graphs, metadata schemas, and compressed payloads"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "none",
+      "note": "No audio in the core draft, and the extension work is being rebuilt rather than finished: the audio emitter pull request has been open since 2022-03-31, and the registry lists only KHR_audio_graph, at proposal - the lowest of its four stages.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/main/extensions/README.md",
+          "title": "glTF Extension Registry, in-progress table",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        },
+        {
+          "url": "https://github.com/KhronosGroup/glTF/pull/2137",
+          "title": "KHR_audio_emitter, pull request 2137 (open, unmerged)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "via-extension",
+      "note": "Through the ratified KHR_xmp_json_ld extension, which attaches metadata packets covering attribution and licensing to the asset or to individual objects; the core itself has only a free-text copyright string, and the extension is declarative - it states terms and enforces nothing.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/main/extensions/2.0/Khronos/KHR_xmp_json_ld/README.md",
+          "title": "KHR_xmp_json_ld extension specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Metadata is used to transmit information (such as attribution, licensing, creation date) about the glTF asset. Metadata has no normative effect on the glTF asset appearance and rendering."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/draft-2.1/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 Specification, Asset (draft-2.1 branch)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Additional metadata **MAY** be stored in optional properties such as `generator` or `copyright`."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "none",
+      "note": "There is no signature mechanism anywhere in the core draft; the metadata extension that can name an author carries unsigned text, so nothing in a glTF file can be checked for tampering.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/main/extensions/2.0/Khronos/KHR_xmp_json_ld/README.md",
+          "title": "KHR_xmp_json_ld extension specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Metadata has no normative effect on the glTF asset appearance and rendering."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "none",
+      "note": "Every reference is by location or by index - a uniform resource identifier, or a buffer view number - and the new files array keeps that model; the announced unique identifiers are names scoped to one file, not content hashes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/draft-2.1/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 Specification, File references (draft-2.1 branch)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The file's data **MAY** be stored externally and referenced by a `uri` or stored as binary in a buffer and referenced by `bufferView` index."
+        },
+        {
+          "url": "https://github.com/KhronosGroup/glTF/issues/2597",
+          "title": "[glTF 2.1] Unique IDs, Khronos glTF repository",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "If present, these must be unique throughout the entire file"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "none",
+      "note": "Worth flagging: 2.1 is aimed squarely at digital twins, city and geospatial scenes, yet the draft names no coordinate reference system at all - placing a scene on the Earth is still left to OGC 3D Tiles and vendor extensions.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.khronos.org/blog/introducing-gltf-2.1-with-complex-scenes",
+          "title": "Introducing glTF 2.1 with Complex Scenes, 2026-06-11",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "a standardized way to compose and deliver multi-file scene graphs for digital twins, building information modeling (BIM), smart cities, geospatial, and simulation"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/draft-2.1/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 Specification (draft-2.1 branch)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The units for all linear distances are meters."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "none",
+      "note": "The core defines how a skeleton is encoded but not what the bones are called or how they are arranged, so a body does not move correctly elsewhere by virtue of glTF alone; VRM and the MPEG avatar part supply that agreement on top.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/draft-2.1/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 Specification, Skins (draft-2.1 branch)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The joint hierarchy used for controlling skinned mesh pose is simply the node hierarchy, with each node designated as a _joint_ by a reference from the `skin.joints` array."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "out-of-scope",
+      "note": "A delivery format for assets, not a session protocol; the announcement restates that boundary explicitly.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.khronos.org/blog/introducing-gltf-2.1-with-complex-scenes",
+          "title": "Introducing glTF 2.1 with Complex Scenes, 2026-06-11",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Every capability in glTF 2.1 holds to glTF's core mission as a delivery format: the efficient, reliable transmission and loading of 3D assets at runtime."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "out-of-scope",
+      "note": "Nothing about leaving one world and arriving in another; the format carries assets between tools and runtimes, not users between places.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.khronos.org/blog/introducing-gltf-2.1-with-complex-scenes",
+          "title": "Introducing glTF 2.1 with Complex Scenes, 2026-06-11",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Every capability in glTF 2.1 holds to glTF's core mission as a delivery format"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "glTF 2.1 is the in-development next edition of that delivery format, whose new work is complex scenes, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.khronos.org/blog/introducing-gltf-2.1-with-complex-scenes",
+          "title": "Introducing glTF 2.1 with Complex Scenes, 2026-06-11",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "without turning glTF into an authoring or interchange format"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "glTF 2.1 is the in-development next edition of that delivery format, whose new work is complex scenes, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.khronos.org/blog/introducing-gltf-2.1-with-complex-scenes",
+          "title": "Introducing glTF 2.1 with Complex Scenes, 2026-06-11",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "without turning glTF into an authoring or interchange format"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "glTF 2.1 is the in-development next edition of that delivery format, whose new work is complex scenes, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.khronos.org/blog/introducing-gltf-2.1-with-complex-scenes",
+          "title": "Introducing glTF 2.1 with Complex Scenes, 2026-06-11",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "without turning glTF into an authoring or interchange format"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "partial",
+      "note": "Splats travel in glTF through KHR_gaussian_splatting, which is ratified but written against 2.0, so 2.1 inherits it rather than defining anything of its own. The 64-bit container that a large capture needs is announced for 2.1 and has no draft text.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/KhronosGroup/glTF/blob/main/extensions/2.0/Khronos/KHR_gaussian_splatting/README.md",
+          "title": "KHR_gaussian_splatting, Khronos glTF extension specification",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Written against the glTF 2.0 spec."
+        },
+        {
+          "url": "https://github.com/KhronosGroup/glTF/blob/main/extensions/2.0/Khronos/KHR_gaussian_splatting/README.md",
+          "title": "KHR_gaussian_splatting, Khronos glTF extension specification",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Complete, Ratified by the Khronos Group"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/main/extensions/README.md",
+          "title": "glTF Extension Registry, in-progress table",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The items listed are felt to show enough consensus to be considered for future ratification."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "partial",
+      "note": "This is the one row where 2.1 moves. Bounding volumes on nodes let a reader defer loading by angular size, and Khronos states plainly that complex scenes are meant as the foundation for progressive delivery with spatial subdivision, availability maps, detail levels and streaming hints. The foundation is in the draft; the mechanism is announced on top of it and is not written.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/draft-2.1/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 Specification (draft-2.1 branch)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Bounding volumes may be used to defer loading of content based on application-specific criteria, such as the angular size on a player's camera, or any other metric."
+        },
+        {
+          "url": "https://www.khronos.org/blog/introducing-gltf-2.1-with-complex-scenes",
+          "title": "Introducing glTF 2.1 with Complex Scenes, 2026-06-11",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "can build on complex scenes as the foundation for progressive delivery, including the spatial subdivision, availability maps, LOD and quality metrics, and streaming hints"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "glTF 2.1 is the in-development next edition of that delivery format, whose new work is complex scenes, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.khronos.org/blog/introducing-gltf-2.1-with-complex-scenes",
+          "title": "Introducing glTF 2.1 with Complex Scenes, 2026-06-11",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "without turning glTF into an authoring or interchange format"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "partial",
+      "note": "Point topology and the splat extension's point-primitive fallback carry over from 2.0 unchanged. Nothing in the 2.1 draft adds point-cloud compression or a per-point attribute vocabulary, so the answer here is 2.0's answer.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html",
+          "title": "glTF 2.0 Specification",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Allowed values : 0 POINTS 1 LINES 2 LINE_LOOP 3 LINE_STRIP 4 TRIANGLES"
+        },
+        {
+          "url": "https://github.com/KhronosGroup/glTF/blob/main/extensions/2.0/Khronos/KHR_gaussian_splatting/README.md",
+          "title": "KHR_gaussian_splatting, Khronos glTF extension specification",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Since the extension treats the 3D Gaussian splats as point primitives, a graceful fallback to treating the data as a sparse point cloud is possible."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "glTF 2.1 is the in-development next edition of that delivery format, whose new work is complex scenes, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.khronos.org/blog/introducing-gltf-2.1-with-complex-scenes",
+          "title": "Introducing glTF 2.1 with Complex Scenes, 2026-06-11",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "without turning glTF into an authoring or interchange format"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "out-of-scope",
+      "note": "glTF 2.1 is the in-development next edition of that delivery format, whose new work is complex scenes, and it produces no image from a viewing position that no capture camera occupied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.khronos.org/blog/introducing-gltf-2.1-with-complex-scenes",
+          "title": "Introducing glTF 2.1 with Complex Scenes, 2026-06-11",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "without turning glTF into an authoring or interchange format"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "glTF 2.1 is the in-development next edition of that delivery format, whose new work is complex scenes, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.khronos.org/blog/introducing-gltf-2.1-with-complex-scenes",
+          "title": "Introducing glTF 2.1 with Complex Scenes, 2026-06-11",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "without turning glTF into an authoring or interchange format"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "partial",
+      "note": "Inherited from the ratified splat extension and not changed by the draft: the material on a splat primitive must be ignored, and an implementation may relight anyway with no defined method.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/KhronosGroup/glTF/blob/main/extensions/2.0/Khronos/KHR_gaussian_splatting/README.md",
+          "title": "KHR_gaussian_splatting, Khronos glTF extension specification",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Unless specified otherwise by additional Gaussian splats extensions, the glTF material referenced from the mesh primitive (if any) MUST be ignored for splat rendering."
+        },
+        {
+          "url": "https://github.com/KhronosGroup/glTF/blob/main/extensions/2.0/Khronos/KHR_gaussian_splatting/README.md",
+          "title": "KHR_gaussian_splatting, Khronos glTF extension specification",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Still, implementations can relight the splats, e.g., to simulate shadows or additional light sources, or to adjust the rendered splats for an environment different than the one they were trained in."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "glTF 2.1 is the in-development next edition of that delivery format, whose new work is complex scenes, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.khronos.org/blog/introducing-gltf-2.1-with-complex-scenes",
+          "title": "Introducing glTF 2.1 with Complex Scenes, 2026-06-11",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "without turning glTF into an authoring or interchange format"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "glTF 2.1 is the in-development next edition of that delivery format, whose new work is complex scenes, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.khronos.org/blog/introducing-gltf-2.1-with-complex-scenes",
+          "title": "Introducing glTF 2.1 with Complex Scenes, 2026-06-11",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "without turning glTF into an authoring or interchange format"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "glTF 2.1 is the in-development next edition of that delivery format, whose new work is complex scenes, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.khronos.org/blog/introducing-gltf-2.1-with-complex-scenes",
+          "title": "Introducing glTF 2.1 with Complex Scenes, 2026-06-11",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "without turning glTF into an authoring or interchange format"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "Same boundary as 2.0: this is the format a generated world is exported into, not a thing that performs the derivation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.khronos.org/blog/introducing-gltf-2.1-with-complex-scenes",
+          "title": "Introducing glTF 2.1 with Complex Scenes, 2026-06-11",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "without turning glTF into an authoring or interchange format"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "glTF 2.1 is the in-development next edition of that delivery format, whose new work is complex scenes, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.khronos.org/blog/introducing-gltf-2.1-with-complex-scenes",
+          "title": "Introducing glTF 2.1 with Complex Scenes, 2026-06-11",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "without turning glTF into an authoring or interchange format"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "none",
+      "note": "The draft adds scene structure, not imagery. There is still no background, environment or 360-degree view with a stated projection.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.khronos.org/blog/introducing-gltf-2.1-with-complex-scenes",
+          "title": "Introducing glTF 2.1 with Complex Scenes, 2026-06-11",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "the same definitions are ready to serve physics colliders, trigger volumes, and procedural workflows through extensions"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "out-of-scope",
+      "note": "The next version holds to the same mission — efficient, reliable transmission and loading of 3D assets at runtime — so a live reading of a real room stays outside it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.khronos.org/blog/introducing-gltf-2.1-with-complex-scenes",
+          "title": "Introducing glTF 2.1 with Complex Scenes, 2026-06-11",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Every capability in glTF 2.1 holds to glTF's core mission as a delivery format: the efficient, reliable transmission and loading of 3D assets at runtime."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "It adds ways to structure complex scenes, not ways to name real surfaces a device has seen.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.khronos.org/blog/introducing-gltf-2.1-with-complex-scenes",
+          "title": "Introducing glTF 2.1 with Complex Scenes, 2026-06-11",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Every capability in glTF 2.1 holds to glTF's core mission as a delivery format: the efficient, reliable transmission and loading of 3D assets at runtime."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "out-of-scope",
+      "note": "No depth image of the real world and no metric depth channel is part of a delivery format.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.khronos.org/blog/introducing-gltf-2.1-with-complex-scenes",
+          "title": "Introducing glTF 2.1 with Complex Scenes, 2026-06-11",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Every capability in glTF 2.1 holds to glTF's core mission as a delivery format: the efficient, reliable transmission and loading of 3D assets at runtime."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "Composing a delivered asset against a passthrough view is a runtime concern that the format leaves alone.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.khronos.org/blog/introducing-gltf-2.1-with-complex-scenes",
+          "title": "Introducing glTF 2.1 with Complex Scenes, 2026-06-11",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Every capability in glTF 2.1 holds to glTF's core mission as a delivery format: the efficient, reliable transmission and loading of 3D assets at runtime."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "out-of-scope",
+      "note": "glTF 2.1 keeps its predecessor's job: describe what to draw and how to stream it. Blending the drawing with a camera view of the real room stays with the runtime that presents it.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.face",
+      "level": "out-of-scope",
+      "note": "No input model, no sensors. The draft adds complex scenes and progressive delivery, not a live reading of the person looking at the scene.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "none",
+      "note": "The 2.1 draft's new ground is spatial subdivision, availability maps, level of detail and streaming hints — everything about getting a large scene in fast, and nothing about where a body may stand or where a visitor arrives.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.khronos.org/blog/introducing-gltf-2.1-with-complex-scenes",
+          "title": "Introducing glTF 2.1 with complex scenes, Khronos",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "can build on complex scenes as the foundation for progressive delivery, including the spatial subdivision, availability maps, LOD and quality metrics, and streaming hints"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "out-of-scope",
+      "note": "Same as glTF 2.0: nothing is published as a reusable unit of world logic under a name that has to keep resolving, so there is no namespace for the draft to operate.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "out-of-scope",
+      "note": "A format in development has no publishing path and no audience standing behind it, so no review can sit in that path.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "The draft's spatial subdivision is inside one scene's own coordinates. There is no map of a real place to declare and no second map to align to.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "Availability maps in the draft say which parts of a scene are available at which detail, not which part of the Earth the content applies to.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.extension",
+      "level": "native",
+      "note": "The pinned glTF 2.1 development specification defines named extensions and required-extension declarations in its core. This is draft-specific specification support, not ratification or runtime conformance.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/8e4bd40310d84bfb34f454fc696eafb2c20d8e51/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 pinned draft Specification.adoc",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "All glTF extensions required to load and/or render an asset **MUST** be listed in the top-level"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.color",
+      "level": "partial",
+      "note": "The pinned draft describes color primaries and transfer functions, but final output exposure remains an implementation detail; publication of 2.1 is also pending.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/8e4bd40310d84bfb34f454fc696eafb2c20d8e51/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 pinned draft Specification.adoc",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "the exact conversion from physical light units to the brightness of rendered pixels requires knowledge of the camera's exposure settings"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the pinned glTF 2.1 development text describes a runtime asset delivery format. This row requires evidence and assurance information accompanying a claim, enabling the relying party to assess how the claim was established. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/8e4bd40310d84bfb34f454fc696eafb2c20d8e51/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 pinned draft Specification.adoc",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "glTF is an API-neutral runtime asset delivery format."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the pinned glTF 2.1 development text describes a runtime asset delivery format. This row requires declaring the vocabulary, types, and validation schemas needed to interpret and check the structure of a claim. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/8e4bd40310d84bfb34f454fc696eafb2c20d8e51/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 pinned draft Specification.adoc",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "glTF is an API-neutral runtime asset delivery format."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the pinned glTF 2.1 development text describes a runtime asset delivery format. This row requires pairwise identifiers and presentation mechanisms that reduce correlation across relationships, with their remaining correlation risks stated. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/8e4bd40310d84bfb34f454fc696eafb2c20d8e51/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 pinned draft Specification.adoc",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "glTF is an API-neutral runtime asset delivery format."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.encryption",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the pinned glTF 2.1 development text describes a runtime asset delivery format. This row requires identifying recipient key material and algorithms that permit confidential communication or encrypted content for an intended subject. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/8e4bd40310d84bfb34f454fc696eafb2c20d8e51/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 pinned draft Specification.adoc",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "glTF is an API-neutral runtime asset delivery format."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.key-lifecycle",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the pinned glTF 2.1 development text describes a runtime asset delivery format. This row requires rules for changing, revoking, or recovering identity-control keys and for discovering the applicable verification material. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/8e4bd40310d84bfb34f454fc696eafb2c20d8e51/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 pinned draft Specification.adoc",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "glTF is an API-neutral runtime asset delivery format."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the pinned glTF 2.1 development text describes a runtime asset delivery format. This row requires a defined mechanism to discover the suspension, revocation, or other status of a credential after issuance. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/8e4bd40310d84bfb34f454fc696eafb2c20d8e51/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 pinned draft Specification.adoc",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "glTF is an API-neutral runtime asset delivery format."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the pinned glTF 2.1 development text describes a runtime asset delivery format. This row requires runtime estimates of environmental illumination made available to content for lighting or reflections. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/8e4bd40310d84bfb34f454fc696eafb2c20d8e51/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 pinned draft Specification.adoc",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "glTF is an API-neutral runtime asset delivery format."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the pinned glTF 2.1 development text describes a runtime asset delivery format. This row requires detecting recognized physical markers or images and reporting their tracked pose relative to a runtime reference space. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/8e4bd40310d84bfb34f454fc696eafb2c20d8e51/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 pinned draft Specification.adoc",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "glTF is an API-neutral runtime asset delivery format."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.resolve",
+      "level": "native",
+      "note": "The pinned glTF 2.1 development specification defines external file references, context-local aliases and relative-resource resolution. This is the draft core contract; it does not establish a ratified 2.1 release or implementation conformance.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/8e4bd40310d84bfb34f454fc696eafb2c20d8e51/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 pinned draft Specification.adoc",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Aliases are not inherited from the parent asset."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "native",
+      "note": "The pinned glTF 2.1 development specification carries timestamped transform keyframes and defines interpolation separately. This is draft core support and does not establish a published 2.1 release or runtime conformance.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/8e4bd40310d84bfb34f454fc696eafb2c20d8e51/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 pinned draft Specification.adoc",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "An object describing the keyframe data, including timestamps, and the target property affected by it."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.text",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the pinned glTF 2.1 development text describes a runtime asset delivery format. This row requires receiving character or string entry through a defined input interface, separate from interpreting physical controller actions. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/8e4bd40310d84bfb34f454fc696eafb2c20d8e51/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 pinned draft Specification.adoc",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "glTF is an API-neutral runtime asset delivery format."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the pinned glTF 2.1 development text describes a runtime asset delivery format. This row requires submitting distinct shaped image layers to a display compositor with their placement and composition properties. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/8e4bd40310d84bfb34f454fc696eafb2c20d8e51/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 pinned draft Specification.adoc",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "glTF is an API-neutral runtime asset delivery format."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.bounds",
+      "level": "native",
+      "note": "The pinned glTF 2.1 development specification associates box or sphere bounds with nodes and organizes them hierarchically for culling and deferred loading. This is draft core support, not a ratified release or runtime conformance.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/8e4bd40310d84bfb34f454fc696eafb2c20d8e51/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 pinned draft Specification.adoc",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Bounding volumes may be used to defer loading of content based on application-specific criteria"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the pinned glTF 2.1 development text describes a runtime asset delivery format. This row requires runtime-reported physical play-area bounds and floor-relative reference information available to an application. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/8e4bd40310d84bfb34f454fc696eafb2c20d8e51/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 pinned draft Specification.adoc",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "glTF is an API-neutral runtime asset delivery format."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the pinned glTF 2.1 development text describes a runtime asset delivery format. This row requires interchanging identified spatial zones, typed events scoped to them, and summaries with defined spatial and temporal meaning. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/8e4bd40310d84bfb34f454fc696eafb2c20d8e51/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 pinned draft Specification.adoc",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "glTF is an API-neutral runtime asset delivery format."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the pinned glTF 2.1 development text describes a runtime asset delivery format. This row requires a machine-readable account of a recipient's evaluation and action, with any signature or integrity proof explicitly identified. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/8e4bd40310d84bfb34f454fc696eafb2c20d8e51/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 pinned draft Specification.adoc",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "glTF is an API-neutral runtime asset delivery format."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the pinned glTF 2.1 development text describes a runtime asset delivery format. This row requires a destination's pre-arrival approval or refusal response, including any validity limit and optional explanatory information. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/8e4bd40310d84bfb34f454fc696eafb2c20d8e51/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 pinned draft Specification.adoc",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "glTF is an API-neutral runtime asset delivery format."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the pinned glTF 2.1 development text describes a runtime asset delivery format. This row requires dispatching programmable non-raster GPU workloads against resources available through the graphics-compute API. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/8e4bd40310d84bfb34f454fc696eafb2c20d8e51/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 pinned draft Specification.adoc",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "glTF is an API-neutral runtime asset delivery format."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.frame-timing",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the pinned glTF 2.1 development text describes a runtime asset delivery format. This row requires coordinating frame submission with predicted display timing and the view poses associated with that time. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/8e4bd40310d84bfb34f454fc696eafb2c20d8e51/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 pinned draft Specification.adoc",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "glTF is an API-neutral runtime asset delivery format."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the pinned glTF 2.1 development text describes a runtime asset delivery format. This row requires asking a sensing runtime for ray intersections with its estimate of physical surroundings and receiving hit poses. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/8e4bd40310d84bfb34f454fc696eafb2c20d8e51/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 pinned draft Specification.adoc",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "glTF is an API-neutral runtime asset delivery format."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.privacy",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the pinned glTF 2.1 development text describes a runtime asset delivery format. This row requires sensed-data disclosure controls such as spatial coarsening, payload use/retention declarations, and restricted or pseudonymous pose publication. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/8e4bd40310d84bfb34f454fc696eafb2c20d8e51/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 pinned draft Specification.adoc",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "glTF is an API-neutral runtime asset delivery format."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the pinned glTF 2.1 development text describes a runtime asset delivery format. This row requires receiving typed musical instrument events with channel, note or control identifiers and values through a documented device or recorded-event input interface. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/8e4bd40310d84bfb34f454fc696eafb2c20d8e51/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 pinned draft Specification.adoc",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "glTF is an API-neutral runtime asset delivery format."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the pinned glTF 2.1 development text describes a runtime asset delivery format. This row requires reconstructing a radiance field or Gaussian representation from observed images and camera information, including optimization controls and a trained scene usable for subsequent view synthesis. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/8e4bd40310d84bfb34f454fc696eafb2c20d8e51/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 pinned draft Specification.adoc",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "glTF is an API-neutral runtime asset delivery format."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.objectgen",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: the pinned glTF 2.1 development text describes a runtime asset delivery format. This row requires producing an individual three-dimensional object from a text or image prompt, with geometry or another renderable representation available for placement in a separately authored scene. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/8e4bd40310d84bfb34f454fc696eafb2c20d8e51/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 pinned draft Specification.adoc",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "glTF is an API-neutral runtime asset delivery format."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "native",
+      "note": "The pinned glTF 2.1 draft specifies node parent-child trees and composition of local transforms into global transforms, carrying a reconstructable frame graph in the asset.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/8e4bd40310d84bfb34f454fc696eafb2c20d8e51/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 pinned draft Specification.adoc",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The node hierarchy **MUST** be a set of disjoint strict trees."
+        }
+      ]
+    }
+  ]
+}

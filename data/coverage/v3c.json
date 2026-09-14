@@ -1,0 +1,2662 @@
+{
+  "subject_id": "v3c",
+  "summary": "One bitstream, two halves, two working groups. Visual volumetric video-based coding is the shared format: it cuts a volumetric frame into patches, projects them onto flat planes, and codes the resulting occupancy, geometry and attribute pictures with an ordinary video codec - AVC, HEVC or VVC - while a small atlas of patch descriptions says how to put the points back in space. Video-based point cloud compression is one application of it, an annex of the same part, owned by the 3D graphics group; MPEG immersive video is the other, a separate part that normatively references the shared format and extends it, owned by the video coding group. The published state is edition 3 of Part 5 in March 2025 and edition 2 of Part 12 in September 2025, with conformance and reference software for the immersive half published in 2026 and the reference encoder public under a BSD licence. What it covers: volumetric video, end to end and seriously - profiles, tiers, six levels, two named conformance points, and a real camera model for multi-camera capture with perspective, equirectangular and orthographic projections. What it leaves to others: everything a world needs. It has no scene graph, no scripting, no identity, no networking session, no anchors and no audio; those rows are honestly out of scope, not missing. Four traps for a standards audience. First, handedness: the frame that patches reconstruct into is described as left-handed, opposite to glTF, OpenUSD and every web runtime on this map, and the block that could name the axis convention is optional and often absent. Second, the standard does not deliver itself - storage in the ISO base media file format and transport over adaptive streaming are Part 10, a different part, so any claim that this format streams is really a claim about its neighbour. Third, meshes: the scope names mesh representations as a target of the generic mechanism, but no mesh coding is published here; that is Part 29, still in development, and the planned fourth edition of Part 5 is what folds it in. Fourth, splats: a first amendment to this part that would add Gaussian splat coding through the same video-based framework has been promoted, and MPEG has an open exploration with a call for content dated July 2026, so the row that reads empty today is the row most likely to change next. One more thing a reader should know: the published text sits behind ISO's paywall, so every quote in this file comes from MPEG's own freely published documents - the 2020 final draft of Part 5, the approved white papers of 2021 and 2026, the standards pages, and the public reference software. Where a fact could have changed between the 2020 draft and the published editions, the note says which document it came from.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "out-of-scope",
+      "note": "A coding standard, not a renderer. It stops at decoding and reconstruction; the immersive video half describes a reference renderer and then says nobody has to follow it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies a generic mechanism for visual volumetric video coding, i.e. visual volumetric video-based coding. The generic mechanism may be used by applications targeting volumetric content, such as point clouds, immersive video with depth, mesh representations of visual volumetric frames, etc."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, ISO/IEC JTC 1/SC 29/AG 3 N 234 (MPEG output document w25996)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A non-normative hypothetical reference renderer (HRR) is also described in the specification, but renderer implementations are not required to follow the operations of the HRR."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "out-of-scope",
+      "note": "It names no graphics interface. The video parts of the stream are handed to an AVC, HEVC or VVC decoder, and what a renderer does afterwards is outside the document.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies a generic mechanism for visual volumetric video coding, i.e. visual volumetric video-based coding. The generic mechanism may be used by applications targeting volumetric content, such as point clouds, immersive video with depth, mesh representations of visual volumetric frames, etc."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/134_OnLine/w20390.zip",
+          "title": "White paper on Video based Point Cloud Compression (V-PCC), ISO/IEC JTC 1/SC 29/AG 3 N 00024 (MPEG output document w20390)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The V3C standard provides a video codec agnostic framework to compress immersive media such as dynamic point clouds, which can be handled by the V-PCC profiles."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "partial",
+      "note": "Appearance travels as per-point attributes - texture, transparency, reflectance and surface normals - so the description half is met. The evaluation half is not: there is no material model, and the one material field is an identifier whose meaning the standard refuses to define.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "ATTR_TEXTURE indicates an attribute that contains texture information of a volumetric frame. For example, this may indicate an attribute that contains RGB (Red, Green, Blue) colour information."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "ATTR_NORMAL indicates an attribute that contains a unit vector information associated with each point in a volumetric frame. The unit vector specifies the perpendicular direction to a surface at a point (i.e. direction a point is facing)."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The interpretation of the values of such attribute frame type is outside the scope of this document."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "out-of-scope",
+      "note": "No lights, no shadows, no global illumination. What is coded is captured appearance, already lit when it was captured.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies a generic mechanism for visual volumetric video coding, i.e. visual volumetric video-based coding. The generic mechanism may be used by applications targeting volumetric content, such as point clouds, immersive video with depth, mesh representations of visual volumetric frames, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.post",
+      "level": "out-of-scope",
+      "note": "No screen-space effects. The geometry and attribute smoothing messages in the stream are post-reconstruction filters on point positions and colours, applied before anything is drawn.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies a generic mechanism for visual volumetric video coding, i.e. visual volumetric video-based coding. The generic mechanism may be used by applications targeting volumetric content, such as point clouds, immersive video with depth, mesh representations of visual volumetric frames, etc."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Furthermore, this document specifies processes that may be needed for reconstruction of visual volumetric media, and may also include additional processes such as postdecoding, pre-reconstruction, postreconstruction, and adaptation."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "partial",
+      "note": "It can send part of a stream: atlas frames divide into tiles for random access, sub-bitstreams can be dropped by temporal layer, and the point cloud half was designed for progressive coding and random access to subsets. What is missing is a level-of-detail ladder in the format itself - no discrete detail levels and no ordering rule saying what to send first.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "To enable parallelization, random access, as well as a variety of other functionalities, an atlas frame can be divided into one or more rectangular partitions, that are referred to as tiles."
+        },
+        {
+          "url": "https://www.mpeg.org/standards/MPEG-I/5/",
+          "title": "MPEG-I: Visual Volumetric Video-based Coding (V3C) and Video-based Point Cloud Compression (V-PCC), Part 5, standards page",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "To specify lossy compression of 3D point clouds employing efficient geometry and attributes compression, scalable/progressive coding, and coding of point clouds sequence captured over time with support of random access to subsets of the point cloud."
+        },
+        {
+          "url": "https://mpeg-miv.org/index.php/overview/",
+          "title": "About MIV, the MPEG Immersive video website",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The MIV specification includes a number of features such as group-based encoding, Multiple Plane Image (MPI) where geometry is replaced by transparency, entity-based coding, inpainting information, spatial and temporal access, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "none",
+      "note": "The published editions carry no splat or radiance field coding: every representation goes through projection onto video planes. A first amendment to this same standard that would add Gaussian splat coding has been promoted, and MPEG has an open exploration with a call for content dated 2026-07-31, but neither is published, so nothing can be encoded to it today.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/154th-meeting-of-mpeg/",
+          "title": "154th meeting of MPEG, press page",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This marks a second major step toward standardized Gaussian Splat Coding, following the recent promotion of the first amendment to V-PCC, ISO/IEC 23090-5, which addresses Gaussian splat coding through a video-based compression framework."
+        },
+        {
+          "url": "https://www.mpeg.org/standards/Explorations/45/",
+          "title": "Explorations: Gaussian splat coding, MPEG explorations page",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Call for content for Gaussian splat coding"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "native",
+      "note": "This is the whole point of the standard. A volumetric frame is cut into patches, the patches are projected onto flat planes, and the resulting occupancy, geometry and attribute images are coded as ordinary video. Both dynamic point clouds and multi-camera video with depth are covered by the one bitstream.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/134_OnLine/w20390.zip",
+          "title": "White paper on Video based Point Cloud Compression (V-PCC), ISO/IEC JTC 1/SC 29/AG 3 N 00024 (MPEG output document w20390)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The key technology in the point cloud coding is based on segmenting and projecting the 3-dimensional information such as point cloud images onto the 2-dimensional planes in the form of independent segments, i.e., patches, and further compression of the projected data using conventional 2D video coding."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies a generic mechanism for visual volumetric video coding, i.e. visual volumetric video-based coding. The generic mechanism may be used by applications targeting volumetric content, such as point clouds, immersive video with depth, mesh representations of visual volumetric frames, etc."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, ISO/IEC JTC 1/SC 29/AG 3 N 234 (MPEG output document w25996)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Due to many technical commonalities between Video based Point Cloud Coding (V-PCC) and MIV, the MIV specification is based on a common bitstream format called the Visual Volumetric Video-based Coding (V3C) [3]. MIV normatively references V3C and provides extensions to it."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "out-of-scope",
+      "note": "No text, fonts or layout. Any lettering in this content was captured as part of the picture.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies a generic mechanism for visual volumetric video coding, i.e. visual volumetric video-based coding. The generic mechanism may be used by applications targeting volumetric content, such as point clouds, immersive video with depth, mesh representations of visual volumetric frames, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "partial",
+      "note": "The immersive video half carries a real camera model: per view, the intrinsics, the extrinsics and the projection type, with perspective, equirectangular and orthographic all defined, plus messages that suggest a viewport and a viewing position. Moving between viewpoints is not covered - synthesising a view the cameras never took is left to a renderer the standard does not require.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, ISO/IEC JTC 1/SC 29/AG 3 N 234 (MPEG output document w25996)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Additionally, for each source view metadata such as the camera intrinsics, extrinsics, projection format, projection-plane dimensions, and bit-depths of the source videos (for both geometry and attributes) are also provided. Perspective, equirectangular, and orthographic projection formats are supported by the standard."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, ISO/IEC JTC 1/SC 29/AG 3 N 234 (MPEG output document w25996)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A non-normative hypothetical reference renderer (HRR) is also described in the specification, but renderer implementations are not required to follow the operations of the HRR."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "partial",
+      "note": "There is an object layer, but it is a flat list, not a tree. A message declares objects with indices, labels, priorities, a hidden flag, visibility cones, a bounding box and dependencies between objects. There are no nodes, no per-node transforms and no parenting, so nothing composes the way a scene graph composes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "soi_object_dependency_present_flag equal to 1 indicates that object dependency information is present in the current scene object information SEI message."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This SEI message defines a set of labels that could be associated with objects in a volumetric scene."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "soi_3d_bounding_box_present_flag equal to 1 indicates that 3D bounding box information is present in the current scene object information SEI message."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "conflicts",
+      "note": "It settles handedness the opposite way from the formats it will meet. The target frame that patches are reconstructed into is described as left-handed, while glTF, OpenUSD and the web runtimes on this map are right-handed. The optional usability parameters can name which axis is forward, left and up and with which sign, so the mismatch is expressible - but that block is optional and often absent, and when it is absent an importer has to flip an axis and guess.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The location of the bounding box in the 3D model coordinate system, defined by a left-handed system with axes (X, Y, Z), can be obtained by adding offsets TilePatch3dOffsetU, TilePatch3DOffsetV, and TilePatch3DOffsetD"
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "csp_forward_axis specifies the axis index of the forward direction."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "vui_coordinate_system_parameters_present_flag equal to 1 specifies that the syntax structure coordinate_system_parameters( ) is present in the vui_parameters( ) syntax structure."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "partial",
+      "note": "It defines a container, but for one medium rather than for a scene. A stream is a sequence of units - parameter set, atlas data, common atlas data, occupancy, geometry, attribute and packed video - and a sample stream format joins them into one file. Putting that file where a player can find it, in the ISO base media file format, is a different part of the same family, Part 10, not this document.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/134_OnLine/w20390.zip",
+          "title": "White paper on Video based Point Cloud Compression (V-PCC), ISO/IEC JTC 1/SC 29/AG 3 N 00024 (MPEG output document w20390)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Compressed V-PCC bitstream contains parameter set, atlas bitstream, occupancy map, geometry, and attribute bitstreams. The V-PCC bitstream can be in two formats: the V3C unit stream format or the sample stream format."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, ISO/IEC JTC 1/SC 29/AG 3 N 234 (MPEG output document w25996)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The current text of the standard specifies seven unit-types, namely the V3C parameter set (VPS), atlas data (AD), common atlas data (CAD) occupancy video data (OVD), geometry video data (GVD), attribute video data (AVD), and packed video data (PVD)."
+        },
+        {
+          "url": "https://www.mpeg.org/standards/MPEG-I/10/",
+          "title": "MPEG-I: Carriage of Visual Volumetric Video-based Coding Data, Part 10, standards page",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "To define storage of PCC data in ISOBMFF and transport of it with DASH, MMT and so on"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "partial",
+      "note": "Geometry is coded, but as pictures. Depth from the projection plane becomes a video frame, and an atlas of patch descriptions says how to put the points back in space. Meshes are named as a target of the generic mechanism yet are not coded here - dynamic mesh coding is a separate part, 29, still in development, and the fourth edition of this part is the one meant to fold it in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies a generic mechanism for visual volumetric video coding, i.e. visual volumetric video-based coding. The generic mechanism may be used by applications targeting volumetric content, such as point clouds, immersive video with depth, mesh representations of visual volumetric frames, etc."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "collection of 2D bounding boxes and their associated information placed onto a rectangular frame and corresponding to a volume in 3D space on which volumetric data is rendered"
+        },
+        {
+          "url": "https://www.mpeg.org/standards/MPEG-I/29/",
+          "title": "MPEG-I: Video-based dynamic mesh coding, Part 29, standards page",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "encode dynamic meshes with time changing attributes"
+        },
+        {
+          "url": "https://www.mpeg.org/standards/MPEG-I/5/",
+          "title": "MPEG-I: Visual Volumetric Video-based Coding (V3C) and Video-based Point Cloud Compression (V-PCC), Part 5, standards page",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "To include the V-DMC related technology"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "partial",
+      "note": "Colour is carried as an attribute video stream and coded by an ordinary video codec, with the codec named in the profile - AVC, HEVC or VVC. What is missing is anything a graphics card wants: no block-compressed texture format, no mip chain, no image container. A client decodes video and builds its own textures.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, ISO/IEC JTC 1/SC 29/AG 3 N 234 (MPEG output document w25996)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The resulting attribute and geometry atlases are encoded as a video bitstream with a 2-D video encoder, while the metadata is encoded using the MIV standard."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "ATTR_TEXTURE indicates an attribute that contains texture information of a volumetric frame. For example, this may indicate an attribute that contains RGB (Red, Green, Blue) colour information."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/134_OnLine/w20390.zip",
+          "title": "White paper on Video based Point Cloud Compression (V-PCC), ISO/IEC JTC 1/SC 29/AG 3 N 00024 (MPEG output document w20390)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The CodecGroup component indicates video decoding specifications and their profiles, e.g., Progressive High as specified in ISO/IEC 14496-10:2014:Annex A [7], Main or Main 10 as specified in ISO/IEC 23008-2:2020:Annex A [8]."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "none",
+      "note": "Nothing of a material definition crosses. There is a material identifier per point and a material identifier per object, and in both places the standard says the meaning is settled somewhere else. Two implementations that agree on the bitstream can still disagree on every material in it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "ATTR_MATERIAL_ID indicates an attribute that contains supplemental information that identifies the material type of a point in a volumetric frame."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The interpretation of the values of such attribute frame type is outside the scope of this document."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "soi_material_id[ i ] indicates the material ID, ObjectMaterialID[ i ] of an object with index i. The default value of soi_material_id[ i ] is equal to 0. The material ID is identified through means outside this document."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "out-of-scope",
+      "note": "Movement here is a sequence of coded frames, the way movement in a film is. There are no keyframes, no curves and no clips to name and replay.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies a generic mechanism for visual volumetric video coding, i.e. visual volumetric video-based coding. The generic mechanism may be used by applications targeting volumetric content, such as point clouds, immersive video with depth, mesh representations of visual volumetric frames, etc."
+        },
+        {
+          "url": "https://www.mpeg.org/standards/MPEG-I/5/",
+          "title": "MPEG-I: Visual Volumetric Video-based Coding (V3C) and Video-based Point Cloud Compression (V-PCC), Part 5, standards page",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "coding of point clouds sequence captured over time with support of random access to subsets of the point cloud"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "out-of-scope",
+      "note": "No bones and no binding. A captured person arrives as points or as camera views, with no rig inside.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies a generic mechanism for visual volumetric video coding, i.e. visual volumetric video-based coding. The generic mechanism may be used by applications targeting volumetric content, such as point clouds, immersive video with depth, mesh representations of visual volumetric frames, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "out-of-scope",
+      "note": "No blend shapes. Facial movement is re-captured every frame rather than driven by named targets.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies a generic mechanism for visual volumetric video coding, i.e. visual volumetric video-based coding. The generic mechanism may be used by applications targeting volumetric content, such as point clouds, immersive video with depth, mesh representations of visual volumetric frames, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "out-of-scope",
+      "note": "Nothing is repeated cheaply. Patch packing puts many pieces of one frame into one picture, which is packing, not instancing - each piece is coded once and appears once.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/134_OnLine/w20390.zip",
+          "title": "White paper on Video based Point Cloud Compression (V-PCC), ISO/IEC JTC 1/SC 29/AG 3 N 00024 (MPEG output document w20390)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The projected patches are then packed using a selected packing strategy."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "out-of-scope",
+      "note": "No layers, references or overrides. A stream may hold several atlases and the immersive half may hold a static background, but nothing lets one file point at another file and change part of it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies a generic mechanism for visual volumetric video coding, i.e. visual volumetric video-based coding. The generic mechanism may be used by applications targeting volumetric content, such as point clouds, immersive video with depth, mesh representations of visual volumetric frames, etc."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, ISO/IEC JTC 1/SC 29/AG 3 N 234 (MPEG output document w25996)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The 2nd edition provides additional functionality: colourized geometry, capture device information, patch margins, background views, static background atlases, support for decoder-side depth estimation, chroma dynamic range modification, piecewise linear normalized disparity quantization, and linear depth quantization."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "partial",
+      "note": "There is one bit for this and it is off by default. A usability flag says whether the world coordinates are in metres; when it is zero, and when the block holding it is absent, the content is unitless and the receiver has to be told the scale some other way.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "vui_unit_in_metres_flag equal to 1 specifies that the real-world coordinates information is expressed in metres. vui_unit_in_metres_flag equal to 0 specifies that the world coordinates are unitless. If vui_unit_in_metres_flag is not present, it shall be inferred to be equal to 0."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "out-of-scope",
+      "note": "Rights terms belong to the file that carries the stream, not to the stream. This document specifies syntax, semantics and decoding, and carriage is Part 10's job.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        },
+        {
+          "url": "https://www.mpeg.org/standards/MPEG-I/10/",
+          "title": "MPEG-I: Carriage of Visual Volumetric Video-based Coding Data, Part 10, standards page",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "To define storage of PCC data in ISOBMFF and transport of it with DASH, MMT and so on"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "none",
+      "note": "A volumetric capture of a real place is exactly the kind of content a viewer would want signed, and there is no signature here. The one integrity mechanism, a hash of decoded atlas information, exists so a decoder can prove it decoded correctly, not so a viewer can learn who made the content.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Decoded atlas information hash"
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "out-of-scope",
+      "note": "A captured person is points and pictures here, not an avatar. Nothing in the format describes a body that another world could adopt; MPEG's avatar work is a different part of the same family.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies a generic mechanism for visual volumetric video coding, i.e. visual volumetric video-based coding. The generic mechanism may be used by applications targeting volumetric content, such as point clouds, immersive video with depth, mesh representations of visual volumetric frames, etc."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/134_OnLine/w20390.zip",
+          "title": "White paper on Video based Point Cloud Compression (V-PCC), ISO/IEC JTC 1/SC 29/AG 3 N 00024 (MPEG output document w20390)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Point clouds are more flexible than polygonal meshes when representing non-manifold geometry and can be processed in real-time."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "out-of-scope",
+      "note": "No bone names and no bone structure, so nothing about animation transfer arises.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies a generic mechanism for visual volumetric video coding, i.e. visual volumetric video-based coding. The generic mechanism may be used by applications targeting volumetric content, such as point clouds, immersive video with depth, mesh representations of visual volumetric frames, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "out-of-scope",
+      "note": "No named expressions or visemes. A smile here is pixels.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies a generic mechanism for visual volumetric video coding, i.e. visual volumetric video-based coding. The generic mechanism may be used by applications targeting volumetric content, such as point clouds, immersive video with depth, mesh representations of visual volumetric frames, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "out-of-scope",
+      "note": "Nothing to retarget onto: there is no rig on either side of the exchange.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies a generic mechanism for visual volumetric video coding, i.e. visual volumetric video-based coding. The generic mechanism may be used by applications targeting volumetric content, such as point clouds, immersive video with depth, mesh representations of visual volumetric frames, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "out-of-scope",
+      "note": "No attachment points and no separable worn items; clothing is part of the capture.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies a generic mechanism for visual volumetric video coding, i.e. visual volumetric video-based coding. The generic mechanism may be used by applications targeting volumetric content, such as point clouds, immersive video with depth, mesh representations of visual volumetric frames, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "out-of-scope",
+      "note": "No avatar-specific reduction. The stream can be thinned by dropping tiles or temporal layers, but that is a media decision, not a crowd-rendering one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies a generic mechanism for visual volumetric video coding, i.e. visual volumetric video-based coding. The generic mechanism may be used by applications targeting volumetric content, such as point clouds, immersive video with depth, mesh representations of visual volumetric frames, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "out-of-scope",
+      "note": "No identity of any kind is bound to the content.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies a generic mechanism for visual volumetric video coding, i.e. visual volumetric video-based coding. The generic mechanism may be used by applications targeting volumetric content, such as point clouds, immersive video with depth, mesh representations of visual volumetric frames, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "out-of-scope",
+      "note": "No mass, no velocity, no bodies that move by rule. Motion is replayed, not simulated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies a generic mechanism for visual volumetric video coding, i.e. visual volumetric video-based coding. The generic mechanism may be used by applications targeting volumetric content, such as point clouds, immersive video with depth, mesh representations of visual volumetric frames, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "partial",
+      "note": "It carries the hook and not the shape. Per object, the stream can signal a 3D bounding box - a real cuboid a receiver could test against - and a collision shape identifier, and the standard then says that identifier is resolved outside the document. So the hint travels and the shape does not.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "soi_collision_shape_id[ i ] indicates the collision shape ID, ObjectCollisionShapeID[ i ], of an object with index i. The collision shape ID is identified through means outside this document."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "soi_3d_bounding_box_present_flag equal to 1 indicates that 3D bounding box information is present in the current scene object information SEI message."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "out-of-scope",
+      "note": "No hinges, sliders or links between parts.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies a generic mechanism for visual volumetric video coding, i.e. visual volumetric video-based coding. The generic mechanism may be used by applications targeting volumetric content, such as point clouds, immersive video with depth, mesh representations of visual volumetric frames, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.material",
+      "level": "out-of-scope",
+      "note": "No friction or restitution. The material identifier it does carry is an opaque number.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies a generic mechanism for visual volumetric video coding, i.e. visual volumetric video-based coding. The generic mechanism may be used by applications targeting volumetric content, such as point clouds, immersive video with depth, mesh representations of visual volumetric frames, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.determinism",
+      "level": "out-of-scope",
+      "note": "Determinism here is about decoders, not about simulation: two decoders must produce the same pictures, and there is no simulation to reproduce.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies a generic mechanism for visual volumetric video coding, i.e. visual volumetric video-based coding. The generic mechanism may be used by applications targeting volumetric content, such as point clouds, immersive video with depth, mesh representations of visual volumetric frames, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "out-of-scope",
+      "note": "No cloth and no deformable bodies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies a generic mechanism for visual volumetric video coding, i.e. visual volumetric video-based coding. The generic mechanism may be used by applications targeting volumetric content, such as point clouds, immersive video with depth, mesh representations of visual volumetric frames, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "out-of-scope",
+      "note": "No regions that fire events. Objects can be labelled and bounded, and nothing happens when one is entered.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies a generic mechanism for visual volumetric video coding, i.e. visual volumetric video-based coding. The generic mechanism may be used by applications targeting volumetric content, such as point clouds, immersive video with depth, mesh representations of visual volumetric frames, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "out-of-scope",
+      "note": "A visual coding standard. Sound is a different part of the same family, Part 4.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "out-of-scope",
+      "note": "No spatialisation model; nothing about sound is in this document.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "out-of-scope",
+      "note": "No acoustics.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "out-of-scope",
+      "note": "No sound occlusion.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "out-of-scope",
+      "note": "No audio streams. The video sub-bitstreams it multiplexes carry pictures only.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "out-of-scope",
+      "note": "No voice transport.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "out-of-scope",
+      "note": "One-way media, not shared state. Nothing here is replicated between participants.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "out-of-scope",
+      "note": "No notion of ownership over an object; there is a sender and a receiver.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "out-of-scope",
+      "note": "No per-client filtering. Tiles and entities let a client fetch part of a stream, which is delivery selection rather than interest management between peers.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        },
+        {
+          "url": "https://mpeg-miv.org/index.php/overview/",
+          "title": "About MIV, the MPEG Immersive video website",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The MIV specification includes a number of features such as group-based encoding, Multiple Plane Image (MPI) where geometry is replaced by transparency, entity-based coding, inpainting information, spatial and temporal access, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.prediction",
+      "level": "out-of-scope",
+      "note": "No client-side prediction or correction; there is no interactive state to hide latency on.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "out-of-scope",
+      "note": "It names no wire protocol. Getting the stream from one machine to another is Part 10's subject, over the existing media transports.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        },
+        {
+          "url": "https://www.mpeg.org/standards/MPEG-I/10/",
+          "title": "MPEG-I: Carriage of Visual Volumetric Video-based Coding Data, Part 10, standards page",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "To define storage of PCC data in ISOBMFF and transport of it with DASH, MMT and so on"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.media",
+      "level": "partial",
+      "note": "The stream is built to be delivered - video sub-bitstreams inside a unit stream, tiles for partial access, random access points - but the delivery itself is specified next door. Part 10 defines storage in the ISO base media file format and transport over the usual media protocols, and adaptive streaming of immersive video leans on that part rather than on this one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/standards/MPEG-I/10/",
+          "title": "MPEG-I: Carriage of Visual Volumetric Video-based Coding Data, Part 10, standards page",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "To define storage of PCC data in ISOBMFF and transport of it with DASH, MMT and so on"
+        },
+        {
+          "url": "https://mpeg-miv.org/index.php/overview/",
+          "title": "About MIV, the MPEG Immersive video website",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "For the latter case, the Carriage of V3C data systems specification offers a way to implement mechanisms like DASH adaptive streaming strategy."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/134_OnLine/w20390.zip",
+          "title": "White paper on Video based Point Cloud Compression (V-PCC), ISO/IEC JTC 1/SC 29/AG 3 N 00024 (MPEG output document w20390)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Compressed V-PCC bitstream contains parameter set, atlas bitstream, occupancy map, geometry, and attribute bitstreams."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "out-of-scope",
+      "note": "No joining and no authentication. A decoder opens a stream.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "out-of-scope",
+      "note": "No portals and no state to carry between places.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "out-of-scope",
+      "note": "No roster; the format does not know that anyone is watching.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "out-of-scope",
+      "note": "No naming scheme for places. Content is addressed by whatever carries it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "out-of-scope",
+      "note": "No discovery mechanism.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "partial",
+      "note": "It has a media clock and not a shared one. Usability parameters define a clock tick as a ratio of two integers, and there are messages for atlas frame timing and for a time code, which is enough to order and present frames. Nothing agrees a clock between two parties, so events in two worlds cannot be ordered from this alone.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A clock tick, in units of seconds, is equal to the quotient of vui_num_units_in_tick divided by vui_time_scale."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Time code"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "out-of-scope",
+      "note": "No identifiers for people, agents or things.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "out-of-scope",
+      "note": "No claims and no credential format.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "out-of-scope",
+      "note": "No protocol for presenting anything.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "out-of-scope",
+      "note": "No permissions. Object priority and a hidden flag are rendering hints, not grants.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "out-of-scope",
+      "note": "No selective disclosure.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.social",
+      "level": "out-of-scope",
+      "note": "No relationships or standing.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "out-of-scope",
+      "note": "No enforcement at the point of use; the format carries no terms to enforce.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "out-of-scope",
+      "note": "Nothing is expressed against the Earth. Camera poses are given inside the scene's own frame, with no geographic reference anywhere in the stream.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, ISO/IEC JTC 1/SC 29/AG 3 N 234 (MPEG output document w25996)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Additionally, for each source view metadata such as the camera intrinsics, extrinsics, projection format, projection-plane dimensions, and bit-depths of the source videos (for both geometry and attributes) are also provided."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "partial",
+      "note": "It agrees a frame, just not an Earth frame. The usability block can state which axis is forward, which is left, which is up and with which sign, and whether the world is in metres. That is a local scene frame; there is no datum, no projection and no way to say where on the planet this is.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "csp_forward_axis specifies the axis index of the forward direction."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "csp_up_sign specifies the up direction in relation to the up axis."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "vui_unit_in_metres_flag equal to 1 specifies that the real-world coordinates information is expressed in metres."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "out-of-scope",
+      "note": "No anchors. The format has no concept of a device or a place to pin to.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "out-of-scope",
+      "note": "No shared or persistent anchors, for the same reason.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.vps",
+      "level": "out-of-scope",
+      "note": "No pose recovery from imagery. Camera positions are given to the encoder; the standard never estimates them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, ISO/IEC JTC 1/SC 29/AG 3 N 234 (MPEG output document w25996)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The technology used to capture/estimate geometry data is outside the scope of the standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "out-of-scope",
+      "note": "Its tiles are not these tiles. An atlas frame divides into rectangular tiles for random access inside one picture; nothing in it streams terrain or a city by geographic tile.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "To enable parallelization, random access, as well as a variety of other functionalities, an atlas frame can be divided into one or more rectangular partitions, that are referred to as tiles."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.indoor",
+      "level": "out-of-scope",
+      "note": "No structured description of rooms, doors or floors. An interior captured this way is an undifferentiated cloud.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "out-of-scope",
+      "note": "No immersive session to start or end. The standard ends at a decoded frame.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "out-of-scope",
+      "note": "No input of any kind.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "out-of-scope",
+      "note": "No hand tracking.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.eye",
+      "level": "out-of-scope",
+      "note": "No gaze input. A viewing position can be suggested to a player through a message, which is the reverse direction - the content telling the viewer where to look.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Viewport position"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "out-of-scope",
+      "note": "No haptics; MPEG's haptics work is a different part.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "out-of-scope",
+      "note": "No device query. Profiles, tiers and levels say what a decoder must manage, which is a bitstream constraint rather than a capability handshake.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, ISO/IEC JTC 1/SC 29/AG 3 N 234 (MPEG output document w25996)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The restrictions on the MIV bitstream and consequently the limits on the capabilities needed to decode the MIV bitstream are specified by the profiles, tiers, and levels."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "out-of-scope",
+      "note": "No language and no runtime. Nothing in a stream executes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "out-of-scope",
+      "note": "No behaviour graphs. Objects can be labelled and hidden; they cannot be made to do anything.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "out-of-scope",
+      "note": "No untrusted code to contain, because there is no code.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "out-of-scope",
+      "note": "No agents.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "out-of-scope",
+      "note": "Levels bound what a decoder must handle - sample counts, picture sizes, bit rates - but nothing bounds guest content's memory or time, because there is no guest content.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/134_OnLine/w20390.zip",
+          "title": "White paper on Video based Point Cloud Compression (V-PCC), ISO/IEC JTC 1/SC 29/AG 3 N 00024 (MPEG output document w20390)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Currently, a total of 6 levels are specified, ranging in support for volumetric image sizes as small as 1 000 000 volumetric samples per frame with corresponding projection as small as 1 920x1 080 samples at the low end, up to as large as 3 200 000 volumetric samples per frame with corresponding projection as large as 8 192x4 320 samples at the high end."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "out-of-scope",
+      "note": "Nothing persists. A stream is played and it ends.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "out-of-scope",
+      "note": "No items and no holding.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "out-of-scope",
+      "note": "No settings travel with anyone.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "out-of-scope",
+      "note": "Content is referred to by where it is, not by what it hashes to. There is a hash message in the stream and it is a decoder self-check, not an address.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Decoded atlas information hash"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "out-of-scope",
+      "note": "It packages a medium, not an experience. There is a unit stream and a sample stream that hold the coded data, and no notion of an application, its assets and its entry point.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/134_OnLine/w20390.zip",
+          "title": "White paper on Video based Point Cloud Compression (V-PCC), ISO/IEC JTC 1/SC 29/AG 3 N 00024 (MPEG output document w20390)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The V-PCC bitstream can be in two formats: the V3C unit stream format or the sample stream format."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "partial",
+      "note": "Built to be delivered at scale, by someone else's part. This document shapes the stream so ordinary video infrastructure can carry it; the storage and transport rules, including adaptive streaming, are Part 10's.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/standards/MPEG-I/10/",
+          "title": "MPEG-I: Carriage of Visual Volumetric Video-based Coding Data, Part 10, standards page",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "To define storage of PCC data in ISOBMFF and transport of it with DASH, MMT and so on"
+        },
+        {
+          "url": "https://mpeg-miv.org/index.php/overview/",
+          "title": "About MIV, the MPEG Immersive video website",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "For the latter case, the Carriage of V3C data systems specification offers a way to implement mechanisms like DASH adaptive streaming strategy."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/134_OnLine/w20390.zip",
+          "title": "White paper on Video based Point Cloud Compression (V-PCC), ISO/IEC JTC 1/SC 29/AG 3 N 00024 (MPEG output document w20390)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Note that given the codec-agnostic nature of V-PCC, the video sequences can be coded using different video encoding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "partial",
+      "note": "Forward compatibility is designed in and content updating is not. Reserved values must be ignored by decoders of this version, extension flags are present and constrained, and the second edition of the immersive video half kept the first edition's profiles unchanged on purpose. Nothing here patches or supersedes content already published.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Other values of soi_point_shape_id[ i ] are reserved for future use by ISO/IEC. Decoders conforming to this version of this document shall ignore reserved values of soi_point_shape_id[ i ]."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, ISO/IEC JTC 1/SC 29/AG 3 N 234 (MPEG output document w25996)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The MIV Main, MIV Extended and MIV Geometry Absent profiles were added in the 1st edition and are kept the same for backwards compatibility."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, ISO/IEC JTC 1/SC 29/AG 3 N 234 (MPEG output document w25996)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This white paper provides a brief overview of the second edition of MIV. The second edition replaces the first edition."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "native",
+      "note": "This is where the standard is strongest and where most of the map is weakest. Conformance is defined inside the document as two named points, one of them mandatory, on a grid of codec group, toolset and reconstruction profiles with six levels. Beyond that there are separate published parts for conformance testing and reference software, and both reference encoders are public - the immersive video one openly under a BSD licence.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/134_OnLine/w20390.zip",
+          "title": "White paper on Video based Point Cloud Compression (V-PCC), ISO/IEC JTC 1/SC 29/AG 3 N 00024 (MPEG output document w20390)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Any V-PCC bitstream, collection of V-PCC sub-bitstreams, or V-PCC decoder can claim conformance at two points: A and B (see Fig. 2). However, indicating conformance point A (CodecGroup and Toolset) is mandatory, e.g., AVC V-PCC Basic, while for conformance point B (Reconstruction), it is optional, e.g., HEVC V-PCC Basic Rec0."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, ISO/IEC JTC 1/SC 29/AG 3 N 234 (MPEG output document w25996)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The MPEG immersive video (MIV) standard, produced by ISO/IEC JTC 1/SC 29/WG 4 MPEG video coding, part of the Moving Picture Experts Group (MPEG), has been published in September 2025 [1], and the related conformance and reference software specification has been published in 2026 [2]."
+        },
+        {
+          "url": "https://gitlab.com/mpeg-i-visual/tmiv/-/blob/master/README.md",
+          "title": "MIV reference software (TMIV) README, mpeg-i-visual/tmiv",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "the reference software encoder and decoder of ISO/IEC 23090-23 Conformance and reference software for MPEG immersive video."
+        },
+        {
+          "url": "https://gitlab.com/mpeg-i-visual/tmiv/-/blob/master/LICENSE",
+          "title": "TMIV LICENSE file, mpeg-i-visual/tmiv",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The copyright in this software is being made available under the BSD License, included below."
+        },
+        {
+          "url": "https://github.com/MPEGGroup/mpeg-pcc-tmc2/blob/master/README.md",
+          "title": "mpeg-pcc-tmc2 V-PCC test model software README, MPEGGroup",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Video-based Point Cloud Compression - V-PCC - mpeg-pcc-tmc2 test model candidate software"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "MPEG's visual volumetric video coding is one bitstream that projects volumetric frames onto video planes, with a point cloud half and an immersive video half, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "MPEG's visual volumetric video coding is one bitstream that projects volumetric frames onto video planes, with a point cloud half and an immersive video half, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "The standard says so itself about the whole capture side: how geometry is captured or estimated is outside its scope. It codes what a rig or a reconstruction hands it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, ISO/IEC JTC 1/SC 29/AG 3 N 234",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The technology used to capture/estimate geometry data is outside the scope of the standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "none",
+      "note": "Nothing published here codes a Gaussian splat: every representation goes through projection onto video planes. A first amendment to this very part that would add splat coding has been promoted, and a separate exploration has a call for content dated 2026-07-31, so a sixth family of splat containers is arriving from the committee that owns this subject. Neither is published, so nothing can be encoded to it today.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/154th-meeting-of-mpeg/",
+          "title": "154th meeting of MPEG, official MPEG meeting press release",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This marks a second major step toward standardized Gaussian Splat Coding, following the recent promotion of the first amendment to V-PCC, ISO/IEC 23090-5, which addresses Gaussian splat coding through a video-based compression framework."
+        },
+        {
+          "url": "https://www.mpeg.org/standards/Explorations/45/",
+          "title": "MPEG exploration 45, Gaussian splat coding, official MPEG page",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Call for content for Gaussian splat coding"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "partial",
+      "note": "Part of a stream can be sent: an atlas frame divides into rectangular tiles for random access, temporal layers can be dropped, and the point cloud half was designed for progressive coding. What is absent is a detail ladder and an ordering rule, and delivery itself is a different part of the family, ISO/IEC 23090-10, not this one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "To enable parallelization, random access, as well as a variety of other functionalities, an atlas frame can be divided into one or more rectangular partitions, that are referred to as tiles."
+        },
+        {
+          "url": "https://www.mpeg.org/standards/MPEG-I/5/",
+          "title": "MPEG-I Part 5, official MPEG standard page",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "To specify lossy compression of 3D point clouds employing efficient geometry and attributes compression, scalable/progressive coding, and coding of point clouds sequence captured over time with support of random access to subsets of the point cloud."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "native",
+      "note": "This is the row the standard was written for. A real or virtual scene captured by several cameras is cut into patches, projected onto flat planes and coded as ordinary video, with a small atlas saying where each patch came from, so the whole thing rides the hardware video decoder every phone already has. Both published halves, the point cloud one and the immersive video one, share that bitstream.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://mpeg-miv.org/index.php/overview/",
+          "title": "MPEG immersive video overview, mpeg-miv.org",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The MPEG Immersive video (MIV) standard features the compression of immersive video content, also known as volumetric video, in which a real or virtual 3D scene is captured by multiple real or virtual cameras."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/134_OnLine/w20390.zip",
+          "title": "White paper on Video based Point Cloud Compression (V-PCC), MPEG output document w20390",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The projected patches are then packed using a selected packing strategy."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "native",
+      "note": "The point cloud half is an annex of this same part and codes dynamic point clouds outright: a frame is a collection of points, each with a position and optionally colour, reflectance or a normal, and the stated aim includes progressive coding and random access to subsets of the cloud.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "In a point cloud sequence, each point cloud frame contains a collection of points. Each point has a 3D position, i.e., geometry information, and each point may also be associated with a number of attributes, such as colour, reflectance, surface normal, etc."
+        },
+        {
+          "url": "https://www.mpeg.org/standards/MPEG-I/5/",
+          "title": "MPEG-I Part 5, official MPEG standard page",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "To specify lossy compression of 3D point clouds employing efficient geometry and attributes compression, scalable/progressive coding, and coding of point clouds sequence captured over time with support of random access to subsets of the point cloud."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "native",
+      "note": "The immersive video half takes exactly this input: several videos from an unordered group of real or virtual cameras with arbitrary poses, carried with the parameters needed to put them back in space. It is the representation most capture rigs actually produce, and it is the second thing this one bitstream codes.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, ISO/IEC JTC 1/SC 29/AG 3 N 234",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The inputs to an MIV encoder are multiple sets of videos, captured by an unordered group of real or virtual cameras having an arbitrary pose (source-views)."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, ISO/IEC JTC 1/SC 29/AG 3 N 234",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The technology used to capture/estimate geometry data is outside the scope of the standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "partial",
+      "note": "Playback is six-degrees-of-freedom inside a limited viewing space, and view synthesis from fixed cameras is named in MPEG's own exploration text, so the format is built to be viewed from where no camera stood. The renderer is not normative: a hypothetical reference renderer is described and implementations need not follow it, so two decoders will not produce the same picture.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://mpeg-miv.org/index.php/overview/",
+          "title": "MPEG immersive video overview, mpeg-miv.org",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "It enables storage and distribution of immersive video content over existing and future networks, for playback with 6 degrees of freedom (6 DoF) of view position and orientation within a limited viewing space"
+        },
+        {
+          "url": "https://www.mpeg.org/explorations/",
+          "title": "MPEG explorations, official MPEG page",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "synthesizing virtual viewpoints from multiple, fixed cameras set up in various arrangements (planar arrangement, cameras in an arc, 360 divergent, etc)"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "native",
+      "note": "Time is in the bitstream rather than in a folder of files. This is a video coding standard first, so a captured scene that changes is a coded sequence with the frame timing the video layer already carries, and the point cloud half is defined over a point cloud sequence.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "In a point cloud sequence, each point cloud frame contains a collection of points. Each point has a 3D position, i.e., geometry information, and each point may also be associated with a number of attributes, such as colour, reflectance, surface normal, etc."
+        },
+        {
+          "url": "https://www.mpeg.org/standards/MPEG-I/5/",
+          "title": "MPEG-I Part 5, official MPEG standard page",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "To specify lossy compression of 3D point clouds employing efficient geometry and attributes compression, scalable/progressive coding, and coding of point clouds sequence captured over time with support of random access to subsets of the point cloud."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "none",
+      "note": "Attributes carry the colour recorded on the day. Nothing in the bitstream carries a lighting model, a material or a separation of light from surface, so a coded volumetric scene stays lit as it was captured.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "In a point cloud sequence, each point cloud frame contains a collection of points. Each point has a 3D position, i.e., geometry information, and each point may also be associated with a number of attributes, such as colour, reflectance, surface normal, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "MPEG's visual volumetric video coding is one bitstream that projects volumetric frames onto video planes, with a point cloud half and an immersive video half, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "MPEG's visual volumetric video coding is one bitstream that projects volumetric frames onto video planes, with a point cloud half and an immersive video half, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "MPEG's visual volumetric video coding is one bitstream that projects volumetric frames onto video planes, with a point cloud half and an immersive video half, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "MPEG's visual volumetric video coding is one bitstream that projects volumetric frames onto video planes, with a point cloud half and an immersive video half, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "MPEG's visual volumetric video coding is one bitstream that projects volumetric frames onto video planes, with a point cloud half and an immersive video half, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "out-of-scope",
+      "note": "MPEG's visual volumetric video coding is one bitstream that projects volumetric frames onto video planes, with a point cloud half and an immersive video half, and it carries no full 360-degree view of a place as an image with its projection stated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "out-of-scope",
+      "note": "A coding standard: syntax, semantics and decoding for visual volumetric media. It compresses volumetric content for transmission and never reconstructs a room from a device's own sensors.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "It codes samples and atlas data, not named classes of real surface an application can act on.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "out-of-scope",
+      "note": "It does carry depth, but as coded video planes inside a compressed bitstream aimed at a decoder, which is not a live per-pixel measurement of the space around a device.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "Composition against a real view belongs to whatever renders the decoded content, and the standard leaves rendering to implementers.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/131_OnLine/w19579.zip",
+          "title": "Text of ISO/IEC FDIS 23090-5 Visual Volumetric Video-based Coding and Video-based Point Cloud Compression (MPEG output document w19579)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document specifies the syntax, semantics, and decoding for visual volumetric media using videobased coding methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "out-of-scope",
+      "note": "V3C codes volumetric video into video substreams. Presentation, including any mix with a camera view of the room, belongs to whatever plays the decoded result.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.face",
+      "level": "out-of-scope",
+      "note": "The standard encodes captured volumetric content. It defines no input path by which a live reading of the viewer's own face or body would reach an application.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "out-of-scope",
+      "note": "A coded volumetric bitstream carries samples of a captured subject, not an authored place with walkable ground and arrival points.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "out-of-scope",
+      "note": "No units of logic are published or named by a codec.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "out-of-scope",
+      "note": "Coding and carriage only; there is no publishing service in the standard where a review could stand and no field recording one.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "No geographic frame, no map of a place, nothing to align.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "A bitstream declares no region of the Earth over which it applies.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.color",
+      "level": "partial",
+      "note": "The official MIV second-edition white paper confirms colorized geometry and chroma-range tools, but does not provide the complete normative color/output contract needed for a stronger score.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "chroma dynamic range modification"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires evidence and assurance information accompanying a claim, enabling the relying party to assess how the claim was established. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires declaring the vocabulary, types, and validation schemas needed to interpret and check the structure of a claim. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires pairwise identifiers and presentation mechanisms that reduce correlation across relationships, with their remaining correlation risks stated. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.thumbnail",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires a preview image referenced or packaged with an asset, usable without rendering its three-dimensional contents. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.encryption",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires identifying recipient key material and algorithms that permit confidential communication or encrypted content for an intended subject. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.key-lifecycle",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires rules for changing, revoking, or recovering identity-control keys and for discovering the applicable verification material. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires a defined mechanism to discover the suspension, revocation, or other status of a credential after issuance. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires layout and presentation of two-dimensional interface regions, including their size, alignment, and relationship to a display or scene. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires runtime estimates of environmental illumination made available to content for lighting or reflections. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires detecting recognized physical markers or images and reporting their tracked pose relative to a runtime reference space. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.resolve",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires resolving scene resource identifiers against a context or resolver so the referenced resources can subsequently be accessed. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires picking scene content from pointing input and reporting the intersected object or geometry to the application. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.text",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires receiving character or string entry through a defined input interface, separate from interpreting physical controller actions. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires submitting distinct shaped image layers to a display compositor with their placement and composition properties. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires authored runtime relationships that constrain one node's transform using another node and defined evaluation rules. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires runtime-reported physical play-area bounds and floor-relative reference information available to an application. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires generating audio during playback from an exchanged synthesis model, supporting data, and changing control parameters. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires interchanging identified spatial zones, typed events scoped to them, and summaries with defined spatial and temporal meaning. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.consent",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires carrying a grant of permission with scope, purpose, validity, and withdrawal information for uses of the subject or represented data. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires a machine-readable account of a recipient's evaluation and action, with any signature or integrity proof explicitly identified. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires a destination's pre-arrival approval or refusal response, including any validity limit and optional explanatory information. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires dispatching programmable non-raster GPU workloads against resources available through the graphics-compute API. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.frame-timing",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires coordinating frame submission with predicted display timing and the view poses associated with that time. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires a specified shader source language and execution semantics enabling implementations to consume the same shader program. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.parametric",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires carrying parametric curves and surfaces in mathematical form so a receiver can evaluate or tessellate them. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires exchanging particle-system emitters and simulation/rendering parameters that a receiving runtime evaluates. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance-recovery",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires locating associated provenance through a supported content fingerprint or watermark when embedded association has been lost. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.style",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires separately expressed styling rules that select feature visibility, color, or other supported display properties from content metadata. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.variant",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires named alternatives of an asset's authored configuration, with a defined selection mechanism. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires asking a sensing runtime for ray intersections with its estimate of physical surroundings and receiving hit poses. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.privacy",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires sensed-data disclosure controls such as spatial coarsening, payload use/retention declarations, and restricted or pseudonymous pose publication. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires receiving typed musical instrument events with channel, note or control identifiers and values through a documented device or recorded-event input interface. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires reconstructing a radiance field or Gaussian representation from observed images and camera information, including optimization controls and a trained scene usable for subsequent view synthesis. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.objectgen",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: V3C and MIV specify volumetric visual bitstreams and decoding, leaving capture and rendering methods outside the coding standard. This row requires producing an individual three-dimensional object from a text or image prompt, with geometry or another renderable representation available for placement in a separately authored scene. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the specification defines a normative bitstream format and decoding processes"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.profile",
+      "level": "native",
+      "note": "The MPEG-approved January 2026 white paper explicitly covers ISO/IEC 23090-12:2025 edition 2 and references 23090-5:2025 edition 3. It names MIV Main, Extended, Geometry Absent, MIV 2 and Simple MPI toolsets with identifiers, a Restricted Geometry subprofile, and level constraints on atlas/tile size, video rate and other decoder resources. It expressly retains the first-edition profiles for compatibility. This score is for the named MIV edition-2 profile contract within the V3C family.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/153_OnLine/w25996.zip",
+          "title": "MPEG AG3 approved output w25996: White paper on MPEG immersive video 2nd edition, January 2026",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "are kept the same for backwards compatibility."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,2617 @@
+{
+  "subject_id": "arkit",
+  "summary": "Apple ARKit and RealityKit are the sensing half and the simulation-and-drawing half of one closed device platform: ARKit reads the room, the hands and the world position, RealityKit holds the entity-component scene, runs the physics and audio, and draws the frame in Metal. Scored together they cover more of this map than any other single subject in the geospatial and input rows: location anchors placed by latitude and longitude, visual positioning that matches the camera image against Apple's own street imagery, shared and persistent anchors on both device families, articulated hand tracking, and — new and easy to miss — a first-party Gaussian splat renderer. Interchange runs entirely through OpenUSD, which is the platform's real strength: USD references and overrides give genuine non-destructive composition, and USDKit now exposes layers and stages to Swift. Four traps a standards reader should carry away. First, the platform reads USD far better than it honours it: RealityKit ignores every light authored in a USD file, its MaterialX support is documented as lossy, and physics data does not load through USDKit at all. Second, the interactive parts of the format — anchoring, behaviours, three-dimensional text — are Apple's own preliminary schemas, which Apple itself warns can change at any time. Third, on Apple Vision Pro the app is never told where the person is looking, by design, so any standard that assumes app-readable gaze will not compose here. Fourth, everything shared is same-app and near-field: synchronisation runs over peer-to-peer Multipeer Connectivity or a FaceTime-backed SharePlay session, there is no world address, no handoff between publishers, and no interest management or prediction.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "native",
+      "note": "RealityKit draws the scene itself and is the renderer Apple's own apps and system viewers use for USD content; the pass structure is not exposed, and the only developer hook into the frame is a post-process callback.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit",
+          "title": "Apple Developer Documentation: RealityKit",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "RealityKit provides high-performance 3D simulation and rendering capabilities you can use to create apps with 3D or augmented reality (AR) for iOS, iPadOS, macOS, tvOS, and visionOS."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/usd/validating-usd-files",
+          "title": "Apple Developer Documentation: Validating feature support for USD files",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Depending on the device, its operating system, and the app, there are four renderers that might display your 3D assets: RealityKit, Raytracer, Storm, or SceneKit."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/realityrenderer",
+          "title": "Apple Developer Documentation: RealityRenderer",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A renderer that displays a RealityKit scene in an existing Metal workflow."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "native",
+      "note": "The renderer targets Metal only. Custom shading is written in Metal, and a RealityKit scene can be driven inside an existing Metal workflow; there is no path to any other graphics interface.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/realityrenderer",
+          "title": "Apple Developer Documentation: RealityRenderer",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A renderer that displays a RealityKit scene in an existing Metal workflow."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/custommaterial",
+          "title": "Apple Developer Documentation: CustomMaterial",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Custom, or programmable, materials allow you to leverage RealityKit’s existing shader pipeline to render physically based or unlit materials that support custom Metal shader functions."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "native",
+      "note": "Three material kinds ship: a physically based material that mirrors what USDZ carries, a shader-graph material built in Reality Composer Pro or loaded from MaterialX, and a custom material with Metal surface shaders and geometry modifiers.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/physicallybasedmaterial",
+          "title": "Apple Developer Documentation: PhysicallyBasedMaterial",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A Physically Based Rendering (PBR) material is a material that closely approximates the way light reflects off of real-world objects."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/shadergraphmaterial",
+          "title": "Apple Developer Documentation: ShaderGraphMaterial",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A material that comes from a shader graph in a Reality Composer Pro project, or a MaterialX shader."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/custommaterial",
+          "title": "Apple Developer Documentation: CustomMaterial",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Custom, or programmable, materials allow you to leverage RealityKit’s existing shader pipeline to render physically based or unlit materials that support custom Metal shader functions."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "native",
+      "note": "Image-based lighting, directional, point and spot lights, baked lightmaps and diffuse probes are all in the framework. The trap for interchange: RealityKit ignores every light authored inside a USD file and lights the scene from the real room instead, so a lighting rig does not survive the move into this renderer.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/environmentresource",
+          "title": "Apple Developer Documentation: EnvironmentResource",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "RealityKit supports image-based lighting that enables realistic reflections on your scene’s 3D content."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/scene-content-global-illumination",
+          "title": "Apple Developer Documentation: Global illumination and baked lighting",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Light scenes realistically by precomputing illumination so surfaces pick up bounced color and ambient detail without recalculating it every frame."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/usd/validating-usd-files",
+          "title": "Apple Developer Documentation: Validating feature support for USD files",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Because RealityKit is an AR-first renderer, it doesn’t use any lights included in a USD file, and instead bases its lighting on the scene’s real-world lighting."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.post",
+      "level": "native",
+      "note": "A registered callback receives the finished frame before display, and bloom and tone mapping ship as components.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/postprocessing-effects",
+          "title": "Apple Developer Documentation: Postprocessing effects",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "In iOS 15 and later, and macOS 12 and later, you can apply postprocess effects to a RealityKit scene after RealityKit renders it, but before RealityKit displays it."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "none",
+      "note": "There is no level-of-detail or streaming-order mechanism in either framework. Apple's own guidance is to do it by hand at authoring time: size each asset for how large it will appear and cut big meshes into pieces so off-camera parts can be culled.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/usd/creating-usd-files-for-apple-devices",
+          "title": "Apple Developer Documentation: Creating USD files for Apple devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Split large geometry into chunks."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/usd/creating-usd-files-for-apple-devices",
+          "title": "Apple Developer Documentation: Creating USD files for Apple devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Scale detail to viewer distance."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "native",
+      "note": "RealityKit renders three-dimensional Gaussian splats through a dedicated component, with spherical-harmonic colour, sorting and projection modes. It reads no splat file: the app parses PLY, USD or any other container itself and fills GPU buffers, so there is no interchange path, only a rendering path.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/gaussiansplatcomponent",
+          "title": "Apple Developer Documentation: GaussianSplatComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Use a Gaussian splat component to display volumetric imagery captured from real environments, coalesced into 3D Gaussian splats (3DGS)."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/gaussiansplatcomponent",
+          "title": "Apple Developer Documentation: GaussianSplatComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The framework doesn’t load files directly, so you parse your source format — PLY, USD, or any other container — and populate the buffers yourself."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/gaussiansplatcomponent",
+          "title": "Apple Developer Documentation: GaussianSplatComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Scene lighting doesn’t affect a Gaussian splat asset."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "partial",
+      "note": "Captured scenes reach the screen as splats, and stereoscopic and Apple Immersive Video play through a video component; a point cloud is drawn only inside the object-capture scanning view. There is no general voxel or point-cloud renderer and no volumetric video codec in the frameworks themselves.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/gaussiansplatcomponent",
+          "title": "Apple Developer Documentation: GaussianSplatComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Use a Gaussian splat component to display volumetric imagery captured from real environments, coalesced into 3D Gaussian splats (3DGS)."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/videoplayercomponent",
+          "title": "Apple Developer Documentation: VideoPlayerComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A component that supports general video-playback experience with an AV player."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/immersivemediasupport",
+          "title": "Apple Developer Documentation: Immersive Media Support",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Immersive Media Support enables you to create custom workflows for processing Apple Immersive Video (AIV)."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "native",
+      "note": "Text becomes an extruded mesh through a generator on the mesh resource, and USD assets can carry text through Apple's preliminary text schema.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/meshresource/generatetext(_:extrusiondepth:font:containerframe:alignment:linebreakmode:)",
+          "title": "Apple Developer Documentation: MeshResource.generateText",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Generates a 3D mesh for rendering static text."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/usd/usd-schemas-for-ar",
+          "title": "Apple Developer Documentation: OpenUSD schemas for AR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Annotate the environment by displaying text."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "native",
+      "note": "In an AR session the device camera is the viewpoint; outside one, a perspective camera entity sets it, and RealityRenderer takes an explicit active camera.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/perspectivecamera",
+          "title": "Apple Developer Documentation: PerspectiveCamera",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "During an AR session, RealityKit automatically uses the device’s camera to define the perspective from which to render the scene."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "native",
+      "note": "The scene is an entity tree with components attached; Reality Composer Pro authors the same entity-component-system model that the runtime executes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/entity",
+          "title": "Apple Developer Documentation: Entity",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "An element of a RealityKit scene to which you attach components that provide appearance and behavior characteristics for the entity."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitycomposerpro",
+          "title": "Apple Developer Documentation: Reality Composer Pro",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Reality Composer Pro is a 3D content creation platform backed by an Entity Component System (ECS)."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "native",
+      "note": "Every entity carries a transform of scale, rotation as a unit quaternion, and translation. The frame is Y-up and right-handed, which matches OpenUSD and glTF and differs from the left-handed engines.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/transform",
+          "title": "Apple Developer Documentation: Transform",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A component that defines the scale, rotation, and translation of an entity."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/usd/creating-usd-files-for-apple-devices",
+          "title": "Apple Developer Documentation: Creating USD files for Apple devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "RealityKit uses Y-up orientation and meters as its unit scale."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/arkit/arfaceanchor",
+          "title": "Apple Developer Documentation: ARFaceAnchor",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The coordinate system is right-handed—the positive x direction points to the viewer’s right (that is, the face’s own left), the positive y direction points up (relative to the face itself, not to the world), and the positive z direction points outward from the face (toward the viewer)."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "native",
+      "note": "The container is OpenUSD: the loader reads .usd, .usda, .usdc, .usdz and Apple's own .reality file. RealityKit itself only loads; authoring USD is USDKit's job, and Object Capture and RoomPlan are the parts of the platform that write it.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/loading-entities-from-a-file",
+          "title": "Apple Developer Documentation: Loading entities from a file",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "You can load USD files (.usd, .usda, .usdc, .usdz) and Reality files (.reality) this way."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/usd",
+          "title": "Apple Developer Documentation: USD",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "USD is also Apple’s format of choice for 3D Content, including 3D content used for Augmented Reality."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/usdkit",
+          "title": "Apple Developer Documentation: USDKit",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "USDKit is the Swift API for authoring, composing, and manipulating Universal Scene Description (USD) content."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "native",
+      "note": "Geometry arrives as USD meshes, in text or binary form; procedural primitives, extruded paths and a low-level mesh with an app-defined vertex layout are all available at runtime.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/usd/creating-usd-files-for-apple-devices",
+          "title": "Apple Developer Documentation: Creating USD files for Apple devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "USDC is a binary format. It is more compact and faster to load than USDA, making it the preferred format for geometry-heavy assets and large scenes."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/meshresource",
+          "title": "Apple Developer Documentation: MeshResource",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A high-level representation of a collection of vertices and edges that define a shape."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/lowlevelmesh",
+          "title": "Apple Developer Documentation: LowLevelMesh",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A container for vertex data that you can use to create and update meshes using your own format."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "native",
+      "note": "Textures load into GPU-resident resources with optional ASTC compression, and the USDZ archive is limited to four image encodings.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/textureresource",
+          "title": "Apple Developer Documentation: TextureResource",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A texture resource holds pixel data accessible by the GPU, organized as an image, a cube of images, an array of images, or a 3D image (volume texture)."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/textureresource/compression",
+          "title": "Apple Developer Documentation: TextureResource.Compression",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Compression allows varying levels of memory usage gains at the cost of image-quality reduction."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/usd/creating-usd-files-for-apple-devices",
+          "title": "Apple Developer Documentation: Creating USD files for Apple devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "USD files may use a wide range of texture formats, however USDZ files may only include JPEG, PNG, EXR, and AVIF."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "partial",
+      "note": "MaterialX comes in, but not without loss. A shader-graph material can be built straight from MaterialX data, and Apple publishes the exact places RealityKit falls short of the specification: one packed texture per material, two UV sets, and only the first texture transform in a material is honoured.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/shadergraphmaterial",
+          "title": "Apple Developer Documentation: ShaderGraphMaterial",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A material that comes from a shader graph in a Reality Composer Pro project, or a MaterialX shader."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/usd/validating-usd-files",
+          "title": "Apple Developer Documentation: Validating feature support for USD files",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "RealityKit supports only a single packed texture per material."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/usd/validating-usd-files",
+          "title": "Apple Developer Documentation: Validating feature support for USD files",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "RealityKit supports two UV Sets."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "native",
+      "note": "Animation resources travel inside the asset file and are played, sequenced, grouped and looped at runtime; Reality Composer Pro adds multi-track sequences and an animation graph.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/animationresource",
+          "title": "Apple Developer Documentation: AnimationResource",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Animation resources come bundled with an entity when you load the entity from a file."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitycomposerpro",
+          "title": "Apple Developer Documentation: Reality Composer Pro",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Reality Composer Pro includes editors and workflows for designing materials with Shader Graph, building visual scripts with Script Graph, authoring GPU-driven simulations with Compute Graph, defining character behaviors with Animation Graphs, and editing skeletons."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "native",
+      "note": "A mesh carries a joint hierarchy and per-vertex joint influences, and the runtime exposes named skeletal poses for reading and writing. One constraint on the way in: Apple asks authors to merge several rigs into a single joint hierarchy before export.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/meshresource/skeleton",
+          "title": "Apple Developer Documentation: MeshResource.Skeleton",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A skeleton consists of a hierarchy of joints."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/skeletalposescomponent",
+          "title": "Apple Developer Documentation: SkeletalPosesComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A component that exposes the collection of named animation skeletal poses."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/usd/creating-usd-files-for-apple-devices",
+          "title": "Apple Developer Documentation: Creating USD files for Apple devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Before exporting models with multiple skeletons to a USD file, merge all the skeletons into a single joint or bone hierarchy."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "native",
+      "note": "Blend shape weights are a component whose named weight sets can be read and written at runtime.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/blendshapeweightscomponent",
+          "title": "Apple Developer Documentation: BlendShapeWeightsComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A component that provides access to the current weights associated with all blend shape meshes on an entity."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "native",
+      "note": "A component performs GPU instancing over one entity's model, and instancing of mesh and texture data survives import from USD.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/meshinstancescomponent",
+          "title": "Apple Developer Documentation: MeshInstancesComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A component that performs GPU instancing on the model of the same entity."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/usd/validating-usd-files",
+          "title": "Apple Developer Documentation: Validating feature support for USD files",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "RealityKit supports instancing of mesh and texture data from imported USD files."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "native",
+      "note": "This is the strongest interchange story in the subject. Composition is USD's: files reference other files and override what they reference, USDKit exposes layers and stages to Swift, and a USD stage can be rendered straight into an entity hierarchy.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/usd",
+          "title": "Apple Developer Documentation: USD",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "USD files can reference other USD files, and even override the contents of referenced USD files, allowing a completely non-destructive workflow."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/usdkit",
+          "title": "Apple Developer Documentation: USDKit",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Because multiple layers can define or override the same primitive, the stage composes the contributions from each layer to produce the final scene."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/usdkit",
+          "title": "Apple Developer Documentation: USDKit",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A component that renders a USD stage as RealityKit entities."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "native",
+      "note": "One unit is one metre, and the physics simulation states the same unit independently.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/usd/creating-usd-files-for-apple-devices",
+          "title": "Apple Developer Documentation: Creating USD files for Apple devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "RealityKit uses Y-up orientation and meters as its unit scale."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/physicssimulationcomponent",
+          "title": "Apple Developer Documentation: PhysicsSimulationComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Each physics simulation component uses meters as its unit of distance"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "none",
+      "note": "Nothing in ARKit, RealityKit or the USDZ packaging guidance carries terms of use with an asset. Apple's USD documentation covers geometry, materials, behaviour and packaging and says nothing about rights.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "none",
+      "note": "There is no signed record of who made an asset and how. USDZ is a plain zip archive of a USD file and its dependencies, with no signature and no content credential.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "partial",
+      "note": "The platform has an avatar — the spatial Persona a person appears as in a shared session — but the app never sees it. The system places and renders Personas; there is no portable body description, no file, and no app-side representation to move anywhere else.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/groupactivities/adding-spatial-persona-support-to-an-activity",
+          "title": "Apple Developer Documentation: Adding spatial Persona support to an activity",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A person who participates in SharePlay activities on Apple Vision Pro has the option to participate using their spatial Persona."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/groupactivities/adding-spatial-persona-support-to-an-activity",
+          "title": "Apple Developer Documentation: Adding spatial Persona support to an activity",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The system arranges spatial Personas around the activity content, giving each person a clear view of the content and each other."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "partial",
+      "note": "ARKit publishes one named joint hierarchy for tracked human bodies, with a stated neutral height, and a character has to be rigged to it to be driven. It is Apple's own list rather than an agreed interchange skeleton, and it exists for body tracking, not for carrying an avatar between worlds.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/arkit/arskeletondefinition",
+          "title": "Apple Developer Documentation: ARSkeletonDefinition",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "ARKit names particular joints that are crucial to body tracking."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/arkit/arskeletondefinition/defaultbody3d",
+          "title": "Apple Developer Documentation: ARSkeletonDefinition.defaultBody3D",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The default height of this skeleton is 1.66 meters."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "partial",
+      "note": "ARKit's named blend-shape coefficients for the face are the closest thing the industry has to a shared expression vocabulary, and many other systems copy the names. They are a tracking output on iOS front-camera sessions, not a format, and Apple defines no viseme set for speech.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/arkit/arfaceanchor/blendshapelocation",
+          "title": "Apple Developer Documentation: ARFaceAnchor.BlendShapeLocation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "ARKit provides many blend shape coefficients, resulting in a detailed model of a facial expression"
+        },
+        {
+          "url": "https://developer.apple.com/documentation/arkit/arfaceanchor",
+          "title": "Apple Developer Documentation: ARFaceAnchor",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "You can use blend shape coefficients to animate 2D or 3D content, such as a character or avatar, in ways that follow the user’s facial expressions."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "partial",
+      "note": "A body-tracked entity plays a live person's motion on a virtual character, and a full-body inverse kinematics solver adapts a pose procedurally. Both require the character to be rigged to Apple's skeleton; there is no general mapping between two arbitrary rigs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/bodytrackedentity",
+          "title": "Apple Developer Documentation: BodyTrackedEntity",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "An entity used to animate a virtual character in an AR scene by tracking a real person."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/ikcomponent",
+          "title": "Apple Developer Documentation: IKComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A component that allows you to procedurally animate a skeletal model using a full body inverse kinematics solver."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "none",
+      "note": "No worn or carried item model, and no attachment-point convention for one. Anything worn is an ordinary child entity of the wearer's transform, with no named socket that would survive a move to another system.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "none",
+      "note": "No reduced avatar representation for crowds or weak devices. There is no level-of-detail mechanism of any kind in the frameworks.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "none",
+      "note": "Nothing binds an avatar to a checkable identity. A spatial Persona belongs to the Apple account on the call, and the app is given neither the Persona nor a credential about it.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "native",
+      "note": "A physics body component gives an entity mass and Newtonian response, and a separate motion component carries linear and angular velocity; a simulation component sets gravity and solver iterations for a subtree.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/physicsbodycomponent",
+          "title": "Apple Developer Documentation: PhysicsBodyComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A component that defines an entity’s behavior in physics body simulations."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/physicsmotioncomponent",
+          "title": "Apple Developer Documentation: PhysicsMotionComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A component that controls the motion of the body in physics simulations."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/physicssimulationcomponent",
+          "title": "Apple Developer Documentation: PhysicsSimulationComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A component that controls localized physics simulations."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "native",
+      "note": "Collision shapes are a separate component from the visible mesh and also serve queries, ray casts and convex shape casts; box, convex mesh and triangle mesh shapes are named explicitly.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/collisioncomponent",
+          "title": "Apple Developer Documentation: CollisionComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This component holds the entity’s data related to participating in the scene’s physics simulation. It is also used to calculate collision queries, raycasts, and convex shape casts."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/shaperesource",
+          "title": "Apple Developer Documentation: ShapeResource",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A representation of a shape."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "native",
+      "note": "Joints link two entities at named pin poses with linear and angular limits, and live on a joints component inside a simulation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/physicsjoint",
+          "title": "Apple Developer Documentation: PhysicsJoint",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A type that describes physics joints."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.material",
+      "level": "native",
+      "note": "A physics material resource carries static friction, dynamic friction and restitution.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/physicsmaterialresource",
+          "title": "Apple Developer Documentation: PhysicsMaterialResource",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Material properties, like friction, of a physically simulated object."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.determinism",
+      "level": "none",
+      "note": "Apple states no determinism guarantee for the simulation. The synchronised multi-device model is authority-and-replication over the network rather than a matching simulation on each device, which is the design a system without determinism has to choose.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "none",
+      "note": "No cloth and no deformable body simulation is documented in either framework. Deformation is available only as skinning and blend shapes, which are animation, not simulation.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "native",
+      "note": "A trigger volume is an invisible shape that reports entry and exit without taking part in the simulation, and any collision entity can be switched into trigger mode.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/triggervolume",
+          "title": "Apple Developer Documentation: TriggerVolume",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "An invisible 3D shape that detects when objects enter or exit a given region of space."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/collisioncomponent",
+          "title": "Apple Developer Documentation: CollisionComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A trigger entity doesn’t have any impact on the rigid bodies in the scene, but can trigger code or Reality Composer behaviors when a rigid body entity overlaps it."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "native",
+      "note": "Sound is played from an entity and follows it; playback is spatial unless the app asks otherwise, and mix groups gather several playing sounds under one gain.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/spatialaudiocomponent",
+          "title": "Apple Developer Documentation: SpatialAudioComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The audio system continuously updates the position and orientation of spatial audio sources automatically, so sounds come from an entity wherever it goes and wherever it points."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/audiomixgroup",
+          "title": "Apple Developer Documentation: AudioMixGroup",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A group that manages the playback properties of multiple playing sounds."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "native",
+      "note": "Three rendering modes ship: spatial with distance attenuation and directivity, ambient projected from an angle without reverberation, and channel routed straight to the outputs. Spatial sources are mono only, so a multichannel asset is mixed down before spatialization.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/spatialaudiocomponent",
+          "title": "Apple Developer Documentation: SpatialAudioComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Spatial audio sources emit only a single channel (that is, mono). The engine mixes any stereo or multichannel audio resources down to a single channel before spatialization."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/ambientaudiocomponent",
+          "title": "Apple Developer Documentation: AmbientAudioComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Ambient audio sources emit each channel of an audio resource from an angle projected from the entity, without reverberation."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/channelaudiocomponent",
+          "title": "Apple Developer Documentation: ChannelAudioComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Channel audio sources route the audio resource’s channels directly to the device’s output without any spatialization or reverberation applied."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "native",
+      "note": "On visionOS the real room is simulated by default and colours every spatial source; a reverb component overrides it with a named preset for an authored environment.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/reverbcomponent",
+          "title": "Apple Developer Documentation: ReverbComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "In visionOS, an acoustic simulation of a person’s real environment reverberates the spatial audio sources by default."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/spatialaudiocomponent",
+          "title": "Apple Developer Documentation: SpatialAudioComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Spatial audio sources incorporate a person’s environment acoustics so that they blend in naturally with the surrounding area."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "partial",
+      "note": "Surfaces have acoustic materials with per-band absorption and scattering, which is the input an occlusion model needs, and a named preset list covers common real surfaces. What is missing is the control: no documented obstruction or occlusion setting, and no way to ask whether geometry blocks a given source.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/audio/material",
+          "title": "Apple Developer Documentation: Audio.Material",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "An audio material defines how a surface absorbs and scatters sound energy across frequency bands."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "partial",
+      "note": "An audio resource loads from a file or a URL and its loading strategy decides how the data is handled before and during playback, which covers reading a long asset without holding it in memory. There is no network audio delivery of the subject's own.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/audiofileresource",
+          "title": "Apple Developer Documentation: AudioFileResource",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "An audio resource that you load from a file or from a URL."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/audiofileresource",
+          "title": "Apple Developer Documentation: AudioFileResource",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A container for different strategies on how to handle resources’ data before and during playback."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "none",
+      "note": "Neither framework carries live voice. A shared session on this platform runs on a FaceTime call, and the call carries the talking; the app gets synchronised activity data, not an audio channel it can route into the scene.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/groupactivities",
+          "title": "Apple Developer Documentation: Group Activities",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This framework leverages the FaceTime infrastructure to synchronize your app’s activities and to invite other participants to join those activities."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "native",
+      "note": "Every entity has a synchronization component with a network identifier, and the multipeer service keeps the scenes of connected devices matching automatically. It is same-app replication: both ends run the same build of the same app.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/synchronizationcomponent",
+          "title": "Apple Developer Documentation: SynchronizationComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A component that synchronizes an entity between processes and networked applications."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/multipeerconnectivityservice",
+          "title": "Apple Developer Documentation: MultipeerConnectivityService",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "RealityKit uses this class to automatically sync scenes with other connected devices running the same app."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "native",
+      "note": "One process owns an entity, the owner can be read, ownership can be handed to a named peer, and a transfer mode governs whether a request is granted.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/synchronizationcomponent",
+          "title": "Apple Developer Documentation: SynchronizationComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A Boolean that indicates whether the calling process owns the entity."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/multipeerconnectivityservice",
+          "title": "Apple Developer Documentation: MultipeerConnectivityService",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Transfers ownership of the given entity to the named network device."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "none",
+      "note": "Nothing decides what each peer needs. The multipeer session synchronises the scene to all connected devices, and no filter, relevance rule or area of interest is exposed.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "net.prediction",
+      "level": "none",
+      "note": "No prediction and no reconciliation. Apple's own guidance is that synchronisation can simply fail on a poor connection, with no local-correction machinery offered.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "native",
+      "note": "The one transport the subject ships is peer-to-peer: RealityKit's synchronization service is built on Multipeer Connectivity, which runs over infrastructure Wi-Fi, peer-to-peer Wi-Fi and Bluetooth. There is no client-server transport and no internet-scale session.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/multipeerconnectivityservice",
+          "title": "Apple Developer Documentation: MultipeerConnectivityService",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A service that provides scene synchronization among all peers in a multipeer connectivity session."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/multipeerconnectivity",
+          "title": "Apple Developer Documentation: Multipeer Connectivity",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "In iOS, the framework uses infrastructure Wi-Fi networks, peer-to-peer Wi-Fi, and Bluetooth personal area networks for the underlying transport."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.media",
+      "level": "partial",
+      "note": "Live video reaches the scene, but the transport is not the subject's. A video component takes a player the app supplies and draws its output in three dimensions; nothing in ARKit or RealityKit moves an audio or video stream between participants.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/videoplayercomponent",
+          "title": "Apple Developer Documentation: VideoPlayerComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A component that supports general video-playback experience with an AV player."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "via-extension",
+      "note": "Joining is done by two other frameworks. Nearby devices invite each other through Multipeer Connectivity, and a shared session across a call is a SharePlay group activity on the FaceTime infrastructure. RealityKit adds only a compatibility check so a host can refuse a peer on an incompatible version.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/groupactivities",
+          "title": "Apple Developer Documentation: Group Activities",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This framework leverages the FaceTime infrastructure to synchronize your app’s activities and to invite other participants to join those activities."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/networkcompatibilitytoken",
+          "title": "Apple Developer Documentation: NetworkCompatibilityToken",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "An opaque token used to check the networking compatibility between two peers in a multipeer connection."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "none",
+      "note": "There is no leaving one world and arriving in another with state intact. RealityKit's portal looks into a second world inside the same app's scene, and entities may cross its boundary, but both worlds belong to one process; nothing crosses to another publisher's experience.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/portalcomponent",
+          "title": "Apple Developer Documentation: PortalComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A RealityKit portal defines a way to look into a different, immersive world."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "partial",
+      "note": "Within one collaborative session ARKit reports an anchor for each nearby user, giving their pose, and a group activity has a participant list. Both stop at the edge of the session; there is no roster across operators or across apps.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/arkit/arparticipantanchor",
+          "title": "Apple Developer Documentation: ARParticipantAnchor",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "An anchor for another user in multiuser augmented reality experiences."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/groupactivities",
+          "title": "Apple Developer Documentation: Group Activities",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "An active participant in a group session."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "none",
+      "note": "No world is named and no name is resolved. The only address in the subject is a file address: a web page links a USDZ or Reality file and the system opens it in AR Quick Look, which names a model, not a place.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/arkit/previewing-a-model-with-ar-quick-look",
+          "title": "Apple Developer Documentation: Previewing a Model with AR Quick Look",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "In your web page, you enable AR Quick Look by linking a supported input file."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "via-extension",
+      "note": "Discovery is Multipeer Connectivity's: a browser looks for nearby devices advertising a named service type, and the app must declare the Bonjour services it browses. It reaches the local network only.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/multipeerconnectivity",
+          "title": "Apple Developer Documentation: Multipeer Connectivity",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The Multipeer Connectivity framework supports the discovery of services provided by nearby devices and supports communicating with those services through message-based data, streaming data, and resources (such as files)."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "none",
+      "note": "No shared clock. Frames carry a local capture timestamp and the physics simulation can be driven by a custom clock, but neither is agreed between devices, and nothing orders events across a session.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/physicssimulationcomponent",
+          "title": "Apple Developer Documentation: PhysicsSimulationComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A custom clock which drives the physics simulation, defaults to the engine clock."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "out-of-scope",
+      "note": "Neither framework defines an identifier for a person, agent or thing. Identity on this platform lives in separate sign-in services outside the subject.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "out-of-scope",
+      "note": "No format for a checkable claim about a subject, and nothing in either framework reads one.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "out-of-scope",
+      "note": "No protocol for requesting and presenting claims.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "none",
+      "note": "There is a permission model, but it is app-to-system and not portable: a session asks the person for world-sensing or hand-tracking authorization and the system answers. Nothing states what a subject may do in a form a second party could check.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/arkit/arkitsession",
+          "title": "Apple Developer Documentation: ARKitSession",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Sessions in ARKit require either implicit or explicit authorization."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "out-of-scope",
+      "note": "Selective disclosure of credentials is not something either framework does. The platform's privacy work is of a different kind: it withholds sensor data from the app rather than revealing part of a claim to a receiver.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.social",
+      "level": "out-of-scope",
+      "note": "No relationships and no standing are modelled.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "out-of-scope",
+      "note": "Nothing acts on licence terms at the point of use, because nothing carries them.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "native",
+      "note": "A location anchor is placed by latitude, longitude and optional altitude, and the session keeps its position and orientation as the user moves, aligned East-North-Up.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/arkit/argeoanchor",
+          "title": "Apple Developer Documentation: ARGeoAnchor",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A geographic anchor (also known as location anchor) identifies a specific area in the world that the app can refer to in an AR experience."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/arkit/argeoanchor",
+          "title": "Apple Developer Documentation: ARGeoAnchor",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "ARKit aligns location anchors to an East-North-Up orientation, with its x- and z-axes matching the longitude and latitude directions."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "partial",
+      "note": "One frame, fixed. Coordinates are latitude and longitude in WGS 84 with altitude in metres against sea level, and the local frame is East-North-Up. There is no way to name a different reference system, and no transformation machinery.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/corelocation/cllocationcoordinate2d",
+          "title": "Apple Developer Documentation: CLLocationCoordinate2D",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The latitude and longitude associated with a location, specified using the WGS 84 reference frame."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/arkit/argeoanchor",
+          "title": "Apple Developer Documentation: ARGeoAnchor",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Vertical distance, in meters, between this anchor and sea level."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "native",
+      "note": "Anchors are the core primitive on both device families: an ARKit anchor fixes a transform in the session's world space on iOS, and a world anchor does the same on visionOS, with a RealityKit anchor entity tethering content to a plane, image or fixed point.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/arkit/aranchor",
+          "title": "Apple Developer Documentation: ARAnchor",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "An object that specifies the position and orientation of an item in the physical environment."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/arkit/worldanchor",
+          "title": "Apple Developer Documentation: WorldAnchor",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A fixed location in a person’s surroundings."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/anchorentity",
+          "title": "Apple Developer Documentation: AnchorEntity",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "An anchor that tethers entities to a scene."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "native",
+      "note": "Three routes, all first-party. A world map serialises the mapped space and its anchors so a second device can relocalise into it; a collaborative session streams the same knowledge continuously; and on visionOS a world anchor can be created shared with nearby participants, with a provider that establishes a shared coordinate space. Persistence across runs is stated for world anchors.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/arkit/arworldmap",
+          "title": "Apple Developer Documentation: ARWorldMap",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "With two devices tracking the same world map, you can build a networked experience in which both users can see and interact with the same virtual content."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/arkit/worldanchor",
+          "title": "Apple Developer Documentation: WorldAnchor",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Initialize a world anchor with a transform and indicate if it should be shared with nearby participants."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/arkit/sharedcoordinatespaceprovider",
+          "title": "Apple Developer Documentation: SharedCoordinateSpaceProvider",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Provides ability to establish a shared coordinate space among multiple participants."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/arkit/worldanchor",
+          "title": "Apple Developer Documentation: WorldAnchor",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "ARKit persists world anchor UUIDs and transforms across multiple runs of your app."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.vps",
+      "level": "native",
+      "note": "ARKit recovers precise pose from camera imagery by matching the live frame against Apple's own street-level localization imagery, downloaded for the area around the user's satellite position. Two limits the map should record: outdoors only, and only where Apple has captured imagery.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/arkit/argeotrackingconfiguration",
+          "title": "Apple Developer Documentation: ARGeoTrackingConfiguration",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "By comparing the device’s current camera image with this imagery, the session matches the user’s precise geographic location with the scene’s local coordinates."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/arkit/argeotrackingconfiguration",
+          "title": "Apple Developer Documentation: ARGeoTrackingConfiguration",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Geotracking occurs exclusively outdoors."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/arkit/argeotrackingconfiguration",
+          "title": "Apple Developer Documentation: ARGeoTrackingConfiguration",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Localization imagery is available for specific areas in over 20 countries, including many metropolitan areas in Australia, Europe, Japan, and North America."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "none",
+      "note": "No tiled terrain or city streaming. Location anchors carry no geometry, and Apple's guidance for large scenes is to split meshes by hand rather than to stream by tile.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.indoor",
+      "level": "via-extension",
+      "note": "ARKit itself classifies detected planes as floor, wall, ceiling, door, window, table or seat, which is a start but not a room description. The structured interior comes from a separate framework, RoomPlan, which scans a room into parametric data and exports it as USD.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/arkit/planeanchor/classification-swift.enum",
+          "title": "Apple Developer Documentation: PlaneAnchor.Classification",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The kinds of object classification a plane anchor can have."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/roomplan",
+          "title": "Apple Developer Documentation: RoomPlan",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The framework outputs a scan as parametric data, which makes it easy for your app to modify the scanned room’s individual components. RoomPlan also provides the results in various Universal Scene Description (USD) formats."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "native",
+      "note": "Both device families have an explicit session object. On iOS a session runs a configuration that decides what is tracked; on visionOS a session runs data providers and asks for the matching authorizations, and RealityKit wraps the visionOS side in a spatial tracking session.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/arkit/arsession",
+          "title": "Apple Developer Documentation: ARSession",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The object that manages the major tasks associated with every AR experience, such as motion tracking, camera passthrough, and image analysis."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/arkit/arkitsession",
+          "title": "Apple Developer Documentation: ARKitSession",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The main entry point for receiving data from ARKit."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/spatialtrackingsession",
+          "title": "Apple Developer Documentation: SpatialTrackingSession",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "An object that incorporates spatial tracking capabilities into your RealityKit apps."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "via-extension",
+      "note": "Neither ARKit nor RealityKit defines controller input. The platform's Game Controller framework supplies it, with one spatial rule worth recording: a visionOS app receives controller events only while the person is looking at its window.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/gamecontroller",
+          "title": "Apple Developer Documentation: Game Controller",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Use Game Controller to support users interacting with your app using a physical or virtual game controller."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/gamecontroller",
+          "title": "Apple Developer Documentation: Game Controller",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Apps running in visionOS receive input events only when the person is looking at the app’s window."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "native",
+      "note": "A hand-tracking provider streams hand and joint positions, and RealityKit can ask for hand anchoring through its spatial tracking session. It is gated: the person must grant hand-tracking authorization, and the app must be showing an immersive space.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/arkit/handtrackingprovider",
+          "title": "Apple Developer Documentation: HandTrackingProvider",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A source of live data about the position of a person’s hands and hand joints."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/visionos/adopting-best-practices-for-privacy",
+          "title": "Apple Developer Documentation: Adopting best practices for privacy and user preferences",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "You must present an immersive space to access hand data. When you open an immersive space, the system hides other apps."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.eye",
+      "level": "partial",
+      "note": "The two halves of the platform answer this oppositely, and the difference matters for any standard that assumes app-readable gaze. On iOS a face anchor gives eye transforms and an estimated look-at point. On visionOS gaze is never given to the app at all: the system applies focus and hover on the person's behalf and tells the app only that something was tapped.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/arkit/arfaceanchor",
+          "title": "Apple Developer Documentation: ARFaceAnchor",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A position in face coordinate space estimating the direction of the face’s gaze."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/visionos/adopting-best-practices-for-privacy",
+          "title": "Apple Developer Documentation: Adopting best practices for privacy and user preferences",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "the system provides a way to automatically alter a view’s appearance when someone looks at it, without your app ever knowing what the user is looking at"
+        },
+        {
+          "url": "https://developer.apple.com/documentation/visionos/adopting-best-practices-for-privacy",
+          "title": "Apple Developer Documentation: Adopting best practices for privacy and user preferences",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "To protect user privacy, the system handles camera and sensor inputs without passing the information to apps directly."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "via-extension",
+      "note": "No haptics in either framework. The platform's Core Haptics framework composes patterns, documented for iOS apps and for supported game controllers.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/corehaptics",
+          "title": "Apple Developer Documentation: Core Haptics",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Compose and play haptic patterns to customize your iOS app’s haptic feedback."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "native",
+      "note": "Capability discovery is explicit and per-feature on both sides: an iOS configuration class answers whether the device supports it, and each visionOS data provider type answers the same question for the current runtime.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/arkit/arconfiguration/issupported",
+          "title": "Apple Developer Documentation: ARConfiguration.isSupported",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A Boolean value indicating whether the current device supports this session configuration class."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/arkit/dataprovider",
+          "title": "Apple Developer Documentation: DataProvider",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A Boolean value that indicates whether the current runtime environment supports a particular provider type."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "native",
+      "note": "Two runtimes, and the second is new. World rules are ordinarily written in Swift as systems over the entity-component model. Since Reality Composer Pro 3 they can instead be authored as Script Graphs, attached to entities as a scripting component, published inside the Reality file with the content, and run by an open-source Swift package.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitycomposerpro",
+          "title": "Apple Developer Documentation: Reality Composer Pro",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Systems define a process that acts on every entity with the required components."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/visionos/designing-no-code-games-in-reality-composer-pro-3",
+          "title": "Apple Developer Documentation: Designing no-code games with Reality Composer Pro 3",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Inside Reality Composer Pro, you attach a Scripting component to entities, edit the Script Graph associated with those entities, then publish the entities and logic together as a Reality file."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "native",
+      "note": "Interactivity travels with the asset. Apple's preliminary USD schemas add actions and triggers so a USD file can react to real-world situations, and a Script Graph ships inside a Reality file with the entities it drives. The caution is the word preliminary, which Apple applies to these schemas itself.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/usd/usd-schemas-for-ar",
+          "title": "Apple Developer Documentation: OpenUSD schemas for AR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "React to real-world situations."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/usd/usd-schemas-for-ar",
+          "title": "Apple Developer Documentation: OpenUSD schemas for AR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Enable visual and audible responses to programmatic or environmental events."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/usd/creating-usd-files-for-apple-devices",
+          "title": "Apple Developer Documentation: Creating USD files for Apple devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Because preliminary schemas are proposals, their structure and behavior can change at any time."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "none",
+      "note": "There is no guest-content model to sandbox. Assets are loaded as data and Script Graph logic runs in the app's own process through a linked Swift package; nothing runs untrusted code with limits.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "partial",
+      "note": "Reality Composer Pro 3 adds the parts an autonomous character needs — behaviour trees, an animation state machine and a navigation mesh with path finding — and Apple names character intelligence as a feature of the release. These are authored non-player characters inside one app, not agents that arrive from elsewhere or act across worlds.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitycomposerpro",
+          "title": "Apple Developer Documentation: Reality Composer Pro",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Character intelligence and AI behaviors"
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitycomposerpro",
+          "title": "Apple Developer Documentation: Reality Composer Pro",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Set up and connect Behavior Tree nodes to drive entity decision-making in your scene."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/navigationmeshcomponent",
+          "title": "Apple Developer Documentation: NavigationMeshComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A component that provides the navigation meshes an entity uses to find paths through a scene."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "none",
+      "note": "Nothing bounds memory, time or calls for content the app did not write. The only documented ceiling is one the framework enforces on itself — a cap on splat count whose initializer throws — and there is no API to set a budget.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/gaussiansplatcomponent",
+          "title": "Apple Developer Documentation: GaussianSplatComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The framework enforces an internal limit on the total number of splats"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "partial",
+      "note": "What survives a restart is the map of the room, not the world. A world map serialises the session's space-mapping state and its anchors and can be reloaded into a new session, and visionOS persists world anchors across runs. Entity state, ownership and scene contents are the app's own problem.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/arkit/arworldmap",
+          "title": "Apple Developer Documentation: ARWorldMap",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The session state in a world map includes ARKit’s awareness of the physical space in which the user moves the device."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/arkit/worldanchor",
+          "title": "Apple Developer Documentation: WorldAnchor",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "ARKit persists world anchor UUIDs and transforms across multiple runs of your app."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "out-of-scope",
+      "note": "Neither framework models items a person holds. There is no inventory to travel.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "none",
+      "note": "Settings and accessibility choices belong to the device and follow the person across apps on that device only; nothing carries them to another operator's experience, and neither framework exposes them as portable data.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "none",
+      "note": "Content is referred to by bundle name or file address, never by hash. The loading methods take a name in a bundle or a file URL, and USDZ references its dependencies by path inside the archive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/loading-entities-from-a-file",
+          "title": "Apple Developer Documentation: Loading entities from a file",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Use the load(named:in:) method to load an entity hierarchy from a USD or Reality file stored in a bundle."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "native",
+      "note": "USDZ is the packaging answer and it is a real one: a zip archive holding the USD file and every dependency, opened by the system viewer from an app or from a web link, with .reality as the alternative when Apple's authoring tool wrote the scene.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/usd/creating-usd-files-for-apple-devices",
+          "title": "Apple Developer Documentation: Creating USD files for Apple devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "USDZ is a self-contained zip archive that bundles a USD file with all its dependencies — textures, audio, and other assets — into a single file."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/arkit/previewing-a-model-with-ar-quick-look",
+          "title": "Apple Developer Documentation: Previewing a Model with AR Quick Look",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "You provide content for your AR experience in .usdz or .reality format"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "none",
+      "note": "There is no delivery mechanism of the subject's own. Assets come from the app bundle or a file address, and the only remote path is a plain web link to a single USDZ file that the system opens in AR Quick Look. Nothing streams, negotiates or caches at scale.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/arkit/previewing-a-model-with-ar-quick-look",
+          "title": "Apple Developer Documentation: Previewing a Model with AR Quick Look",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When the user clicks the link in Safari or within a web view that’s displayed in your app, iOS presents your scene in an AR Quick Look view on your behalf."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "partial",
+      "note": "Versioning is by operating-system release, and the subject is honest about the breakage. Peers on incompatible RealityKit versions cannot synchronise and a token exists so a host can refuse them. On the content side Apple warns that its preliminary schemas can change at any time and should not be relied on across releases, and the current authoring tool removed its own predecessor outright.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/networkcompatibilitytoken",
+          "title": "Apple Developer Documentation: NetworkCompatibilityToken",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "An opaque token used to check the networking compatibility between two peers in a multipeer connection."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/usd/creating-usd-files-for-apple-devices",
+          "title": "Apple Developer Documentation: Creating USD files for Apple devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Avoid relying on preliminary schemas for production content that needs to remain stable across operating system releases."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitycomposerpro",
+          "title": "Apple Developer Documentation: Reality Composer Pro",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This release fully deprecates and removes the previous version of Reality Composer Pro."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "partial",
+      "note": "There is structural validation and there is a published feature matrix, but no conformance suite. Apple points authors at OpenUSD's usdchecker for well-formedness, says plainly that it does not catch visual or behavioural problems, and publishes per-renderer support tables so an author can see what four different Apple renderers will and will not read from the same file. Nothing proves an implementation matches a specification.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/usd/creating-usd-files-for-apple-devices",
+          "title": "Apple Developer Documentation: Creating USD files for Apple devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Validate that your assets conform to the USD specification before including them in your app by using OpenUSD’s usdchecker command-line tool."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/usd/creating-usd-files-for-apple-devices",
+          "title": "Apple Developer Documentation: Creating USD files for Apple devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Structural validation with usdchecker does not catch visual or behavioral issues."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/usd/validating-usd-files",
+          "title": "Apple Developer Documentation: Validating feature support for USD files",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Depending on the device, its operating system, and the app, there are four renderers that might display your 3D assets: RealityKit, Raytracer, Storm, or SceneKit."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "Apple's ARKit and RealityKit are a device platform: the frameworks a phone or headset application uses to see the room and draw in it, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/usd/creating-usd-files-for-apple-devices",
+          "title": "Apple Developer Documentation: Creating USD files for Apple devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Split large geometry into chunks."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "Apple's ARKit and RealityKit are a device platform: the frameworks a phone or headset application uses to see the room and draw in it, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/usd/creating-usd-files-for-apple-devices",
+          "title": "Apple Developer Documentation: Creating USD files for Apple devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Split large geometry into chunks."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "native",
+      "note": "Turning a set of ordinary photographs of a real object into a textured model is a shipped first-party service, named as photogrammetry in Apple's own words, available on the phone and on the desktop. This is the clearest native claim on this row anywhere on the map.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/realitykit-object-capture",
+          "title": "Apple Developer Documentation: RealityKit Object Capture",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "In iOS 17 and macOS 12 and later, you can create 3D objects from photographs using a process called photogrammetry."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "none",
+      "note": "The strongest splat renderer on the map reads no splat file. A dedicated component draws splats with spherical-harmonic colour, sorting and projection modes, and the framework states plainly that it loads no files: an application parses PLY, USD or any other container itself and fills the buffers. There is a rendering path and no interchange path.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/gaussiansplatcomponent",
+          "title": "Apple Developer Documentation: GaussianSplatComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Use a Gaussian splat component to display volumetric imagery captured from real environments, coalesced into 3D Gaussian splats (3DGS)."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/gaussiansplatcomponent",
+          "title": "Apple Developer Documentation: GaussianSplatComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The framework doesn’t load files directly, so you parse your source format — PLY, USD, or any other container — and populate the buffers yourself."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "out-of-scope",
+      "note": "Apple's ARKit and RealityKit are a device platform: the frameworks a phone or headset application uses to see the room and draw in it, and it delivers no captured scene, progressively by region and detail or otherwise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/usd/creating-usd-files-for-apple-devices",
+          "title": "Apple Developer Documentation: Creating USD files for Apple devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Split large geometry into chunks."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "partial",
+      "note": "Apple has its own captured immersive video format with a framework for building workflows around it, and a general video component plays it back. What a second implementation would need to reproduce a shot, the camera calibration and the mask metadata, belongs to that format rather than to these two frameworks, and none of it is an open interchange.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/immersivemediasupport",
+          "title": "Apple Developer Documentation: Immersive Media Support",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Immersive Media Support enables you to create custom workflows for processing Apple Immersive Video (AIV)."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/videoplayercomponent",
+          "title": "Apple Developer Documentation: VideoPlayerComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A component that supports general video-playback experience with an AV player."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "none",
+      "note": "Points are drawn only inside the object-capture scanning view, as feedback while a scan runs. There is no general point cloud renderer, no reader for the formats a scanner writes, and no encoding of one's own.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/realitykit-object-capture",
+          "title": "Apple Developer Documentation: RealityKit Object Capture",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "In iOS 17 and macOS 12 and later, you can create 3D objects from photographs using a process called photogrammetry."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "Apple's ARKit and RealityKit are a device platform: the frameworks a phone or headset application uses to see the room and draw in it, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/usd/creating-usd-files-for-apple-devices",
+          "title": "Apple Developer Documentation: Creating USD files for Apple devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Split large geometry into chunks."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "native",
+      "note": "Drawing volumetric imagery captured from a real environment, from wherever the viewer's head is, is exactly what the splat component is for, and it is first-party.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/gaussiansplatcomponent",
+          "title": "Apple Developer Documentation: GaussianSplatComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Use a Gaussian splat component to display volumetric imagery captured from real environments, coalesced into 3D Gaussian splats (3DGS)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "Apple's ARKit and RealityKit are a device platform: the frameworks a phone or headset application uses to see the room and draw in it, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/usd/creating-usd-files-for-apple-devices",
+          "title": "Apple Developer Documentation: Creating USD files for Apple devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Split large geometry into chunks."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "none",
+      "note": "Stated by the vendor as a limit rather than inferred: scene lighting does not affect a splat asset. A captured scene dropped into a room stays lit as it was photographed, even though the same framework has a full image-based lighting path for ordinary content.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/gaussiansplatcomponent",
+          "title": "Apple Developer Documentation: GaussianSplatComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Scene lighting doesn’t affect a Gaussian splat asset."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/environmentresource",
+          "title": "Apple Developer Documentation: EnvironmentResource",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "RealityKit supports image-based lighting that enables realistic reflections on your scene’s 3D content."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "Apple's ARKit and RealityKit are a device platform: the frameworks a phone or headset application uses to see the room and draw in it, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/usd/creating-usd-files-for-apple-devices",
+          "title": "Apple Developer Documentation: Creating USD files for Apple devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Split large geometry into chunks."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "Apple's ARKit and RealityKit are a device platform: the frameworks a phone or headset application uses to see the room and draw in it, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/usd/creating-usd-files-for-apple-devices",
+          "title": "Apple Developer Documentation: Creating USD files for Apple devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Split large geometry into chunks."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "Apple's ARKit and RealityKit are a device platform: the frameworks a phone or headset application uses to see the room and draw in it, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/usd/creating-usd-files-for-apple-devices",
+          "title": "Apple Developer Documentation: Creating USD files for Apple devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Split large geometry into chunks."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "Apple's ARKit and RealityKit are a device platform: the frameworks a phone or headset application uses to see the room and draw in it, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/usd/creating-usd-files-for-apple-devices",
+          "title": "Apple Developer Documentation: Creating USD files for Apple devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Split large geometry into chunks."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "Apple's ARKit and RealityKit are a device platform: the frameworks a phone or headset application uses to see the room and draw in it, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/usd/creating-usd-files-for-apple-devices",
+          "title": "Apple Developer Documentation: Creating USD files for Apple devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Split large geometry into chunks."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "partial",
+      "note": "A 360-degree view is consumed as a light: the environment resource drives image-based lighting and reflections. It is a prepared platform resource rather than an image with a stated projection that another system could hand over, so the interchange half of this row is missing.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/environmentresource",
+          "title": "Apple Developer Documentation: EnvironmentResource",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "RealityKit supports image-based lighting that enables realistic reflections on your scene’s 3D content."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "native",
+      "note": "Scene reconstruction is first-party on both device families. On iPhone and iPad with the lidar scanner ARKit hands the app mesh anchors that tile the room and update as it is understood better; on Apple Vision Pro the same job is done by a scene reconstruction provider. Plane anchors give the flatter, cheaper reading, and RoomPlan gives a parametric room the app can write out as a file. The mesh itself has no interchange format of its own: it leaves the session only if the app exports it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/arkit/armeshanchor",
+          "title": "Apple Developer Documentation: ARMeshAnchor",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "An anchor for a physical object that ARKit detects and recreates virtually using a polygonal mesh."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/arkit/armeshanchor",
+          "title": "Apple Developer Documentation: ARMeshAnchor",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "ARKit subdivides the reconstructed, real-world scene surrounding the user into mesh anchors."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/arkit/scenereconstructionprovider",
+          "title": "Apple Developer Documentation: SceneReconstructionProvider",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A source of live data about the shape of a person's surroundings."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/roomplan",
+          "title": "Apple Developer Documentation: RoomPlan",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The framework outputs a scan as parametric data, which makes it easy for your app to modify the scanned room’s individual components."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "native",
+      "note": "Every mesh face carries a class from a fixed list of eight — ceiling, door, floor, seat, table, wall, window and none — and plane anchors carry the same vocabulary plus three states for not yet known. The list is indoor furniture and building surfaces only; there is no outdoor class such as sky or road, and no per-pixel channel other than the separate people segmentation used for occlusion.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/arkit/armeshclassification",
+          "title": "Apple Developer Documentation: ARMeshClassification",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Enumeration of different classes of real-world objects that ARKit can identify."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/arkit/planeanchor/classification-swift.enum",
+          "title": "Apple Developer Documentation: PlaneAnchor.Classification",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The kinds of object classification a plane anchor can have."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "native",
+      "note": "The lidar scanner produces a per-frame depth map whose pixel value is the distance from the plane of the camera in metres, with a matching confidence map an app can use to throw the weakest samples away. This is a measured depth, not an inference, and the units are stated in the documentation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/arkit/ardepthdata",
+          "title": "Apple Developer Documentation: ARDepthData",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "An object that describes the distance to regions of the real world from the plane of the camera."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/arkit/ardepthdata",
+          "title": "Apple Developer Documentation: ARDepthData",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Every pixel in the depthMap maps to a region of the visible scene (capturedImage), where the pixel value defines that region's distance from the plane of the camera in meters."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "native",
+      "note": "RealityKit draws the occlusion itself. Switching on the scene-understanding occlusion option makes the reconstructed room write into the depth buffer only, so any virtual part behind a real surface is not drawn. People are handled by a separate segmentation path, so a hand can pass in front of content that the room mesh does not cover.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/arview/environment-swift.struct/sceneunderstanding-swift.struct/options-swift.struct",
+          "title": "Apple Developer Documentation: ARView.Environment.SceneUnderstanding.Options",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Parts of virtual objects which are behind the reconstructed geometry are not rendered."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/arkit/armeshanchor",
+          "title": "Apple Developer Documentation: ARMeshAnchor",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "ARKit subdivides the reconstructed, real-world scene surrounding the user into mesh anchors."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "native",
+      "note": "Blending with the room is a first-class choice on this platform, made by picking an immersion style: the mixed style displays unbounded content intermixed with the app's other content along with passthrough video, and virtual objects and windows occlude each other correctly within it. On the phone side the session's own job description includes camera passthrough. What an application does not get is a dial for the amount or a hole cut through a virtual environment under its own control; it picks a style and the system composites.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/swiftui/immersionstyle/mixed",
+          "title": "Apple Developer Documentation: ImmersionStyle.mixed",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "An immersion style that displays unbounded content intermixed with other app content, along with passthrough video."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.face",
+      "level": "native",
+      "note": "The user's own face arrives as tracked data an application can act on frame by frame: a face anchor carries blend shape coefficients meant for driving a character or avatar, and body tracking names the joints it reports. Apple's own privacy terms sit around the camera permission that makes it possible, so the constraint travels with the capability.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/arkit/arfaceanchor",
+          "title": "Apple Developer Documentation: ARFaceAnchor",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "You can use blend shape coefficients to animate 2D or 3D content, such as a character or avatar, in ways that follow the user's facial expressions."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/arkit/arskeletondefinition",
+          "title": "Apple Developer Documentation: ARSkeletonDefinition",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "ARKit names particular joints that are crucial to body tracking."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "partial",
+      "note": "A navigation mesh is a component on an entity in a RealityKit scene, authored in Reality Composer Pro and saved with the scene, so the walkable surface really is carried rather than recomputed by the runtime. It is built for characters finding paths: bounds for a person and declared arrival points are not part of it, and the declaration is Apple's own scene format.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/realitykit/navigationmeshcomponent",
+          "title": "Apple Developer Documentation: NavigationMeshComponent",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A component that provides the navigation meshes an entity uses to find paths through a scene."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "out-of-scope",
+      "note": "ARKit and RealityKit run an application's own code inside one app. Publishing a unit of logic under a name others resolve is the app store and the package manager's business, not the framework's.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "out-of-scope",
+      "note": "The frameworks draw and sense; the review that stands between an application and its users is App Review, a property of the store rather than of ARKit, and nothing in the frameworks records what review content has had.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "partial",
+      "note": "ARKit has a map object and stops there. A world map holds the session's awareness of the physical space, can be saved when the app quits, restored on the next launch and sent to another device so both place content the same way. There is no version or lifecycle declared for it, no identity a second party could name, and no transform published between two maps of the same place.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/arkit/arworldmap",
+          "title": "Apple Developer Documentation: ARWorldMap",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The session state in a world map includes ARKit's awareness of the physical space in which the user moves the device."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/arkit/arworldmap",
+          "title": "Apple Developer Documentation: ARWorldMap",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can use anchors from a resumed world map to place the same virtual content at the same positions from the saved session, if the app launches in the same physical environment."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "native",
+      "note": "Geotracking coverage is a question an application can ask before it commits: one call reports whether geotracking supports the user's current location and another whether it supports a particular location, with the reasons for a negative answer named — no localization imagery, no network, no GPS. That is exactly the relevance test this row asks for, in a stated geographic frame, though the area itself is Apple's list rather than a published boundary.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/documentation/arkit/argeotrackingconfiguration/checkavailability(completionhandler:)",
+          "title": "Apple Developer Documentation: ARGeoTrackingConfiguration.checkAvailability",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Determines if geotracking supports the user's current location."
+        },
+        {
+          "url": "https://developer.apple.com/documentation/arkit/argeotrackingconfiguration/checkavailability(completionhandler:)",
+          "title": "Apple Developer Documentation: ARGeoTrackingConfiguration.checkAvailability",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "ARKit lacks localization imagery for the user's geographic position."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.color",
+      "level": "partial",
+      "note": "RealityView declares the rendering dynamic range, but this source alone does not settle color interpretation and conversion for every image or texture input.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/tutorials/data/documentation/realitykit/presentation-views-and-attachments.md",
+          "title": "Views and attachments",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Options that determine the state of high dynamic range rendering for virtual content."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "out-of-scope",
+      "note": "Apple ARKit and RealityKit is assessed here as Apple device sensing and entity/component rendering APIs. The subject does not issue or exchange trust claims whose establishment a relying party evaluates; reconstruction confidence is a different quantity.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "out-of-scope",
+      "note": "Apple ARKit and RealityKit is assessed here as Apple device sensing and entity/component rendering APIs. The subject's scene or model data types are not a vocabulary for identity claims exchanged with a relying party.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "out-of-scope",
+      "note": "Apple ARKit and RealityKit is assessed here as Apple device sensing and entity/component rendering APIs. The subject is not an identity-presentation system with pairwise relationship identifiers and correlation guarantees.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.encryption",
+      "level": "out-of-scope",
+      "note": "Apple ARKit and RealityKit is assessed here as Apple device sensing and entity/component rendering APIs. Image, geometry and device processing do not define recipient identity keys or confidential identity delivery.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.key-lifecycle",
+      "level": "out-of-scope",
+      "note": "Apple ARKit and RealityKit is assessed here as Apple device sensing and entity/component rendering APIs. The subject does not govern identity-control key rotation, revocation or recovery; account administration belongs to its host.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "out-of-scope",
+      "note": "Apple ARKit and RealityKit is assessed here as Apple device sensing and entity/component rendering APIs. The subject does not issue portable credentials with a post-issuance status-discovery mechanism.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "native",
+      "note": "RealityView sizing/alignment options and view attachments place two-dimensional interface content in windows or immersive scenes through Apple's SwiftUI integration.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/tutorials/data/documentation/realitykit/presentation-views-and-attachments.md",
+          "title": "Views and attachments",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Options that specify the frame sizing and content alignment option for `RealityView`."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "native",
+      "note": "ARLightEstimate exposes camera-derived ambient intensity and color temperature on each ARFrame; this is a local Apple sensing interface, not an interchange standard.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/tutorials/data/documentation/arkit/arlightestimate.md",
+          "title": "ARLightEstimate",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Estimated scene lighting information associated with a captured video frame in an AR session."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "native",
+      "note": "ARKit detects configured reference images and returns ARImageAnchor transforms; scope is the documented Apple tracking API and its device availability.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/tutorials/data/documentation/arkit/arimageanchor.md",
+          "title": "ARImageAnchor",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "An anchor for a known image that ARKit detects in the physical environment."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "native",
+      "note": "ARFrame delivers a continuous stream whose camera carries position and orientation and whose timestamp identifies capture time; these are local session poses, not a standardized trajectory file.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/tutorials/data/documentation/arkit/arframe.md",
+          "title": "ARFrame",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The time at which the frame was captured."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "native",
+      "note": "RealityKit tests gaze against entity collision shapes and returns the targeted entity to gesture handlers; the host gesture framework remains SwiftUI.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/tutorials/data/documentation/realitykit/responding-to-gestures-on-an-entity.md",
+          "title": "Responding to gestures on an entity",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The system uses the collision component to test if the gaze vector intersects the entity."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.bounds",
+      "level": "partial",
+      "note": "BoundingBoxCalculator computes bounds for deformed positions, but the read API does not establish a hierarchy used for traversal before detailed geometry loads; its current documentation lists OS 27 availability. This is an OS 27-only documentation claim; availability in a current shipping release remains unverified.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/tutorials/data/documentation/realitykit/boundingboxcalculator.md",
+          "title": "BoundingBoxCalculator",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Calculates a bounding box based on the current state of the deformed positions."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.collection",
+      "level": "native",
+      "note": "EntityQuery selects entities by a QueryPredicate and returns the set for scene operations; this is a local runtime query contract, with no portable collection serialization inferred.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/tutorials/data/documentation/realitykit/entityquery.md",
+          "title": "EntityQuery",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Creates a query that returns all entities in a scene that match specific\ncriteria."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "native",
+      "note": "VideoPlayerComponent and VideoMaterial place AVPlayer-backed timed video in a RealityKit scene with playback control; this documents an Apple implementation, not portable scene-media serialization.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/tutorials/data/documentation/realitykit/scene-content-videos.md",
+          "title": "Videos",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "A component that supports general video-playback experience with an AV player."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "out-of-scope",
+      "note": "Apple ARKit and RealityKit is assessed here as Apple device sensing and entity/component rendering APIs. The subject does not publish an exchange of identified spatial zones and typed, temporally scoped events; scene bounds or capture locations are not that protocol.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.consent",
+      "level": "out-of-scope",
+      "note": "Apple ARKit and RealityKit is assessed here as Apple device sensing and entity/component rendering APIs. An application permission dialog or dataset licence does not carry a subject-bound grant with scope, purpose, validity and withdrawal information.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "out-of-scope",
+      "note": "Apple ARKit and RealityKit is assessed here as Apple device sensing and entity/component rendering APIs. Training metrics and processing status are not machine-readable accounts of a recipient evaluating and acting on an arriving subject or claim.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "Apple ARKit and RealityKit is assessed here as Apple device sensing and entity/component rendering APIs. The selected subject does not define arrival between independent destinations; local API setup and asset loading are not pre-arrival admission responses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "native",
+      "note": "ComputeGraphComponent executes loaded graphs every frame through Metal compute pipelines and creates their outputs; this newly documented API lists OS 27 availability and was not compiled here. This is an OS 27-only documentation claim; availability in a current shipping release remains unverified.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/tutorials/data/documentation/realitykit/computegraphcomponent.md",
+          "title": "ComputeGraphComponent",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "and execute it each frame using Metal compute pipelines."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "partial",
+      "note": "CustomMaterial accepts Metal surface shaders and geometry modifiers, but RealityKit does not itself specify a common cross-implementation shader language; Metal remains a separate Apple interface.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/tutorials/data/documentation/realitykit/custommaterial.md",
+          "title": "CustomMaterial",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "A material that works with custom Metal shader functions."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "partial",
+      "note": "RealityKit supplies an encodable/decodable particle emitter component, but the read symbol page does not define a portable emitter exchange or the full receiving-runtime parameter contract.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/tutorials/data/documentation/realitykit/particleemittercomponent.md",
+          "title": "ParticleEmitterComponent",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "A component that emits particles."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "native",
+      "note": "ARRaycastResult returns the world transform of intersections with estimated physical surfaces; this is separate from selecting a virtual entity.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/tutorials/data/documentation/arkit/arraycastresult.md",
+          "title": "ARRaycastResult",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The position, rotation, and scale, of the ray’s intersection with the target."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.privacy",
+      "level": "native",
+      "note": "ARKit documents revocable access and use descriptions, and restricts sensitive sensed-data access to the foreground Full Space; no portable per-payload policy format is claimed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/tutorials/data/documentation/visionos/setting-up-access-to-arkit-data.md",
+          "title": "Setting up access to ARKit data",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "To help protect people’s privacy, ARKit data is available only when your app presents a Full Space and other apps are hidden."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "out-of-scope",
+      "note": "Apple ARKit and RealityKit is assessed here as Apple device sensing and entity/component rendering APIs. The subject does not expose a musical-instrument device or recorded-event input interface with channels, notes and controllers.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.resolve",
+      "level": "native",
+      "note": "RealityKit resolves named USD/Reality entities in an explicit or default bundle and supports file-URL loading. This is documented bundle/file resolution, with no claim of arbitrary remote scheme support.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/tutorials/data/documentation/realitykit/loading-entities-from-a-file.md",
+          "title": "Loading entities from a file",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Omit the bundle parameter from the method call to load from the app’s main bundle:"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.variant",
+      "level": "native",
+      "note": "RealityKit Entity.ConfigurationCatalog carries named configuration sets, combinations and explicit dictionary selection, and can load USD variant sets or save/load .reality catalogs. Its symbol availability is iOS/iPadOS/Mac Catalyst 18, macOS 15, visionOS 2 and tvOS 26; this is not asserted for earlier framework releases. Documentation evidence, not runtime conformance.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/tutorials/data/documentation/realitykit/entity/configurationcatalog.md",
+          "title": "Entity.ConfigurationCatalog",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "You can load a configuration catalog from a USD file with variant sets or a `.reality` file with a configuration catalog."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "partial",
+      "note": "RealityKit GeometricPin identifies local frames on an entity. The retained pin API does not establish an authored relation that drives another node's transform with a defined runtime evaluation rule.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/tutorials/data/documentation/realitykit/geometricpin.md",
+          "title": "GeometricPin",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "A geometric pin has a base transform and allows an optional offset relative to the base transform."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "partial",
+      "note": "Room-tracking documentation supplies physical room geometry. The retained passage does not declare usable play-area bounds paired with a floor reference for interaction.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/tutorials/data/documentation/visionos/building-local-experiences-with-room-tracking.md",
+          "title": "Building local experiences with room tracking",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "the framework may only provide a floor mesh"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "partial",
+      "note": "RealityKit AudioGeneratorController produces audio samples through a callback. The retained API does not define an exchanged synthesis model with its input data and changing controls.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/tutorials/data/documentation/realitykit/scene-content-audio.md",
+          "title": "Audio",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "For real-time audio playback you can prepare a [`Audio.GeneratorRenderHandler`](/documentation/RealityKit/Audio/GeneratorRenderHandler) and control playback with [`AudioGeneratorController`](/documentation/RealityKit/AudioGeneratorController)."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.extension",
+      "level": "partial",
+      "note": "RealityKit provides custom Component types and explicit type registration. This establishes a named local extension mechanism but does not specify the receiver behavior when an exchanged custom component is unknown.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/tutorials/data/documentation/realitykit/component.md",
+          "title": "Component",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Call this method once before using the component type."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "native",
+      "note": "RealityKit loads USD/Reality content while preserving its entity hierarchy and transforms. That import reconstructs the linked frames carried by the file.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.apple.com/tutorials/data/documentation/realitykit/loading-entities-from-a-file.md",
+          "title": "Loading entities from a file",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The load methods preserve the entity hierarchy in the loaded file"
+        }
+      ]
+    }
+  ]
+}

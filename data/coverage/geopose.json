@@ -1,0 +1,1218 @@
+{
+  "subject_id": "geopose",
+  "summary": "OGC GeoPose is a small, finished standard that does one job: say where something is on Earth and which way it is facing, in a form two systems can exchange. The document records an approval date of 2022-06-20 and a publication date of 2023-09-08, so calling it a draft seeking uplift, as our own older research did, is wrong. It is a data structure and not a service: the word resolve does not appear anywhere in it, and it states plainly that it does not constrain services or interfaces, so it never turns a name into a place you can reach. Its two simple forms pin the outer frame to the world geodetic system of 1984, while the flexible form only names an outside frame authority and says reading that name is somebody else's job, so two systems can exchange a valid pose and still disagree about where it is. One trap for anyone citing it: the published rule for latitude reads that the minimum value shall be 90.0 degrees and the maximum value shall be 90.0 degrees, with the minus sign missing, while the neighbouring rule for longitude correctly carries its minus sign.",
+  "coverage": [
+    {
+      "capability_id": "geo.pose",
+      "level": "native",
+      "note": "The whole point of the standard: one agreed way to hand the position and orientation of a real or virtual object from one system to another, in a frame tied to the Earth or to another astronomical body.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "defines requirements (rules) for the interoperable exchange of the location and orientation of real or virtual geometric objects (poses)"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "partial",
+      "note": "The two simple forms fix the frame: an implicit world geodetic system of 1984 datum with a local tangent plane. The flexible form instead carries three strings naming an outside authority, an identifier and parameters, and the standard says reading them is not its job. So the frame is named but never defined, and two conforming systems can exchange a pose whose frame they interpret differently.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The interpretation of the contents of these fields is outside the scope of GeoPose."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "partial",
+      "note": "Axis order and rotation order are pinned down: East, North and Up map to X, Y and Z; yaw, pitch and roll are three rotations about the local z, y and x axes applied in that order; quaternion parts are written w, x, y, z. What is missing is scale and any general transform composition, because version 1.0 allows only movement and turning, and the word handed appears nowhere in the document.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This abstraction is constrained in GeoPose v1.0 to only allow transformations involving translation and rotation."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "partial",
+      "note": "Units are fixed for the pose itself: height in metres above the reference ellipsoid, latitude and longitude in decimal degrees. Nothing is said about the size of whatever content is placed at that pose, so it does not settle whether an imported model arrives at the right scale.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "SHALL be expressed as a height in meters above the WGS-84 ellipsoid"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "partial",
+      "note": "Time series and stream forms carry a time stamp per pose, but the time model is deliberately thin: whole and fractional seconds of one common clock count, with no clock agreement, no ordering rules and no drift handling. It timestamps poses; it does not give two machines a shared clock.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "GeoPose v1.0 has a very restricted idea of time position, limited to seconds of UNIX Time."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "native",
+      "note": "It carries a normative abstract test suite as Annex A, eight independent conformance classes with no dependency between them, and published schemas that encoded objects must validate against. This is one of the few subjects on this map that ships a test suite with the specification.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Conformance with this standard shall be checked using all the relevant tests specified in Annex A of this document."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "partial",
+      "note": "It supplies the shared vocabulary two devices need to state where a thing is, and nothing else. There is no anchor identifier, no way to store or fetch an anchor, no persistence rule and no service, and the standard says outright that it does not constrain services or interfaces. Treat it as the payload for a shared anchor, not as shared anchoring.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "the Standard does not assume or constrain services or interfaces providing conversion between GeoPoses of difference types or relying on different external reference frame definitions."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "out-of-scope",
+      "note": "A pose is not an address. A full text read of the standard finds no occurrence of the word resolve, and no resolution mechanism of any kind. Anyone hoping this fills the place-naming hole should look elsewhere.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "the Standard does not assume or constrain services or interfaces providing conversion between GeoPoses of difference types or relying on different external reference frame definitions."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.vps",
+      "level": "out-of-scope",
+      "note": "Recovering a pose from camera pictures appears only in the use case table, as work that produces a GeoPose. The standard specifies no method, no imagery handling and no matching. It is the output container for a visual positioning system, not the system.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Instantaneous and time series location and orientation of an optical imaging device using Simultaneous Location And Mapping (SLAM)"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "out-of-scope",
+      "note": "It carries a pose, not the content placed at it. There is no tiling, no geometry payload and no streaming of terrain or city data. That boundary is worth stating explicitly, because the other geospatial subject on this map does exactly that job.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Frame Transform is the core abstraction in the GeoPose Standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "partial",
+      "note": "It can carry where a camera is and which way it points, which is a listed use case, and that is the whole contribution. It defines no field of view, no projection, no viewpoint binding and no rule for moving between viewpoints.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Instantaneous and time series location and orientation of an optical imaging device used for photogrammetry"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "none",
+      "note": "The series header and trailer each hold a field meant for an integrity check, and the standard says the field has no defined use and is a placeholder for a later version. The published examples put a hash in it, but nothing in the standard tells a reader how to check one. So there is a hook and no mechanism.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The integrityCheck attributes in the SeriesHeader and SeriesTrailer classes are defined as strings and have no prescribed method of use in GeoPose 1.0."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "OGC GeoPose carries one thing, the position and orientation of something on the Earth, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Frame Transform is the core abstraction in the GeoPose Standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "OGC GeoPose carries one thing, the position and orientation of something on the Earth, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Frame Transform is the core abstraction in the GeoPose Standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "OGC GeoPose carries one thing, the position and orientation of something on the Earth, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Frame Transform is the core abstraction in the GeoPose Standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "out-of-scope",
+      "note": "OGC GeoPose carries one thing, the position and orientation of something on the Earth, and it names no Gaussian splat interchange format and carries no splat data.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Frame Transform is the core abstraction in the GeoPose Standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "out-of-scope",
+      "note": "OGC GeoPose carries one thing, the position and orientation of something on the Earth, and it delivers no captured scene, progressively by region and detail or otherwise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Frame Transform is the core abstraction in the GeoPose Standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "OGC GeoPose carries one thing, the position and orientation of something on the Earth, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Frame Transform is the core abstraction in the GeoPose Standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "out-of-scope",
+      "note": "OGC GeoPose carries one thing, the position and orientation of something on the Earth, and it defines no encoding or compression for a set of points with attributes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Frame Transform is the core abstraction in the GeoPose Standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "OGC GeoPose carries one thing, the position and orientation of something on the Earth, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Frame Transform is the core abstraction in the GeoPose Standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "out-of-scope",
+      "note": "OGC GeoPose carries one thing, the position and orientation of something on the Earth, and it produces no image from a viewing position that no capture camera occupied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Frame Transform is the core abstraction in the GeoPose Standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "OGC GeoPose carries one thing, the position and orientation of something on the Earth, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Frame Transform is the core abstraction in the GeoPose Standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "OGC GeoPose carries one thing, the position and orientation of something on the Earth, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Frame Transform is the core abstraction in the GeoPose Standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "OGC GeoPose carries one thing, the position and orientation of something on the Earth, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Frame Transform is the core abstraction in the GeoPose Standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "OGC GeoPose carries one thing, the position and orientation of something on the Earth, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Frame Transform is the core abstraction in the GeoPose Standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "OGC GeoPose carries one thing, the position and orientation of something on the Earth, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Frame Transform is the core abstraction in the GeoPose Standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "OGC GeoPose carries one thing, the position and orientation of something on the Earth, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Frame Transform is the core abstraction in the GeoPose Standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "OGC GeoPose carries one thing, the position and orientation of something on the Earth, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Frame Transform is the core abstraction in the GeoPose Standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "out-of-scope",
+      "note": "OGC GeoPose carries one thing, the position and orientation of something on the Earth, and it carries no full 360-degree view of a place as an image with its projection stated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Frame Transform is the core abstraction in the GeoPose Standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "out-of-scope",
+      "note": "A data exchange standard for the location and orientation of real or virtual objects. It carries a pose and nothing else, so the shape of the space around a device is outside it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "defines requirements (rules) for the interoperable exchange of the location and orientation of real or virtual geometric objects (poses)"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "A pose has no room for a class. What the thing at that pose is, and what the surfaces near it are, the standard leaves to others.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "defines requirements (rules) for the interoperable exchange of the location and orientation of real or virtual geometric objects (poses)"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "out-of-scope",
+      "note": "No depth image and no per-pixel measurement is part of a pose exchange.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "defines requirements (rules) for the interoperable exchange of the location and orientation of real or virtual geometric objects (poses)"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "Drawing is not addressed at all, so occlusion against real surfaces cannot be.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "defines requirements (rules) for the interoperable exchange of the location and orientation of real or virtual geometric objects (poses)"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "out-of-scope",
+      "note": "GeoPose says where something is and which way it faces. Nothing about drawing, and nothing about a camera view of the room.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.face",
+      "level": "out-of-scope",
+      "note": "A pose standard reads no sensors and carries no stream of the user's face or body.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "out-of-scope",
+      "note": "GeoPose positions one thing in a frame. It has no scene in which walkable surface or arrival points could be declared.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "out-of-scope",
+      "note": "No published units of logic are named by a pose standard.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "out-of-scope",
+      "note": "No content is published through GeoPose, so no review can stand in that path.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "partial",
+      "note": "GeoPose is exactly the transform half of this row and none of the rest. A pose is a frame transform relating an outer frame to an inner one, which is the very thing two maps of one place need between them, and the standard even packages sequenced and linked transforms. What it never does is declare that a map exists, give it a version and a lifecycle, or name the two maps a transform is between.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "representation of a frame transform ( Clause 4.2.6 ) mapping the space of an outer frame ( Clause 4.2.7 ) to the space of an inner frame ( Clause 4.2.8 )"
+        },
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The Composite Targets offer approaches to packaging sequenced or linked Frame Transforms."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "none",
+      "note": "A GeoPose is a point and an orientation, not an area. There is no way in the standard to say which region a service, dataset or piece of content applies to, so a client cannot test relevance against it; the eight standardization targets are all about how one pose is written down.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "There are eight independent standardization targets."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.profile",
+      "level": "native",
+      "note": "GeoPose 1.0 names Basic, Advanced and composite targets with explicit conformance requirements, allowing producers and consumers to identify the representation contract.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "There are eight independent standardization targets."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.color",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires declaring the color interpretation and output range of images, textures, and rendering surfaces so receivers can perform the required conversions. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires evidence and assurance information accompanying a claim, enabling the relying party to assess how the claim was established. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires declaring the vocabulary, types, and validation schemas needed to interpret and check the structure of a claim. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires pairwise identifiers and presentation mechanisms that reduce correlation across relationships, with their remaining correlation risks stated. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.thumbnail",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires a preview image referenced or packaged with an asset, usable without rendering its three-dimensional contents. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.encryption",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires identifying recipient key material and algorithms that permit confidential communication or encrypted content for an intended subject. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.key-lifecycle",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires rules for changing, revoking, or recovering identity-control keys and for discovering the applicable verification material. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires a defined mechanism to discover the suspension, revocation, or other status of a credential after issuance. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires layout and presentation of two-dimensional interface regions, including their size, alignment, and relationship to a display or scene. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires runtime estimates of environmental illumination made available to content for lighting or reflections. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires detecting recognized physical markers or images and reporting their tracked pose relative to a runtime reference space. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.resolve",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires resolving scene resource identifiers against a context or resolver so the referenced resources can subsequently be accessed. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "native",
+      "note": "Regular and irregular time series and the Stream target exchange time-associated poses; interpolation is declared separately and is not inferred from timestamps.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Open-ended sequence of time-stamped GeoPoses: Stream Target"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires picking scene content from pointing input and reporting the intersected object or geometry to the application. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.text",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires receiving character or string entry through a defined input interface, separate from interpreting physical controller actions. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires submitting distinct shaped image layers to a display compositor with their placement and composition properties. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.bounds",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires bounding volumes associated with scene content, organized for spatial rejection, traversal, or selection before detailed geometry is loaded. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.collection",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires named or rule-defined sets of scene objects that consumers can use as targets for scene operations. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires authored runtime relationships that constrain one node's transform using another node and defined evaluation rules. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires referencing timed audiovisual media inside a scene and defining the synchronization needed to present it as scene content. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires runtime-reported physical play-area bounds and floor-relative reference information available to an application. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires generating audio during playback from an exchanged synthesis model, supporting data, and changing control parameters. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.protection",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires declaring the protection scheme associated with protected content components so recipients can identify the required protection mechanism. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "native",
+      "note": "The Chain and Graph targets exchange linked frame transforms, including explicit relationships needed to reconstruct related poses.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.consent",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires carrying a grant of permission with scope, purpose, validity, and withdrawal information for uses of the subject or represented data. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires a machine-readable account of a recipient's evaluation and action, with any signature or integrity proof explicitly identified. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires a destination's pre-arrival approval or refusal response, including any validity limit and optional explanatory information. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires dispatching programmable non-raster GPU workloads against resources available through the graphics-compute API. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.frame-timing",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires coordinating frame submission with predicted display timing and the view poses associated with that time. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires a specified shader source language and execution semantics enabling implementations to consume the same shader program. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.parametric",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires carrying parametric curves and surfaces in mathematical form so a receiver can evaluate or tessellate them. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires exchanging particle-system emitters and simulation/rendering parameters that a receiving runtime evaluates. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance-recovery",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires locating associated provenance through a supported content fingerprint or watermark when embedded association has been lost. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.style",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires separately expressed styling rules that select feature visibility, color, or other supported display properties from content metadata. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.variant",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires named alternatives of an asset's authored configuration, with a defined selection mechanism. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.voxel",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires interchanging spatial cell volumes and their properties, including updates, as a scene representation. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires asking a sensing runtime for ray intersections with its estimate of physical surroundings and receiving hit poses. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires receiving typed musical instrument events with channel, note or control identifiers and values through a documented device or recorded-event input interface. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires reconstructing a radiance field or Gaussian representation from observed images and camera information, including optimization controls and a trained scene usable for subsequent view synthesis. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.objectgen",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: GeoPose 1.0 defines geographic pose and linked/timed pose data exchange. This row requires producing an individual three-dimensional object from a text or image prompt, with geometry or another renderable representation available for placement in a separately authored scene. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Composite GeoPose structures to support time series chain, and graph structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.extension",
+      "level": "partial",
+      "note": "GeoPose specifies permissive additional JSON properties for Basic-YPR and most targets, with distinct strict/extensible Basic-Quaternion encodings. That is an explicit extension surface, but the read schema guidance does not assign shared semantics/namespaces or fallback behavior to every unknown property.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This JSON encoding is extensible because the JSON-Schema “additionalProperties” property is set to the default value of true."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "out-of-scope",
+      "note": "GeoPose exchanges locations, orientations and linked/time-associated poses. Zone identity, typed zone events and summaries constitute a separate event protocol rather than a pose representation. Required function: Interchanging identified spatial zones, typed events scoped to them, and summaries with defined spatial and temporal meaning.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+          "title": "OGC GeoPose 1.0 Data Exchange Standard",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "the interoperable exchange of the location and orientation of real or virtual geometric objects"
+        }
+      ]
+    }
+  ]
+}

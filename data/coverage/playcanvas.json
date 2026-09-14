@@ -1,0 +1,2119 @@
+{
+  "subject_id": "playcanvas",
+  "summary": "PlayCanvas is two things under one name: an open-source runtime released under the MIT licence, and a hosted editor and publishing service at playcanvas.com. The runtime is a mature real-time renderer on WebGL 2 and WebGPU, with an entity-and-component scene model, glTF 2.0 reading and writing, animation state graphs, positioned sound, WebXR sessions, and unusually deep support for Gaussian splats including level-of-detail streaming. Physics is not in the runtime: rigid bodies, collision shapes, joints and trigger volumes ship as components that stay inert until the application separately loads ammo.js, a WebAssembly port of Bullet. The runtime carries no networking, no identity, no persistence and no avatar model at all, and PlayCanvas documents multi-user work only as tutorials that wire a scene to a third-party server such as Socket.io, Colyseus or Photon. The first trap for a standards audience is the product split: reading FBX or COLLADA, baking font atlases, compressing textures, resolving template overrides and producing a runnable package are all hosted-editor jobs done on PlayCanvas servers, and none of them exist in the open-source runtime. The second trap is that several load-bearing conventions, including right-handed axes with Y up, column-major matrices and one unit to the metre, are stated in source comments or a single documentation page rather than specified anywhere normative.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "native",
+      "note": "The runtime has its own frame graph of render passes driving a forward renderer with clustered lighting and an ordered layer composition; there is no deferred path.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/scene/frame-graph.js",
+          "title": "engine/src/scene/frame-graph.js",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A frame graph represents a single rendering frame as a sequence of frame passes."
+        },
+        {
+          "url": "https://api.playcanvas.com/engine/classes/LayerComposition.html",
+          "title": "LayerComposition | Engine API Reference",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Layer Composition is a collection of Layer that is fed to Scene#layers to define rendering order."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "native",
+      "note": "Targets WebGL 2 and WebGPU behind a graphics-device abstraction, plus a null device for headless use; WebGL 1 was removed at version 2.0.0, and the documentation still calls WebGPU beta while the repository does not.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/playcanvas/engine/releases/tag/v2.0.0",
+          "title": "Release v2.0.0 - playcanvas/engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "[BREAKING] Removed WebGL1 support"
+        },
+        {
+          "url": "https://developer.playcanvas.com/user-manual/graphics/",
+          "title": "Graphics | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The engine will seamlessly fall back from WebGPU to WebGL based on browser support."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/README.md",
+          "title": "engine/README.md",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "PlayCanvas is an open-source game engine built on WebGL2 and WebGPU."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "native",
+      "note": "A general-purpose standard material using the metalness workflow, plus lower-level shader materials and a shader-chunk system with parallel GLSL and WGSL trees.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/scene/materials/standard-material.js",
+          "title": "engine/src/scene/materials/standard-material.js",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A standard material is the main, general purpose material that is most often used for rendering."
+        },
+        {
+          "url": "https://developer.playcanvas.com/user-manual/graphics/physical-rendering/",
+          "title": "Physically Based Rendering | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "a metalness property which makes this stuff simple by defining a material as either a metal, or a non-metal"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "native",
+      "note": "Directional, omni and spot lights with area shapes, cascaded and variance shadow maps, clustered lighting on by default, image-based lighting from a skybox, and a lightmap baker inside the runtime; there is no reflection-probe or light-probe system, so indirect specular comes from one scene skybox or a per-material cubemap.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/graphics/lighting/",
+          "title": "Lighting | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The PlayCanvas Engine has built in lightmap generation."
+        },
+        {
+          "url": "https://developer.playcanvas.com/user-manual/graphics/lighting/clustered-lighting/",
+          "title": "Clustered Lighting | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Clustered lighting is enabled by default from PlayCanvas Engine v1.56 onwards."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.post",
+      "level": "native",
+      "note": "A high-dynamic-range camera frame pass covers bloom, ambient occlusion, depth of field, temporal anti-aliasing, grading, lookup tables, vignette and tone mapping; it lives under the repository's extras folder but that folder is re-exported from the main entry point, so it ships in the published package.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://api.playcanvas.com/engine/classes/CameraFrame.html",
+          "title": "CameraFrame | Engine API Reference",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Implementation of a simple to use camera rendering pass, which supports SSAO, Bloom and other rendering effects."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/extras/index.js",
+          "title": "engine/src/extras/index.js",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Extras is a collection of supplementary APIs designed to extend the capabilities of the PlayCanvas Engine."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "partial",
+      "note": "Level of detail and streaming order exist only for Gaussian splats, where a spatial tree of chunks is fetched by camera distance; for meshes there is no level-of-detail system at all, only per-asset preload flags and on-demand loading, so mesh detail selection is left to the application.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/gaussian-splatting/building/lod-streaming/",
+          "title": "Streamed SOG | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "dynamically loading appropriate levels of detail (LOD) based on the camera's distance"
+        },
+        {
+          "url": "https://developer.playcanvas.com/user-manual/assets/preloading-and-streaming/",
+          "title": "Preloading and Streaming | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Every asset in your project has a property called preload, which is set to true by default."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "native",
+      "note": "Gaussian splats are a first-class component with their own asset pipeline, global depth sort across components, shadow support and level-of-detail streaming; it reads point-cloud PLY, the compressed SOG format, streamed SOG, Niantic SPZ through a bundled parser script, and glTF carrying the Khronos gaussian-splatting extension, which makes PlayCanvas one of the earliest runtimes to reach this depth.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://api.playcanvas.com/engine/classes/GSplatComponent.html",
+          "title": "GSplatComponent | Engine API Reference",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The GSplatComponent enables an Entity to render 3D Gaussian Splats."
+        },
+        {
+          "url": "https://developer.playcanvas.com/user-manual/gaussian-splatting/formats/",
+          "title": "Splat File Formats | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Binary glTF with the Khronos KHR_gaussian_splatting extension."
+        },
+        {
+          "url": "https://github.com/playcanvas/engine/releases/tag/v1.67.0",
+          "title": "Release v1.67.0 - playcanvas/engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "3D Gaussian Splat support"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "partial",
+      "note": "Ray-marched volumetric fog lit by a directional light was added to the camera frame pass at version 2.21.0, but there is no point-cloud loader, no voxel renderer and no volumetric-video path; the raw points draw mode exists only as a drawing primitive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://api.playcanvas.com/engine/interfaces/VolumetricFog.html",
+          "title": "VolumetricFog | Engine API Reference",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A raymarched height fog lit by a directional light."
+        },
+        {
+          "url": "https://github.com/playcanvas/engine/releases/tag/v2.21.0",
+          "title": "Release v2.21.0 - playcanvas/engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Add volumetric fog rendering to `CameraFrame`"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "native",
+      "note": "Text is drawn from multi-channel signed-distance-field font atlases through the element component, one quad per character, in screen space or world space; turning a font file into an atlas is a hosted-editor job, and the runtime only consumes the finished asset.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/user-interface/text-elements/",
+          "title": "Text Elements | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Text elements are rendered to the screen using a single quad for each character in the string."
+        },
+        {
+          "url": "https://developer.playcanvas.com/user-manual/editor/assets/inspectors/font/",
+          "title": "Font | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Fonts are stored as multi-channel signed distance field (MSDF) atlases rather than fixed-size bitmaps"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "native",
+      "note": "A camera component defines perspective or orthographic viewpoints with clip planes, layer masks, render targets, priority ordering and helpers to move between screen and world space, and it is the object handed to the immersive session.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://api.playcanvas.com/engine/classes/CameraComponent.html",
+          "title": "CameraComponent | Engine API Reference",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The CameraComponent enables an Entity to render the scene."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "native",
+      "note": "A hierarchy of graph nodes, where an entity is a graph node carrying components; the documentation calls this an entity component system, but the storage is a hash of component instances per entity rather than the data-oriented layout that name usually implies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/scene/graph-node.js",
+          "title": "engine/src/scene/graph-node.js",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The GraphNode class represents a node within a hierarchical scene graph."
+        },
+        {
+          "url": "https://developer.playcanvas.com/user-manual/ecs/",
+          "title": "Entity Component System (ECS) | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "PlayCanvas uses an Entity Component System (ECS) to organize and manage the objects in your application."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "native",
+      "note": "Right-handed space with Y up and negative Z forward, column-major matrices and intrinsic X-then-Y-then-Z Euler order, with a full local and world transform split; note that none of these conventions is stated normatively in the documentation, only in source comments.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/core/math/mat4.js",
+          "title": "engine/src/core/math/mat4.js",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The 3D space is right-handed, so the rotation around each axis will be counterclockwise"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/core/math/quat.js",
+          "title": "engine/src/core/math/quat.js",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The rotation is applied using an **intrinsic XYZ** order"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "native",
+      "note": "The runtime reads glTF 2.0 and binary glTF into a container resource and also writes glTF 2.0 and USDZ through exporters that ship in the package; FBX, COLLADA and OBJ are converted to binary glTF on PlayCanvas servers by the hosted editor and have no runtime parser at all.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://api.playcanvas.com/engine/classes/ContainerResource.html",
+          "title": "ContainerResource | Engine API Reference",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Container for a list of animations, textures, materials, renders, gsplats and a model."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/extras/exporters/gltf-exporter.js",
+          "title": "engine/src/extras/exporters/gltf-exporter.js",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Implementation of the GLTF 2.0 format exporter."
+        },
+        {
+          "url": "https://developer.playcanvas.com/user-manual/editor/assets/import-pipeline/",
+          "title": "Asset Import Pipeline | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "PlayCanvas starts an asset import task to perform this import process on our server"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "native",
+      "note": "Meshes, vertex and index buffers and vertex formats are core, with quantized attributes handled on read and Draco decompression on web workers; the Draco module itself is not bundled and the application or project must supply it, and the meshopt extension is not supported at all.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/framework/parsers/glb/extensions/index.js",
+          "title": "engine/src/framework/parsers/glb/extensions/index.js",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Registry of the supported glTF material extensions, keyed by the extension name."
+        },
+        {
+          "url": "https://developer.playcanvas.com/user-manual/editor/assets/import-pipeline/",
+          "title": "Asset Import Pipeline | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "If using Draco compression, remember to import the Draco WASM module into the project"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "native",
+      "note": "Readers for Basis, KTX, KTX2, DDS, Radiance HDR and ordinary browser images, with transcoding to whichever block format the device offers; producing the compressed texture in the first place is a hosted-editor step.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/optimization/texture-compression/",
+          "title": "Texture Compression | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Supported transcode formats are ASTC, DXT, ETC2, ETC, PVR and ATC (selected in that order where available)."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "none",
+      "note": "There is no MaterialX and no OpenPBR anywhere in the repository; material exchange happens only through glTF, and the exporter writes far fewer extensions than the reader accepts, so a round trip loses detail.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/extras/exporters/gltf-exporter.js",
+          "title": "engine/src/extras/exporters/gltf-exporter.js",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Implementation of the GLTF 2.0 format exporter."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "native",
+      "note": "Clips are held as tracks of curves and played through a layered state graph with blend trees and events; the graph can be authored in the hosted editor or built in code, and the player itself is entirely in the runtime.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/framework/components/anim/component.js",
+          "title": "engine/src/framework/components/anim/component.js",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Animations are driven by animation state graphs, which can be authored in the PlayCanvas Editor or constructed programmatically"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "native",
+      "note": "Skins carry bone names and inverse bind matrices, and a skin instance builds the matrix palette each frame; this is the glTF skinning model, with no naming convention of its own.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/scene/skin-instance.js",
+          "title": "engine/src/scene/skin-instance.js",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A skin instance is responsible for generating the matrix palette that is used to skin vertices"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "native",
+      "note": "Morph targets with per-target weights, read from glTF and driven at run time.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/scene/morph-target.js",
+          "title": "engine/src/scene/morph-target.js",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A Morph Target (also known as Blend Shape) contains deformation data to apply to existing mesh."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "native",
+      "note": "Hardware instancing from a per-instance vertex buffer, plus attributeless instancing driven by the instance index, and the glTF GPU-instancing extension is read on import.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/scene/mesh-instance.js",
+          "title": "engine/src/scene/mesh-instance.js",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "attach a vertex buffer that holds per-instance data"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "partial",
+      "note": "The runtime can add a second scene hierarchy to a running application, and it can instantiate a reusable template asset, but there are no composition arcs, sublayers or variants, and template overrides are resolved by the hosted editor and baked into the scene data before the runtime ever sees them, so a live override layer is missing.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/framework/scene-registry.js",
+          "title": "engine/src/framework/scene-registry.js",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "create and initialize the Entity hierarchy"
+        },
+        {
+          "url": "https://developer.playcanvas.com/user-manual/editor/templates/",
+          "title": "Templates | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "At runtime, the Template instance is not linked to the asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "partial",
+      "note": "The documentation states the convention that one unit is one metre, and gravity and the immersive session both assume it, but nothing records or converts units, so an asset authored at another scale simply arrives wrong.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/assets/models/units/",
+          "title": "Units | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "PlayCanvas scenes generally treat 1 unit as 1 meter."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "none",
+      "note": "No rights or licence metadata is carried on an asset; the glTF copyright field is never read on import and never written on export, and asset tags are only a search aid.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "none",
+      "note": "Nothing is signed. The only authorship field touched is the glTF generator string, which the exporter writes as plain unverified text.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "none",
+      "note": "There is no avatar format. An avatar is an ordinary glTF mesh like any other model, and there is no VRM support anywhere in the repository or the documentation.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "none",
+      "note": "Bone names come from whatever the source file used; PlayCanvas defines no naming or structure convention, so nothing guarantees a rig transfers.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "none",
+      "note": "Morph targets provide the mechanism for facial shapes, but there is no named set of expressions or visemes, so nothing survives a move between worlds.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "none",
+      "note": "There is no retargeting anywhere in the runtime; animation curves bind to entity paths by name, so a clip plays on another body only when the two hierarchies happen to use identical names, and nothing maps or rescales bones.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "none",
+      "note": "Items can be parented to a bone using the ordinary scene hierarchy, but there is no attachment-point definition that would survive transfer to another world.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "none",
+      "note": "No avatar level of detail, and no mesh level of detail to build it on.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "out-of-scope",
+      "note": "A rendering runtime with no avatar model and no identity layer has nothing to bind.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "via-extension",
+      "note": "Static, dynamic and kinematic bodies are provided by a rigid-body component that ships in the runtime but does nothing until the application or project separately loads ammo.js, a browser port of Bullet that is deliberately not bundled because of its size.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/physics/physics-basics/",
+          "title": "Physics Basics | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "PlayCanvas incorporates a very powerful physics engine called ammo.js."
+        },
+        {
+          "url": "https://developer.playcanvas.com/user-manual/physics/physics-basics/",
+          "title": "Physics Basics | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "By default, a new PlayCanvas project does not include ammo.js modules."
+        },
+        {
+          "url": "https://api.playcanvas.com/engine/classes/RigidBodyComponent.html",
+          "title": "RigidBodyComponent | Engine API Reference",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The RigidBodyComponent, when combined with a CollisionComponent, allows your entities to be simulated using realistic physics."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "via-extension",
+      "note": "Box, sphere, capsule, cylinder, cone, triangle-mesh and compound shapes, held separately from the visible geometry, and like all physics they need the ammo.js module.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/physics/physics-basics/",
+          "title": "Physics Basics | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "a rigid body's physical shape does not have to match its graphical shape"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "via-extension",
+      "note": "A joint component covers fixed, ball, hinge, slider and six-degree-of-freedom constraints with locked, free and limited motion per axis, but it is marked alpha, it needs the ammo.js module, and one user-manual page still wrongly states that no joint component exists.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/web-components/tags/pc-joint/",
+          "title": "pc-joint | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The engine's joint component is in alpha, so its behavior and API may change."
+        },
+        {
+          "url": "https://developer.playcanvas.com/user-manual/physics/calling-ammo/",
+          "title": "Calling the ammo.js API | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "There are currently no PlayCanvas components which implement physics constraints"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.material",
+      "level": "partial",
+      "note": "Friction, rolling friction, restitution and damping are set per body, and contact response multiplies the two bodies' values; there is no shared physics-material asset to name and reuse a surface.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/physics/physics-basics/",
+          "title": "Physics Basics | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "It also specifies physical properties like mass, friction and restitution"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.determinism",
+      "level": "none",
+      "note": "PlayCanvas never claims cross-machine determinism for ammo.js; its own comparison table awards determinism marks to other libraries and leaves ammo.js out, and the fixed time step exists only as an internal, undocumented field.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/physics/ammo-alternatives/",
+          "title": "Alternatives to ammo.js | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The check marks above mean cross-platform determinism: the simulation produces identical results on every device"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "none",
+      "note": "No soft bodies and no cloth; the world is built as a rigid-only dynamics world, and nothing in the repository or documentation exposes deformable simulation.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "via-extension",
+      "note": "A collision component without a rigid body acts as a trigger volume and fires enter and leave events on both entities; it needs the ammo.js module like the rest of physics.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/physics/trigger-volumes/",
+          "title": "Trigger Volumes | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Do not add a rigidbody component to your trigger volume entity."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "native",
+      "note": "A sound component plays clips from the entity's position with linear, inverse or exponential distance roll-off against a single listener component; sources are omnidirectional, because the runtime never sets the cone angles, so only the listener has an orientation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://api.playcanvas.com/engine/classes/SoundComponent.html",
+          "title": "SoundComponent | Engine API Reference",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The SoundComponent supports positional audio, meaning that the sound can be played relative to the Entity's position in 3D space."
+        },
+        {
+          "url": "https://developer.playcanvas.com/user-manual/editor/scenes/components/audiolistener/",
+          "title": "Audio Listener | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The Audio Listener Component specifies the listener's position in 3D space."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "partial",
+      "note": "Direction reaches the ears only through the browser's own panner node; the runtime never chooses a panning model, so head-related transfer is neither selected nor exposed, and there is no ambisonic path at all.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/platform/sound/instance3d.js",
+          "title": "engine/src/platform/sound/instance3d.js",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "this.panner = this._manager.context.createPanner();"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "partial",
+      "note": "There is no reverb or room model in the runtime, but a documented hook lets an application splice its own Web Audio nodes into a sound slot, and PlayCanvas publishes a tutorial that builds convolution reverb that way.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/tutorials/audio-effects/",
+          "title": "Audio Effects | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "PlayCanvas allows you to fully leverage the power of the Web Audio API to add powerful effects to your sounds."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "none",
+      "note": "Nothing muffles or blocks sound by geometry; there is no occlusion or obstruction code in the audio subsystem and no documentation of it.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "none",
+      "note": "The single audio parser downloads the whole file and decodes it into memory before playback, and the older streaming element path has been removed, so long audio cannot be streamed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/framework/parsers/audio.js",
+          "title": "engine/src/framework/parsers/audio.js",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Fetches the audio data and decodes it"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "out-of-scope",
+      "note": "A single-user rendering runtime with no networking has no voice transport, and none is attempted.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "none",
+      "note": "There is no networking module in the runtime at all; the only code under the network folder is an ordinary HTTP request helper. PlayCanvas documents multi-user work as tutorials that wire a scene to a third-party server, and the developer writes every replication rule.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/tutorials/real-time-multiplayer/",
+          "title": "Real Time Multiplayer | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "In this tutorial we'll cover how to setup a basic multiplayer project using Node.js and Socket.io."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "none",
+      "note": "No notion of ownership or authority over an object exists, because there is no shared state to own.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "none",
+      "note": "No interest management. Whatever a chosen third-party server does is outside PlayCanvas.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.prediction",
+      "level": "none",
+      "note": "No prediction or reconciliation helpers; the tutorials leave latency hiding entirely to the application.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "none",
+      "note": "The runtime ships only an HTTP request helper. There is no session transport, no web socket layer and no wire protocol of its own.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.media",
+      "level": "none",
+      "note": "No live audio or video transport. Video can be shown as a texture from a browser element, but nothing carries streams between participants.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.session",
+      "level": "none",
+      "note": "There is no concept of joining a running world and no end-user authentication; the accounts on playcanvas.com belong to developers, not to the people who visit a published application.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "none",
+      "note": "Nothing carries state from one world to another. Moving between published applications means loading a different page.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "none",
+      "note": "No presence or roster of any kind, across operators or within one.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.address",
+      "level": "none",
+      "note": "Published applications are reached by ordinary web addresses, and the hosted service mints short permanent links for a build and for a project's primary build; there is no naming or resolution scheme for places beyond the web's own.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/editor/publishing/web/playcanvas-hosting/",
+          "title": "PlayCanvas Hosting | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Builds are given permanent link in the form `https://playcanv.as/b/BUILD_ID/`."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "none",
+      "note": "No discovery of worlds, nodes or services; the hosted site lists projects for browsing, which is a catalogue, not a discovery protocol.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.time",
+      "level": "none",
+      "note": "No shared clock or event ordering model. The runtime has only its own frame timer.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "out-of-scope",
+      "note": "A client-side rendering runtime with no multi-user layer defines no identifier for a person, agent or thing.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "out-of-scope",
+      "note": "No credential format, and nothing in the runtime that would consume one.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "out-of-scope",
+      "note": "No protocol for requesting or presenting claims.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "out-of-scope",
+      "note": "No permission grants readable by a third party. The hosted editor has project roles for developers, which is team access control, not a portable grant.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "out-of-scope",
+      "note": "No selective disclosure, because there are no claims to disclose.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.social",
+      "level": "out-of-scope",
+      "note": "No reputation or social graph.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "out-of-scope",
+      "note": "No licence terms are carried with an asset, so nothing can be enforced at the point of use.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "none",
+      "note": "Nothing expresses position or orientation against the Earth. Scene coordinates are local and unreferenced.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "none",
+      "note": "No coordinate reference system is named or carried; the runtime knows only its own local frame.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "native",
+      "note": "Immersive sessions can create anchors that the device keeps aligned to real-world geometry, and can place them from a hit test against the room; this is the browser's own anchor module surfaced through the runtime.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/xr/capabilities/",
+          "title": "Capabilities | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Create anchors in space that are reliably positioned in relation to real-world geometry."
+        },
+        {
+          "url": "https://api.playcanvas.com/engine/classes/XrAnchors.html",
+          "title": "XrAnchors | Engine API Reference",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "True if Anchors support persistence."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "partial",
+      "note": "Anchors can be given a persistent identifier and restored in a later session on the same device, which covers the across-sessions half; nothing shares an anchor between devices or between operators, so the across-devices half is missing.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/xr/capabilities/",
+          "title": "Capabilities | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Allows you to persist anchors between sessions."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.vps",
+      "level": "none",
+      "note": "No visual positioning. Image tracking exists and finds a supplied picture in the camera view, but it recovers pose relative to that picture, not against a mapped place.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/xr/capabilities/",
+          "title": "Capabilities | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Dynamic tracking of provided images, their position, and orientation."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "via-extension",
+      "note": "Tiled terrain and city streaming comes from Earthatile, a separate MIT-licensed project in the PlayCanvas organisation that reads 3D Tiles and ships a PlayCanvas integration; it is not part of the runtime.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/playcanvas/earthatile",
+          "title": "playcanvas/earthatile",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Engine-agnostic runtime for 3D Tiles geospatial datasets"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.indoor",
+      "level": "none",
+      "note": "There is no structured description of an interior. Immersive sessions can read device-detected planes and meshes with semantic labels, which is live scene understanding for one session, not an indoor map that can be stored or exchanged.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/xr/capabilities/",
+          "title": "Capabilities | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "a representation of a real-world geometry in the form of a 3D mesh, with its position, orientation, and semantic labels"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "native",
+      "note": "An immersive session manager starts and ends inline, virtual-reality and augmented-reality sessions against a camera component and reports which types the device offers; it is a wrapper over the browser's immersive device interface.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://api.playcanvas.com/engine/classes/XrManager.html",
+          "title": "XrManager | Engine API Reference",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Attempts to start XR session for provided CameraComponent"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/README.md",
+          "title": "engine/README.md",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Built-in support for immersive AR and VR experiences via WebXR"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "native",
+      "note": "Input sources give grip and target-ray poses, select events and the raw button and stick state for held controllers, screen taps and head-gaze pointers.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/xr/capabilities/",
+          "title": "Capabilities | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Various input source types such as controllers, hands, screen taps, gaze, and more."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "native",
+      "note": "Articulated hands are exposed as fingers and joints with per-joint pose and radius, from the browser's hand-input module.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/xr/capabilities/",
+          "title": "Capabilities | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Optical hand tracking that tracks each joint of a hand."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.eye",
+      "level": "none",
+      "note": "No eye tracking. The gaze target ray that the runtime exposes follows where the head is facing, not where the eyes are looking, and no privacy handling is needed because no gaze data is read.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/framework/xr/constants.js",
+          "title": "engine/src/framework/xr/constants.js",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "the target ray will originate at the viewer"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "partial",
+      "note": "Ordinary game pads have a vibrate call with intensity and duration, and immersive controllers hand back the raw browser game pad so an application can reach its actuators itself; there is no runtime haptic interface for immersive controllers and no support for any other feedback device.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/platform/input/game-pads.js",
+          "title": "engine/src/platform/input/game-pads.js",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Make the gamepad vibrate."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/framework/xr/xr-input.js",
+          "title": "engine/src/framework/xr/xr-input.js",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "hand held controllers - and their optional capabilities: gamepad and vibration"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "native",
+      "note": "An application can ask whether a given immersive session type is available, whether each immersive module is supported and available in the running session, and read the graphics device's own feature flags.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://api.playcanvas.com/engine/classes/XrManager.html",
+          "title": "XrManager | Engine API Reference",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Check if the specified type of session is available."
+        },
+        {
+          "url": "https://api.playcanvas.com/engine/classes/XrAnchors.html",
+          "title": "XrAnchors | Engine API Reference",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "True if Anchors are available. This information is available only when session has started."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "native",
+      "note": "World rules are written in JavaScript, either as newer module scripts using class syntax or as the older prototype-based scripts, attached to entities through a script component, with TypeScript declarations published alongside the package.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/scripting/",
+          "title": "Scripting | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Scripts are the heart of interactivity in PlayCanvas."
+        },
+        {
+          "url": "https://developer.playcanvas.com/user-manual/engine/",
+          "title": "PlayCanvas Engine | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "ships with full TypeScript declarations"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "none",
+      "note": "No behaviour graph and no support for the glTF interactivity extension; there is no visual scripting in either product. Animation state graphs are declarative but describe only animation blending and are a PlayCanvas-specific file, so they do not travel with an asset.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "none",
+      "note": "Scripts are ordinary page JavaScript with full access to the document and the network; the browser origin is the only boundary, and the runtime adds no isolation for guest or third-party content.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "none",
+      "note": "Nothing supports autonomous agents acting inside a running world. PlayCanvas does publish an editor automation server that lets an assistant change a project and inspect a launched build, but that is an authoring tool, not an in-world agent.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/editor/mcp-server/",
+          "title": "MCP Server | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "connects AI assistants to an open PlayCanvas Editor session"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "none",
+      "note": "No memory, time or call budgets are imposed on anything. A statistics overlay and profiler builds let a developer measure cost, but nothing bounds it.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "none",
+      "note": "Nothing survives a reload. There is no world state store in either product, and the multi-user tutorials leave all persistence to the developer's own server.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "out-of-scope",
+      "note": "No user accounts and no item ownership, so there is nothing to hold or carry.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "none",
+      "note": "No portable settings or accessibility choices. A localisation system chooses language assets at run time, but nothing follows the user between applications.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "none",
+      "note": "Assets are referred to by numeric identifier and by location; nothing addresses content by hash.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "partial",
+      "note": "The hosted editor produces a runnable package, either published to its own hosting or downloaded as a zip with an entry page and a project configuration file, and it also has a bundle asset type that groups assets into one download; the open-source runtime alone offers no packaging step, only a library on the package registry, and neither output is an interchange format anyone else reads.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/editor/publishing/web/self-hosting/",
+          "title": "Self-hosting | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The file `index.html` will load your application."
+        },
+        {
+          "url": "https://developer.playcanvas.com/user-manual/engine/standalone/",
+          "title": "Using the Engine Standalone | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "npm install playcanvas vite --save-dev"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "partial",
+      "note": "The hosted service publishes and serves builds at permanent links, and the documentation covers putting a downloaded build behind a third-party delivery network; the runtime itself has no delivery layer, so at scale this is somebody else's infrastructure.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/editor/publishing/web/playcanvas-hosting/",
+          "title": "PlayCanvas Hosting | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Builds are given permanent link in the form `https://playcanv.as/b/BUILD_ID/`."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "native",
+      "note": "The runtime uses major, minor and patch versions with published release notes, warns about deprecated calls in the debug build and documents a migration path, and the hosted editor keeps two major streams so a project can move between them deliberately.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/engine/migrations/",
+          "title": "Engine Migrations | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Support for WebGL1 has been discontinued; the engine now exclusively supports WebGL2 and WebGPU (in beta)."
+        },
+        {
+          "url": "https://developer.playcanvas.com/user-manual/editor/engine-compatibility/",
+          "title": "Engine Compatibility | PlayCanvas Developer Site",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The Editor supports two major release streams of the engine"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "none",
+      "note": "PlayCanvas is a product, not a specification, and it publishes no conformance result against any outside specification it implements, such as glTF or the immersive web interface; the repository's own unit tests check the code against itself.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "PlayCanvas is a web engine whose splat support is first-class and whose splat tooling is a family of separate projects in the same organisation, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/gaussian-splatting/formats/",
+          "title": "Splat File Formats, PlayCanvas user manual",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "PlayCanvas supports five formats for 3D Gaussian Splat data:"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "PlayCanvas is a web engine whose splat support is first-class and whose splat tooling is a family of separate projects in the same organisation, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/gaussian-splatting/formats/",
+          "title": "Splat File Formats, PlayCanvas user manual",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "PlayCanvas supports five formats for 3D Gaussian Splat data:"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "PlayCanvas is a web engine whose splat support is first-class and whose splat tooling is a family of separate projects in the same organisation, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/gaussian-splatting/formats/",
+          "title": "Splat File Formats, PlayCanvas user manual",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "PlayCanvas supports five formats for 3D Gaussian Splat data:"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "native",
+      "note": "Five named formats, each with a stated job: PLY as the lossless source, SOG as the compressed delivery form, streamed SOG for very large scenes, binary glTF with the Khronos extension for standards-based interchange, and Niantic's SPZ through a parser script that ships with the engine. This is the reference implementation for the row and the widest reader on the map.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/gaussian-splatting/formats/",
+          "title": "Splat File Formats, PlayCanvas user manual",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "PlayCanvas supports five formats for 3D Gaussian Splat data:"
+        },
+        {
+          "url": "https://developer.playcanvas.com/user-manual/gaussian-splatting/formats/",
+          "title": "Splat File Formats, PlayCanvas user manual",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Binary glTF with the Khronos KHR_gaussian_splatting extension."
+        },
+        {
+          "url": "https://api.playcanvas.com/engine/classes/GSplatComponent.html",
+          "title": "PlayCanvas Engine API, GSplatComponent",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The GSplatComponent enables an Entity to render 3D Gaussian Splats."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "native",
+      "note": "Streamed SOG is a published specification for exactly this row: the scene is split into spatial chunks at several detail levels, a viewer walks a spatial tree to decide which chunks and which levels the current camera needs, and the engine picks one level per region against a global splat budget. Tens of millions of Gaussians load progressively and stay interactive.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/gaussian-splatting/formats/streamed-sog/",
+          "title": "The Streamed SOG Format, PlayCanvas user manual",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Streamed SOG splits a Gaussian splat scene into spatial chunks at multiple levels of detail (LOD)."
+        },
+        {
+          "url": "https://developer.playcanvas.com/user-manual/gaussian-splatting/formats/streamed-sog/",
+          "title": "The Streamed SOG Format, PlayCanvas user manual",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A viewer walks a spatial tree to decide which chunks and detail levels to load for the current camera, allowing very large scenes (tens of millions of Gaussians) to load progressively and stay interactive."
+        },
+        {
+          "url": "https://developer.playcanvas.com/user-manual/gaussian-splatting/building/lod-streaming/",
+          "title": "LOD streaming, PlayCanvas user manual",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The engine picks one LOD level per region of the scene so that the total splat count fits the global splat budget, spending detail where it improves the image the most."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "PlayCanvas is a web engine whose splat support is first-class and whose splat tooling is a family of separate projects in the same organisation, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/gaussian-splatting/formats/",
+          "title": "Splat File Formats, PlayCanvas user manual",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "PlayCanvas supports five formats for 3D Gaussian Splat data:"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "partial",
+      "note": "Points arrive only inside a splat container. PLY is read as splat data, and there is no general point cloud loader, no compression and no export, so a lidar scan has nowhere to go.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/gaussian-splatting/formats/",
+          "title": "Splat File Formats, PlayCanvas user manual",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "PlayCanvas supports five formats for 3D Gaussian Splat data:"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "PlayCanvas is a web engine whose splat support is first-class and whose splat tooling is a family of separate projects in the same organisation, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/gaussian-splatting/formats/",
+          "title": "Splat File Formats, PlayCanvas user manual",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "PlayCanvas supports five formats for 3D Gaussian Splat data:"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "native",
+      "note": "Drawing a captured radiance field from an arbitrary camera is a first-class engine component with its own asset pipeline and a global depth sort across components.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://api.playcanvas.com/engine/classes/GSplatComponent.html",
+          "title": "PlayCanvas Engine API, GSplatComponent",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The GSplatComponent enables an Entity to render 3D Gaussian Splats."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "partial",
+      "note": "What ships is a flipbook. A script walks a filename pattern with a frame placeholder and plays the numbered files at a set rate, which is playback and not carriage: there is no time axis in any of the five formats, and the maintainer's own design note for a four-dimensional format says the editor can play sequences and not edit them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/playcanvas/engine/blob/main/scripts/esm/gsplat/gsplat-flipbook.mjs",
+          "title": "PlayCanvas engine script, gsplat-flipbook.mjs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Filename pattern with {frame} or {frame:NN} placeholder."
+        },
+        {
+          "url": "https://github.com/playcanvas/supersplat/discussions/672",
+          "title": "SuperSplat design note, 4D Gaussian splat format discussion 672",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The editor can currently play the sequences only, editing is not possible."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "partial",
+      "note": "The engine reaches past what the formats carry: a splat can take part in the scene's shadowing through the same component that draws it. What it cannot do is separate the light recorded on the day from the surface, so a capture dropped into a differently lit place still carries its original lighting.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://api.playcanvas.com/engine/classes/GSplatComponent.html",
+          "title": "PlayCanvas Engine API, GSplatComponent",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The GSplatComponent enables an Entity to render 3D Gaussian Splats."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "via-extension",
+      "note": "Editing happens in two separate projects in the same organisation rather than in the engine: an editor whose own design note admits an edit to one frame cannot be applied to all frames of a sequence, and a command-line converter that filters, decimates and merges into a new file. Both are destructive and offline, and what survives export is the new file.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/playcanvas/supersplat/discussions/672",
+          "title": "SuperSplat design note, 4D Gaussian splat format discussion 672",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The editor can currently play the sequences only, editing is not possible."
+        },
+        {
+          "url": "https://github.com/playcanvas/splat-transform/blob/main/README.md",
+          "title": "splat-transform README (playcanvas/splat-transform, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "PlayCanvas is a web engine whose splat support is first-class and whose splat tooling is a family of separate projects in the same organisation, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/gaussian-splatting/formats/",
+          "title": "Splat File Formats, PlayCanvas user manual",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "PlayCanvas supports five formats for 3D Gaussian Splat data:"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "PlayCanvas is a web engine whose splat support is first-class and whose splat tooling is a family of separate projects in the same organisation, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/gaussian-splatting/formats/",
+          "title": "Splat File Formats, PlayCanvas user manual",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "PlayCanvas supports five formats for 3D Gaussian Splat data:"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "PlayCanvas is a web engine whose splat support is first-class and whose splat tooling is a family of separate projects in the same organisation, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/gaussian-splatting/formats/",
+          "title": "Splat File Formats, PlayCanvas user manual",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "PlayCanvas supports five formats for 3D Gaussian Splat data:"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "PlayCanvas is a web engine whose splat support is first-class and whose splat tooling is a family of separate projects in the same organisation, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/gaussian-splatting/formats/",
+          "title": "Splat File Formats, PlayCanvas user manual",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "PlayCanvas supports five formats for 3D Gaussian Splat data:"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "native",
+      "note": "The engine has a named texture projection for an equirectangular image, so a 360-degree view is carried with its projection stated rather than guessed, and can then be used as a sky and as an image-based light.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/platform/graphics/constants.js",
+          "title": "PlayCanvas engine source, src/platform/graphics/constants.js",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Texture data is stored in equirectangular projection format."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "native",
+      "note": "The engine integrates both real-world geometry modules directly. Mesh detection gives a representation of real-world geometry as a 3D mesh with its position, orientation and semantic labels, covering furniture, screens and rooms; plane detection gives the same thing as planes with their vertices. Both are listed as supported modules, not experiments.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/xr/capabilities/",
+          "title": "PlayCanvas User Manual, XR Capabilities",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Access to a representation of a real-world geometry in the form of a 3D mesh, with its position, orientation, and semantic labels."
+        },
+        {
+          "url": "https://developer.playcanvas.com/user-manual/xr/capabilities/",
+          "title": "PlayCanvas User Manual, XR Capabilities",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Similar to mesh detection, that provides geometry in the form of planes, their position, orientation, vertices, and semantic labels."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "native",
+      "note": "Semantic labels come through on both surfaces the engine exposes — on detected meshes and on detected planes, where the documentation names floors, walls, ceilings, windows and doors as the kinds of thing a label will describe. The vocabulary itself is the runtime's, since WebXR fixes none.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/xr/capabilities/",
+          "title": "PlayCanvas User Manual, XR Capabilities",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Access to a representation of a real-world geometry in the form of a 3D mesh, with its position, orientation, and semantic labels."
+        },
+        {
+          "url": "https://developer.playcanvas.com/user-manual/xr/capabilities/",
+          "title": "PlayCanvas User Manual, XR Capabilities",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Similar to mesh detection, that provides geometry in the form of planes, their position, orientation, vertices, and semantic labels."
+        },
+        {
+          "url": "https://immersive-web.github.io/plane-detection/",
+          "title": "WebXR Plane Detection Module, Editor's Draft, 30 March 2026",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The semanticLabel attribute is a string that describes the semantic label of the polygon. This string MAY be either null or empty if there is no semantic information."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "native",
+      "note": "Depth sensing is a supported module giving access to a depth texture and to distance querying, which is both halves of this row: a per-pixel image and a way to ask the distance at a point.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/xr/capabilities/",
+          "title": "PlayCanvas User Manual, XR Capabilities",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Provides access to depth texture and distance querying, that can be used for virtual object occlusion with real-world geometry and reliable object placement."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "partial",
+      "note": "The engine says its depth texture can be used for virtual object occlusion with real-world geometry, which is an offer of the ingredient rather than the dish. There is no automatic material patching and no occlusion component; the application writes the shader that uses the texture.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/xr/capabilities/",
+          "title": "PlayCanvas User Manual, XR Capabilities",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Provides access to depth texture and distance querying, that can be used for virtual object occlusion with real-world geometry and reliable object placement."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "partial",
+      "note": "PlayCanvas starts an immersive augmented reality session and says plainly that its content is meant to be blended with the real-world environment, and it wires up the sensing features that go with such a session — hit test, light estimation, plane and mesh detection, anchors. The blend itself is the user agent's: the engine exposes no environment blend mode, no control over how much of the room shows and no way to cut a hole through a virtual environment.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/framework/xr/xr-manager.js",
+          "title": "PlayCanvas engine XrManager source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Immersive AR - session that provides exclusive access to VR/AR device"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/framework/xr/xr-manager.js",
+          "title": "PlayCanvas engine XrManager source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "that is intended to be blended with real-world environment."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/framework/xr/xr-manager.js",
+          "title": "PlayCanvas engine XrManager source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "if (this._type === XRTYPE_AR) {"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.face",
+      "level": "none",
+      "note": "The engine wraps the WebXR features that exist — hit test, light estimation, image tracking, anchors, plane detection, mesh detection — and a face or body stream is not one of them, because the Device API has none to wrap.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/framework/xr/xr-manager.js",
+          "title": "PlayCanvas engine XrManager source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "if (this.planeDetection.supported) {"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "none",
+      "note": "PlayCanvas has no navigable-space concept: nothing in the engine declares walkable surface, bounds or spawn points, and nothing carries such a declaration in a scene it loads. Where a body may stand is left to the application's own code.",
+      "confidence": "unverified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/framework/xr/xr-manager.js",
+          "title": "PlayCanvas engine XrManager source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "if (this.meshDetection.supported) {"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "out-of-scope",
+      "note": "Scripts belong to the project that ships them. The engine operates no namespace for logic published to other authors.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "out-of-scope",
+      "note": "The engine draws and runs a project; no content passes through it on the way to an audience for a review to stand in.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "No geographic frame, no map of a place, nothing to align.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "Not a service bound to a place, and no area of application is declared.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.extension",
+      "level": "partial",
+      "note": "The runtime parser registry adds or replaces named file-format handlers; it does not define a universal scene-extension recipient contract.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/assets/custom-parsers/",
+          "title": "Assets",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Handlers expose a public registry for these parsers"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.color",
+      "level": "native",
+      "note": "The documented linear workflow distinguishes gamma-compressed textures, linear calculations and final output conversion in engine v2.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/graphics/linear-workflow/",
+          "title": "Graphics",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "a linear workflow is essential"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.metadata",
+      "level": "partial",
+      "note": "The asset registry carries names, types, tags and resource references; the captured contract does not declare arbitrary domain property schemas.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/assets/",
+          "title": "Assets",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "contains metadata about a resource"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "out-of-scope",
+      "note": "As a rendering/scene library, playcanvas provides host application facilities rather than the credential or destination authority responsible for assurance evidence accompanying an identity claim for relying-party evaluation. This scope judgment applies to the library itself; a host service or separately assessed integration may perform that role.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "out-of-scope",
+      "note": "As a rendering/scene library, playcanvas provides host application facilities rather than the credential or destination authority responsible for the vocabulary, types and validation schema for an identity claim. This scope judgment applies to the library itself; a host service or separately assessed integration may perform that role.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "out-of-scope",
+      "note": "As a rendering/scene library, playcanvas provides host application facilities rather than the credential or destination authority responsible for pairwise identifiers or presentations with stated residual correlation risks. This scope judgment applies to the library itself; a host service or separately assessed integration may perform that role.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.encryption",
+      "level": "out-of-scope",
+      "note": "As a rendering/scene library, playcanvas provides host application facilities rather than the credential or destination authority responsible for recipient key material and algorithms for confidential delivery to an intended subject. This scope judgment applies to the library itself; a host service or separately assessed integration may perform that role.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.key-lifecycle",
+      "level": "out-of-scope",
+      "note": "As a rendering/scene library, playcanvas provides host application facilities rather than the credential or destination authority responsible for identity-control key rotation, revocation or recovery and discovery of verification material. This scope judgment applies to the library itself; a host service or separately assessed integration may perform that role.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "out-of-scope",
+      "note": "As a rendering/scene library, playcanvas provides host application facilities rather than the credential or destination authority responsible for discovery of a credential status after issuance. This scope judgment applies to the library itself; a host service or separately assessed integration may perform that role.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "native",
+      "note": "Screen and Element components define interface bounds, layout and screen-space or scene-space presentation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/user-interface/user-interface-basics/",
+          "title": "User Interface",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "The Screen defines the area of the User Interface"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "native",
+      "note": "The XR light-estimation interface exposes directional illumination and spherical-harmonic ambient light; reflection cubemaps are explicitly not integrated in the captured page.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/xr/ar/light-estimation/",
+          "title": "XR",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Directional light (the most prominent), its rotation, intensity and color."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "native",
+      "note": "The image-tracking interface reports recognized images' position, orientation and tracking state when the underlying runtime supports it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/xr/ar/image-tracking/",
+          "title": "XR",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "track real-world images using the provided image samples"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "via-extension",
+      "note": "The optional ammo.js physics integration supplies rigid-body ray casts against collision shapes for picking.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/physics/ray-casting/",
+          "title": "Physics",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "The PlayCanvas physics engine allows you to perform ray casts."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "partial",
+      "note": "An experimental optional-feature example exposes the browser's layer API; the capture does not establish an engine-owned shaped-layer submission interface.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/xr/capabilities/",
+          "title": "XR",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Here is an example of enabling the experimental API"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.collection",
+      "level": "native",
+      "note": "Entity tags and findByTag define queryable sets of scene objects.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/ecs/searching-the-hierarchy/",
+          "title": "Entity Component System",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Use tags for grouping related Entities."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.consent",
+      "level": "out-of-scope",
+      "note": "As a rendering/scene library, playcanvas provides host application facilities rather than the credential or destination authority responsible for a carried permission grant including scope, purpose, validity and withdrawal information. This scope judgment applies to the library itself; a host service or separately assessed integration may perform that role.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "out-of-scope",
+      "note": "As a rendering/scene library, playcanvas provides host application facilities rather than the credential or destination authority responsible for a machine-readable recipient evaluation/action account with integrity mechanisms identified. This scope judgment applies to the library itself; a host service or separately assessed integration may perform that role.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "As a rendering/scene library, playcanvas provides host application facilities rather than the credential or destination authority responsible for a destination pre-arrival approval or refusal response with its applicable validity. This scope judgment applies to the library itself; a host service or separately assessed integration may perform that role.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "native",
+      "note": "The WebGPU compute path accepts WGSL resources and bind-group descriptions for programmable dispatch.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/graphics/shaders/compute-shaders-advanced/",
+          "title": "Graphics",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "declare resources in WGSL"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "native",
+      "note": "ShaderMaterial accepts explicit GLSL or WGSL source with backend-specific bindings.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/graphics/shaders/",
+          "title": "Graphics",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "write your vertex shader source code in WGSL language"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "partial",
+      "note": "The engine authors and evaluates configurable particle systems; this source does not establish exchanging their description with another runtime.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/graphics/particles/",
+          "title": "Graphics",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "creating and editing particle systems"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "native",
+      "note": "The engine's XR hit-test interface exposes physical-world hit results supplied by the underlying augmented-reality runtime.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/xr/ar/hit-testing/",
+          "title": "XR",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "probing real-world geometry that is estimated using the underlying AR system"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "none",
+      "note": "The official splat workflow explicitly delegates reconstruction and training to separate third-party tools; PlayCanvas itself does not convert images into splats.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/gaussian-splatting/creating/",
+          "title": "Gaussian Splatting",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "PlayCanvas does not itself convert images into a splat"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.resolve",
+      "level": "native",
+      "confidence": "verified",
+      "note": "The asset registry resolves a scene's asset records to underlying runtime resources; assets retain their name, type and file reference before loading.",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/assets/",
+          "title": "Assets",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Assets are managed by the AssetRegistry ."
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "native",
+      "confidence": "verified",
+      "note": "PlayCanvas imports glTF animation samplers as timed curves and binds translation/rotation channels to node localPosition/localRotation. It retains the declared interpolation and clip duration, giving time-associated scene poses.",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/animation/anim-animation-assets/",
+          "title": "Animation",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Animation assets are the animation keyframe data that’s used to drive animations of a model in PlayCanvas."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/framework/parsers/glb-parser.js",
+          "title": "PlayCanvas engine glTF/GLB parser",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "const transformSchema = { 'translation': 'localPosition', 'rotation': 'localRotation', 'scale': 'localScale' };"
+        },
+        {
+          "url": "https://api.playcanvas.com/engine/classes/AnimTrack.html",
+          "title": "PlayCanvas AnimTrack",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Gets the duration of the AnimTrack."
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "scene.variant",
+      "level": "native",
+      "confidence": "verified",
+      "note": "ContainerResource lists named material variants and applies a selected variant to an entity hierarchy; null restores the default configuration.",
+      "sources": [
+        {
+          "url": "https://api.playcanvas.com/engine/classes/ContainerResource.html",
+          "title": "ContainerResource | Engine API Reference - v2.22.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Applies a material variant to an entity hierarchy."
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "native",
+      "confidence": "verified",
+      "note": "JointComponent constrains rigid-body entities using captured joint frames and configured axes/limits; changing the anchor requires refreshFrames.",
+      "sources": [
+        {
+          "url": "https://api.playcanvas.com/engine/classes/JointComponent.html",
+          "title": "JointComponent | Engine API Reference - v2.22.1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The constrained bodies are assigned via entityA and entityB"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "native",
+      "confidence": "verified",
+      "note": "PlayCanvas imports glTF node parent-child links and local transforms into its entity hierarchy, whose world transforms compose through the hierarchy. The container import path reconstructs linked frames from the asset.",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/user-manual/ecs/hierarchy-and-transformations/",
+          "title": "Entity Component System",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "World transforms are calculated by combining local transforms through the hierarchy."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/framework/parsers/glb-parser.js",
+          "title": "PlayCanvas engine glTF/GLB parser",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "entity.setLocalPosition(tempVec); // Use Quat.setFromMat4 which properly handles negative determinant (mirrored matrices) // by normalizing the rotation before extraction tempQuat.setFromMat4(tempMat); entity.setLocalRotation(tempQuat);"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/framework/parsers/glb-parser.js",
+          "title": "PlayCanvas engine glTF/GLB parser",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "addChild(child); } } } } return nodes; }; const createScenes = (gltf, nodes) => { const scenes ="
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "partial",
+      "confidence": "verified",
+      "note": "The example updates a video-backed texture during rendering. The retained passage does not establish the audio/video synchronization rules needed by scene playback.",
+      "sources": [
+        {
+          "url": "https://developer.playcanvas.com/tutorials/video-textures/",
+          "title": "Video Textures | PlayCanvas Developer Site",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Update the texture with video data every frame"
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "render.frame-timing",
+      "level": "native",
+      "confidence": "verified",
+      "note": "PlayCanvas AppBase requests frames from the active XRSession, and XrManager reads that frame's viewer pose to update the XR camera. WebXR defines the linked predicted display and pose-estimation timing.",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/framework/app-base.js",
+          "title": "PlayCanvas engine AppBase XR frame loop",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "this.frameRequestId = this.xr.session.requestAnimationFrame(this.tick);"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/playcanvas/engine/main/src/framework/xr/xr-manager.js",
+          "title": "playcanvas xr source — official documentation/source",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "const pose = frame.getViewerPose(this._referenceSpace);"
+        },
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "set frame’s predictedDisplayTime to the average timestamp the XR Compositor is expected to display this XR animation frame."
+        }
+      ],
+      "direction": "read"
+    }
+  ]
+}

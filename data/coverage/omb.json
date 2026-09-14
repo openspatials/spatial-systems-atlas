@@ -1,0 +1,1973 @@
+{
+  "subject_id": "omb",
+  "summary": "The Open Metaverse Browser is the Metaverse Standards Forum's own attempt at a neutral client for spatial content, and it is the only subject on this map that is a working browser with a downloadable binary and a documented module interface. Read the parts separately, because they are not governed alike. Sneeze, the engine, is Apache-2.0 and lives under the Forum's GitHub organisation; RCSF, a canonical skeleton mapping across fifteen formats, is Forum-hosted and licensed CC BY-SA 4.0. Everything else is Metaversal Corporation's: Rubidium, the browser you actually run, is proprietary with all rights reserved; the Halogen renderer, the RMAP networking library, the Map library and the WebAssembly SDKs are the vendor's repositories, and Sneeze pins all of them. SneezeSDK is the module-writing half of that split, and it is the only published contract this subject has: an Apache-2.0 C header that fixes the whole guest-to-engine wire format, a language-neutral reference with one page per class, and per-language bindings carried as submodules. It is not Forum-governed — it sits under MetaversalCorp — yet it is what a second implementer would have to build against, because the engine ships no specification of the fabric format. This file scores the SDK at its `prep` branch, head `4239e2b`, 18 August 2026. That branch differs from `main` in documentation only: it adds first-run guides for Linux, macOS and Windows, and it is behind `main` on the version file, on the versioning rule the front page used to state, and on four of the five binding pins. Count the bindings carefully — the front page marks five available, while the SDK's own reference and its porting guide both still say three. Three things a standards audience should not take on trust. Signature verification is called and its result thrown away, so an unverified fabric loads and runs; the trust level a module reads is then overwritten with a constant before it is stored, so it reports the same value whatever the certificate said. There is no resource budget at all, no fuel, no deadline and no memory ceiling, although the project's own wiki promises each fabric a CPU budget. And there is no format specification and no conformance suite, so the only definition of the format is the engine — and inside the SDK the C reference already contradicts the header it says it layers on, describing the fabric's services as an indexed list in the open snapshot where every other page says they are keyed by name and deliberately kept out of it. Whole planes are simply absent: no audio, no physics, no avatar, no geospatial anything, no credential of any kind, and immersive sessions are a runtime probe rather than a session. Buildable today from public sources: Sneeze, its SDKs and Halogen, pinned to public dependencies — except that Sneeze links the vendor's Map library, whose own README says it configures but does not yet compile, and which ships with no licence file at all.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "native",
+      "note": "The engine does not own a pipeline. It builds draw lists on a compositor thread and hands them to an ANARI device, which decides how to draw them; the shipping device is Halogen, an ANARI implementation over Google Filament. Geometry reaches the device as spheres, curves, boxes, panels and triangle meshes, and the frame is either read back to a buffer or drawn straight into a Vulkan swapchain on a native window.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/context/viewport/Viewport.md",
+          "title": "Sneeze Viewport module note, frame lifecycle",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "SubmitSpheres (vector<SPHERE_DATA>)"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/Halogen/blob/master/README.md",
+          "title": "Halogen README",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "An [ANARI](https://www.khronos.org/anari/) device implementation powered by"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "partial",
+      "note": "Sneeze targets no low-level graphics interface itself; it targets ANARI and lets the loaded device choose. Vulkan, Metal and DX12 appear only inside Halogen's Filament backend and inside the separate Vox compute path. A standards reader should note the consequence: swapping the renderer is a library-name change, but nothing in the browser states which interface a given build actually used.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeDoc/blob/main/docs/overview/standards.md",
+          "title": "Sneeze wiki, the standards Sneeze builds on",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "ANARI is a *scene-description* API, not a GPU API"
+        },
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/compute/ComputeDispatch.md",
+          "title": "Sneeze compute module note",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "`vox::DEVICE::Create(Backend::Auto)` selects Vulkan / DX12 / Metal at"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "partial",
+      "note": "Surface appearance comes from two places and neither is the fabric format. Imported glTF supplies metallic-roughness factors and a base-colour texture; the ANARI device supplies the `physicallyBased` and `matte` materials plus an unlit Halogen extension used for interface panels. A fabric node itself carries only a packed colour, a brightness and a reflectivity float, so a fabric author cannot describe a material. The SDK quote is from the `prep` branch, identical there to `main`.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/include/sneeze_abi.h",
+          "title": "Sneeze ABI header (prep), map-object wire struct",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "float                                                    fReflectivity;"
+        },
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/context/viewport/Viewport.md",
+          "title": "Sneeze Viewport module note, meshes",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "The ANARI backend builds one `\"triangle\"` geometry + `\"physicallyBased\"` material"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "partial",
+      "note": "Two channels: scene-global ambient and directional light authored in the fabric's optional Primary block, and placed point or spot lights authored as light nodes. Halogen adds soft shadows and a default image-based light. There is no global illumination, no probes and no baking. One composition rule is worth a working group's attention: a placed light's intensity is multiplied by the square of its world scale times the per-scene render scale, so illumination survives being embedded in another fabric.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/sneeze/control/Control.md",
+          "title": "Sneeze Control module note, lighting",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "At the seam a point light's intensity is multiplied by"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/Halogen/blob/master/README.md",
+          "title": "Halogen README, renderer and frame",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "| Shadows | ✅ PCF soft shadows on all lights and renderables |"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "partial",
+      "note": "Only in the MetaversalCorp copy of the engine, and only for map-managed content. The compositor notices proximity during traversal and asks the container to expand a node, which subscribes to the next tier of the map model and opens its children. It is load-only: nothing is ever closed as the camera recedes, and the code says streaming-out is future work. The Forum-governed copy has none of this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/Sneeze/blob/main/src/context/scene/Scene.md",
+          "title": "MetaversalCorp Sneeze Scene note, proximity-driven lazy loading",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "This is **load-only** — nodes are never closed as the camera recedes"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "partial",
+      "note": "Text exists only inside interface panels: an RmlUi document in HTML-like markup and stylesheets, rasterised on the render thread to a straight-alpha pixel buffer and drawn as an unlit quad. There is no three-dimensional text primitive and no font handling of the engine's own — the engine bundles and loads no fonts, and relies on the host application to have registered faces. The panel document format is not an engine detail but part of the published module contract: a module creates a node of the panel class and hands it RML and CSS source directly. The SDK quote is from the `prep` branch, identical there to `main`.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/ui/Ui_Context.md",
+          "title": "Sneeze UI module note",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "**Fonts are host-owned.** The engine bundles and loads no fonts."
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/docs/api/NODE.md",
+          "title": "Sneeze SDK (prep) node reference, panel source",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "`sRml` - the RML+CSS source for the panel."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "partial",
+      "note": "One orbit camera per viewport, driven by mouse drag and wheel, with an optional authored starting pose in the fabric's Primary block. There is no viewpoint list, no named viewpoints and no way to move between them. The ABI reserves camera get and set numbers for guest modules but the host bodies are not written, so fabric code cannot move the camera at all. The SDK's own overview lists the viewport among its unimplemented subsystems, so this is stated rather than inferred. The SDK quotes are from the `prep` branch, identical there to `main`.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/context/viewport/Viewport.md",
+          "title": "Sneeze Viewport module note, camera orbit",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "| Scroll wheel | Zoom (adjust distance) |"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/include/sneeze_abi.h",
+          "title": "Sneeze ABI header (prep), viewport methods",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "kSNEEZE_ABI_METHOD_VIEWPORT_POSITION_SET              =  2,        // not implemented yet (host new)"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/docs/api/overview.md",
+          "title": "Sneeze SDK (prep) API overview, unimplemented subsystems",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "2. `VIEWPORT` (camera get/set)"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "native",
+      "note": "The scene object model is the centre of the design and is offered as the spatial answer to the document object model. A scene owns a structural root fabric; each fabric owns a tree of nodes; each node points at a map object that carries the spatial payload. Node handles are per-container, not scene-global, so two unrelated publishers cannot collide.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/context/scene/Scene.md",
+          "title": "Sneeze Scene module note",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "**Node identity is per-container, not scene-global.**"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeDoc/blob/main/docs/overview/what-is-omb.md",
+          "title": "Sneeze wiki, what is the Open Metaverse Browser",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "| DOM (Document Object Model) | SOM (Scene Object Model) |"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "partial",
+      "note": "Every node composes a full translation, rotation and scale in 64-bit floats and inherits its parent's frame, with no class-specific shortcut. The convention is published, and more plainly than the engine source suggests: the module documentation states a right-handed world frame with X east, Y north and Z up, on both the node and the builder pages, so an author writing a module has a contract to work from. The gap is the file. The fabric manifest still carries no axis or handedness declaration, so nothing about the frame travels with the content and a second implementation has to be told out of band. The SDK quotes are from the `prep` branch, identical there to `main`.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/context/viewport/GltfMesh.cpp",
+          "title": "Sneeze glTF to renderer bridge, import conversion",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "// glTF is right-handed Y-up; Sneeze's world is right-handed Z-up. Convert every"
+        },
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/sneeze/control/Control.md",
+          "title": "Sneeze Control module note, universal TRS",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "composes a full Translation·Rotation·Scale transform and inherits its parent's"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/docs/api/NODE.md",
+          "title": "Sneeze SDK (prep) node reference, position frame",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "the fabric's right-handed Z-up world frame (X east, Y north, Z up)"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/docs/api/MAPOBJECT.md",
+          "title": "Sneeze SDK (prep) map-object builder, transform",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "`Position` - position in the right-handed Z-up world frame (X east, Y north, Z up)."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "native",
+      "note": "The container is the `.msf` spatial fabric file: a compact JSON Web Signature whose payload holds the manifest serialised as a string under a `data` key, with top-level members `Container`, `Services`, `Modules`, `Data` and an optional `Primary` presentation block. The scene itself lives under `Data.Scene` as a node tree nested through `aChildren`. The browser reads it and the browser also writes it, from the command line.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeDoc/blob/main/examples/03-signing/signed-stool-and-bucket.msf",
+          "title": "SneezeDoc signed example fabric, decoded payload",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "{\"Container\":\"example-signed\",\"Data\":{\"Scene\":{\"Head\":{\"Self\":\"P-?\"}"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/Rubidium/blob/main/RELEASE",
+          "title": "Rubidium release notes, command-line tools",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "`Rubidium --sign --payload <fabric.json> --key <key.pem> --cert <cert.pem> --out <fabric.msf>`"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "partial",
+      "note": "The format encodes no meshes. A node names an external resource by a 128-byte reference string, the browser fetches it and decides what it is by sniffing the bytes, and a glTF or binary glTF file is parsed with fastgltf into a renderer-agnostic model. Only the default scene is read. The MetaversalCorp copy adds Draco and meshoptimizer decode units; the Forum copy has neither.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/gltf/Gltf.md",
+          "title": "Sneeze glTF module note",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "`Load` reads only the **default scene**, flattens the mesh/material/texture"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/Sneeze/blob/main/NOTICE",
+          "title": "MetaversalCorp Sneeze NOTICE",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "- Draco         (c) The Draco Authors         - Apache License 2.0"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "partial",
+      "note": "Textures ride in with the glTF asset or as a standalone image at a node's resource reference, and are decoded to eight-bit RGBA on the host. Encoded bytes are kept as the asset provided them and decoded one layer up. There is no compressed-texture path for the target device in the Forum copy; the MetaversalCorp copy adds a WebP decoder.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/gltf/Gltf.md",
+          "title": "Sneeze glTF module note, data model",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "image bytes are kept **encoded**"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/Sneeze/blob/main/deps/dependencies.json",
+          "title": "MetaversalCorp Sneeze dependency manifest",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "\"webp\""
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "partial",
+      "note": "Material exchange happens only through glTF: base colour, metallic, roughness, emissive and one base-colour texture index survive the trip into the renderer. Nothing else crosses, and the fabric format adds no material vocabulary of its own, so a material authored in any other system has to be reduced to glTF metallic-roughness before it reaches the browser.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/gltf/Gltf.md",
+          "title": "Sneeze glTF module note, data model",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "| `GLTF_MATERIAL` | Metallic-roughness PBR: `baseColor[4]`, `dMetallic`, `dRoughness`, `emissive[3]`, and `nBaseColorTexture` index (−1 = none). |"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "none",
+      "note": "The glTF loader builds meshes, materials, textures and a node hierarchy and stops there; there is no animation array in the model it produces and no clip playback anywhere in the engine. The only motion in the engine is a two-body orbital solve for celestial nodes, computed from a period and two axis lengths on the node itself.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/gltf/Gltf.md",
+          "title": "Sneeze glTF module note, data model",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "| `GLTF_MODEL` | The whole asset: `aMesh`, `aMaterial`, `aTexture`, `aNode`, and `aRoot` (root node indices of the default scene). |"
+        },
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/context/scene/Scene.md",
+          "title": "Sneeze Scene module note, celestial objects",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "File-local static functions `SolveKepler`, `QuatMultiply`, and"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "none",
+      "note": "No skinning of any kind. The parsed glTF model has no skin, no joints and no weights, and no part of the engine mentions a bone. A working group should read this together with the avatar rows: embodiment is simply not in this engine yet, and the Forum's skeleton work sits in a separate document repository with no code path into the browser.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/gltf/Gltf.md",
+          "title": "Sneeze glTF module note, data model",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "One drawable surface: flat `aPosition` (xyz), optional `aNormal` (xyz) / `aTexCoord` (uv), `aIndex` (uint32)"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "none",
+      "note": "Blend shapes are absent for the same reason as skeletons: the loader's primitive carries positions, optional normals, optional texture coordinates and indices, and nothing else.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/gltf/Gltf.md",
+          "title": "Sneeze glTF module note, data model",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "| `GLTF_MESH` | A list of `GLTF_PRIMITIVE` surfaces. |"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "partial",
+      "note": "Instancing exists in the renderer, not in the format. Boxes, panels and spheres are drawn as instances of a shared mesh with a per-instance matrix, and instance transforms are patched every frame without rebuilding. A fabric author cannot express instancing: every repeated object is a separate node with its own 528-byte record. The SDK quote is from the `prep` branch, identical there to `main`.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/context/viewport/Viewport.md",
+          "title": "Sneeze Viewport module note, panels",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "The ANARI backend builds one instance per panel from a **shared unit quad**"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/include/sneeze_abi.h",
+          "title": "Sneeze ABI header (prep), map-object size",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "#define SNEEZE_ABI_MAPOBJECT_SIZE      528"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "native",
+      "note": "Composition is the strongest part of the design. Any node may set its subtype to 255, at which point its resource reference is read as the address of another fabric; the browser fetches that fabric, opens a container for its identity and grafts its tree under the attachment node. Fabrics therefore nest to any depth from independent publishers, and the same construct loads the root fabric, so root and attachment point are one mechanism.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/context/scene/Scene.md",
+          "title": "Sneeze Scene module note, fabric loading flow",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "A NODE recognizes it's an attachment point (bSubtype == 255) and calls"
+        },
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/context/scene/Scene.md",
+          "title": "Sneeze Scene module note, node",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "attachment point holds the orbit data and renders an orbit trail, while also"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "partial",
+      "note": "Geometry is accumulated in metres and a panel's world size is authored in metres, which is a real unit agreement. The part that is missing is any declaration: the manifest has no units field, and after traversal the whole scene is multiplied by one factor chosen so its extent fits a fixed render volume of five units. Body radii are then magnified by a power law and moons are pushed outward by a hard-coded factor, so what is drawn is deliberately not to scale. The module contract does not help either: the position, scale and bound setters an author calls take bare 64-bit floats, and the documentation that names their frame names no unit at all. The SDK quote is from the `prep` branch, identical there to `main`.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/sneeze/control/Control.md",
+          "title": "Sneeze Control module note, per-scene render scale",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "`dRenderScale = TARGET_EXTENT /"
+        },
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/sneeze/control/Control.md",
+          "title": "Sneeze Control module note, moon kludge",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "intentional, moon-only special case, valid while the data has at most a handful"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/docs/api/MAPOBJECT.md",
+          "title": "Sneeze SDK (prep) map-object builder, transform",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "`Position` - position in the right-handed Z-up world frame (X east, Y north, Z up)."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "none",
+      "note": "There is no licence or rights vocabulary anywhere in the fabric manifest or in the 528-byte node record. The record's fields are identity, name, type, owner, resource, transform, orbit, bound and properties, and the manifest's members are container, services, modules, data and presentation. A recipient learns who signed the bytes and nothing about what they may do with them. The SDK quote is from the `prep` branch, identical there to `main`.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/include/sneeze_abi.h",
+          "title": "Sneeze ABI header (prep), map-object wire struct",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "// MAP_OBJECT_RESOURCE (200 bytes)"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "partial",
+      "note": "The mechanism is there and it is conventional: RS256 over the manifest with the signer's X.509 chain in the JOSE `x5c` header, chain validation through BoringSSL against the operating system root store plus any explicitly added anchor. Two things stop this being a full answer. The load path calls verification and then throws the result away, and the shipped tutorial ships a self-signed test authority together with its private key.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/context/msf/MsfFile.md",
+          "title": "Sneeze MSF module note, chain",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "Loads the OS root"
+        },
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/context/scene/Scene.cpp",
+          "title": "Sneeze scene load path, OnMsfReady",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "pMsf->Signature_Verify ();"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeDoc/blob/main/examples/certs/ca-key.pem",
+          "title": "SneezeDoc example certificate authority private key",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "examples/certs/ca-key.pem"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "out-of-scope",
+      "note": "The browser has no avatar. Nothing in the engine expresses a person, and with no skinning in the renderer it could not draw one. This is a deliberate scope line today rather than a gap in an attempted feature. The project's own architecture proposal, version 2026.Q2.0, does describe avatars, using parametric strategies aimed at kilobyte-range data for scale, so the proposal claims them even though the engine has none.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/gltf/Gltf.md",
+          "title": "Sneeze glTF module note, data model",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "| `GLTF_MESH` | A list of `GLTF_PRIMITIVE` surfaces. |"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeDoc/blob/main/docs/architecture/sneeze-architecture.md",
+          "title": "Sneeze architecture, the project's own standards proposal for the metaverse browser engine, version 2026.Q2.0",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Supporting components address physical-world anchoring (GPS/VPS with a proposed positioning abstraction layer), identity managed by dedicated identity service providers (eliminating per-service sign-on through cryptographic credentials and zero-knowledge proofs), avatars (parametric strategies targeting kilobyte-range data for scale), and spatial audio (server-side voice mixing for privacy and scalability, with a purpose-built codec optimized for compute efficiency over compression)."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "partial",
+      "note": "The Forum-governed RCSF repository is real work on exactly this problem, and it is the one part of this subject that is a specification rather than an implementation. It defines a canonical joint set and a table mapping it onto fifteen skeletons including OpenUSD, VRM, HAnim, Unity Mecanim, Godot and Roblox, with a draft proposal to the Forum. It is explicitly a pivot for translation and not a skeleton anyone is asked to adopt, five of its fifteen format descriptions are marked validated, and nothing in the browser reads it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/RCSF/blob/dev/README.md",
+          "title": "RCSF README, purpose",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "The aim is a clear, well-documented pivot for translating between formats — not a new universal skeleton that everyone is expected to adopt."
+        },
+        {
+          "url": "https://github.com/MetaverseStandards/RCSF/blob/dev/README.md",
+          "title": "RCSF README, contents",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "`joints.csv` - The mapping table: each canonical joint alongside its equivalent in every surveyed format"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "none",
+      "note": "RCSF considered facial expressions and put them outside its scope. Its resolution is that face joints could be referenced to the facial action coding system in future guidance, that specifying that system is out of scope, and that expressions should be broken out as a later topic. There is nothing to score in the browser.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/RCSF/blob/dev/README.md",
+          "title": "RCSF README, RFC resolutions",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "Breaking out expressions as a future topic seems like a strong direction."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "none",
+      "note": "The retargeting tools are listed as unstarted tasks in the RCSF repository, including the cross-format conversion engine itself. The mapping table is the input a converter would need; the converter does not exist.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/RCSF/blob/dev/README.md",
+          "title": "RCSF README, create tools",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "- [ ] Cross-format conversion engine"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "none",
+      "note": "There is no physics engine and no simulation step. Nodes carry mass and gravity floats, but those sit in the celestial branch of a shared properties union and feed nothing but display. The only thing that moves by rule is a celestial body on a Kepler orbit. The project's own architecture proposal, version 2026.Q2.0, places physics in server-side services rather than in the browser and names client-side compute for it as an open gap, so what stands here is a stated intention rather than running code.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/context/scene/Scene.md",
+          "title": "Sneeze Scene module note, class-tagged sub-structs",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "Properties' celestial member holds `fMass`/`fGravity`/"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeDoc/blob/main/docs/architecture/sneeze-architecture.md",
+          "title": "Sneeze architecture, the project's own standards proposal for the metaverse browser engine, version 2026.Q2.0",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Physics in the MBE runs primarily as server-side services. Client-side GPU compute for physics is a known architectural gap (Section 23.4)."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "none",
+      "note": "Colliders exist in the shipped content and the browser's only response is to refuse to draw them: a physical node whose resource reference starts with `action:` is skipped during traversal, partly so a kilometre-scale floor collider does not dominate the scene's extent and shrink every real building. Nothing tests contact.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/sneeze/control/Control.md",
+          "title": "Sneeze Control module note, boxes",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "Physical nodes whose resource reference begins with"
+        },
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/sneeze/control/Control.md",
+          "title": "Sneeze Control module note, boxes",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "from dominating `dMaxReach` and shrinking every real building to"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "none",
+      "note": "No trigger volumes, and the module interface shows why they could not work yet. A node does carry bounding extents, but the documentation says they are for framing and culling. The whole host-to-guest event surface is one event — a timer firing — which the header itself calls the first event the interface defines. A region cannot tell a module that something entered it, because nothing can tell a module that anything happened. The SDK quotes are from the `prep` branch, identical there to `main`.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/docs/api/NODE.md",
+          "title": "Sneeze SDK (prep) node reference, bound",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Sets the node's bounding-box extents (used for framing and culling)."
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/include/sneeze_abi.h",
+          "title": "Sneeze ABI header (prep), timer notify event",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "FIRED is the host -> guest Notify event (the first event the ABI defines)."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "none",
+      "note": "There is no audio in this engine at all: no sound source, no mixer, no output device and no audio dependency in the build manifest. The one occurrence of the word is a label in a sample interface panel. For a browser whose stated ambition is the spatial equivalent of the web browser, this is the largest untouched plane. The project's own architecture proposal, version 2026.Q2.0, does describe spatial audio, with server-side voice mixing and a purpose-built codec, so the plane is claimed on paper even though no code implements it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/deps/dependencies.json",
+          "title": "Sneeze dependency manifest",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "\"wasmtime\""
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeDoc/blob/main/docs/architecture/sneeze-architecture.md",
+          "title": "Sneeze architecture, the project's own standards proposal for the metaverse browser engine, version 2026.Q2.0",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Supporting components address physical-world anchoring (GPS/VPS with a proposed positioning abstraction layer), identity managed by dedicated identity service providers (eliminating per-service sign-on through cryptographic credentials and zero-knowledge proofs), avatars (parametric strategies targeting kilobyte-range data for scale), and spatial audio (server-side voice mixing for privacy and scalability, with a purpose-built codec optimized for compute efficiency over compression)."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "none",
+      "note": "No voice transport of any kind. The release notes state that network connectivity itself has not landed yet.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/Rubidium/blob/main/RELEASE",
+          "title": "Rubidium release notes, present limitations",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "- Network connectivity is coming very soon — until then, wasm programs run connectionless"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "partial",
+      "note": "Fabrics, modules and assets are fetched over HTTPS with curl on a sixteen-worker pool, with results cached on disk across restarts and deduplicated engine-wide by URL. Live session traffic is a separate library: RMAP folds in REST, Socket.IO and a proprietary service module. Guest code cannot open a connection of its own — the ABI reserves a fetch number and the host body is not written. The SDK quote is from the `prep` branch, identical there to `main`.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/sneeze/network/Network.md",
+          "title": "Sneeze Network module note, concurrency",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "16 `AGENT::FETCH` workers perform"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/include/sneeze_abi.h",
+          "title": "Sneeze ABI header (prep), network methods",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "kSNEEZE_ABI_METHOD_NETWORK_FETCH                      =  1,        // not implemented yet (host new)"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "partial",
+      "note": "A fabric may hand its whole branch to a browser-managed map service instead of building nodes itself, at which point the service is the authority and pushes changes in. The state model is RMAP's, moving an object through empty, partial, full and recovered, and the browser subscribes per object to get the next tier. What is not public is the wire format: RMAP's own repository documents how to build it and never says what it sends.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/context/scene/Scene.md",
+          "title": "Sneeze Scene module note, map-managed mode",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "a map service is an *active,"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/Sneeze/blob/main/src/context/scene/Scene.md",
+          "title": "MetaversalCorp Sneeze Scene note, proximity loading",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "The mechanism hinges on the RMAP `MODEL_OBJECT` state machine"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "partial",
+      "note": "The rule is stated cleanly and is the right rule: the entity that creates owns the mutations, so a map-managed branch is read-only to the fabric's own code and a guest-built branch has no service in it. The enforcement is missing. The engine ships `CanRead` and `CanWrite` for exactly this check, the module note says the host-function layer must call them, and a search of both copies of the source finds no caller anywhere outside their own definitions.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/context/scene/Scene.md",
+          "title": "Sneeze Scene module note, fabric ownership modes",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "The rule is: **the entity that creates owns the mutations.**"
+        },
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/context/scene/Scene.md",
+          "title": "Sneeze Scene module note, access control",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "not enforce ownership on its own. The WASM host-function layer must call"
+        },
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/context/scene/AccessControl.h",
+          "title": "Sneeze access control header",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "bool CanWrite (const NODE* pNode, const void* pRequestingOwner);"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "partial",
+      "note": "Interest management exists only as the proximity expansion in the MetaversalCorp copy, and only downward: tiers load as the camera approaches and are never released. A spatial index that would support anything better sits in a folder named for undecided work.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/Sneeze/blob/main/src/context/scene/Scene.md",
+          "title": "MetaversalCorp Sneeze Scene note, proximity-driven lazy loading",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "whole map tree up front. The root's first tier always loads (so the view is"
+        },
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/context/scene/Scene.md",
+          "title": "Sneeze Scene module note, files",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "| `Scene.cpp` | SCENE + Impl (pimpl, fabric map, root fabric + primary node, MSF_FETCH, Fabric_Spawn/Open/Close/Find, Url/Reload)."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.prediction",
+      "level": "none",
+      "note": "Nothing predicts and nothing reconciles, and the ownership model is why. A fabric is filled one of two ways and they are exclusive: either the module builds the node tree itself, or it hands the whole fabric to a browser-managed map service — and the SDK states plainly that after a map-service call the module no longer mutates the fabric's nodes directly. There is no local copy to run ahead of the server and no correction path to run back. The SDK quote is from the `prep` branch, identical there to `main`.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/docs/api/FABRIC.md",
+          "title": "Sneeze SDK (prep) fabric reference, the two filling modes",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "After a map-service call the module no longer mutates the fabric's nodes directly."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "partial",
+      "note": "Joining a live service is described by a 592-byte record carrying a namespace, a service name, a connect address, a root address and an authentication flag, which a guest module either fills itself or names so the host reads it from the fabric's own services block. The session and login exchange behind it belongs to RMAP and is not documented publicly. The SDK quote is from the `prep` branch, identical there to `main`.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/include/sneeze_abi.h",
+          "title": "Sneeze ABI header (prep), map-service wire struct",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "#define SNEEZE_ABI_MAP_SERVICE_SIZE    592"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/RMAP/blob/main/RMAP/include/RMAP/RMAP.h",
+          "title": "RMAP public header, session states",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "LOGGEDIN     = 4,"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "native",
+      "note": "A fabric is an ordinary HTTPS address that anyone can host, one context per browser tab, and navigation is setting a new address on the scene. Nested fabric addresses resolve relative to their parent. This is the part of the web model that carries over intact.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/context/scene/Scene.md",
+          "title": "Sneeze Scene module note, scene",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "pScene->Url (sUrl);                       // swap the root fabric to a new URL"
+        },
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/sneeze/Sneeze.md",
+          "title": "Sneeze engine core note, context lifecycle",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "CONTEXT* pContext = engine.Context_Open (pContextHost, \"https://example.com/world.msf\", kSESSION_PERSISTENT);"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "none",
+      "note": "There is no handoff. Navigating destroys the whole tree and rebuilds it from the new address with no camera continuity and no state carried across, and the engine's own note says two things about doing it: an in-flight fabric fetch is not cancelled so the completion callback runs against freed memory, and the teardown is not synchronised with the compositor so navigating while rendering can crash. Nesting a fabric is transclusion, not travel — the child is drawn inside the parent's frame.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/context/scene/Scene.md",
+          "title": "Sneeze Scene module note, known limitations",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "**In-flight MSF fetches are not cancelled.**"
+        },
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/context/scene/Scene.md",
+          "title": "Sneeze Scene module note, known limitations",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "so navigating during active rendering can crash."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "none",
+      "note": "Nothing in the engine, the fabric format or the module interface describes who else is present. The browser's own release notes place network connectivity in the future.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/Rubidium/blob/main/RELEASE",
+          "title": "Rubidium release notes, present limitations",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "- Network connectivity is coming very soon — until then, wasm programs run connectionless"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "none",
+      "note": "Discovery is by address only. Proximity discovery is the initiative's headline claim about how the metaverse browser differs from the web browser, and the shipping browser's own release notes place it on the roadmap. A working group should treat the proximity model as a design intent, not a capability.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/Rubidium/blob/main/RELEASE",
+          "title": "Rubidium release notes, present limitations",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "- Discovery is *address-based* for now; *proximity-based* discovery — connecting to what is near you rather than typing an address — is on the roadmap"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeDoc/blob/main/docs/overview/what-is-omb.md",
+          "title": "Sneeze wiki, how the metaverse browser differs",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "| URL-based navigation | Proximity-based discovery |"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "partial",
+      "note": "There is a real clock, which is more than several subjects here have: a wall clock and a monotonic clock reachable from guest code, a calendar value filled in one crossing with both a UTC and a local breakdown and a sub-second stored in hundred-nanosecond units so both the tick and millisecond views divide evenly, plus one-shot and repeating timers driven by a drift-free metronome. What is absent is any shared time: nothing synchronises this clock with another participant, so it orders events on one machine only. The SDK quote is from the `prep` branch, identical there to `main`.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/include/sneeze_abi.h",
+          "title": "Sneeze ABI header (prep), moment struct",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "// and 1 ms both divide 100 ns evenly but not each other, so it is the only"
+        },
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/wasm/Wasm.md",
+          "title": "Sneeze WASM module note, timer service",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "**Firing (TIMER agent pool).** The Control metronome signals the TIMER pool once"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "partial",
+      "note": "A container is identified by persona, organisation and container name, and the organisation half is anchored properly — it is the SHA-256 of the signing certificate's public key, so isolation on disk and between sandboxes is cryptographic rather than by name. The person half is not: the persona is a first name and last name typed locally, hashed for a path, and the module note calls it a local testing proxy with no network identity or authentication.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/persona/Persona.md",
+          "title": "Sneeze Persona module note",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "this is a local testing proxy."
+        },
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/context/msf/MsfFile.md",
+          "title": "Sneeze MSF module note, chain",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "Computes the leaf certificate's SPKI"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "none",
+      "note": "No credential format. The project's own standards page names decentralised identifiers as relevant and nothing implements them; the only claim a fabric can carry is its X.509 subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeDoc/blob/main/docs/overview/standards.md",
+          "title": "Sneeze wiki, the standards organizations",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "The **W3C** — web identity (Decentralized Identifiers) and the web's own spatial efforts, relevant to the engine's identity and embedding stories."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "none",
+      "note": "There is no way to ask for or to present a credential. The module interface's subsystem list is fixed and its numbers are permanent, and it holds twelve entries — data, console, storage, network, viewport, scene, fabric, node, wall clock, monotonic clock, timer and services. None of them is identity. A module can read the signer's certificate details out of the snapshot it is given at open, and can do nothing with them but branch. The SDK quote is from the `prep` branch, identical there to `main`.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/include/sneeze_abi.h",
+          "title": "Sneeze ABI header (prep), subsystem registry",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "// wType - subsystem registry. Fixed order; numbers are permanent."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "none",
+      "note": "The opposite of selective disclosure. Every module a fabric loads is handed the whole container identity record when it opens — the persona's name and its hash, the organisation's name and its hash, the signing certificate's fingerprint and the trust level — with no scoping, no consent step and no way to hand over less. The persona half is the person using the browser: the engine's own note calls it a first and last name typed locally, a local testing proxy. There is nothing to disclose selectively with, because there is no credential, and nothing to withhold with, because the record arrives whole. The SDK quote is from the `prep` branch, identical there to `main`.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/docs/api/CONTAINER.md",
+          "title": "Sneeze SDK (prep) container reference, identity fields",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A container is identified by persona + organization + container name."
+        },
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/persona/Persona.md",
+          "title": "Sneeze Persona module note",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "this is a local testing proxy."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "none",
+      "note": "This is the gap most likely to matter. A module that loads receives the whole host interface — console, storage, data, services, node construction, clocks and timers — with no grant, no scope and no permission anywhere in the ABI or the manifest. The trust value a module can read is a single integer describing the signature, never a statement of what the signer asked for or what the user allowed. The SDK quotes are from the `prep` branch, identical there to `main`.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/docs/api/overview.md",
+          "title": "Sneeze SDK (prep) API overview, the object model",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Everything you can do for a given fabric hangs off the [`HOST`](HOST.md) handle you are given at `Open`"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/docs/api/CONTAINER.md",
+          "title": "Sneeze SDK (prep) container reference, trust level",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "It is transported as an integer precisely so a module can branch on it without parsing a string."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "none",
+      "note": "Nothing acts on licence terms at the point of use, because nothing carries licence terms. See the rights and licence metadata row. The SDK quote is from the `prep` branch, identical there to `main`.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/include/sneeze_abi.h",
+          "title": "Sneeze ABI header (prep), map-object wire struct",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "// MAP_OBJECT_OWNER (8 bytes)"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "none",
+      "note": "Nothing expresses a position against the Earth. A search of the engine for the usual vocabulary — a geodetic datum, a latitude, a coordinate reference code — returns nothing. Positions are Cartesian doubles in the fabric's own frame, with an orbital model for celestial bodies. The project names the Open Geospatial Consortium as an aligned body; no geospatial code has landed. The project's own architecture proposal, version 2026.Q2.0, names GeoPose 1.0 from the Open Geospatial Consortium as the intended encoding for real-world position and orientation, so this is a described plan rather than an unclaimed gap.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeDoc/blob/main/docs/overview/standards.md",
+          "title": "Sneeze wiki, the standards organizations",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "The **OGC** (Open Geospatial Consortium) — real-world spatial positioning, relevant to anchoring fabrics to physical locations."
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeDoc/blob/main/docs/architecture/sneeze-architecture.md",
+          "title": "Sneeze architecture, the project's own standards proposal for the metaverse browser engine, version 2026.Q2.0",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "GeoPose 1.0 | Open Geospatial Consortium (OGC) | Standard encoding for real-world position and orientation (6DOF) relative to a geographic reference frame (WGS84)."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "none",
+      "note": "No coordinate reference system is named or carried anywhere, and the naming invites a mistake. The module documentation calls the axes east, north and up, which is the vocabulary of a local tangent frame on the Earth, but nothing binds them to the Earth: there is no datum, no origin, no reference code and no field that could carry one. A fabric's frame is its own, and composition puts a child fabric into the parent's accumulated frame with no way to say what either frame means. The SDK quote is from the `prep` branch, identical there to `main`.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/sneeze/control/Control.md",
+          "title": "Sneeze Control module note, no AU",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "accumulated in metres, and `dMaxReach` tracks the scene's extent as a"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/docs/api/NODE.md",
+          "title": "Sneeze SDK (prep) node reference, position frame",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "the fabric's right-handed Z-up world frame (X east, Y north, Z up)"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "none",
+      "note": "The XR module does one thing: it tries to create an OpenXR instance and reports whether a runtime is present and what it is called. There is no session, no frame loop, no swapchain and no pose. The browser's release notes state plainly that virtual and augmented reality are not ready for use in this build.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/xr/XrRuntime.md",
+          "title": "Sneeze XR module note",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "The `xr` module probes for an OpenXR runtime on the system and reports its"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/Rubidium/blob/main/RELEASE",
+          "title": "Rubidium release notes, present limitations",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "- VR and AR (via OpenXR) are coming, but are not ready for use in this build"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "none",
+      "note": "The whole input surface is a mouse and three keys: two mouse deltas, a scroll value, two mouse buttons, and space, plus and minus. None of it reaches guest code — the module interface has no input, pointer, pick or event method, so a fabric cannot receive a click. Any standard that assumes content can be picked will not compose with this browser today. The SDK quote is from the `prep` branch, identical there to `main`.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/sneeze/Sneeze.md",
+          "title": "Sneeze engine core note, host interface",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "pContext->Viewport ()->Input_Key (bSpace, bPlus, bMinus);"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/docs/api/overview.md",
+          "title": "Sneeze SDK (prep) API overview, the object model",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "- Timer ()       -> TIMER        one-shot / repeating scheduled callbacks"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "none",
+      "note": "A module cannot learn what the device can do. The one surface that looks as though it should is the agent view, a deliberate copy of the web's navigator object, and it reports identity rather than capability: host name, host version, engine name, engine version, platform and locale, and no display, input, graphics or immersive-session facts of any kind. The SDK also warns that the host does not yet fill most of it, so the host name, host version and platform carry placeholder values today. The SDK quotes are from the `prep` branch, identical there to `main`.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/docs/api/AGENT.md",
+          "title": "Sneeze SDK (prep) agent reference, what it reports",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Host and engine identity - a `navigator` analog."
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/docs/api/AGENT.md",
+          "title": "Sneeze SDK (prep) agent reference, placeholder values",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "the host does not yet supply the browser/platform/locale values"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "native",
+      "note": "World logic is WebAssembly compiled by Wasmtime, and the interface is the most carefully designed thing in this subject. Every guest request crosses a single import called `Call` carrying a self-describing packet routed by a subsystem number and a method number, so adding a method is adding a number and a module compiled once keeps loading as the engine grows. The guest supplies seven exports. The `prep` branch is what makes this reproducible by an outsider: it adds first-run guides for Linux, macOS and Windows that take a reader from an empty folder to a module with the right shape, importing only `Sneeze.Call` and exporting the seven symbols. Count the bindings carefully, though — the front page marks five available, while the SDK's own reference and its porting guide both still say three.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/include/sneeze_abi.h",
+          "title": "Sneeze ABI header (prep), crossover functions",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "so a module compiled once keeps loading for years as the engine"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/README.md",
+          "title": "SneezeSDK README (prep), supported languages",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| **Rust** | `Rust/` | `SneezeSDK_Rust` | Cargo, `wasm32` target | Reference SDK |"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/docs/quickstart.md",
+          "title": "Sneeze SDK (prep) quickstart, the expected module shape",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "It should import only `Sneeze.Call` and export the seven ABI symbols"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "partial",
+      "note": "A fabric can build and mutate its node tree from guest code, and it can ask the browser to build a whole subtree straight from a path in its own data block without writing each object. What it cannot do is attach behaviour to an asset: every node carries a 64-bit event field that the browser parses from the fabric and stores, and nothing anywhere reads it. The event system that would consume it sits in a folder for undecided work. The SDK says the same from the other side: the only event the interface defines today is a timer firing, node events are still reserved, and a module with no hook for an event simply ignores it. The SDK quotes are from the `prep` branch, identical there to `main`.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/context/scene/RmcObject.cpp",
+          "title": "Sneeze wire-object parser",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "pObject->Head.qwEvent = h.value (NODE_KEY_HEAD_EVENT, static_cast<uint64_t> (0));"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/docs/api/overview.md",
+          "title": "Sneeze SDK (prep) API overview, building a scene",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "`FABRIC::Node_Map_Data (sPath)` is a shortcut"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/docs/api/overview.md",
+          "title": "Sneeze SDK (prep) API overview, event delivery",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Other event kinds (node events, for example) are still reserved"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "partial",
+      "note": "The isolation that exists is genuine: one Wasmtime store per persona, signer and container so unrelated publishers cannot share memory; every payload read bounds-checked against the declared size with an exact-consumption rule that rejects an over- or under-sized packet without side effects; SPIR-V validated before it reaches a driver. Two holes are large. The engine's own ownership checks have no callers. And the load path calls signature and chain verification, discards both results, and opens the fabric and runs its modules either way — verification is recorded, never enforced.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/wasm/Wasm.md",
+          "title": "Sneeze WASM module note, payload validation",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "A method is acted on only when `PAYLOAD::Exact()`"
+        },
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/context/scene/Scene.cpp",
+          "title": "Sneeze scene load path, OnMsfReady",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "pMsf->Signature_Verify ();"
+        },
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/context/scene/AccessControl.h",
+          "title": "Sneeze access control header",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "bool CanWrite (const NODE* pNode, const void* pRequestingOwner);"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "none",
+      "note": "Nothing supports an autonomous agent acting inside a world, and the word is a trap for anyone searching this code base. The SDK's `AGENT` class is the browser-identity view, a copy of the web's navigator object; the engine's own `AGENT` is a worker-thread pool that fetches files. Neither has anything to do with an acting agent. There is no agent identity, no way for one to join, and no event a module could receive if one did. The SDK quote is from the `prep` branch, identical there to `main`.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/docs/api/AGENT.md",
+          "title": "Sneeze SDK (prep) agent reference, what it is",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Host and engine identity - a `navigator` analog."
+        },
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/sneeze/network/Network.md",
+          "title": "Sneeze Network module note, fetch worker pool",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "16 `AGENT::FETCH` workers perform"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "none",
+      "note": "There is no resource budget. Searching both copies of the engine for a fuel setting, an epoch deadline or a store memory limiter returns nothing, so a loop in guest code has nothing to stop it and guest memory has no ceiling. This one is worth stating carefully because the project's own wiki says the opposite twice, promising each fabric a CPU budget and describing fuel-based metering as a reason WebAssembly was chosen.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeDoc/blob/main/docs/overview/standards.md",
+          "title": "Sneeze wiki, sandboxed execution",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "Each connected fabric runs its modules with isolated memory, a CPU budget, and tightly controlled access to engine capabilities."
+        },
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/wasm/Wasm.md",
+          "title": "Sneeze WASM module note, dependencies",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "**Wasmtime** v43.0.0 — C API for WASM compilation and execution."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "partial",
+      "note": "Guest-visible storage is a JSON document store with four scopes — organisation and container, each permanent and temporary — addressed by dotted paths, with an append-only change log replayed after a crash. Isolation is by the signer's key fingerprint rather than by a name a publisher chooses. There is no quota, and the store holds what a fabric chooses to write, not the scene: nothing persists the node tree itself.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/sneeze/storage/Storage.md",
+          "title": "Sneeze Storage module note, crash durability",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "Every mutation appends a JSONL line to a `.log` sidecar"
+        },
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/sneeze/storage/Storage.md",
+          "title": "Sneeze Storage module note, scope enum",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "kSILO_SCOPE_PERMANENT_ORG       = 0,   // shared across org, survives restarts"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "none",
+      "note": "No inventory, and the store that exists cannot become one. The only persistent place a module can write is a JSON document in one of four silos — organisation or container, each permanent or temporary — and the organisation silo is keyed by the signing certificate's fingerprint. So anything a person collects is held by the publisher that issued it and cannot be seen, let alone carried, by a fabric from anybody else. The SDK quote is from the `prep` branch, identical there to `main`.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/docs/api/STORAGE.md",
+          "title": "Sneeze SDK (prep) storage reference, scope table",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| `kSNEEZE_ABI_SILO_SCOPE_PERMANENT_ORG` | all containers of the organization | persists |"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "none",
+      "note": "Storage is keyed by the signing organisation, so nothing a user sets travels with them to another publisher's fabric. There is no user-preference or accessibility model in the engine.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/sneeze/storage/Storage.md",
+          "title": "Sneeze Storage module note, disk layout",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "Organization-scoped data lives at the fingerprint (org) tier"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "partial",
+      "note": "Any fetched file may carry an integrity hash in the familiar `algorithm-digest` form over SHA-256, SHA-384 or SHA-512, and modules declare theirs in the manifest, which is real content addressing. The hole is a fail-open in two places at once: the manifest hash field is optional and the published tutorial fabric omits it, and the verifier starts from a true result and only replaces it when a hash is actually present.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/sneeze/network/Network.md",
+          "title": "Sneeze Network module note, SRI hash format",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "`algorithm-hexdigest` — supports `sha256`, `sha384`, `sha512`."
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeDoc/blob/main/examples/01-stool/stool.json",
+          "title": "SneezeDoc tutorial fabric, modules block",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "\"sUrl\": \"wasm/map.wasm\""
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "native",
+      "note": "One signed file is the runnable package: it carries the container name, the declared services, the module list with optional hashes, the scene data and the presentation block, and the browser signs and verifies it from the command line. Module and asset addresses inside it resolve relative to the fabric's own address, so a fabric plus its files can be dropped on any web server.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/Rubidium/blob/main/RELEASE",
+          "title": "Rubidium release notes, make a spatial fabric of your own",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "A *metaverse spatial fabric* is a collection of *objects and services* described by a signed .msf file."
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeDoc/blob/main/examples/03-signing/signed-stool-and-bucket.msf",
+          "title": "SneezeDoc signed example fabric, decoded payload",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "\"Modules\":[{\"sHash\":\"sha256-a7b9b03a6bf7e88a3cd3dd65fff6dae263f7c8ad61864dbd6aedcadfbcf66718\",\"sUrl\":\"wasm/map.wasm\"}]"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "partial",
+      "note": "Content delivery is plain HTTPS plus a good client-side cache: assets are deduplicated engine-wide by address so two tabs never fetch or write the same file twice, kept on disk across restarts, and invalidated by a single stale timestamp per primary container held in one file. There is no server-side delivery story, no manifest of mirrors and no negotiated tiering. The release channel and installer manifest that do exist deliver the browser itself, not content.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/sneeze/network/Network.md",
+          "title": "Sneeze Network module note, request deduplication",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "Multiple callers opening the same URL share a single ASSET"
+        },
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/sneeze/network/Network.md",
+          "title": "Sneeze Network module note, one timestamp per primary container",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "*any cached file created before this moment is stale and must be refetched.*"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "conflicts",
+      "note": "The fabric format carries no version field. The ABI's version constant covers the packet framing only and is explicitly not bumped when methods are added. The consequences are already live and the vendor says so: the release notes tell authors that fabrics made before this release must be updated and that the format will not be stable until version 1.0.0. The drift is visible in the shipped corpus — the engine's own note says the services block is a name-keyed object and every accessor tests for one, while the published tutorial fabrics ship an empty array, which the engine reads as no services and reports no error. The module interface is the opposite story and deserves the credit: method numbers are permanent, monotonic and append-only, superseded methods stay in the header so already-deployed modules keep running, and the version constant is documented as covering the packet framing alone. This subject therefore has an exemplary update rule for its code interface and none at all for its content format. The SDK quotes are from the `prep` branch, identical there to `main`.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/Rubidium/blob/main/RELEASE",
+          "title": "Rubidium release notes, new since 0.2.0",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "- Note that the spatial fabric format will not be considered stable until we reach version 1.0.0"
+        },
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/context/msf/MsfFile.cpp",
+          "title": "Sneeze MSF payload keys",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "// a name-keyed object (each value an arbitrary service-config object); Modules"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeDoc/blob/main/examples/01-stool/stool.json",
+          "title": "SneezeDoc tutorial fabric, services block",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "\"Services\": [],"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/docs/incorporating-the-abi.md",
+          "title": "Sneeze SDK (prep) ABI guide, why numbers not symbols",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Method ids are **permanent, monotonic, and append-only**."
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/include/sneeze_abi.h",
+          "title": "Sneeze ABI header (prep), deprecated scene methods retained",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "deployed modules keep working until they are migrated."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "none",
+      "note": "There is no specification of the fabric format, no interface document beyond the ABI header, and no conformance suite. The test executable covers engine subsystems — signing, storage, cache, shader validation, compute, the clock — which proves the implementation works, not that a second implementation would agree with it. The cost of having no suite is already visible inside the SDK itself. The reference for the C binding documents the fabric's services as an indexed list read out of the open snapshot, with a count and per-index name, type and endpoint getters; every other page, and the header, say services are keyed by name, served on demand, and deliberately kept out of the snapshot. So two bindings of one interface describe the same block two incompatible ways. Separately, the C reference and the new quickstart both teach the scene method numbers the header marks deprecated. Nothing tests for either. Until a format document and a suite exist, compatible with this browser has no testable meaning. The SDK quotes are from the `prep` branch, identical there to `main`.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/tests/CMakeLists.txt",
+          "title": "Sneeze test executable, suites",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "# SneezeTest — unified test executable. Run with no args to execute all"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/include/sneeze_abi.h",
+          "title": "Sneeze ABI header (prep), version",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "// Version. Bumped only for a breaking change to the packet framing itself"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/docs/c-sdk.md",
+          "title": "Sneeze SDK (prep) C reference, services as an indexed snapshot list",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "// SERVICE - see api/SERVICE.md (indexed lists, so a count plus per-index getters)"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/docs/api/SERVICES.md",
+          "title": "Sneeze SDK (prep) services reference, not in the snapshot",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Like `Data`, the `Services` block is deliberately *not* included in the"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/include/sneeze_abi.h",
+          "title": "Sneeze ABI header (prep), deprecated scene method",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "kSNEEZE_ABI_METHOD_SCENE_NODE_ROOT                    =  1,        // DEPRECATED - use FABRIC_NODE_ROOT instead"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeSDK/blob/prep/docs/quickstart.md",
+          "title": "Sneeze SDK (prep) quickstart, C track uses the deprecated call",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "HNODE qwNode = Scene_Node_Root (twFabricIx, pRoot);"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "The Open Metaverse Browser is a client that opens a spatial fabric file and fetches whatever the file points at, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/gltf/Gltf.md",
+          "title": "Sneeze glTF module note, data model",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "`Load` reads only the **default scene**, flattens the mesh/material/texture"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "The Open Metaverse Browser is a client that opens a spatial fabric file and fetches whatever the file points at, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/gltf/Gltf.md",
+          "title": "Sneeze glTF module note, data model",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "`Load` reads only the **default scene**, flattens the mesh/material/texture"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "The Open Metaverse Browser is a client that opens a spatial fabric file and fetches whatever the file points at, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/gltf/Gltf.md",
+          "title": "Sneeze glTF module note, data model",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "`Load` reads only the **default scene**, flattens the mesh/material/texture"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "none",
+      "note": "The browser sniffs a fetched resource and parses glTF; nothing in the engine reads a splat container, and the glTF path flattens the default scene into meshes, materials and textures rather than handling point primitives with splat attributes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/gltf/Gltf.md",
+          "title": "Sneeze glTF module note, data model",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "`Load` reads only the **default scene**, flattens the mesh/material/texture"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "out-of-scope",
+      "note": "The Open Metaverse Browser is a client that opens a spatial fabric file and fetches whatever the file points at, and it delivers no captured scene, progressively by region and detail or otherwise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/gltf/Gltf.md",
+          "title": "Sneeze glTF module note, data model",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "`Load` reads only the **default scene**, flattens the mesh/material/texture"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "The Open Metaverse Browser is a client that opens a spatial fabric file and fetches whatever the file points at, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/gltf/Gltf.md",
+          "title": "Sneeze glTF module note, data model",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "`Load` reads only the **default scene**, flattens the mesh/material/texture"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "out-of-scope",
+      "note": "The Open Metaverse Browser is a client that opens a spatial fabric file and fetches whatever the file points at, and it defines no encoding or compression for a set of points with attributes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/gltf/Gltf.md",
+          "title": "Sneeze glTF module note, data model",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "`Load` reads only the **default scene**, flattens the mesh/material/texture"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "The Open Metaverse Browser is a client that opens a spatial fabric file and fetches whatever the file points at, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/gltf/Gltf.md",
+          "title": "Sneeze glTF module note, data model",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "`Load` reads only the **default scene**, flattens the mesh/material/texture"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "out-of-scope",
+      "note": "The Open Metaverse Browser is a client that opens a spatial fabric file and fetches whatever the file points at, and it produces no image from a viewing position that no capture camera occupied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/gltf/Gltf.md",
+          "title": "Sneeze glTF module note, data model",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "`Load` reads only the **default scene**, flattens the mesh/material/texture"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "The Open Metaverse Browser is a client that opens a spatial fabric file and fetches whatever the file points at, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/gltf/Gltf.md",
+          "title": "Sneeze glTF module note, data model",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "`Load` reads only the **default scene**, flattens the mesh/material/texture"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "The Open Metaverse Browser is a client that opens a spatial fabric file and fetches whatever the file points at, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/gltf/Gltf.md",
+          "title": "Sneeze glTF module note, data model",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "`Load` reads only the **default scene**, flattens the mesh/material/texture"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "The Open Metaverse Browser is a client that opens a spatial fabric file and fetches whatever the file points at, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/gltf/Gltf.md",
+          "title": "Sneeze glTF module note, data model",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "`Load` reads only the **default scene**, flattens the mesh/material/texture"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "The Open Metaverse Browser is a client that opens a spatial fabric file and fetches whatever the file points at, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/gltf/Gltf.md",
+          "title": "Sneeze glTF module note, data model",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "`Load` reads only the **default scene**, flattens the mesh/material/texture"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "The Open Metaverse Browser is a client that opens a spatial fabric file and fetches whatever the file points at, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/gltf/Gltf.md",
+          "title": "Sneeze glTF module note, data model",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "`Load` reads only the **default scene**, flattens the mesh/material/texture"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "The Open Metaverse Browser is a client that opens a spatial fabric file and fetches whatever the file points at, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/gltf/Gltf.md",
+          "title": "Sneeze glTF module note, data model",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "`Load` reads only the **default scene**, flattens the mesh/material/texture"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "The Open Metaverse Browser is a client that opens a spatial fabric file and fetches whatever the file points at, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/gltf/Gltf.md",
+          "title": "Sneeze glTF module note, data model",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "`Load` reads only the **default scene**, flattens the mesh/material/texture"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "out-of-scope",
+      "note": "The Open Metaverse Browser is a client that opens a spatial fabric file and fetches whatever the file points at, and it carries no full 360-degree view of a place as an image with its projection stated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/deps/gltf/Gltf.md",
+          "title": "Sneeze glTF module note, data model",
+          "retrieved": "2026-09-03",
+          "kind": "primary",
+          "quote": "`Load` reads only the **default scene**, flattens the mesh/material/texture"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "none",
+      "note": "The browser architecture names scene understanding among the capabilities it expects, and hands every one of them to OpenXR extensions rather than defining anything itself. So a reconstruction of the room may reach an application through the runtime underneath, but this project's own specification carries no room geometry, no format for it and no way to pass it on.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeDoc/blob/main/docs/architecture/sneeze-architecture.md",
+          "title": "Sneeze architecture, the project's own standards proposal for the metaverse browser engine",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Hand tracking, eye tracking, face tracking, passthrough (AR/MR), scene understanding, spatial anchors. These capabilities are provided through OpenXR extensions without breaking the core specification."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "none",
+      "note": "Semantic labelling of real surfaces is inside the same deferral: it belongs to the scene understanding the architecture leaves to OpenXR. Nothing in the project's own interfaces names a real floor, wall or object.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeDoc/blob/main/docs/architecture/sneeze-architecture.md",
+          "title": "Sneeze architecture, the project's own standards proposal for the metaverse browser engine",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Hand tracking, eye tracking, face tracking, passthrough (AR/MR), scene understanding, spatial anchors. These capabilities are provided through OpenXR extensions without breaking the core specification."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "none",
+      "note": "No depth of the real world is defined. The architecture treats the raw camera feed of the user's surroundings as data of extreme sensitivity to be kept away from content, and defines no depth channel of its own.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeDoc/blob/main/docs/architecture/sneeze-architecture.md",
+          "title": "Sneeze architecture, the project's own standards proposal for the metaverse browser engine",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Hand tracking, eye tracking, face tracking, passthrough (AR/MR), scene understanding, spatial anchors. These capabilities are provided through OpenXR extensions without breaking the core specification."
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeDoc/blob/main/docs/architecture/sneeze-architecture.md",
+          "title": "Sneeze architecture, sensitivity of device data",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "| Camera passthrough | Extreme | Raw camera feed of the user's surroundings |"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "none",
+      "note": "Passthrough is listed as an OpenXR extension the browser expects to sit under it, not as something the browser specifies. There is no rule here for how a real surface hides virtual content.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeDoc/blob/main/docs/architecture/sneeze-architecture.md",
+          "title": "Sneeze architecture, the project's own standards proposal for the metaverse browser engine",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Hand tracking, eye tracking, face tracking, passthrough (AR/MR), scene understanding, spatial anchors. These capabilities are provided through OpenXR extensions without breaking the core specification."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "out-of-scope",
+      "note": "The browser's preview target is a flat or headset display of the fabric it opens. Nothing in its architecture notes mixes a camera view of the room into that picture.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.face",
+      "level": "out-of-scope",
+      "note": "The browser passes device input to modules. There is no face or body sensing surface in its published interface for a module to read.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "none",
+      "note": "The browser walks a fabric of nodes and attachment points and works out its own view of the scene. No node type declares walkable surface, bounds or an arrival point, so where a person stands when a fabric opens is the browser's guess rather than the author's statement.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/context/scene/Scene.md",
+          "title": "Sneeze scene note, Open Metaverse Browser",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A NODE recognizes it's an attachment point (bSubtype == 255) and calls"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "none",
+      "note": "Modules are addressed by a name and an endpoint inside one manifest, and the browser loads what that endpoint serves. There is no registry making the name permanent and nothing preventing another author from using it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeDoc/blob/main/docs/systems/msf.md",
+          "title": "Sneeze documentation, MSF system",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "each a `{ name, type, endpoint, modules }` record"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "none",
+      "note": "The browser verifies the signature and the chain on a manifest before parsing it, which establishes who published the content and not what review it has had. Nothing arriving tells the browser whether anybody has looked at the content, and the browser performs no review of its own.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaverseStandards/Sneeze/blob/main/src/context/scene/Scene.md",
+          "title": "Sneeze scene note, Open Metaverse Browser",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "On success, SCENE parses the MSF, verifies signature and chain."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "The browser has no geographic model: content is fetched by address, not placed on Earth, so there is no map to declare or align.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "none",
+      "note": "Discovery is by address, so a client never asks what is relevant where it is standing and nothing published for the browser declares an area of application.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/Rubidium/blob/main/RELEASE",
+          "title": "Rubidium release notes",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Discovery is *address-based* for now"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.metadata",
+      "level": "partial",
+      "note": "The SDK exposes author-defined service JSON as text; the service vocabulary and property types are not fixed by that interface.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/MetaversalCorp/SneezeSDK/8f4d82bcfb38074d24f7fbe6e73b7e61aa4c0147/docs/api/SERVICES.md",
+          "title": "SERVICES",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "`Get` returns the named service's whole JSON object as text for the module to parse itself."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "via-extension",
+      "note": "The Forum engine's RmlUi integration rasterizes UI panels for scene surfaces; this is an engine dependency, not portable guest UI behavior.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/MetaverseStandards/Sneeze/04bc0ac68e1abd146a5df3b309f4d210b18bca57/src/deps/ui/Ui_Context.md",
+          "title": "UI — RmlUi (context, panels, software rasterizer)",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "one in-scene UI surface"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.bounds",
+      "level": "partial",
+      "note": "MapObject carries three bounding dimensions; the cited setter does not define a pre-load spatial index or traversal behavior.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/MetaversalCorp/SneezeSDK/8f4d82bcfb38074d24f7fbe6e73b7e61aa4c0147/docs/api/MAPOBJECT.md",
+          "title": "SNEEZE_ABI_MAPOBJECT",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "`Bound` - the three bounding extents."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "native",
+      "note": "The pinned Forum engine compute module dispatches SPIR-V kernels through Vox; guest SDK exposure is not established.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/MetaverseStandards/Sneeze/04bc0ac68e1abd146a5df3b309f4d210b18bca57/src/deps/compute/ComputeDispatch.md",
+          "title": "Compute — GPU/CPU Kernel Dispatch",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "The `compute` module dispatches SPIR-V compute kernels on the GPU (via Vox) or CPU (via registered kernel functions)."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "via-extension",
+      "confidence": "verified",
+      "note": "The separately scoped Sneeze SDK/MSF documentation carries certificate identity, key fingerprint and signature/trust-chain evaluation evidence with fabric claims. This is that SDK/module route; it is not asserted as implemented by the pinned Forum engine.",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/MetaversalCorp/SneezeSDK/8f4d82bcfb38074d24f7fbe6e73b7e61aa4c0147/docs/api/SIGNATURE.md",
+          "title": "SIGNATURE",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Where [`CONTAINER`](CONTAINER.md)`::Trust ()` gives the single overall trust level, `SIGNATURE` gives the underlying detail that produced it."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "partial",
+      "confidence": "verified",
+      "note": "The separate Sneeze SDK/MSF module exposes machine-readable signature and certificate trust results. The retained passage does not define an acceptance/rejection/action receipt from a relying recipient.",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/MetaversalCorp/SneezeSDK/8f4d82bcfb38074d24f7fbe6e73b7e61aa4c0147/docs/api/SIGNATURE.md",
+          "title": "SIGNATURE",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "The MSF signature-verification result for the fabric."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.resolve",
+      "level": "via-extension",
+      "confidence": "verified",
+      "note": "The separately scoped Sneeze SDK resolves document identifiers against the fabric or an absolute URL and fetches the resource. This is the named SDK route, without attributing the vendor API to the pinned Forum engine.",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/MetaversalCorp/SneezeSDK/8f4d82bcfb38074d24f7fbe6e73b7e61aa4c0147/docs/api/NODE.md",
+          "title": "NODE",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "the resource URL (e.g. a GLB model), absolute or relative to the fabric."
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "native",
+      "confidence": "verified",
+      "note": "The pinned Forum Sneeze glTF loader reads scene nodes with local transforms and child indices from glTF/GLB and composes children under their parent transform.",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/MetaverseStandards/Sneeze/04bc0ac68e1abd146a5df3b309f4d210b18bca57/src/deps/gltf/Gltf.md",
+          "title": "Forum Sneeze pinned glTF loader documentation",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Children compose under the parent transform."
+        }
+      ],
+      "direction": "read"
+    }
+  ]
+}

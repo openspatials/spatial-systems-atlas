@@ -1,0 +1,2363 @@
+{
+  "subject_id": "vrchat",
+  "summary": "VRChat is a social virtual world platform built on the Unity game engine, where both worlds and avatars are authored in Unity and uploaded. Nothing that goes in ever comes out: an upload is compiled into a Unity asset bundle tied to one pinned editor version and one target platform, so the same avatar must be built and uploaded separately for computers, standalone headsets and phones, and no tool outside a matching VRChat client can open the result. World rules are written in VRChat's own language, which compiles to VRChat's own bytecode and which VRChat states follows no version of the C sharp standard, so interactivity cannot travel with an asset either. What VRChat does unusually well is bounding guest content: two published closed lists of permitted components, hard numeric limits on network traffic, downloads and avatar size, and a published avatar scoring system that lets a viewer refuse anything too expensive. The one genuinely open interface is Open Sound Control, where a program on the same machine can set and read avatar values, push in gaze and body tracker poses and drive movement, with VRChat advertising itself for discovery over Zeroconf and asking the person's consent before it sends anything out. Two traps for a standards reader: the coordinate convention is left-handed with Y up, the opposite of the neutral transfer formats, and saved player data is forbidden by design from being shared between worlds, so a portal carries your account and your avatar and nothing else.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "native",
+      "note": "VRChat renders through the Unity game engine, and the evidence points to Unity's older \"built-in\" renderer rather than either of Unity's newer pipelines: the allowlist of components a world may contain includes Projector, Halo, LensFlare and FlareLayer, which only exist in the built-in renderer, and the supported add-on list names Post Processing Stack v2, which is also built-in-only. No VRChat page states the pipeline by name, and creators cannot add or reorder render passes.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The following is the complete list of scripts usable within worlds. Components that are not in this list will not work."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/supported-assets",
+          "title": "Supported Scripted Assets",
+          "retrieved": "2026-08-23",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "native",
+      "note": "Surfaces are described by Unity materials and shaders. On phones and headsets running Android, creators may only use the small set of shaders VRChat ships. A world can push global shader values from a script, but only under names beginning with `_Udon`. None of this leaves VRChat: a material is only meaningful to a Unity build of the same version.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/platforms/android/quest-content-limitations",
+          "title": "Android Content Limitations",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "VRChat on Android or Quest only permits the shaders provided with the latest SDK on avatars."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/vrc-graphics/",
+          "title": "VRCGraphics",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "the property name must be prefixed with '_Udon', or be the literal string '_AudioTexture.'"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "native",
+      "note": "Full Unity lighting is available in worlds — real-time lights, baked lightmaps, light probes and reflection probes are all on the component allowlist. VRChat tells creators targeting phones and standalone headsets to bake everything and treat real-time lights as unaffordable.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/platforms/android/quest-content-optimization",
+          "title": "Quest Content Optimization",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Baking lighting for your world is essential. It is not unreasonable to write off real-time lights completely, as they are very expensive."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components",
+          "retrieved": "2026-08-23",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.post",
+      "level": "native",
+      "note": "Worlds may use Unity's Post Processing Stack v2, and VRChat ships a worked example of saving and reloading a player's post-processing choices. Post-processing is switched off entirely for avatars on Android and standalone headsets.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/supported-assets",
+          "title": "Supported Scripted Assets",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Post Processing Stack v2"
+        },
+        {
+          "url": "https://creators.vrchat.com/platforms/android/quest-content-limitations",
+          "title": "Android Content Limitations",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "completely disabled"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "partial",
+      "note": "Unity's LODGroup component is allowed in worlds, so a creator can swap mesh detail by distance. There is no streaming order: a world arrives as one packaged file that must finish downloading before you enter, and VRChat publishes nothing about sending nearer geometry first.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "LODGroup"
+        },
+        {
+          "url": "https://creators.vrchat.com/avatars/avatar-size-limits",
+          "title": "Avatar Size Limits",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "the VRChat SDK packages it into a Unity asset bundle and compresses it"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "none",
+      "note": "Nothing in VRChat renders Gaussian splats or radiance fields. The list of components a world may contain is closed and contains no splat or radiance-field renderer, and a creator cannot add one because custom engine code is not permitted.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The following is the complete list of scripts usable within worlds. Components that are not in this list will not work."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "none",
+      "note": "No point-cloud, voxel or volumetric-video rendering. Unity particle systems are allowed but they draw sprites, not captured volumes. The closed component list has no volumetric renderer.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The following is the complete list of scripts usable within worlds. Components that are not in this list will not work."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "native",
+      "note": "Text in three dimensions is handled by TextMeshPro, which VRChat supports and documents with its own script pages for text, input fields and dropdowns. Unity's older TextMesh is also allowed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/supported-assets",
+          "title": "Supported Scripted Assets",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "TextMeshPro"
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/components/textmeshpro/tmp_text",
+          "title": "TMP_Text",
+          "retrieved": "2026-08-23",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "native",
+      "note": "A world declares where people appear and what camera settings they inherit through its scene descriptor, and scripts can read and change camera settings at run time. Cameras are also on the component allowlist. All of this is expressed in Unity terms and does not travel.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/components/vrc_scenedescriptor",
+          "title": "VRC_SceneDescriptor",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Settings from this camera are applied to users in the room. Can be an object in the scene or prefab."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/components/vrc_scenedescriptor",
+          "title": "VRC_SceneDescriptor",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "An array of transforms used as reference for spawn points of the world"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "native",
+      "note": "The scene is a Unity hierarchy of game objects and transforms. VRChat's own tooling confirms this — network identifiers are attached to individual game objects and are matched between builds by their path in the hierarchy.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/networking/network-id-utility",
+          "title": "Network ID Utility",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A network ID is simply a number assigned to a GameObject."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "native",
+      "note": "VRChat states its convention plainly in its Open Sound Control pages: left-handed, Y is up, one unit is one metre, and rotations given as three angles are applied in the order Z, X, Y. This is Unity's convention. It is the opposite handedness to glTF and to most of USD, so any exchange in or out needs an axis flip.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.vrchat.com/docs/osc-trackers",
+          "title": "OSC Trackers",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "1.0f = 1m in real-world space"
+        },
+        {
+          "url": "https://docs.vrchat.com/docs/osc-trackers",
+          "title": "OSC Trackers",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Euler angles are in degrees and will be applied in order of Z, X, Y when used internally to produce a quaternion."
+        },
+        {
+          "url": "https://docs.vrchat.com/docs/osc-eye-tracking",
+          "title": "OSC Eye Tracking",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "For vectors, it's the standard Unity format of +x right, +y up, and +z forward"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "conflicts",
+      "note": "This is the single largest interoperability problem. A VRChat world or avatar is not shipped as a model file at all — the upload tool converts the Unity scene into a Unity asset bundle, a compiled binary keyed to one pinned Unity editor version and to one target platform. Separate bundles must be built and uploaded for Windows, for Android and for iOS. Nothing outside a matching Unity build can open the result, and there is no way to get an asset back out. VRChat reads FBX at authoring time inside Unity; it writes nothing any other tool can read.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/avatars/avatar-size-limits",
+          "title": "Avatar Size Limits",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "the VRChat SDK packages it into a Unity asset bundle and compresses it"
+        },
+        {
+          "url": "https://creators.vrchat.com/platforms/android/cross-platform-setup",
+          "title": "Cross-Platform Setup",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The version you're uploading depends on the originating project's build target. If you're on a project set up for Android, it'll upload for Quest. If the build target is Windows, then you're uploading a PC version."
+        },
+        {
+          "url": "https://creators.vrchat.com/sdk/upgrade/current-unity-version",
+          "title": "Current Unity Version",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Upgrading your version will result in content not loading once uploaded to VRChat - make sure to stay on our recommended version."
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "partial",
+      "note": "Creators author meshes in a modelling tool and bring them into Unity as FBX. VRChat then publishes triangle budgets per platform, but the encoding that actually ships is Unity's internal mesh format inside the asset bundle. No standard geometry compression (such as Draco or meshopt) is offered, and there is no export path.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/platforms/android/quest-content-optimization",
+          "title": "Quest Content Optimization",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "We recommend that you budget approximately 250,000 triangles for your world in total."
+        },
+        {
+          "url": "https://creators.vrchat.com/platforms/android/quest-content-optimization",
+          "title": "Quest Content Optimization",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "We recommend that you aim for under 10,000 triangles for your avatar."
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "partial",
+      "note": "Textures are compressed by Unity into the platform-specific bundle, which is why a separate upload is needed per platform. VRChat gives resolution guidance and total size caps but does not name the compressed texture formats it targets, and the compressed images cannot be read back out.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/platforms/android/quest-content-optimization",
+          "title": "Quest Content Optimization",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "You should aim for using 1k (1024x1024) resolution textures at maximum."
+        },
+        {
+          "url": "https://creators.vrchat.com/platforms/android/quest-content-optimization",
+          "title": "Quest Content Optimization",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "You cannot upload or access worlds that exceed 100MB in size after build-time compression for VRChat on Android."
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "none",
+      "note": "There is no way to carry a material definition into or out of VRChat so another renderer can reproduce it. VRChat does have an internal degradation mechanism — a shader can declare a tag naming a simpler stand-in for the safety system to substitute — but that only picks from VRChat's own built-in shaders and means nothing outside VRChat. MaterialX is not mentioned anywhere.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/avatars/shader-fallback-system",
+          "title": "Shader Fallback System",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "When a shader is blocked by the Safety System, it is first checked for one of the internal pre-compiled shaders in this list."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "native",
+      "note": "Animation is Unity animation clips driven by Unity animator state machines, layered by VRChat into named \"playable layers\" for avatars. It is thoroughly documented, but the clips ship inside the asset bundle and cannot be exported.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/avatars/playable-layers",
+          "title": "Playable Layers",
+          "retrieved": "2026-08-23",
+          "kind": "primary"
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Animator"
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "partial",
+      "note": "Rigs must be mapped to Unity's Humanoid bone set, which is a real shared convention across Unity content and is what VRM also builds on — but it is Unity's, not an openly published specification, and VRChat adds requirements of its own about which bone must parent which. Bones are named by mapping into Unity's slots rather than by an agreed public naming scheme.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/avatars/rig-requirements",
+          "title": "Rig Requirements",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Humanoid avatar must have head, hands and feet bones mapped."
+        },
+        {
+          "url": "https://creators.vrchat.com/avatars/rig-requirements",
+          "title": "Rig Requirements",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "make sure that Pelvis, Spine, Chest, Neck and Shoulders are mapped."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "partial",
+      "note": "Shape deformation is Unity blend shapes on skinned meshes, used for mouth shapes and eyelids. The mouth-shape set is a named, shared one (see avatar.expression), but the blend shapes themselves are baked into the bundle and cannot be read by anything else.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/avatars/animator-parameters/",
+          "title": "Animator Parameters",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "We use the Oculus viseme index"
+        },
+        {
+          "url": "https://creators.vrchat.com/avatars/whitelisted-avatar-components/whitelisted-avatar-components",
+          "title": "Allowlisted Avatar Components",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "SkinnedMeshRenderer"
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "native",
+      "note": "Scripts can draw one mesh many times in a single call, and VRChat tells creators to switch on Unity's per-material instancing option for performance on standalone headsets.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/vrc-graphics/",
+          "title": "VRCGraphics",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Draw the same mesh multiple times using GPU instancing"
+        },
+        {
+          "url": "https://creators.vrchat.com/platforms/android/quest-content-limitations",
+          "title": "Android Content Limitations",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "enable 'Enable GPU Instancing' on your materials"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "none",
+      "note": "There is no layering, referencing or overriding of a scene from several sources. Unity prefabs exist while authoring, but the upload flattens everything into one compiled package, and a world cannot reference or pull in another creator's scene at run time. The only composition VRChat does at run time is giving each visitor a private copy of a designated object. The one override mechanism that does exist works the other way — it lets a creator substitute different content per platform for the same avatar identifier, which is a build-time variant, not a composition model.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/avatars/avatar-size-limits",
+          "title": "Avatar Size Limits",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "the VRChat SDK packages it into a Unity asset bundle and compresses it"
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/persistence/player-object",
+          "title": "PlayerObject",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "PlayerObjects allow you to automatically give each player who joins your world a copy of a GameObject, such as a flashlight, a health bar, or a sword."
+        },
+        {
+          "url": "https://creators.vrchat.com/avatars/per-platform-avatar-overrides",
+          "title": "Per-Platform Avatar Overrides",
+          "retrieved": "2026-08-23",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "native",
+      "note": "One unit is one metre, stated outright in VRChat's tracking documentation, and avatar height is expressed and clamped in metres. This is the cleanest agreement VRChat has with the rest of the industry.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.vrchat.com/docs/osc-trackers",
+          "title": "OSC Trackers",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "1.0f = 1m in real-world space"
+        },
+        {
+          "url": "https://creators.vrchat.com/avatars/avatar-scaling",
+          "title": "Avatar Scaling",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The height above 0 (Y component in transform position) of an avatar's viewpoint while in a T-Pose."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "none",
+      "note": "Nothing about permitted use travels with an uploaded asset. VRChat has a marketplace with terms, and an avatar can be marked as cloneable or not, but there is no licence field carried in the content itself and no way for a recipient to read terms off an asset.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "none",
+      "note": "No signed record of authorship travels with content. The only link between an asset and its maker is the blueprint identifier held in VRChat's own database, which is an account record on VRChat's servers, not a signature a third party could check.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/sdk/vrcpipelinemanager",
+          "title": "VRCPipelineManager",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The unique id for the avatar or world"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "conflicts",
+      "note": "An avatar is not a portable body description. It is a compiled, per-platform Unity asset bundle behind a VRChat identifier. VRChat can consume a VRM file only after a community-written third-party converter turns it into a Unity project, and VRChat's own page warns that the VRM format is not natively supported. VRChat exports nothing. An avatar cannot leave VRChat, and a VRM, glTF or USD body cannot enter it without an out-of-band conversion step.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/avatars/creating-your-first-avatar/",
+          "title": "Creating Your First Avatar",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "VRoid Studio outputs avatars in the .vrm format, which isn't natively supported by Unity!"
+        },
+        {
+          "url": "https://creators.vrchat.com/avatars/creating-your-first-avatar/",
+          "title": "Creating Your First Avatar",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "If you'd like to import a VRoid Studio model directly for use in VRChat, you may want to look into the community-created VRMtoVRChat converter for .vrm avatars."
+        },
+        {
+          "url": "https://creators.vrchat.com/avatars/avatar-size-limits",
+          "title": "Avatar Size Limits",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "the VRChat SDK packages it into a Unity asset bundle and compresses it"
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "partial",
+      "note": "The bone structure is Unity's Humanoid mapping with VRChat's extra rules layered on top — head, hands and feet must be mapped, the chest must parent both shoulders and the neck, and eye bones must be axis-aligned a particular way. Animation transfers between VRChat avatars because of this, but the agreement is Unity's rather than an open published standard.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/avatars/rig-requirements",
+          "title": "Rig Requirements",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Humanoid avatar must have head, hands and feet bones mapped."
+        },
+        {
+          "url": "https://creators.vrchat.com/avatars/rig-requirements",
+          "title": "Rig Requirements",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Y axis should point up. The Z axis should point forward."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "partial",
+      "note": "Mouth shapes for speech use the fifteen-entry Oculus viseme index, which VRChat names explicitly — that part is a genuinely shared convention and is the most portable piece of VRChat's avatar model. Everything else about expression is VRChat-specific: a set of named animator values and a menu system that only VRChat understands, with a fixed budget of synchronised values per avatar.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/avatars/animator-parameters/",
+          "title": "Animator Parameters",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "We use the Oculus viseme index"
+        },
+        {
+          "url": "https://creators.vrchat.com/avatars/expression-menu-and-controls",
+          "title": "Expression Menu and Controls",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Up to 8 controls can be added to a single menu."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "native",
+      "note": "Because avatars are mapped onto Unity's Humanoid skeleton, an animation authored for one body plays on another. VRChat also reports back how much of the wearer's real body is being tracked, from unknown through hands-only up to full-body, so animation logic can adapt.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/avatars/animator-parameters/",
+          "title": "Animator Parameters",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Uninitialized"
+        },
+        {
+          "url": "https://creators.vrchat.com/avatars/rig-requirements",
+          "title": "Rig Requirements",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Humanoid avatar must have head, hands and feet bones mapped."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "none",
+      "note": "There is no wearable or attachment format. An avatar ships as one indivisible package, so a hat or a bag authored for one avatar cannot be transferred to another at run time. Worlds can hand out spawnable objects, but VRChat says scripts cannot even see those objects, and they are not worn on the body.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/items",
+          "title": "Items",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Udon programs in your world cannot reference items. If one of your scripts finds an item, it appears as a null object."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "native",
+      "note": "This is one of VRChat's strongest areas. Every avatar is scored against published numeric budgets and given a rank; viewers can refuse anything above a chosen rank. Above that sits a generated stand-in (\"impostor\") and below it a plain substitute avatar. VRChat generates the impostor itself, including automatically when an avatar was only built for Windows and is being viewed on a standalone headset. None of these reduced forms can be exported.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/avatars/avatar-impostors",
+          "title": "Avatar Impostors",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Impostors are avatar body doubles, allowing you to see avatars in situations where you would typically see a fallback avatar or robot."
+        },
+        {
+          "url": "https://docs.vrchat.com/docs/avatar-fallback-system",
+          "title": "Avatar Fallback System",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "avatars built for Windows cannot be displayed on Quest/Android because of the difference in platform build processes."
+        },
+        {
+          "url": "https://creators.vrchat.com/avatars/avatar-performance-ranking-system",
+          "title": "Avatar Performance Ranking System",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Aim for Good ranking. If you can't hit that, Medium is perfectly fine."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "partial",
+      "note": "An avatar is bound to a VRChat account and nothing else. Both carry VRChat identifiers — the avatar an `avtr_` value, the person a `usr_` value — and the binding is a row in VRChat's database. There is no verifiable credential, no decentralised identifier, and no way for another operator to check the binding.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/sdk/vrcpipelinemanager",
+          "title": "VRCPipelineManager",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "avtr_00000000-0000-0000-0000-000000000000"
+        },
+        {
+          "url": "https://docs.vrchat.com/docs/osc-avatar-parameters",
+          "title": "OSC Avatar Parameters",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "usr_9381c776-ce11-4def-9331-6ffeacce027e"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "native",
+      "note": "Worlds get Unity's rigid-body physics. Rigidbody is on the component allowlist and there is a dedicated component that shares an object's position, rotation, scale and rigid-body state with everyone in the instance. It is switched off entirely on Android and standalone headsets for avatars.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/networking/network-components",
+          "title": "Network Components",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "the Transform (position, rotation scale) and Rigidbody (physics) of the object you put it on"
+        },
+        {
+          "url": "https://creators.vrchat.com/platforms/android/quest-content-limitations",
+          "title": "Android Content Limitations",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Physics Objects (rigidbodies, colliders, joints)"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "native",
+      "note": "The full Unity collider set is allowed in worlds — box, sphere, capsule, mesh, terrain and wheel. VRChat also fixes which numbered layers collide with which, and overwrites any change a creator makes to that table on upload, leaving only a block of ten layers free for creators.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/layers",
+          "title": "Unity Layers in VRChat",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "If you change the collision matrix, rename, or remove built-in layers, your changes will be overridden when you upload your world to VRChat."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/layers",
+          "title": "Unity Layers in VRChat",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Layers 22-31 are unused 'User' Unity layers. You can edit them freely, and changes to these layers will not be discarded when you build & upload your world."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "native",
+      "note": "Unity's joint components — hinge, fixed, spring, character and configurable — are all on the world allowlist. As with rigid bodies, joints are disabled for avatars on Android and standalone headsets.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "CharacterJoint, ConfigurableJoint, FixedJoint, HingeJoint, SpringJoint"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "partial",
+      "note": "Unity's cloth component is allowed in worlds and on avatars for desktop computers, but is switched off for avatars on Android and standalone headsets. VRChat's own secondary-motion system (see below) is a bone chain, not a true soft body.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Cloth"
+        },
+        {
+          "url": "https://creators.vrchat.com/platforms/android/quest-content-limitations",
+          "title": "Android Content Limitations",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Cloth"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "native",
+      "note": "Regions that fire when someone enters are well supported. A script receives separate events for a person's capsule entering, staying inside and leaving a trigger region, plus equivalents for physical contact and for particle hits. VRChat warns that the physical-contact events only fire when the object moves into the person, not the reverse.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/players/player-collisions",
+          "title": "Player Collisions",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "OnPlayerTriggerEnter is called when a player's capsule enters a Trigger Collider."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/players/player-collisions",
+          "title": "Player Collisions",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "These events WILL NOT be called when a player 'walks into' a stationary object."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.determinism",
+      "level": "none",
+      "note": "VRChat makes no determinism claim anywhere. Its networking model is the opposite: one client owns an object, simulates it and sends the result, and everyone else receives values. Where an owner's updates are lost, VRChat says it guesses the missing values rather than re-simulating them, which rules out matching outcomes on different machines.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/networking/network-details",
+          "title": "Networking Specs and Tricks",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "intermediary value approximation to recover lost data"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "native",
+      "note": "Sound is placed in the world with a VRChat component wrapping Unity's audio source. It exposes a volume boost, a near radius where fall-off begins, a far radius where the sound reaches silence, and a radius that makes a sound seem to come from a region rather than a point.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/components/vrc_spatialaudiosource",
+          "title": "VRC_SpatialAudioSource",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The far radius, in meters, where volume falls off to silence. By default, it is set to 40m"
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/components/vrc_spatialaudiosource",
+          "title": "VRC_SpatialAudioSource",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Falloff of audio intensity is roughly inverse-square by default."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "partial",
+      "note": "Sound is positioned and falls off with distance, and the component page shows the system converts an older Oculus spatial audio component into VRChat's own on import. But VRChat never names the method used to place sound at the ears — head-related transfer functions and ambisonics are not mentioned on any page checked. A creator cannot choose or supply a spatialiser.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/components/vrc_spatialaudiosource",
+          "title": "VRC_SpatialAudioSource",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Using the 'Enable 3D Spatialization on all AudioSources' button...converts any `ONSPAudioSource` to `VRC_SpatialAudioSource` components"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "partial",
+      "note": "Unity's reverb zone and reverb, echo, chorus, distortion and filter effects are all allowed in worlds, so a creator can colour a space by hand. There is no acoustic simulation derived from the geometry — the reverb is authored, not computed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "AudioReverbZone"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "none",
+      "note": "No page checked describes sound being blocked or muffled by walls. The only distance-related filtering documented is an optional low-pass on voice that depends on distance, not on geometry.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/players/player-audio",
+          "title": "Player Audio",
+          "retrieved": "2026-08-23",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "partial",
+      "note": "Worlds can play live audio and video from a small allowed list of hosts using a commercial media plug-in, which handles live streams from named services; Unity's own player cannot. Users are limited to one new media address every five seconds across all players in a world. The traffic is one way: a world can pull a live stream in and cannot publish one out.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/video-players/",
+          "title": "Video Players",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "AVPro supports live streams on multiple platforms, like YouTube Live, Twitch, and some others! The Unity Video player does not support these live streams."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/video-players/",
+          "title": "Video Players",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A given user is only permitted to handle a new video player URL once every five seconds. This is a global limit across all video players."
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "partial",
+      "note": "Live voice works and creators get real control over it — near and far distance, gain, a distance-based low-pass filter, and a radius that makes a voice seem to fill a region. What is completely absent is the transport: no VRChat page checked names the codec, the protocol or how voice travels. Voice cannot be received or sent by anything outside the VRChat client.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/players/player-audio",
+          "title": "Player Audio",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "in Meters, Range is 0 - 1,000,000"
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/players/player-audio",
+          "title": "Player Audio",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "in Decibels, Range 0-24"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "native",
+      "note": "Well documented and precisely bounded. Scripts mark variables to be shared; each script may send about eleven kilobytes a second; a continuously shared update is capped at roughly two hundred bytes, a manually triggered one at roughly two hundred and eighty thousand. Every shareable type is listed with its size in bytes. All of this is VRChat's own scheme with no published wire format.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/networking/network-details",
+          "title": "Networking Specs and Tricks",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Udon scripts can send out about 11 kilobytes per second."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/networking/network-details",
+          "title": "Networking Specs and Tricks",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "roughly 280,496 bytes per serialization"
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/networking/",
+          "title": "Networking",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The process of packing and sending the variable is called Serialization, and Deserialization is when the data is received and unpacked."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "native",
+      "note": "Clear and simple: one person owns each networked object and only that person may change its shared values. The first person into an empty instance owns everything not otherwise assigned. Ownership can be requested and transferred, and a script can approve or refuse the request. There is no server-authoritative option — authority always sits on somebody's computer.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/networking/ownership",
+          "title": "Ownership",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The first player to join an instance becomes the owner of all networked objects by default."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/networking/ownership",
+          "title": "Ownership",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "There will always be a valid master player in an instance"
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/networking/ownership",
+          "title": "Ownership",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Don't rely on master if you can avoid it!"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "partial",
+      "note": "There is one mechanism and it is automatic: VRChat gives priority to shared objects the local person can currently see, checked periodically. Creators cannot define zones, distances or subscription rules of their own.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/networking/network-details",
+          "title": "Networking Specs and Tricks",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Udon's networking prioritizes synchronized game objects that are currently visible to the local user"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.prediction",
+      "level": "partial",
+      "note": "There is smoothing but not prediction. For continuously shared values VRChat fills in gaps by approximating the values it did not receive. No page checked describes predicting a remote person's input locally and correcting afterwards, and there is no rollback.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/networking/network-details",
+          "title": "Networking Specs and Tricks",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "intermediary value approximation to recover lost data"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "conflicts",
+      "note": "VRChat plainly has a working transport, but it publishes nothing about it. Across every networking page checked — the overview, the specifications page, ownership, events, late joiners, components, performance and debugging — no protocol, port, framing or handshake is named. No independent client can join a VRChat instance, and no other system can speak to one. The only transport VRChat does document is Open Sound Control over the local machine, which carries a person's own avatar and tracking values, not session traffic.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/networking/network-details",
+          "title": "Networking Specs and Tricks",
+          "retrieved": "2026-08-23",
+          "kind": "primary"
+        },
+        {
+          "url": "https://docs.vrchat.com/docs/osc-overview",
+          "title": "OSC Overview",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "We're launching with two APIs: Input and Avatar Parameters."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.media",
+      "level": "partial",
+      "note": "Live audio and video reach a world through a media plug-in that pulls from an allowed list of public hosts, and VRChat operates its own delivery host for creators. Live voice is separate and undocumented. There is no way to publish a stream out of a world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/video-players/",
+          "title": "Video Players",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "AVPro supports live streams on multiple platforms, like YouTube Live, Twitch, and some others! The Unity Video player does not support these live streams."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/string-loading",
+          "title": "String Loading",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "VRCDN (`*.vrcdn.cloud`)"
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "net.session",
+      "level": "partial",
+      "note": "Joining a running world happens entirely inside VRChat: you need a VRChat account, and the client resolves the world identifier and instance for you. VRChat documents the identifiers but not the join protocol or the authentication exchange. A person on a platform for which the world was never built simply cannot join it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/platforms/android/cross-platform-setup",
+          "title": "Cross-Platform Setup",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "If a world isn't available for the platform you're on, you'll be unable to enter portals to that world or join it through the UI."
+        },
+        {
+          "url": "https://creators.vrchat.com/sdk/vrcpipelinemanager",
+          "title": "VRCPipelineManager",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "wrld_00000000-0000-0000-0000-000000000000"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "conflicts",
+      "note": "VRChat has portals and they work well — a creator places one, points it at a world identifier, and walking into it moves the person to an existing public instance or opens a new one. But VRChat forbids the second half of this capability outright: saved data belongs to one world and is explicitly never shared with another. You arrive with your account and your avatar and nothing else. Portals also only reach other VRChat worlds; there is no cross-operator handoff.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/components/vrc_portalmarker",
+          "title": "VRC_PortalMarker",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Set the World ID property to a specific world, and the portal will lead to an existing public instance of that world. If no public instance exists, the portal leads to a new instance."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/persistence/",
+          "title": "Persistence",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Persistent data cannot be shared between different worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "partial",
+      "note": "Inside a world a script can list who is present and be told when someone joins or leaves, and an avatar is told whether the person looking at it is on the wearer's friends list. Across operators there is nothing. VRChat has a web interface that community projects wrap, but VRChat's help centre says it offers no support for non-official applications using it, and the widely used community description of that interface is unofficial and not published by VRChat.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/avatars/animator-parameters/",
+          "title": "Animator Parameters",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "IsOnFriendsList"
+        },
+        {
+          "url": "https://help.vrchat.com/hc/en-us",
+          "title": "VRChat Help Centre — API usage guidelines",
+          "retrieved": "2026-08-23",
+          "kind": "secondary"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "partial",
+      "note": "Places have stable, well-formed names — a world is a `wrld_` identifier with a fixed layout that VRChat refuses to accept in any other form, and instances sit underneath. But those names only resolve inside VRChat's own service. There is no public resolution protocol and no way to point at a place outside VRChat.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/sdk/vrcpipelinemanager",
+          "title": "VRCPipelineManager",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Any other ID format will not be accepted."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/components/vrc_portalmarker",
+          "title": "VRC_PortalMarker",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "wrld_f995a2eb-7ddc-4558-aef1-815c3b23df6c"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "partial",
+      "note": "Worlds are found only through VRChat's own search and its curated publishing pipeline. The one genuine, standards-based discovery mechanism VRChat implements points the other way: for local Open Sound Control applications it advertises itself over Zeroconf, so a companion program on the same machine finds it without anyone typing an address. That discovers tools, not places.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrchat-community/vrc-oscquery-lib",
+          "title": "vrc-oscquery-lib",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "the service type '_oscjson._tcp' on the local network over Zeroconf"
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/submitting-a-world-to-be-made-public",
+          "title": "Submitting a World",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Publishing your world will make it immediately available to all users that opt-in for Community Labs."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "partial",
+      "note": "A person is a VRChat account with a `usr_` identifier. It is stable and well formed, and it appears in file paths on the person's own machine. It is entirely VRChat's, resolvable only by VRChat, and there is no federation or portability.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.vrchat.com/docs/osc-avatar-parameters",
+          "title": "OSC Avatar Parameters",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "usr_9381c776-ce11-4def-9331-6ffeacce027e"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "none",
+      "note": "No verifiable credential format of any kind. Nothing in VRChat's documentation index mentions credentials, decentralised identifiers or signed claims about a person.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "none",
+      "note": "There is no protocol for two parties to request and present claims about a person. All trust signals are read from VRChat's own servers by VRChat's own client.",
+      "confidence": "reported",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "partial",
+      "note": "VRChat has a real permission model — a ladder of trust ranks, per-rank shields that decide which parts of a stranger's avatar you will render, and a mutual consent rule before two people's avatars may touch each other. It is entirely internal: no party other than VRChat can read or verify what a given person is permitted to do.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.vrchat.com/docs/permissions-and-settings",
+          "title": "Avatar Interaction Permissions and Settings",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "For someone to be able to interact with your avatar, both parties must explicitly allow interactions with each other."
+        },
+        {
+          "url": "https://docs.vrchat.com/docs/vrchat-safety-and-trust-system",
+          "title": "VRChat Safety and Trust System",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "users that you have Friended have all of their avatar features shown in the Normal Shield Level."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "partial",
+      "note": "There is one narrow but real instance of revealing only what is needed. VRChat checks age through a third-party provider and then lets the person display a badge saying only that they are verified, or that they are over eighteen, without exposing the underlying document or date. This is a product feature described on VRChat's help and blog pages, not a credential format, and it does not generalise to anything else.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://help.vrchat.com/hc/en-us/articles/37955712662291-Age-Verification-Issues-Tips-Help",
+          "title": "Age Verification Issues, Tips and Help",
+          "retrieved": "2026-08-23",
+          "kind": "secondary"
+        },
+        {
+          "url": "https://hello.vrchat.com/blog/june-2026-safety-update",
+          "title": "Age Assurance, Content Gating and Safety Improvements",
+          "retrieved": "2026-08-23",
+          "kind": "secondary"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.social",
+      "level": "partial",
+      "note": "VRChat has friends, groups and trust ranks, and a world can react to whether the viewer is a friend of the avatar's wearer. None of it is portable — relationships live in VRChat's database and cannot be presented to or read by another operator.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/avatars/animator-parameters/",
+          "title": "Animator Parameters",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "IsOnFriendsList"
+        },
+        {
+          "url": "https://docs.vrchat.com/docs/vrchat-safety-and-trust-system",
+          "title": "VRChat Safety and Trust System",
+          "retrieved": "2026-08-23",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "partial",
+      "note": "There is enforcement, but it is ownership enforcement rather than licence enforcement. VRChat's marketplace rules say a paid item can only be used by the person who owns the content it belongs to, and a world can unlock content for people who bought a specific listing. Terms are not expressed in a machine-readable form and cannot be checked by anyone but VRChat.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/economy/faq/",
+          "title": "Creator Economy FAQ",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "No. You must be the content owner to use a product. For example, if you own a world, you can't use Udon products from another creator."
+        },
+        {
+          "url": "https://creators.vrchat.com/economy/products/udon",
+          "title": "Udon Products",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Your worlds can detect Udon products and reward players who own one of your listings."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "out-of-scope",
+      "note": "VRChat worlds are not placed on the Earth. Nothing in the complete site map of the creator documentation refers to latitude, longitude, altitude or any Earth-referenced pose.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/sitemap.xml",
+          "title": "Creator Documentation site map",
+          "retrieved": "2026-08-23",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "out-of-scope",
+      "note": "No coordinate reference systems. The only frame VRChat documents is the local Unity one, left-handed with Y up and one unit per metre.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.vrchat.com/docs/osc-trackers",
+          "title": "OSC Trackers",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Left-handed coordinate system"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "out-of-scope",
+      "note": "No anchors. VRChat is a fully virtual system with no camera pass-through placement model, and the closed component list contains nothing anchor-related.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The following is the complete list of scripts usable within worlds. Components that are not in this list will not work."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "out-of-scope",
+      "note": "No shared or persistent anchors, for the same reason as local anchors.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The following is the complete list of scripts usable within worlds. Components that are not in this list will not work."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.vps",
+      "level": "out-of-scope",
+      "note": "No visual positioning. VRChat does not give worlds access to the camera at all.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/sitemap.xml",
+          "title": "Creator Documentation site map",
+          "retrieved": "2026-08-23",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "out-of-scope",
+      "note": "No tiled terrain or city streaming. A world is a single fixed package with a hard size cap, which rules the approach out structurally.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/platforms/android/quest-content-optimization",
+          "title": "Quest Content Optimization",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "You cannot upload or access worlds that exceed 100MB in size after build-time compression for VRChat on Android."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.indoor",
+      "level": "out-of-scope",
+      "note": "No structured description of interiors. A VRChat interior is ordinary scene geometry with no semantic layer describing rooms, doors or floors.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/sitemap.xml",
+          "title": "Creator Documentation site map",
+          "retrieved": "2026-08-23",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "partial",
+      "note": "VRChat manages the immersive session itself and exposes only the result to creators: whether the person is in a headset, and how many of their limbs are tracked. There is no session lifecycle a creator or an outside program can start, configure or end, and OpenXR is named nowhere in the pages checked.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/avatars/animator-parameters/",
+          "title": "Animator Parameters",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "VRMode"
+        },
+        {
+          "url": "https://docs.vrchat.com/docs/controls",
+          "title": "Controls",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Although we may not officially support them, any headset that works with SteamVR should work, although you may have to explore Community-created controller bindings."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "native",
+      "note": "Thoroughly documented, both for people and for creators. VRChat publishes per-controller pages, supports SteamVR's own rebindable input system, and gives world scripts a named event for each action with a left or right hand tag. The same actions can also be driven from outside over Open Sound Control. That outside path is inbound only: a program can drive VRChat, but VRChat does not publish the person's input back out.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/input-events",
+          "title": "Input Events",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Spacebar on Desktop, typically a face button on controllers."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/input-events",
+          "title": "Input Events",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "LEFT or RIGHT. Included for keyboard and mouse users as well (mouse is RIGHT, keyboard is LEFT)."
+        },
+        {
+          "url": "https://docs.vrchat.com/docs/osc-as-input-controller",
+          "title": "OSC as Input Controller",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "/input/Vertical - Move forwards (1) or Backwards (-1)"
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "native",
+      "note": "Articulated hands work two ways. On standalone headsets VRChat drives the avatar's hands and a pinch-based movement scheme from the headset's own hand tracking. On desktop computers VRChat reads skeletal hand data from SteamVR's standard actions, so any device with a SteamVR driver can feed it — this is a genuine off-platform interface. VRChat computes its own pinch detection from fingertip distances.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/platforms/pc/steamvr-drivers/",
+          "title": "SteamVR Skeletal Hand Tracking Driver Guide",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "VRChat will use any skeletal data that is bound to the `SkeletonLeftHand` or `SkeletonRightHand` actions whenever they are bound to an input source and are available."
+        },
+        {
+          "url": "https://creators.vrchat.com/platforms/pc/steamvr-drivers/",
+          "title": "SteamVR Skeletal Hand Tracking Driver Guide",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "We calculate our own pinch detection by doing distance checks from the thumbtip to the fingertip, and use it for 'clicks' in the UI, as well as gestural inputs."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.eye",
+      "level": "native",
+      "note": "Gaze can be fed into VRChat from any program over Open Sound Control, at documented named addresses, in several formats — a pair of angles, angles plus a focus distance, direction vectors, or separate values per eye — plus a single closed-ness value driving both eyelids. VRChat states the sign conventions and the ten-second timeout after which it reverts to automatic looking. On the privacy side, VRChat requires the person to consent before it starts sending tracking data out to a discovered companion program. The flow is inbound: outside programs push gaze into VRChat, and VRChat publishes no general gaze feed back out.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.vrchat.com/docs/osc-eye-tracking",
+          "title": "OSC Eye Tracking",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Positive numbers for pitch and yaw will rotate down and to the right respectively. For vectors, it's the standard Unity format of +x right, +y up, and +z forward"
+        },
+        {
+          "url": "https://docs.vrchat.com/docs/osc-eye-tracking",
+          "title": "OSC Eye Tracking",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Addresses are case sensitive"
+        },
+        {
+          "url": "https://github.com/vrchat-community/osc/wiki/OSCQuery",
+          "title": "OSCQuery",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "the user will see a HUD notification telling them that VRChat is going to send data to APPLICATION_NAME"
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "native",
+      "note": "A world script can vibrate a person's controller in a chosen hand, giving duration, strength and speed as three values from zero to one. There is no richer haptic description and nothing for gloves or suits beyond whatever their driver reports as a controller.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/players/",
+          "title": "Player API",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Vibrate the Player's Haptic controllers if they have them. The float inputs should be in the range 0-1."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "partial",
+      "note": "A creator can learn a useful amount about the person's setup: whether they are in a headset, and a single number saying whether they are on a desktop computer, using hands only, head and hands, or four, five or six tracked points. There is no general capability list — no way to ask about eye tracking, hand tracking, haptics, refresh rate or display.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/avatars/animator-parameters/",
+          "title": "Animator Parameters",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Uninitialized"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "conflicts",
+      "note": "World rules are written in Udon, which is VRChat's own language running on VRChat's own bytecode interpreter. Creators usually write a restricted dialect of C# which the tool compiles down to Udon assembly, and VRChat states plainly that this dialect follows no version of the C# standard. Generic classes, interfaces, method overloads and properties do not work. The compiled program only runs inside VRChat and can never be moved to another runtime. The compiler itself is open source under a permissive licence, which is a real positive, but it only ever emits VRChat bytecode.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/",
+          "title": "Udon",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "VRChat Udon is technically a virtual machine running bytecode compiled from Udon Assembly."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/udonsharp/",
+          "title": "UdonSharp",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "UdonSharp is not conformant to any version of the C# language specification."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/vm-and-assembly/",
+          "title": "The Udon VM and Udon Assembly",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Udon VM is a bytecode interpreter designed to run compiled Udon Graph programs."
+        },
+        {
+          "url": "https://github.com/vrchat-community/UdonSharp",
+          "title": "UdonSharp",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "UdonSharp is a compiler that translates C# to Udon assembly, so you can create interactive VRChat worlds by writing C# code."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "conflicts",
+      "note": "VRChat has a visual node graph for interactivity, which sounds like the portable declarative behaviour other systems are converging on — but it is not. The graph compiles in the background into the same VRChat-only assembly as everything else, so the interactivity does not travel with an asset; it is baked into a proprietary bytecode blob inside a Unity asset bundle.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/graph/",
+          "title": "Udon Graph",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The graph automatically compiles in the background at regular intervals."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/",
+          "title": "Udon",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "VRChat Udon is technically a virtual machine running bytecode compiled from Udon Assembly."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "native",
+      "note": "This is VRChat's strongest capability. Guest content cannot run arbitrary code: worlds and avatars may only use components from two published closed allowlists, anything else is refused at upload, and all scripting goes through the interpreter rather than the host runtime. Reaching the network is gated by an address allowlist that a person must deliberately override. On top of that sits the trust and shield system that decides how much of a stranger's avatar to render at all.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The following is the complete list of scripts usable within worlds. Components that are not in this list will not work."
+        },
+        {
+          "url": "https://creators.vrchat.com/avatars/whitelisted-avatar-components/whitelisted-avatar-components",
+          "title": "Allowlisted Avatar Components",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Any component on the following list can be used in VRChat. Other components or custom scripts won't work in VRChat and may stop you from uploading your avatar."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/external-urls",
+          "title": "External URLs",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "By default, a VRCUrl can only be accessed if it is on VRChat's domain allowlist."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "partial",
+      "note": "Autonomous characters are supported through Unity's navigation meshes, including building and updating them while the world is running, with some capabilities held back. There is no notion of an external autonomous agent joining a world as a participant, and no interface for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/ai-navigation",
+          "title": "AI Navigation",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "You can now create and update your navigation meshes at runtime in the VRChat client."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/ai-navigation",
+          "title": "AI Navigation",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "VRChat does not currently have a method for retrieving and applying custom agent types."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "native",
+      "note": "VRChat publishes hard numbers for almost everything guest content may consume, which is rare and valuable. Network traffic is capped per script and per update. Events are rate limited with a default and a ceiling. Downloads are throttled to one every five seconds with size and resolution caps. Avatars have download and in-memory size caps per platform. On top of that the performance rank system turns the whole avatar budget into a single score that viewers can filter on.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/networking/network-details",
+          "title": "Networking Specs and Tricks",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Udon scripts can send out about 11 kilobytes per second."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/image-loading",
+          "title": "Image Loading",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The maximum resolution is 2048 × 2048 pixels. Attempting to download larger images will result in an error."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/string-loading",
+          "title": "String Loading",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "One string can be downloaded every five seconds. If this limit is exceeded, string downloads are queued and downloaded in a random order."
+        },
+        {
+          "url": "https://creators.vrchat.com/avatars/avatar-size-limits",
+          "title": "Avatar Size Limits",
+          "retrieved": "2026-08-23",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "partial",
+      "note": "What survives is per-person, not per-world. Each visitor gets a key-value store belonging to that world, and can be given their own copy of an object whose shared values are saved. So scores, unlocks, currency and preferences come back. What does not come back is the state of the world's own furniture — there is no documented way to restart an instance and find shared world objects where they were left. VRChat also warns data must be written before the person leaves.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/persistence/",
+          "title": "Persistence",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Persistence allows worlds to save high scores, inventories, the player's last position, currency, unlocks, preferences, and much more."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/persistence/player-data",
+          "title": "PlayerData",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "All UdonBehaviours in your world share access to your world's PlayerData."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/persistence/player-object",
+          "title": "PlayerObject",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "PlayerObjects allow you to automatically give each player who joins your world a copy of a GameObject, such as a flashlight, a health bar, or a sword."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "partial",
+      "note": "Worlds can and do keep inventories, but they never travel. VRChat states outright that saved data cannot be shared between worlds, so an item earned in one world does not exist in the next. The separate spawnable-object feature is not an inventory at all — VRChat says scripts cannot even see those objects, and that a script which tries to handle one will throw and disable itself.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/persistence/",
+          "title": "Persistence",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Persistent data cannot be shared between different worlds."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/items",
+          "title": "Items",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Udon programs in your world cannot reference items. If one of your scripts finds an item, it appears as a null object."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "partial",
+      "note": "Client-level settings do follow the person everywhere in VRChat — safety shields, the avatar-quality limits they will accept, and per-person interaction overrides that VRChat says are kept between sessions. Anything a world stores about a person's preferences stays in that world. Nothing follows a person to another operator.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.vrchat.com/docs/permissions-and-settings",
+          "title": "Avatar Interaction Permissions and Settings",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "You can override settings per-user by clicking on a user, much like the per-user Show Avatar system. This is saved between sessions."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/persistence/",
+          "title": "Persistence",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Persistent data cannot be shared between different worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "none",
+      "note": "Content is referred to by location and registry entry, never by hash. Worlds and avatars are named by identifiers that VRChat's servers resolve, and no page checked mentions addressing an asset by its content digest.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/sdk/vrcpipelinemanager",
+          "title": "VRCPipelineManager",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The unique id for the avatar or world"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "conflicts",
+      "note": "The runnable package is a Unity asset bundle, compiled per platform, tied to a single pinned Unity editor version, and readable only by a matching VRChat client. Three platforms mean three separate builds and three separate uploads under one identifier. This is the opposite of a portable package format: nothing outside VRChat can open it, run it, inspect it or convert it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/avatars/avatar-size-limits",
+          "title": "Avatar Size Limits",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "the VRChat SDK packages it into a Unity asset bundle and compresses it"
+        },
+        {
+          "url": "https://creators.vrchat.com/platforms/android/cross-platform-setup",
+          "title": "Cross-Platform Setup",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "You need to upload your world or avatar to the same blueprint ID as you have for the VRChat PC version of the content."
+        }
+      ],
+      "direction": "write"
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "partial",
+      "note": "VRChat hosts and serves the content itself, choosing the right platform build for whichever client asks. Creators do not choose a host, cannot self-host a world, and get no delivery controls. VRChat also runs a media host that appears on the allowed address list for streams and files.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/platforms/android/cross-platform-setup",
+          "title": "Cross-Platform Setup",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "any client that views your content will talk to our servers"
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/string-loading",
+          "title": "String Loading",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "VRCDN (`*.vrcdn.cloud`)"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "conflicts",
+      "note": "Shipping a change routinely breaks things, and VRChat says so. Moving to a different Unity editor version stops uploaded content loading at all. Separately, adding a component or a shared variable to a networked object makes the new build incompatible with instances already running the old one, and people joining those instances are warned. VRChat ships a whole tool whose only job is to keep numeric object identifiers stable across builds, because if they drift, people see different objects receiving each other's data.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/sdk/upgrade/current-unity-version",
+          "title": "Current Unity Version",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Upgrading your version will result in content not loading once uploaded to VRChat - make sure to stay on our recommended version."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/networking/compatibility",
+          "title": "Networking Compatibility",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Adding a new component or a new synchronized variable to a synchronized object is likely to render the next uploaded version of a world incompatible with previous versions."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/networking/network-id-utility",
+          "title": "Network ID Utility",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "If these get mixed up, then you may try to kick around a beach ball while somebody else sees you kicking around an ice cream!"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "partial",
+      "note": "There is testing, but it proves conformance to VRChat rather than to any specification. The upload tool validates content against VRChat's rules, and a simulator in the editor reproduces much of the client so creators can test before uploading. VRChat is explicit that the simulator cannot cover everything and that real testing must happen in the product. Since there is no specification for anyone else to implement, there is nothing external to conform to.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/clientsim/",
+          "title": "ClientSim",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "ClientSim, short for client simulator, is a part of the Worlds SDK that replicates VRChat client behavior in the Unity editor and can be used to speed up development."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/clientsim/",
+          "title": "ClientSim",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Always test your world in VRChat before making it public! ClientSim can't simulate all of VRChat's features"
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/clientsim/",
+          "title": "ClientSim",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "ClientSim only simulates the local VRChat player, not remote players"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "VRChat is a hosted platform whose world contents are drawn from a closed list of allowed components, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components, VRChat creators documentation",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The following is the complete list of scripts usable within worlds. Components that are not in this list will not work."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "VRChat is a hosted platform whose world contents are drawn from a closed list of allowed components, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components, VRChat creators documentation",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The following is the complete list of scripts usable within worlds. Components that are not in this list will not work."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "VRChat is a hosted platform whose world contents are drawn from a closed list of allowed components, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components, VRChat creators documentation",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The following is the complete list of scripts usable within worlds. Components that are not in this list will not work."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "none",
+      "note": "The list of components a world may contain is closed and holds no splat renderer, and a creator cannot add one because custom engine code does not run in worlds. So a splat file has nothing to load it and nothing to draw it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components, VRChat creators documentation",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The following is the complete list of scripts usable within worlds. Components that are not in this list will not work."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "out-of-scope",
+      "note": "VRChat is a hosted platform whose world contents are drawn from a closed list of allowed components, and it delivers no captured scene, progressively by region and detail or otherwise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components, VRChat creators documentation",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The following is the complete list of scripts usable within worlds. Components that are not in this list will not work."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "VRChat is a hosted platform whose world contents are drawn from a closed list of allowed components, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components, VRChat creators documentation",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The following is the complete list of scripts usable within worlds. Components that are not in this list will not work."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "out-of-scope",
+      "note": "VRChat is a hosted platform whose world contents are drawn from a closed list of allowed components, and it defines no encoding or compression for a set of points with attributes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components, VRChat creators documentation",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The following is the complete list of scripts usable within worlds. Components that are not in this list will not work."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "VRChat is a hosted platform whose world contents are drawn from a closed list of allowed components, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components, VRChat creators documentation",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The following is the complete list of scripts usable within worlds. Components that are not in this list will not work."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "out-of-scope",
+      "note": "VRChat is a hosted platform whose world contents are drawn from a closed list of allowed components, and it produces no image from a viewing position that no capture camera occupied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components, VRChat creators documentation",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The following is the complete list of scripts usable within worlds. Components that are not in this list will not work."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "VRChat is a hosted platform whose world contents are drawn from a closed list of allowed components, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components, VRChat creators documentation",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The following is the complete list of scripts usable within worlds. Components that are not in this list will not work."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "VRChat is a hosted platform whose world contents are drawn from a closed list of allowed components, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components, VRChat creators documentation",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The following is the complete list of scripts usable within worlds. Components that are not in this list will not work."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "VRChat is a hosted platform whose world contents are drawn from a closed list of allowed components, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components, VRChat creators documentation",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The following is the complete list of scripts usable within worlds. Components that are not in this list will not work."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "VRChat is a hosted platform whose world contents are drawn from a closed list of allowed components, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components, VRChat creators documentation",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The following is the complete list of scripts usable within worlds. Components that are not in this list will not work."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "VRChat is a hosted platform whose world contents are drawn from a closed list of allowed components, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components, VRChat creators documentation",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The following is the complete list of scripts usable within worlds. Components that are not in this list will not work."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "VRChat is a hosted platform whose world contents are drawn from a closed list of allowed components, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components, VRChat creators documentation",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The following is the complete list of scripts usable within worlds. Components that are not in this list will not work."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "VRChat is a hosted platform whose world contents are drawn from a closed list of allowed components, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components, VRChat creators documentation",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The following is the complete list of scripts usable within worlds. Components that are not in this list will not work."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "out-of-scope",
+      "note": "VRChat is a hosted platform whose world contents are drawn from a closed list of allowed components, and it carries no full 360-degree view of a place as an image with its projection stated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components, VRChat creators documentation",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The following is the complete list of scripts usable within worlds. Components that are not in this list will not work."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "out-of-scope",
+      "note": "Worlds are authored in Unity and uploaded; the components a world may use are an enumerated allowlist, and no reconstruction, plane or room component appears in it. The real room is not part of what a VRChat world can see.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The following is the complete list of scripts usable within worlds. Components that are not in this list will not work."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "There is no channel through which a world learns what a real surface is, because there is no real surface in its model. Labelling in VRChat applies to avatar parameters and world objects the creator made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The following is the complete list of scripts usable within worlds. Components that are not in this list will not work."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "out-of-scope",
+      "note": "No camera image and no depth of the physical world reaches world logic. The allowlist that defines what a world may run carries nothing that would deliver one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The following is the complete list of scripts usable within worlds. Components that are not in this list will not work."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "Worlds are drawn as fully virtual scenes. With no passthrough view and no real-world depth, there is nothing for content to be hidden behind.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/whitelisted-world-components",
+          "title": "Allowlisted World Components",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The following is the complete list of scripts usable within worlds. Components that are not in this list will not work."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "none",
+      "note": "What a world author can set about presentation is spawn points, spawn order, camera reference and the layers interaction may pass through — the word passthrough in VRChat's documentation means interaction passing through a layer, not the camera view of the room. No published world setting or component blends a live camera image with the world. Absence read off the world documentation rather than a statement by VRChat, so it is recorded unverified.",
+      "confidence": "unverified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/components/vrc_scenedescriptor",
+          "title": "VRC Scene Descriptor, VRChat Creation documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "An array of transforms used as reference for spawn points of the world."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.face",
+      "level": "partial",
+      "note": "The person's own movement does arrive as a live stream, over Open Sound Control rather than from a headset driver: gaze at documented addresses, and tracker positions and rotations fed into the full body inverse kinematics. It is half the row — body pose and eyes yes, a full facial expression stream only as far as an outside program chooses to send avatar parameters — and the privacy terms are a notification that an application is sending data, not an agreed constraint.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://docs.vrchat.com/docs/osc-trackers",
+          "title": "OSC Trackers, VRChat documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "VRChat now offers support for receiving tracker data over OSC for use with our existing calibrated full body IK system."
+        },
+        {
+          "url": "https://docs.vrchat.com/docs/osc-eye-tracking",
+          "title": "OSC Eye Tracking, VRChat documentation",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Positive numbers for pitch and yaw will rotate down and to the right respectively. For vectors, it's the standard Unity format of +x right, +y up, and +z forward"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "partial",
+      "note": "Arrival is carried with the world and the walkable surface is not. The scene descriptor holds an array of spawn transforms with a radius and an order, so a world says where visitors land; the navigable surface is a Unity navigation mesh built by the author and now buildable at run time, which stays inside VRChat's own Unity project and never travels as a declaration anyone else could read.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/components/vrc_scenedescriptor",
+          "title": "VRC Scene Descriptor, VRChat Creation documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "An array of transforms used as reference for spawn points of the world."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/udon/ai-navigation",
+          "title": "AI Navigation, VRChat Creation documentation",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "You can now create and update your navigation meshes at runtime in the VRChat client."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "none",
+      "note": "World logic is compiled into the world's own build. Nothing is published as a unit of logic under a name another author resolves, so there is no namespace to be permanent and no claim to protect.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/submitting-a-world-to-be-made-public/",
+          "title": "World Creation, Optimization, and Community Labs Tips, VRChat Creation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can submit your world to Community Labs on VRChat.com (Edit World Info -> Danger Zone -> World Visibility -> Publish) or whenever you upload a new version in Unity."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "partial",
+      "note": "There is a real gate and it is a staged audience rather than a review: a world made public goes first to Community Labs, immediately visible to the users who opt into it, and reaches everyone later. Judgement is after the fact — content violating the guidelines costs the author the ability to submit and can bring moderation action — and nothing about what review a world or its assets have had travels with them to another system.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://creators.vrchat.com/worlds/submitting-a-world-to-be-made-public/",
+          "title": "World Creation, Optimization, and Community Labs Tips, VRChat Creation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Want to make your world public? You've come to the right place! You need to submit your world to Community Labs ."
+        },
+        {
+          "url": "https://creators.vrchat.com/worlds/submitting-a-world-to-be-made-public/",
+          "title": "World Creation, Optimization, and Community Labs Tips, VRChat Creation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Publishing your world will make it immediately available to all users that opt-in for Community Labs."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "VRChat worlds are entirely virtual. There is no map of a real place to declare and nothing to align it to.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "A world is not bound to a region of the Earth and declares no area where it applies.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "native",
+      "note": "VRC Ui Shape exposes scene Canvas interfaces that players can point at, click and scroll.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrchat-community/creator-docs/1d7cbeb2d982e755d2cdd3c03365fc4b5d5fcf8e/Docs/docs/worlds/components/vrc_uishape.md",
+          "title": "Docs/docs/worlds/components/vrc_uishape.md",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Players can point, click, or scroll your UIs"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "partial",
+      "note": "VRCRaycast positions a transform at a scene hit; the captured component does not alone prove returning the intersected object or geometry to application code.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrchat-community/creator-docs/1d7cbeb2d982e755d2cdd3c03365fc4b5d5fcf8e/Docs/docs/avatars/avatar-components/raycast.md",
+          "title": "Docs/docs/avatars/avatar-components/raycast.md",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "A transform is positioned at the point the raycast hits."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.text",
+      "level": "native",
+      "note": "TMP_InputField exposes editable text with value and focus state for world interfaces.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrchat-community/creator-docs/1d7cbeb2d982e755d2cdd3c03365fc4b5d5fcf8e/Docs/docs/worlds/components/textmeshpro/tmp_inputfield.md",
+          "title": "Docs/docs/worlds/components/textmeshpro/tmp_inputfield.md",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "is an editable text input field"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "native",
+      "note": "VRChat's custom constraints define relative transform behavior for avatars and worlds.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrchat-community/creator-docs/1d7cbeb2d982e755d2cdd3c03365fc4b5d5fcf8e/Docs/docs/common-components/constraints/index.md",
+          "title": "Docs/docs/common-components/constraints/index.md",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "move, rotate, and scale relative to other transforms"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "native",
+      "note": "The supplied synchronized video-player prefabs coordinate chosen videos for participants in a world; the example's loop limitation is explicit.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrchat-community/creator-docs/1d7cbeb2d982e755d2cdd3c03365fc4b5d5fcf8e/Docs/docs/worlds/udon/video-players/index.md",
+          "title": "Docs/docs/worlds/udon/video-players/index.md",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "synchronized for everyone in your world"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.variant",
+      "level": "partial",
+      "note": "The SDK uploads platform-specific avatar versions under one ID; this is platform selection, not a general named asset-configuration selection contract.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrchat-community/creator-docs/1d7cbeb2d982e755d2cdd3c03365fc4b5d5fcf8e/Docs/docs/avatars/per-platform-avatar-overrides.md",
+          "title": "Docs/docs/avatars/per-platform-avatar-overrides.md",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "under the same avatar ID"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "native",
+      "note": "Udon supports typed MIDI note and control events from an attached instrument or recorded playback.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrchat-community/creator-docs/1d7cbeb2d982e755d2cdd3c03365fc4b5d5fcf8e/Docs/docs/worlds/udon/midi/index.md",
+          "title": "Docs/docs/worlds/udon/midi/index.md",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "data from an instrument plugged into your computer"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.thumbnail",
+      "level": "native",
+      "confidence": "verified",
+      "note": "Published worlds include a separate preview image in their metadata.",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrchat-community/creator-docs/1d7cbeb2d982e755d2cdd3c03365fc4b5d5fcf8e/Docs/docs/worlds/creating-your-first-world.md",
+          "title": "Docs/docs/worlds/creating-your-first-world.md",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Thumbnail - A preview image of your world."
+        }
+      ],
+      "direction": "both"
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "via-extension",
+      "confidence": "verified",
+      "note": "VRChat's world-component allowlist explicitly supports the named Unity ParticleSystem, ParticleSystemRenderer and force-field components in uploaded worlds. These are the authored Unity emitter/effect route evaluated by the client.",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrchat-community/creator-docs/master/Docs/docs/worlds/whitelisted-world-components.md",
+          "title": "vrchat components raw — official documentation/source",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "ParticleSystem</UnityVersionedLink>"
+        }
+      ]
+    }
+  ]
+}

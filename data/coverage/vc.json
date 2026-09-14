@@ -1,0 +1,1164 @@
+{
+  "subject_id": "vc",
+  "summary": "A verifiable credential is a signed statement made by one party about a subject that a third party can check without asking the first party. The data model became a full web recommendation on 15 May 2025, and four companion recommendations were published the same day: two ways of securing a credential, a status format for withdrawing one, and a controlled identifier document format. What it does not do is move a credential between two parties. No finished recommendation defines that exchange, and the specification only observes, in a section it marks non-normative, that its roles suggest where such protocols would go. Two things a standards audience should hold on to: it does not require decentralized identifiers, only web addresses, so the two families are often paired by habit rather than by rule; and selective disclosure is a property of the chosen securing mechanism, which means the issuer has to enable it at issuing time and the holder cannot add it later.",
+  "coverage": [
+    {
+      "capability_id": "identity.credential",
+      "level": "native",
+      "note": "Defines the data model for a tamper-evident claim and the three roles of issuer, holder and checking party.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This specification describes the extensible data model for verifiable credentials, how they can be secured from tampering, and a three-party ecosystem for the exchange of these credentials that is composed of issuers, holders, and verifiers."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "partial",
+      "note": "Requires the issuing party to be named by a web address and recommends that the address resolve to a controlled identifier document; what is missing is any identifier system of its own, and decentralized identifiers appear only as one example among several.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The value of the issuer property MUST be either a URL or an object containing an id property whose value is a URL"
+        },
+        {
+          "url": "https://www.w3.org/TR/cid-1.0/",
+          "title": "Controlled Identifiers v1.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A controlled identifier document contains cryptographic material and lists service endpoints for the purposes of verifying cryptographic proofs from, and interacting with, the controller of an identifier."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "none",
+      "note": "Defines no protocol for requesting or presenting a credential, and the sentence people cite as the plan for one sits in a section the specification marks non-normative.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The separation of roles suggests likely interfaces and protocols for standardization."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "partial",
+      "note": "Selective disclosure is supported but belongs to the securing mechanism rather than to the data model, so the issuing party must choose a mechanism that allows it at the time of issue and a holder cannot add it afterwards.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "in most instances, for the holder to make use of zero knowledge mechanisms with verifiable credentials, the issuer is required to secure the verifiable credential in a manner that supports these capabilities"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "partial",
+      "note": "A permission can be carried, either as an ordinary claim or in the terms of use field; what is missing is any vocabulary for permissions, since the meaning of a term of use comes from a type defined somewhere else, so a checking party that has not already agreed that type cannot act on it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The precise contents of each term of use is determined by the specific termsOfUse type definition."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "none",
+      "note": "Terms can be stated but nothing acts on them; the specification puts rights management outside itself and records that enforcing use after presentation is an open problem.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Further study is required to determine how a holder can assert and enforce authorized use of their data after presentation"
+        },
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Digital Rights Management is out of scope"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "out-of-scope",
+      "note": "The terms of use here govern the credential or the presentation, not a file; nothing in the data model attaches terms to an asset.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Terms of use can be used by an issuer or a holder to communicate the terms under which a verifiable credential or verifiable presentation was issued."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "none",
+      "note": "Says nothing about joining anything, and places even the authentication of the holder outside itself, in an appendix it marks non-normative.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Authentication is out of scope"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "partial",
+      "note": "A credential can bind a cryptographic digest to a file held elsewhere; what is missing is addressing, because the file is still named and fetched by its web address, so the digest proves it has not changed rather than saying where it is.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "To extend integrity protection to a related resource, an issuer of a verifiable credential MAY include the relatedResource property"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "partial",
+      "note": "A signed statement by a named issuing party can be tied to one exact file by digest, which is half of a provenance record; what is missing is any vocabulary for who made the file, with what tool, or what was changed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "When including a link to an external resource in a verifiable credential, it is desirable to know whether the resource has been modified since the verifiable credential was issued."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "out-of-scope",
+      "note": "A subject can be any thing, so a credential could be about an avatar, but no binding between a credential and an avatar file is defined here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A thing about which claims are made. Example subjects include human beings, animals, and things."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "The Verifiable Credentials data model says how a claim about a subject is expressed and proved, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Authentication is out of scope"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "The Verifiable Credentials data model says how a claim about a subject is expressed and proved, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Authentication is out of scope"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "The Verifiable Credentials data model says how a claim about a subject is expressed and proved, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Authentication is out of scope"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "out-of-scope",
+      "note": "The Verifiable Credentials data model says how a claim about a subject is expressed and proved, and it names no Gaussian splat interchange format and carries no splat data.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Authentication is out of scope"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "out-of-scope",
+      "note": "The Verifiable Credentials data model says how a claim about a subject is expressed and proved, and it delivers no captured scene, progressively by region and detail or otherwise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Authentication is out of scope"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "The Verifiable Credentials data model says how a claim about a subject is expressed and proved, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Authentication is out of scope"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "out-of-scope",
+      "note": "The Verifiable Credentials data model says how a claim about a subject is expressed and proved, and it defines no encoding or compression for a set of points with attributes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Authentication is out of scope"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "The Verifiable Credentials data model says how a claim about a subject is expressed and proved, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Authentication is out of scope"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "out-of-scope",
+      "note": "The Verifiable Credentials data model says how a claim about a subject is expressed and proved, and it produces no image from a viewing position that no capture camera occupied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Authentication is out of scope"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "The Verifiable Credentials data model says how a claim about a subject is expressed and proved, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Authentication is out of scope"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "The Verifiable Credentials data model says how a claim about a subject is expressed and proved, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Authentication is out of scope"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "The Verifiable Credentials data model says how a claim about a subject is expressed and proved, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Authentication is out of scope"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "The Verifiable Credentials data model says how a claim about a subject is expressed and proved, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Authentication is out of scope"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "The Verifiable Credentials data model says how a claim about a subject is expressed and proved, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Authentication is out of scope"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "The Verifiable Credentials data model says how a claim about a subject is expressed and proved, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Authentication is out of scope"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "The Verifiable Credentials data model says how a claim about a subject is expressed and proved, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Authentication is out of scope"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "out-of-scope",
+      "note": "The Verifiable Credentials data model says how a claim about a subject is expressed and proved, and it carries no full 360-degree view of a place as an image with its projection stated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Authentication is out of scope"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "out-of-scope",
+      "note": "A data model for claims made about a subject. Its subjects are people, animals and things, and its claims are assertions about them, not a geometric description of a space.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A thing about which claims are made. Example subjects include human beings, animals, and things."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "The naming it does is of claim properties in a credential, not of real surfaces a camera has seen.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A thing about which claims are made. Example subjects include human beings, animals, and things."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "out-of-scope",
+      "note": "No depth measurement is part of a credential data model.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A thing about which claims are made. Example subjects include human beings, animals, and things."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "Nothing in it concerns drawing, so occlusion against real surfaces cannot arise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0, W3C Recommendation 15 May 2025",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A thing about which claims are made. Example subjects include human beings, animals, and things."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "out-of-scope",
+      "note": "A credential data model presents nothing and has no compositor.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.face",
+      "level": "out-of-scope",
+      "note": "Credentials are signed statements, not sensor streams; nothing in the model reads a face or a body pose.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "out-of-scope",
+      "note": "No scene and no place, so no walkable surface or arrival point.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "out-of-scope",
+      "note": "The model names claims about subjects, not published units of logic; a credential type is a vocabulary term, not an address for code.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "out-of-scope",
+      "note": "A moderation decision could be carried as a credential, but the standard defines no review, no reviewer and no path from finished content to an audience, so the row is not what this specification is for.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "No maps and no geometry in a credential data model.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "No geographic area of application is expressed by the model itself.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.extension",
+      "level": "native",
+      "note": "The data model specifies context and type-based extensions with defined interpretation rules; new properties require the associated vocabulary rather than unstructured ad hoc parsing.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "A verifiable credential can be extended to have additional properties through the extension mechanism defined in Section 5.2 Extensibility."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.color",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires declaring the color interpretation and output range of images, textures, and rendering surfaces so receivers can perform the required conversions. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.metadata",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires structured descriptive properties attached to a scene or its parts, with enough declared structure for another system to read them. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "native",
+      "note": "The evidence property carries typed supporting information that lets a verifier assess how a claim was established; it neither guarantees the claim's truth nor fixes one assurance policy.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This specification defines the evidence property for expressing evidence information."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "native",
+      "note": "The data model combines context-defined vocabulary, required types and credentialSchema references to external structural validators; validation remains distinct from proving a claim true.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "the structure of the verifiable credential, and the datatypes for the values of each property that appears."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "partial",
+      "note": "The base model discusses selective/unlinkable disclosure and correlation concerns, but the actual cryptographic presentation mechanism belongs to companion securing specifications; no such suite is proved by this base-model citation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "unlinkable disclosure"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "via-extension",
+      "note": "The named Bitstring Status List mechanism works through credentialStatus to discover suspension/revocation after issuance; the base model also permits other status types.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-bitstring-status-list/",
+          "title": "Bitstring Status List v1.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "suspension or revocation of Verifiable Credentials through use of bitstrings."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires layout and presentation of two-dimensional interface regions, including their size, alignment, and relationship to a display or scene. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires runtime estimates of environmental illumination made available to content for lighting or reflections. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires detecting recognized physical markers or images and reporting their tracked pose relative to a runtime reference space. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.resolve",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires resolving scene resource identifiers against a context or resolver so the referenced resources can subsequently be accessed. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires time-associated pose sequences or streams describing an object's changing location and orientation, with any interpolation rules declared separately. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires picking scene content from pointing input and reporting the intersected object or geometry to the application. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.text",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires receiving character or string entry through a defined input interface, separate from interpreting physical controller actions. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires submitting distinct shaped image layers to a display compositor with their placement and composition properties. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.bounds",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires bounding volumes associated with scene content, organized for spatial rejection, traversal, or selection before detailed geometry is loaded. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.collection",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires named or rule-defined sets of scene objects that consumers can use as targets for scene operations. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires authored runtime relationships that constrain one node's transform using another node and defined evaluation rules. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires referencing timed audiovisual media inside a scene and defining the synchronization needed to present it as scene content. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires runtime-reported physical play-area bounds and floor-relative reference information available to an application. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires generating audio during playback from an exchanged synthesis model, supporting data, and changing control parameters. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.protection",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires declaring the protection scheme associated with protected content components so recipients can identify the required protection mechanism. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires interchanging linked poses and transforms as chains or graphs so related frames can be reconstructed consistently. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires interchanging identified spatial zones, typed events scoped to them, and summaries with defined spatial and temporal meaning. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires a destination's pre-arrival approval or refusal response, including any validity limit and optional explanatory information. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires dispatching programmable non-raster GPU workloads against resources available through the graphics-compute API. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.frame-timing",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires coordinating frame submission with predicted display timing and the view poses associated with that time. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires a specified shader source language and execution semantics enabling implementations to consume the same shader program. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.parametric",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires carrying parametric curves and surfaces in mathematical form so a receiver can evaluate or tessellate them. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires exchanging particle-system emitters and simulation/rendering parameters that a receiving runtime evaluates. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance-recovery",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires locating associated provenance through a supported content fingerprint or watermark when embedded association has been lost. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.style",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires separately expressed styling rules that select feature visibility, color, or other supported display properties from content metadata. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.variant",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires named alternatives of an asset's authored configuration, with a defined selection mechanism. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.voxel",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires interchanging spatial cell volumes and their properties, including updates, as a scene representation. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires asking a sensing runtime for ray intersections with its estimate of physical surroundings and receiving hit poses. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires receiving typed musical instrument events with channel, note or control identifiers and values through a documented device or recorded-event input interface. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires reconstructing a radiance field or Gaussian representation from observed images and camera information, including optimization controls and a trained scene usable for subsequent view synthesis. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.objectgen",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verifiable Credentials 2.0 specifies claims, presentations and their extensible data model. This row requires producing an individual three-dimensional object from a text or image prompt, with geometry or another renderable representation available for placement in a separately authored scene. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.consent",
+      "level": "partial",
+      "note": "Verifiable Credentials 2.0 carries issuer or holder terms through typed termsOfUse objects. The base data model does not itself define the full purpose, validity and withdrawal semantics required by this consent row.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This specification defines a termsOfUse property for expressing terms of use information."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "partial",
+      "note": "The VC model describes machine-readable verification results and errors. It does not define a recipient's acceptance/rejection/action receipt in the retained passage.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "a ProblemDetails object can be used to report the issue to other software systems."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.thumbnail",
+      "level": "out-of-scope",
+      "note": "A packaged preview of a three-dimensional asset is an asset-representation function; the credential/presentation data model does not become an asset-preview format through generic extension fields. Required function: A preview image referenced or packaged with an asset, usable without rendering its three-dimensional contents.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/vc-data-model-2.0/",
+          "title": "Verifiable Credentials Data Model v2.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "extensible data model for verifiable credentials"
+        }
+      ]
+    }
+  ]
+}

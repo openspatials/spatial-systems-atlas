@@ -1,0 +1,1284 @@
+{
+  "subject_id": "mpeg-scene",
+  "summary": "A published international standard, now in its second edition as ISO/IEC 23090-14:2025, that defines no scene format of its own. Its abstract says so plainly: it specifies extensions to existing scene description formats, and those extensions are provided for ISO/IEC 12113 - which is glTF 2.0 - so the earlier reading was right on both counts, extensions to an existing format plus a media access interface between the part of a client that renders and the part that fetches. What it brings to a scene is timed media: video as a texture, spatial audio with reverb, buffers that keep refilling, scene updates arriving as samples, a director's viewpoint that moves, and a way to wrap a glTF scene and its media inside a media file. On avatars the earlier reading needs splitting in two - an in-scene humanoid model did land in this standard, through the amendment on haptics, augmented reality, avatars, interactivity and lighting that was folded into the second edition, while the portable avatar exchange format is a separate part, ISO/IEC 23090-39, still a draft and not published. On world-to-world transfer the earlier reading should be corrected: this standard does not cover it and neither does any other part of this forty-part family; the nearest, Part 28, is asset interchange, not moving a user or their state. Two traps for a standards audience: the second edition is published but the MPEG_ extensions sitting in the glTF extension registry are still the first edition's, with the second edition's registration still a draft agenda item at the July 2026 meeting; and because this standard extends glTF 2.0 while Khronos is revising the glTF core in 2.1, the two overlap across the whole asset side - glTF owns the container, geometry, materials and animation, this standard owns timed media on top - with interactivity now being specified twice, here through the folded amendment and at Khronos through KHR_interactivity.",
+  "coverage": [
+    {
+      "capability_id": "scene.container",
+      "level": "partial",
+      "note": "It defines no container of its own. It adds extensions to a format someone else owns, named in its own abstract as ISO/IEC 12113, the international publication of glTF 2.0, so the file that carries the scene is still a glTF file.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/90191.html",
+          "title": "ISO/IEC 23090-14:2025 Information technology - Coded representation of immersive media - Part 14: Scene description",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This document specifies extensions to existing scene description formats in order to support MPEG media, in particular immersive media. ... While the extensions defined in this document can be applicable to other scene description formats, they are provided for ISO/IEC 12113."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/main/extensions/2.0/Vendor/MPEG_media/README.md",
+          "title": "MPEG_media extension, glTF Extension Registry vendor section",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Written against the glTF 2.0 spec."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.media",
+      "level": "native",
+      "note": "This is the standard's centre of gravity: a media array declares the audio and video a scene needs, a new address scheme lets a live stream be named without knowing its host or port, and circular buffers keep the scene fed as samples arrive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/140_Mainz/w22138.zip",
+          "title": "White paper on MPEG-I Scene Description, MPEG output document w22138",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "In order to support referencing media streams without actually knowing the values for the protocol scheme, hostname, or port, ISO/IEC 23090-14 defines a new URL scheme."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/main/extensions/2.0/Vendor/MPEG_buffer_circular/README.md",
+          "title": "MPEG_buffer_circular extension, glTF Extension Registry",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "In order to support timed data access, the buffer element is extended to provide functionality of a circular buffer."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "partial",
+      "note": "It defines the interface across which media is asked for and handed over - the media access function, kept deliberately separate from the renderer - but no wire protocol of its own; it names existing protocols as the things it rides on.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/90191.html",
+          "title": "ISO/IEC 23090-14:2025 catalogue record",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "It also defines a media access function (MAF) API for communication between the Presentation Engine and the media access function for these extensions."
+        },
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/140_Mainz/w22138.zip",
+          "title": "White paper on MPEG-I Scene Description, MPEG output document w22138",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The MAF is responsible for the media access, e.g. download, streaming or connecting to other peers, as well as for decryption, decoding and post-processing related functions."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "native",
+      "note": "Adds moving pictures as a texture source: a glTF texture is bound to a media track through a buffer that changes with time, with the ordinary still image left as the fallback for a client that does not support it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/main/extensions/2.0/Vendor/MPEG_texture_video/README.md",
+          "title": "MPEG_texture_video extension, glTF Extension Registry",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "When the `MPEG_texture_video` extension is not supported, a texture buffer should filled by data described by the standard glTF source object."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/main/extensions/2.0/Vendor/MPEG_accessor_timed/README.md",
+          "title": "MPEG_accessor_timed extension, glTF Extension Registry",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A scene that contains timed media and/or metadata shall utilize the timed accessor extension to describe access to the dynamically changing data."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "native",
+      "note": "Sound sources attach to any node in the scene, as single-point objects or as a whole-field ambisonic source, with a listener defined alongside them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/main/extensions/2.0/Vendor/MPEG_audio_spatial/README.md",
+          "title": "MPEG_audio_spatial extension, glTF Extension Registry",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The `MPEG_audio_spatial` extension adds support for spatial audio and it may be included at top level or attached to any node in the scene."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "native",
+      "note": "Two source types are defined, point objects and higher-order ambisonics, with the ambisonic case rendered for head rotation only and not for a listener who walks around; the link to the separate immersive audio standard is a draft amendment to this edition, not published text.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/main/extensions/2.0/Vendor/MPEG_audio_spatial/README.md",
+          "title": "MPEG_audio_spatial extension, glTF Extension Registry",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "`HOA` audio sources shall ignore the parent node's position and be rendered only in 3DoF."
+        },
+        {
+          "url": "https://www.iso.org/standard/90213.html",
+          "title": "ISO/IEC 23090-14:2025/FDAmd 1 Amendment 1: Support of MPEG-I audio, scene understanding and other extensions (under development)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This draft is in the approval phase."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "native",
+      "note": "Reverb units are first-class: several may exist, sources feed one or more of them, and each carries a measured diffuse-to-source ratio per frequency; a renderer without reverb may skip it when told to.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/main/extensions/2.0/Vendor/MPEG_audio_spatial/README.md",
+          "title": "MPEG_audio_spatial extension, glTF Extension Registry",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A reverb effect can be attached to the output of an audio source. Several reverb units can exist and sound sources can feed into one or more of these reverb units."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "native",
+      "note": "Audio arrives through the same timed pipeline as everything else - a media entry, a circular buffer and a timed accessor - so a long or live soundtrack need not be loaded up front.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/main/extensions/2.0/Vendor/MPEG_buffer_circular/README.md",
+          "title": "MPEG_buffer_circular extension, glTF Extension Registry",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "`buffer` that provides access to timed data shall include the `MPEG_buffer_circular` extension."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "partial",
+      "note": "A scene can be changed after it is loaded, by an update stream whose samples are either a whole new scene or a patch - but this is one-way delivery from an author to viewers, with nothing about several participants, per-client state, or who may change what.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/140_Mainz/w22138.zip",
+          "title": "White paper on MPEG-I Scene Description, MPEG output document w22138",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A sample of the update stream can be a new scene document or a patch document that alters the composition of the scene at runtime."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/main/extensions/2.0/Vendor/MPEG_scene_dynamic/README.md",
+          "title": "MPEG_scene_dynamic extension, glTF Extension Registry",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The track samples as defined in ISO/IEC 23090-14 contain scene description updates and provide timing to perform these updates."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "none",
+      "note": "Nothing says who owns an object or decides its truth; the model throughout is one producer sending a timed scene to viewers.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/90191.html",
+          "title": "ISO/IEC 23090-14:2025 catalogue record",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This document specifies extensions to existing scene description formats in order to support MPEG media, in particular immersive media."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "partial",
+      "note": "It does not define how animation is stored - that stays glTF's - only how the animation clock is lined up with the media clock, so a narrated sequence can be paused or scrubbed as one thing.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/main/extensions/2.0/Vendor/MPEG_animation_timing/README.md",
+          "title": "MPEG_animation_timing extension, glTF Extension Registry",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "`MPEG_animation_timing` enables alignment between media timelines and animation timeline defined by glTF 2.0."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "partial",
+      "note": "Adds an author's recommended viewpoint that changes over time - position, orientation and lens all carried as timed samples the client is expected to follow - but the camera itself is still glTF's, and there is no model for moving between named viewpoints.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/main/extensions/2.0/Vendor/MPEG_viewport_recommended/README.md",
+          "title": "MPEG_viewport_recommended extension, glTF Extension Registry",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The recommended viewport information provides dynamically changing information which includes translation and rotation of the node which includes the camera object, as well as the intrinsic camera parameter of the camera object."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "partial",
+      "note": "Point cloud and volumetric video reach a scene through this standard's media pipeline; the amendment that added it to the first edition is folded into the current one. The coding of those signals is not here but in sibling parts of the same family, and the clause text could not be read directly because the published standard is behind a paywall.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/140_Mainz/w22138.zip",
+          "title": "White paper on MPEG-I Scene Description, MPEG output document w22138",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Support for V3C compressed objects will be part of Amendment 1 to ISO/IEC 23090-14."
+        },
+        {
+          "url": "https://www.iso.org/standard/80900.html",
+          "title": "ISO/IEC 23090-14:2023 catalogue record, showing the first edition and its amendment withdrawn and revised by the 2025 edition",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Revised by ISO/IEC 23090-14:2025"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "partial",
+      "note": "A real difference from plain glTF: a scene and its media can be wrapped inside a media file, both as fixed data and as timed track samples. It packages a scene and its media, not a runnable experience - there is no code or runtime in the package.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/140_Mainz/w22138.zip",
+          "title": "White paper on MPEG-I Scene Description, MPEG output document w22138",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "defines how glTF files and related data can be provided as non-timed and timed (i.e. as samples of track) data encapsulated in an ISOBMFF file"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "partial",
+      "note": "Conformance tests and reference software exist and are published, but as a separate part of the family rather than inside this document; the amendment that would extend that conformance to the newer scene features is still in approval.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/83696.html",
+          "title": "ISO/IEC 23090-24:2025 Conformance and reference software for scene description",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This document specifies the conformance and reference software for ISO/IEC 23090-14."
+        },
+        {
+          "url": "https://www.iso.org/standard/87584.html",
+          "title": "ISO/IEC 23090-24:2025/PRF Amd 1 Conformance and reference software for scene description on haptics, augmented reality, avatar integration, interactivity and lighting (under development)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Amendment 1: Conformance and reference software for scene description on haptics, augmented reality, avatar integration, interactivity and lighting"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "partial",
+      "note": "The correction worth recording: an in-scene humanoid model for representing a user did come into this standard, through the amendment on haptics, augmented reality, avatars, interactivity and lighting that was folded into the second edition. What it is not is the portable avatar asset - that is a separate part, ISO/IEC 23090-39 Avatar representation format, still a draft and not published. The clause text of the published edition could not be read directly; the evidence is the folded amendment lineage and the conformance amendment that names avatar integration.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/140_Mainz/w22138.zip",
+          "title": "White paper on MPEG-I Scene Description, MPEG output document w22138",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The user avatar representation considered in the Scene Description will define such a humanoid model, with its associated semantic and topology."
+        },
+        {
+          "url": "https://www.iso.org/standard/91745.html",
+          "title": "ISO/IEC DIS 23090-39 Part 39: Avatar representation format (under development)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The Avatar Representation Format offers an exchange format for avatars, allowing applications to export and import the personalized avatar model of the user across different applications, services, and metaverse worlds."
+        },
+        {
+          "url": "https://www.iso.org/standard/87584.html",
+          "title": "ISO/IEC 23090-24:2025/PRF Amd 1, conformance for scene description covering avatar integration",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "avatar integration"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "partial",
+      "note": "The in-scene humanoid model carries an agreed meaning and shape for the body, which is what lets motion transfer, but it is defined for use inside a scene rather than as a portable body standard; the portable one is the separate avatar part, still a draft.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/140_Mainz/w22138.zip",
+          "title": "White paper on MPEG-I Scene Description, MPEG output document w22138",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "To ease interoperability and transferability from one environment to another, a generic humanoid model used for the representation of a virtual (or real) user is specified."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "partial",
+      "note": "Interactivity came in through the same folded amendment, so it is in the current edition rather than in the first. Note the collision this creates: Khronos is separately ratifying KHR_interactivity for the same format, so two standards bodies are now defining interactivity on glTF.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/87584.html",
+          "title": "ISO/IEC 23090-24:2025/PRF Amd 1, conformance for scene description covering interactivity",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Amendment 1: Conformance and reference software for scene description on haptics, augmented reality, avatar integration, interactivity and lighting"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/main/extensions/README.md",
+          "title": "glTF Extension Registry, in-progress table listing KHR_interactivity",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The items listed are felt to show enough consensus to be considered for future ratification."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "partial",
+      "note": "Haptic feedback can be attached to objects and to the interactions defined on them, through the same folded amendment; the haptic signal itself is coded by separate parts of the family, so this standard carries it rather than defines it.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/140_Mainz/w22138.zip",
+          "title": "White paper on MPEG-I Scene Description, MPEG output document w22138",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The physical properties can be associated with a 3D object in the scene graph as well as the haptic feedback with interactions defined."
+        },
+        {
+          "url": "https://www.iso.org/standard/87584.html",
+          "title": "ISO/IEC 23090-24:2025/PRF Amd 1, conformance for scene description covering haptics",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "haptics"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "partial",
+      "note": "Augmented reality anchoring came in with the same folded amendment: content is pinned to anchor points tied to the device's own tracked spaces and followed for the length of the experience. It is device-tracked, so it fixes content on one device rather than across devices.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/140_Mainz/w22138.zip",
+          "title": "White paper on MPEG-I Scene Description, MPEG output document w22138",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The virtual content is anchored to the real world through anchor points that can be associated with XR spaces and tracked throughout the whole experience."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "none",
+      "note": "Anchoring here is to a device's tracked space, never to the Earth; no geographic frame is named anywhere in the scope, so two clients cannot agree on a place from this standard alone.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/140_Mainz/w22138.zip",
+          "title": "White paper on MPEG-I Scene Description, MPEG output document w22138",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "anchor points that can be associated with XR spaces"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "none",
+      "note": "No simulation model of any kind. The only mention of physical properties is in service of haptic feedback, not of bodies that move by rule.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/140_Mainz/w22138.zip",
+          "title": "White paper on MPEG-I Scene Description, MPEG output document w22138",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The physical properties can be associated with a 3D object in the scene graph as well as the haptic feedback with interactions defined."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "out-of-scope",
+      "note": "A scene description standard is not the kind of thing that moves a user between worlds - and this is the correction to an earlier reading: no other part of this forty-part family picks it up either. The closest, Part 28, is an architecture for interchanging scene-based media, which is assets moving, not users.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/84571.html",
+          "title": "ISO/IEC 23090-28:2026 Part 28: Interchangeable scene-based media representations",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This document specifies an architecture and data model for interchange of scene-based media for use in systems and applications that employ renderers for the presentation of immersive media"
+        },
+        {
+          "url": "https://www.iso.org/committee/45316/x/catalogue/",
+          "title": "ISO/IEC JTC 1/SC 29 catalogue, full ISO/IEC 23090 part list",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "out-of-scope",
+      "note": "No identifier for a person, agent or thing anywhere in scope; the standard describes a scene and the media in it, not who is looking at it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/90191.html",
+          "title": "ISO/IEC 23090-14:2025 catalogue record",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This document specifies extensions to existing scene description formats in order to support MPEG media, in particular immersive media."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "MPEG-I Scene Description extends an existing scene format so that MPEG media can be referenced from inside a scene, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/90191.html",
+          "title": "ISO/IEC 23090-14:2025 catalogue record",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This document specifies extensions to existing scene description formats in order to support MPEG media, in particular immersive media."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "MPEG-I Scene Description extends an existing scene format so that MPEG media can be referenced from inside a scene, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/90191.html",
+          "title": "ISO/IEC 23090-14:2025 catalogue record",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This document specifies extensions to existing scene description formats in order to support MPEG media, in particular immersive media."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "MPEG-I Scene Description extends an existing scene format so that MPEG media can be referenced from inside a scene, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/90191.html",
+          "title": "ISO/IEC 23090-14:2025 catalogue record",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This document specifies extensions to existing scene description formats in order to support MPEG media, in particular immersive media."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "out-of-scope",
+      "note": "MPEG-I Scene Description extends an existing scene format so that MPEG media can be referenced from inside a scene, and it names no Gaussian splat interchange format and carries no splat data.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/90191.html",
+          "title": "ISO/IEC 23090-14:2025 catalogue record",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This document specifies extensions to existing scene description formats in order to support MPEG media, in particular immersive media."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "partial",
+      "note": "Delivering media over an adaptive stream is the whole reason this standard exists on top of a static scene format, and it is written as a media access pipeline with buffers rather than as a rule for ordering a capture by region and detail. Where a receiver should start on a large captured scene is not answered here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/140_Mainz/w22138.zip",
+          "title": "White paper on MPEG-I Scene Description, MPEG output document w22138",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "anchor points that can be associated with XR spaces"
+        },
+        {
+          "url": "https://www.iso.org/standard/90191.html",
+          "title": "ISO/IEC 23090-14:2025 catalogue record",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This document specifies extensions to existing scene description formats in order to support MPEG media, in particular immersive media."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "partial",
+      "note": "This is the standard that puts volumetric video into a scene graph, and it does it by reference: the amendment that added V3C objects is folded into the current edition, and the extension names which track a decoder should read. The coding, the calibration and the mask metadata all live in the sibling parts, not here, and the normative clause text could not be read because the published standard is sold rather than published.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/140_Mainz/w22138.zip",
+          "title": "White paper on MPEG-I Scene Description, MPEG output document w22138",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Support for V3C compressed objects will be part of Amendment 1 to ISO/IEC 23090-14."
+        },
+        {
+          "url": "https://www.iso.org/standard/90191.html",
+          "title": "ISO/IEC 23090-14:2025 catalogue record",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This document specifies extensions to existing scene description formats in order to support MPEG media, in particular immersive media."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "partial",
+      "note": "Same shape as the row above. A point cloud reaches a scene through the media pipeline this standard defines, as a referenced V3C or point-cloud-coded track; how those points are encoded and compressed is ISO/IEC 23090-5, a different subject here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/140_Mainz/w22138.zip",
+          "title": "White paper on MPEG-I Scene Description, MPEG output document w22138",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Support for V3C compressed objects will be part of Amendment 1 to ISO/IEC 23090-14."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "none",
+      "note": "Immersive video with depth is coded by the sibling part and could in principle be referenced the way volumetric objects are, but nothing in the published scene description names multi-view-plus-depth or carries camera intrinsics and extrinsics for reprojection.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/90191.html",
+          "title": "ISO/IEC 23090-14:2025 catalogue record",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This document specifies extensions to existing scene description formats in order to support MPEG media, in particular immersive media."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "out-of-scope",
+      "note": "MPEG-I Scene Description extends an existing scene format so that MPEG media can be referenced from inside a scene, and it produces no image from a viewing position that no capture camera occupied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/90191.html",
+          "title": "ISO/IEC 23090-14:2025 catalogue record",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This document specifies extensions to existing scene description formats in order to support MPEG media, in particular immersive media."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "MPEG-I Scene Description extends an existing scene format so that MPEG media can be referenced from inside a scene, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/90191.html",
+          "title": "ISO/IEC 23090-14:2025 catalogue record",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This document specifies extensions to existing scene description formats in order to support MPEG media, in particular immersive media."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "MPEG-I Scene Description extends an existing scene format so that MPEG media can be referenced from inside a scene, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/90191.html",
+          "title": "ISO/IEC 23090-14:2025 catalogue record",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This document specifies extensions to existing scene description formats in order to support MPEG media, in particular immersive media."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "MPEG-I Scene Description extends an existing scene format so that MPEG media can be referenced from inside a scene, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/90191.html",
+          "title": "ISO/IEC 23090-14:2025 catalogue record",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This document specifies extensions to existing scene description formats in order to support MPEG media, in particular immersive media."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "MPEG-I Scene Description extends an existing scene format so that MPEG media can be referenced from inside a scene, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/90191.html",
+          "title": "ISO/IEC 23090-14:2025 catalogue record",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This document specifies extensions to existing scene description formats in order to support MPEG media, in particular immersive media."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "MPEG-I Scene Description extends an existing scene format so that MPEG media can be referenced from inside a scene, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/90191.html",
+          "title": "ISO/IEC 23090-14:2025 catalogue record",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This document specifies extensions to existing scene description formats in order to support MPEG media, in particular immersive media."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "MPEG-I Scene Description extends an existing scene format so that MPEG media can be referenced from inside a scene, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/90191.html",
+          "title": "ISO/IEC 23090-14:2025 catalogue record",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This document specifies extensions to existing scene description formats in order to support MPEG media, in particular immersive media."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "MPEG-I Scene Description extends an existing scene format so that MPEG media can be referenced from inside a scene, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/90191.html",
+          "title": "ISO/IEC 23090-14:2025 catalogue record",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This document specifies extensions to existing scene description formats in order to support MPEG media, in particular immersive media."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "out-of-scope",
+      "note": "MPEG-I Scene Description extends an existing scene format so that MPEG media can be referenced from inside a scene, and it carries no full 360-degree view of a place as an image with its projection stated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/90191.html",
+          "title": "ISO/IEC 23090-14:2025 catalogue record",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This document specifies extensions to existing scene description formats in order to support MPEG media, in particular immersive media."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "out-of-scope",
+      "note": "A set of extensions to existing scene description formats so they can carry MPEG media. It describes what to present and where to anchor it; producing the room's geometry is left to the platform underneath.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/90191.html",
+          "title": "ISO/IEC 23090-14:2025 catalogue record",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This document specifies extensions to existing scene description formats in order to support MPEG media, in particular immersive media."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "Its vocabulary names scene nodes and media, not classes of real surface reported by a device.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/90191.html",
+          "title": "ISO/IEC 23090-14:2025 catalogue record",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This document specifies extensions to existing scene description formats in order to support MPEG media, in particular immersive media."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "out-of-scope",
+      "note": "No depth map of the real world is defined here. Depth that MPEG carries elsewhere is coded video for transmission, not a live measurement handed to an application.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/90191.html",
+          "title": "ISO/IEC 23090-14:2025 catalogue record",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This document specifies extensions to existing scene description formats in order to support MPEG media, in particular immersive media."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "The scene description says what to draw and where; whether real surfaces hide it is the presentation engine's decision.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/90191.html",
+          "title": "ISO/IEC 23090-14:2025 catalogue record",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This document specifies extensions to existing scene description formats in order to support MPEG media, in particular immersive media."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "out-of-scope",
+      "note": "Scene Description extends glTF to carry timed media into a scene. How the presentation engine blends that scene with a camera view of the room is the runtime's, and no extension in the standard controls it.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.face",
+      "level": "out-of-scope",
+      "note": "The standard's input surface is the media access function and the anchors that place content. A live face and body stream from the user is not among the media it carries.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "none",
+      "note": "The standard's real-world hook is anchoring: content is fixed to anchor points associated with XR spaces and tracked through the experience. That says where content sits, never where a body may stand, walk or arrive, and there is no walkable surface or spawn point in the extensions.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.mpeg.org/wp-content/uploads/mpeg_meetings/140_Mainz/w22138.zip",
+          "title": "White paper on MPEG-I Scene Description, MPEG output document w22138",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The virtual content is anchored to the real world through anchor points that can be associated with XR spaces and tracked throughout the whole experience."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "out-of-scope",
+      "note": "The standard names its own glTF extensions under the MPEG_ prefix. It publishes no units of world logic for other authors to depend on by name.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "out-of-scope",
+      "note": "Scene Description defines carriage and access of media, with no publishing service in the path, so no review can stand there and none is recorded.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "Anchoring binds content to a tracked XR space. The standard never declares a map of a place with a version, and publishes no transform between two maps of the same place.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "A scene is content, not a service answering for a region, and the standard states no geographic area of application.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.extension",
+      "level": "native",
+      "note": "The read MPEG_media extension is explicitly layered on the glTF extension contract; the inherited required/optional extension declarations apply to the containing glTF document.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_media/README.md",
+          "title": "MPEG_media, official ISO/IEC 23090-14 second-edition supplement",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "Written against the glTF 2.0 spec."
+        },
+        {
+          "url": "https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html",
+          "title": "glTF 2.0 Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Names of glTF extensions required to properly load this asset."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: MPEG-I Scene Description defines glTF-based scene and timed-media extensions. This row requires evidence and assurance information accompanying a claim, enabling the relying party to assess how the claim was established. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_media/README.md",
+          "title": "MPEG_media, official ISO/IEC 23090-14 second-edition supplement",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "MPEG_media provides an array of MPEG media items referenced by other"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: MPEG-I Scene Description defines glTF-based scene and timed-media extensions. This row requires declaring the vocabulary, types, and validation schemas needed to interpret and check the structure of a claim. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_media/README.md",
+          "title": "MPEG_media, official ISO/IEC 23090-14 second-edition supplement",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "MPEG_media provides an array of MPEG media items referenced by other"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: MPEG-I Scene Description defines glTF-based scene and timed-media extensions. This row requires pairwise identifiers and presentation mechanisms that reduce correlation across relationships, with their remaining correlation risks stated. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_media/README.md",
+          "title": "MPEG_media, official ISO/IEC 23090-14 second-edition supplement",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "MPEG_media provides an array of MPEG media items referenced by other"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.encryption",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: MPEG-I Scene Description defines glTF-based scene and timed-media extensions. This row requires identifying recipient key material and algorithms that permit confidential communication or encrypted content for an intended subject. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_media/README.md",
+          "title": "MPEG_media, official ISO/IEC 23090-14 second-edition supplement",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "MPEG_media provides an array of MPEG media items referenced by other"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.key-lifecycle",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: MPEG-I Scene Description defines glTF-based scene and timed-media extensions. This row requires rules for changing, revoking, or recovering identity-control keys and for discovering the applicable verification material. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_media/README.md",
+          "title": "MPEG_media, official ISO/IEC 23090-14 second-edition supplement",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "MPEG_media provides an array of MPEG media items referenced by other"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: MPEG-I Scene Description defines glTF-based scene and timed-media extensions. This row requires a defined mechanism to discover the suspension, revocation, or other status of a credential after issuance. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_media/README.md",
+          "title": "MPEG_media, official ISO/IEC 23090-14 second-edition supplement",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "MPEG_media provides an array of MPEG media items referenced by other"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: MPEG-I Scene Description defines glTF-based scene and timed-media extensions. This row requires runtime estimates of environmental illumination made available to content for lighting or reflections. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_media/README.md",
+          "title": "MPEG_media, official ISO/IEC 23090-14 second-edition supplement",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "MPEG_media provides an array of MPEG media items referenced by other"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: MPEG-I Scene Description defines glTF-based scene and timed-media extensions. This row requires detecting recognized physical markers or images and reporting their tracked pose relative to a runtime reference space. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_media/README.md",
+          "title": "MPEG_media, official ISO/IEC 23090-14 second-edition supplement",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "MPEG_media provides an array of MPEG media items referenced by other"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.text",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: MPEG-I Scene Description defines glTF-based scene and timed-media extensions. This row requires receiving character or string entry through a defined input interface, separate from interpreting physical controller actions. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_media/README.md",
+          "title": "MPEG_media, official ISO/IEC 23090-14 second-edition supplement",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "MPEG_media provides an array of MPEG media items referenced by other"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: MPEG-I Scene Description defines glTF-based scene and timed-media extensions. This row requires submitting distinct shaped image layers to a display compositor with their placement and composition properties. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_media/README.md",
+          "title": "MPEG_media, official ISO/IEC 23090-14 second-edition supplement",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "MPEG_media provides an array of MPEG media items referenced by other"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "native",
+      "note": "The official second-edition MPEG_media/MPEG_texture_video extension documents link media tracks to scene textures and supply the timed-media model; the claim is limited to these read public normative supplements.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_texture_video/README.md",
+          "title": "MPEG_texture_video, official ISO/IEC 23090-14 second-edition supplement",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "link a `texture` object defined in glTF 2.0 to media and its respective track"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: MPEG-I Scene Description defines glTF-based scene and timed-media extensions. This row requires runtime-reported physical play-area bounds and floor-relative reference information available to an application. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_media/README.md",
+          "title": "MPEG_media, official ISO/IEC 23090-14 second-edition supplement",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "MPEG_media provides an array of MPEG media items referenced by other"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: MPEG-I Scene Description defines glTF-based scene and timed-media extensions. This row requires interchanging identified spatial zones, typed events scoped to them, and summaries with defined spatial and temporal meaning. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_media/README.md",
+          "title": "MPEG_media, official ISO/IEC 23090-14 second-edition supplement",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "MPEG_media provides an array of MPEG media items referenced by other"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: MPEG-I Scene Description defines glTF-based scene and timed-media extensions. This row requires a machine-readable account of a recipient's evaluation and action, with any signature or integrity proof explicitly identified. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_media/README.md",
+          "title": "MPEG_media, official ISO/IEC 23090-14 second-edition supplement",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "MPEG_media provides an array of MPEG media items referenced by other"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: MPEG-I Scene Description defines glTF-based scene and timed-media extensions. This row requires a destination's pre-arrival approval or refusal response, including any validity limit and optional explanatory information. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_media/README.md",
+          "title": "MPEG_media, official ISO/IEC 23090-14 second-edition supplement",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "MPEG_media provides an array of MPEG media items referenced by other"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: MPEG-I Scene Description defines glTF-based scene and timed-media extensions. This row requires dispatching programmable non-raster GPU workloads against resources available through the graphics-compute API. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_media/README.md",
+          "title": "MPEG_media, official ISO/IEC 23090-14 second-edition supplement",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "MPEG_media provides an array of MPEG media items referenced by other"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.frame-timing",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: MPEG-I Scene Description defines glTF-based scene and timed-media extensions. This row requires coordinating frame submission with predicted display timing and the view poses associated with that time. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_media/README.md",
+          "title": "MPEG_media, official ISO/IEC 23090-14 second-edition supplement",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "MPEG_media provides an array of MPEG media items referenced by other"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: MPEG-I Scene Description defines glTF-based scene and timed-media extensions. This row requires asking a sensing runtime for ray intersections with its estimate of physical surroundings and receiving hit poses. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_media/README.md",
+          "title": "MPEG_media, official ISO/IEC 23090-14 second-edition supplement",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "MPEG_media provides an array of MPEG media items referenced by other"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.privacy",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: MPEG-I Scene Description defines glTF-based scene and timed-media extensions. This row requires sensed-data disclosure controls such as spatial coarsening, payload use/retention declarations, and restricted or pseudonymous pose publication. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_media/README.md",
+          "title": "MPEG_media, official ISO/IEC 23090-14 second-edition supplement",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "MPEG_media provides an array of MPEG media items referenced by other"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: MPEG-I Scene Description defines glTF-based scene and timed-media extensions. This row requires receiving typed musical instrument events with channel, note or control identifiers and values through a documented device or recorded-event input interface. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_media/README.md",
+          "title": "MPEG_media, official ISO/IEC 23090-14 second-edition supplement",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "MPEG_media provides an array of MPEG media items referenced by other"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: MPEG-I Scene Description defines glTF-based scene and timed-media extensions. This row requires reconstructing a radiance field or Gaussian representation from observed images and camera information, including optimization controls and a trained scene usable for subsequent view synthesis. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_media/README.md",
+          "title": "MPEG_media, official ISO/IEC 23090-14 second-edition supplement",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "MPEG_media provides an array of MPEG media items referenced by other"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.objectgen",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: MPEG-I Scene Description defines glTF-based scene and timed-media extensions. This row requires producing an individual three-dimensional object from a text or image prompt, with geometry or another renderable representation available for placement in a separately authored scene. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_media/README.md",
+          "title": "MPEG_media, official ISO/IEC 23090-14 second-edition supplement",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "MPEG_media provides an array of MPEG media items referenced by other"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.color",
+      "level": "partial",
+      "note": "The official second-edition MPEG_sampler_YCbCr schema declares ycbcrModel, ycbcrRange, component swizzle and chroma reconstruction fields. It proves color-conversion/range signalling, but the schema does not publish numeric enum interpretation or a complete rendering-surface color contract. No unread normative semantics are assumed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_sampler_YCbCr/MPEG_sampler_YCbCr.schema.json",
+          "title": "{ \"$schema\" : \"http://json-schema.org/draft-07/schema\", \"title\" : \"\", \"type\" : \"object\", \"description\": \"defines an extension to support YCbCr formatted textures.\", \"allOf\": [ { \"$",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "swizzle applied to the RGBA components prior to range expansion and color model conversion"
+        },
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_sampler_YCbCr/MPEG_sampler_YCbCr.schema.json",
+          "title": "{ \"$schema\" : \"http://json-schema.org/draft-07/schema\", \"title\" : \"\", \"type\" : \"object\", \"description\": \"defines an extension to support YCbCr formatted textures.\", \"allOf\": [ { \"$",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "\"ycbcrRange\": { \"type\": \"integer\", \"description\": \"range used for the color encoding\""
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "via-extension",
+      "note": "The official MPEG-I Scene Description edition-2 MPEG_viewport_recommended supplement declares timed camera translation and quaternion-rotation accessors. This named camera-pose extension provides time-associated poses; the source's FDIS-based header is retained as a documentation qualification.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_viewport_recommended/README.md",
+          "title": "MPEG_viewport_recommended",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Provides a reference to `accessor` where the timed data for the translation of camera object will be made available."
+        },
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_viewport_recommended/README.md",
+          "title": "MPEG_viewport_recommended",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "where the timed data for the rotation of camera object will be made available."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.bounds",
+      "level": "partial",
+      "note": "The MPEG_anchor supplement associates minimumRequiredSpace bounds with virtual assets and defines alignment/comparison against tracked physical space. It does not specify an index for traversing scene content before detailed geometry loads, so only the bound/selection portion is established.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_anchor/README.md",
+          "title": "MPEG_anchor extensions",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Space required to anchor the AR asset (width, height, depth in meters). This space corresponds to an axis-aligned bounding box"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.collection",
+      "level": "partial",
+      "note": "MPEG_interactivity contains explicit arrays of target node indices for operations. The retained action schema does not establish a named or rule-defined scene subset.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_interactivity/README.md",
+          "title": "Interactivity",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Indices of the nodes in the nodes array to set their material."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "partial",
+      "note": "MPEG_mesh_linking links a dependent mesh to a shadow mesh and carries deformation inputs. The retained passage does not establish a node-transform constraint relationship with its runtime evaluation rule.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://standards.iso.org/iso-iec/23090/-14/ed-2/en/MPEG_mesh_linking/README.md",
+          "title": "MPEG_mesh_linking",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The dependent mesh can be transformed/animated by relying on the shadow mesh."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,2424 @@
+{
+  "subject_id": "webxr",
+  "summary": "The way a web page reaches a headset or a phone's pass-through camera: it covers starting and ending an immersive session, the tracked spaces, the viewer's pose, the views to draw, the input sources and the frame loop. It is not finished. The core document is a Candidate Recommendation Draft dated 9 June 2026, and no part of this family has ever reached full Recommendation, so nobody should describe it as a completed web standard. Read it as a core plus a fan of modules that sit at very different stages: only the augmented reality module has reached candidate stage alongside the core, seven more are Working Drafts, and the anchors, plane detection and graphics binding documents are editor's drafts that have never been published on the technical reports track at all. It draws nothing itself and binds only to the older web graphics interface; the document that would let it use the newer one is one of those unpublished editor's drafts. Two traps for a standards audience: anchors can be made to survive a restart on the same device and the same site, but there is no way to share one with another device or another person and the word share does not appear in the anchors document at all, and there is no eye tracking module of any kind, so the gaze value in the core is head direction rather than eye direction.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "out-of-scope",
+      "note": "It draws nothing. It hands the page a framebuffer and a frame callback, and the drawing is done with the web graphics interface.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "native",
+      "note": "The binding is in the core, and it is the older web graphics interface only: a layer that provides a framebuffer to draw into. The word WebGPU does not appear anywhere in the core document or in the layers module. A binding to the newer interface exists as an editor's draft that has never been published on the technical reports track, so today a page cannot use the newer graphics interface in an immersive session.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "An XRWebGLLayer is a layer which provides a WebGL framebuffer to render into, enabling hardware accelerated rendering of 3D graphics to be presented on the XR device."
+        },
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "While this specification only defines the XRWebGLLayer layer, future extensions to the spec are expected to add additional layer types"
+        },
+        {
+          "url": "https://immersive-web.github.io/webxr-webgpu-binding/",
+          "title": "WebXR/WebGPU Binding Module - Level 1, Editor's Draft, 12 August 2026 (never published on the W3C technical reports track)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for rendering content for a WebXR session with WebGPU."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "partial",
+      "note": "There is no lighting model. A separate module, the WebXR Lighting Estimation API Level 1, still a Working Draft, reports what the real light is doing so a page can light its own content to match. Everything after that estimate is the page's own renderer.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr-lighting-estimation-1/",
+          "title": "WebXR Lighting Estimation API Level 1, W3C Working Draft, 11 December 2025",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for exposing estimates of environmental lighting conditions to WebXR sessions."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.post",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "out-of-scope",
+      "note": "No text model. The nearest thing is a separate Working Draft module that shows one ordinary web page element as a flat rectangle over the scene, which is a two dimensional overlay rather than text in three dimensions.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr-dom-overlays-1/",
+          "title": "WebXR DOM Overlays Module, W3C Working Draft, 24 September 2024",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "the user agent will display the content of a single DOM element as a transparent-background 2D rectangle"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "native",
+      "note": "The viewpoint model is core: for each frame the page asks for the viewer's pose in a chosen reference space and gets one view per display region, each with its own projection, with near and far planes given in metres.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "An XRView describes a single view into an XR scene for a given frame."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "out-of-scope",
+      "note": "No scene tree. It has a set of reference spaces that can be located against one another, which describes where the room and the viewer are, not what content exists.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "enum XRReferenceSpaceType { \"viewer\", \"local\", \"local-floor\", \"bounded-floor\", \"unbounded\" };"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "partial",
+      "note": "It defines a rigid transform of position and orientation, and reference spaces that can be offset from one another, all in metres. It defines no transform hierarchy for content, no scaling, and it does not state a handedness in its own text.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The points describe offsets from the native origin in meters."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "out-of-scope",
+      "note": "No rig for content. Tracked joints exist as input and are scored under hand tracking and under the avatar skeleton row.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "native",
+      "note": "Metres throughout: clip planes, boundary points and every pose. A page never has to guess the scale of the room it is in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The depthNear attribute defines the distance, in meters, of the near clip plane from the viewer."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "partial",
+      "note": "There is one agreed skeleton and it is only a hand: the Hand Input module, a Working Draft, names 25 joints from wrist to fingertip and requires every hand to contain all of them. Bodies are covered only by a Draft Community Group Report, the lowest maturity of any document in this family. Note for interoperability that this joint set is not the same as the immersive device interface's, which has 26 joints including a palm.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr-hand-input-1/",
+          "title": "WebXR Hand Input Module - Level 1, W3C Working Draft, 5 June 2024",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The XRHandJoint enum defines the various joints that each XRHand MUST contain."
+        },
+        {
+          "url": "https://immersive-web.github.io/body-tracking/",
+          "title": "WebXR Body Tracking Module - Level 1, Draft Community Group Report, 5 September 2025",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The WebXR Body Tracking module expands the WebXR Device API with the functionality to track articulated body poses."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "none",
+      "note": "Nothing published. Face and expression work exists only as an Unofficial Proposal Draft outside the working group's deliverables, which is the weakest status any of this material carries.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "out-of-scope",
+      "note": "No collision shapes. Two modules give a page the raw material to build its own: hit testing against real surfaces and a depth image of the room, both Working Drafts.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr-hit-test-1/",
+          "title": "WebXR Hit Test Module, W3C Working Draft, 11 December 2025",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Describes a method for performing hit tests against real world geometry to be used with the WebXR Device API."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.material",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.determinism",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "out-of-scope",
+      "note": "Sound on the web belongs to a different specification. This one only mentions sound in passing, when saying what makes content immersive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Content is considered to be \"immersive\" if it produces visual, audio, haptic, or other sensory output that simulates or augments various aspects of the user’s environment."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.prediction",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.media",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "out-of-scope",
+      "note": "A session here is one page's connection to one device. It is not a connection to a shared world and carries no authentication; what it does carry is a permission negotiation with the person wearing the device.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "out-of-scope",
+      "note": "Nothing published. Moving between immersive pages with state intact has been raised in the working group but has no specification document.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "partial",
+      "note": "Not identity, but there is a real permission grant model: every optional capability is named, asked for as required or optional when the session is created, and gated behind a permissions policy and the person's consent. A page cannot quietly acquire a sensor it did not declare. What it lacks is any way for a second party to read or check that grant.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The requiredFeatures array contains any Required features for the experience."
+        },
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "xr-spatial-tracking"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "out-of-scope",
+      "note": "No selective disclosure of claims. It does take the privacy of sensor data seriously in its own way: pose reporting is stopped during trusted browser screens, and the specification instructs browsers to stop exposing eye tracking information at those moments.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The user agent SHOULD also stop exposing any eye tracking-related information in such cases."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.social",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "none",
+      "note": "No position against the Earth anywhere in the core or in any module. Aligning an immersive session with geographic coordinates has been proposed but the document is an empty stub, not a specification.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "via-extension",
+      "note": "Through the WebXR Anchors Module, which asks the device to keep correcting a placed pose as its map of the room improves. Note the status carefully: this module is an editor's draft dated 27 April 2026 and has never been published on the technical reports track at all, so it is weaker than every Working Draft in the family.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://immersive-web.github.io/anchors/",
+          "title": "WebXR Anchors Module, Editor's Draft, 27 April 2026 (never published on the W3C technical reports track)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebXR Anchors module enables applications to ask the underlying XR system to track changes to a particular three-dimensional pose (position and orientation) as the system’s understanding of the world changes."
+        },
+        {
+          "url": "https://www.w3.org/groups/wg/immersive-web/publications/",
+          "title": "Immersive Web Working Group publications",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "partial",
+      "note": "Half met, and the missing half is in the specification rather than in implementations. Persistence works: an anchor can be given a handle, listed, restored and deleted across sessions. It is bounded twice over, to one device and to one web site, and the identifier must be known only to that site. Sharing is entirely absent: the words share, shared, sharing, cross-device and cloud do not appear in the anchors document at all, and the module's own explainer still lists persisting and sharing as out of scope even though persistence has since been added. Sharing between devices is an open request in the module's issue tracker.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://immersive-web.github.io/anchors/",
+          "title": "WebXR Anchors Module, Editor's Draft, 27 April 2026 (never published on the W3C technical reports track)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This map is populated and stored by the XR device and restricted to only the set of persistent anchors created and not yet destroyed by any XRSession on origin."
+        },
+        {
+          "url": "https://immersive-web.github.io/anchors/",
+          "title": "WebXR Anchors Module, Editor's Draft, 27 April 2026 (never published on the W3C technical reports track)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Note: when the XRSystem creates the unique ID, it MUST be unique and only known to the current origin."
+        },
+        {
+          "url": "https://github.com/immersive-web/anchors/blob/main/explainer.md",
+          "title": "WebXR Anchors Module explainer",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Persisting and sharing anchors is outside of the current scope of this explainer, since platform-level anchors (used to implement the anchor concept) are opaque and not compatible across different platforms."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.vps",
+      "level": "none",
+      "note": "No camera-derived positioning. A separate Draft Community Group Report hands a page the raw camera image so it could compute a pose itself, but nothing recovers one for it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://immersive-web.github.io/raw-camera-access/",
+          "title": "WebXR Raw Camera Access Module, Draft Community Group Report, 11 December 2025",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification provides a means to access the raw camera image displayed behind an immerisve-ar session, when the device is responsible for rendering that camera image."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.indoor",
+      "level": "partial",
+      "note": "Three modules together give a live read-out of one room: detected planes, detected meshes and detected printed markers. Only the first two describe the room's shape, and neither is a structured description: no rooms, no doors, no connectivity and nothing that can be written down and handed to another system. Note the maturity: plane detection is an editor's draft and mesh and marker detection are Draft Community Group Reports.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://immersive-web.github.io/plane-detection/",
+          "title": "WebXR Plane Detection Module, Editor's Draft, 30 March 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Plane Detection is a module extending the capabilities of the WebXR Device API. It enables apps to receive the set of planes detected by the native XR devices in order to enable more immersive experiences."
+        },
+        {
+          "url": "https://immersive-web.github.io/real-world-meshing/",
+          "title": "WebXR Mesh Detection Module, Draft Community Group Report, 2 February 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        },
+        {
+          "url": "https://immersive-web.github.io/image-tracking/",
+          "title": "WebXR Marker Tracking Module, Draft Community Group Report, 8 July 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The Marker Tracking module expands the WebXR Device API with functionality to detect 2D images from a specified set and track their poses in the real world."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "native",
+      "note": "This is the centre of the specification: asking whether a mode is supported, requesting a session with a declared list of features, running a frame loop, and ending it. Augmented reality is a separate module at candidate stage that adds the pass-through session mode.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The isSessionSupported(mode) method queries if a given mode may be supported by the user agent and device capabilities."
+        },
+        {
+          "url": "https://www.w3.org/TR/webxr-ar-module-1/",
+          "title": "WebXR Augmented Reality Module - Level 1, W3C Candidate Recommendation Draft, 25 April 2025",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The WebXR Augmented Reality module expands the WebXR Device API with the functionality available on AR hardware."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "via-extension",
+      "note": "Split across two documents. The core gives an input source with a pointing pose, a grip pose, a handedness and a list of profile names, plus select and squeeze events. Buttons, triggers, thumbsticks and touchpads come only from the WebXR Gamepads Module, a Working Draft.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr-gamepads-module-1/",
+          "title": "WebXR Gamepads Module - Level 1, W3C Working Draft, 7 July 2025",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification module describes support for accessing button, trigger, thumbstick, and touchpad data associated with virtual reality (VR) and augmented reality (AR) devices on the Web."
+        },
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "enum XRTargetRayMode { \"gaze\", \"tracked-pointer\", \"screen\", \"transient-pointer\" };"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "via-extension",
+      "note": "Through the WebXR Hand Input Module - Level 1, a Working Draft dated 5 June 2024, the oldest publication of any module still in the set. It gives 25 named joints per hand, each as a space that can be located like any other.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr-hand-input-1/",
+          "title": "WebXR Hand Input Module - Level 1, W3C Working Draft, 5 June 2024",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The WebXR Hand Input module expands the WebXR Device API with the functionality to track articulated hand poses."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.eye",
+      "level": "none",
+      "note": "There is no eye tracking module of any kind, at any stage. The gaze value in the core is head direction, not eye direction, and the only mention of eye tracking in the whole core document is an instruction to stop exposing it during trusted browser screens. Treat any claim that this family supports eye tracking as wrong.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "gaze indicates the target ray will originate at the viewer and follow the direction it is facing."
+        },
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The user agent SHOULD also stop exposing any eye tracking-related information in such cases."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "via-extension",
+      "note": "Reached indirectly, and not where you would expect. The Gamepads Module defines no touch feedback at all; the words haptic and vibration do not appear in it. What it does is hand the page an ordinary web gamepad object, and touch feedback comes from that separate specification's vibration actuator.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr-gamepads-module-1/",
+          "title": "WebXR Gamepads Module - Level 1, W3C Working Draft, 7 July 2025",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Button, trigger, thumbstick, and touchpad data is reported though a Gamepad object exposed on the XRInputSource it is associated with."
+        },
+        {
+          "url": "https://www.w3.org/TR/gamepad/",
+          "title": "Gamepad, W3C Working Draft",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "native",
+      "note": "Two layers, and both matter. First a coarse check of whether a session mode is worth offering, deliberately allowed to be optimistic so that it leaks less about the machine. Then a precise negotiation at session creation: named features listed as required or optional, where an unmet required feature fails the session and an unmet optional one is simply left off. Every module registers its own feature name into that list, which is how the whole family stays detectable.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The isSessionSupported(mode) method queries if a given mode may be supported by the user agent and device capabilities."
+        },
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Future iterations of this specification and additional modules may expand the list of accepted feature descriptors."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "out-of-scope",
+      "note": "The scripting runtime is the browser's. This specification is a set of interfaces called from it, not a language.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "partial",
+      "note": "The isolation itself is the browser's, not this specification's, but the specification does the part that is specific to headsets: every spatial capability sits behind a permissions policy and an explicit consent step, and while a trusted browser screen is showing, pose reporting is suppressed so that a page cannot read a person's movements as they type a password.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "trusted UI involving text input, especially password inputs, can potentially leak the typed text through the user’s movements as they type"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "out-of-scope",
+      "note": "Nothing about a world survives. What does survive is scored under shared and persistent anchors: an identifier for a point in a room, held by the device for one web site, with nothing attached to it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "out-of-scope",
+      "note": "A device interface for the browser. It covers the immersive session, the tracked spaces, the views to draw, the input sources and the frame loop, and leaves the rest of the web platform to the rest of the web platform. Nothing in the core specification or in any of its modules touches this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "partial",
+      "note": "Change ships as separate module documents, each adding its own named feature that a page must ask for and can detect, so old content keeps working when a new module lands. The weakness is not the mechanism but the paperwork: the modules sit at wildly different stages, from candidate down to editor's draft, and two of the indexes that list them disagree with each other, so there is no single reliable statement of what the family currently contains.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Future iterations of this specification and additional modules may expand the list of accepted feature descriptors."
+        },
+        {
+          "url": "https://www.w3.org/groups/wg/immersive-web/publications/",
+          "title": "Immersive Web Working Group publications",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "partial",
+      "note": "There are shared browser tests and the core document links a live implementation report built from them, which is real evidence. There is no certification programme and no adopter process, and the interface those tests drive is itself only an editor's draft. The core has still not met its own bar for leaving candidate stage, which is two independent interoperable implementations.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The entrance criteria for this document to enter the Proposed Recommendation stage"
+        },
+        {
+          "url": "https://wpt.fyi/results/webxr?label=master&label=experimental&aligned",
+          "title": "WebXR implementation report (web-platform-tests), linked from the WebXR Device API",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "The WebXR Device API gives a web page access to a headset or a phone's pose, its displays and its input sources, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "The WebXR Device API gives a web page access to a headset or a phone's pose, its displays and its input sources, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "The WebXR Device API gives a web page access to a headset or a phone's pose, its displays and its input sources, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "out-of-scope",
+      "note": "The WebXR Device API gives a web page access to a headset or a phone's pose, its displays and its input sources, and it names no Gaussian splat interchange format and carries no splat data.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "out-of-scope",
+      "note": "The WebXR Device API gives a web page access to a headset or a phone's pose, its displays and its input sources, and it delivers no captured scene, progressively by region and detail or otherwise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "The WebXR Device API gives a web page access to a headset or a phone's pose, its displays and its input sources, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "out-of-scope",
+      "note": "The WebXR Device API gives a web page access to a headset or a phone's pose, its displays and its input sources, and it defines no encoding or compression for a set of points with attributes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "The WebXR Device API gives a web page access to a headset or a phone's pose, its displays and its input sources, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "out-of-scope",
+      "note": "The WebXR Device API gives a web page access to a headset or a phone's pose, its displays and its input sources, and it produces no image from a viewing position that no capture camera occupied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "The WebXR Device API gives a web page access to a headset or a phone's pose, its displays and its input sources, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "The WebXR Device API gives a web page access to a headset or a phone's pose, its displays and its input sources, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "The WebXR Device API gives a web page access to a headset or a phone's pose, its displays and its input sources, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "The WebXR Device API gives a web page access to a headset or a phone's pose, its displays and its input sources, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "The WebXR Device API gives a web page access to a headset or a phone's pose, its displays and its input sources, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "The WebXR Device API gives a web page access to a headset or a phone's pose, its displays and its input sources, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "The WebXR Device API gives a web page access to a headset or a phone's pose, its displays and its input sources, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "out-of-scope",
+      "note": "The WebXR Device API gives a web page access to a headset or a phone's pose, its displays and its input sources, and it carries no full 360-degree view of a place as an image with its projection stated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "via-extension",
+      "note": "The core Device API covers sessions, spaces, poses and frames and stops there. Planes and meshes are separate modules an application asks for by feature descriptor: plane detection is an editor's draft and mesh detection is only a draft community group report, one interface with vertices, indices and a label. Neither is part of the candidate recommendation the browser ships as WebXR.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        },
+        {
+          "url": "https://immersive-web.github.io/plane-detection/",
+          "title": "WebXR Plane Detection Module, Editor's Draft, 30 March 2026",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Plane Detection is a module extending the capabilities of the WebXR Device API."
+        },
+        {
+          "url": "https://immersive-web.github.io/real-world-meshing/",
+          "title": "WebXR Mesh Detection Module, Draft Community Group Report, 2 February 2026",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "An XRMesh represents a single instance of 3D geometry detected by the underlying XR system."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "via-extension",
+      "note": "Both modules carry a semantic label, and both leave it wide open: the attribute is a string, it may be null or empty, and no registry of allowed values exists. Two runtimes may therefore label the same floor differently and still conform, which is the weakest form this row can take while still being present.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://immersive-web.github.io/plane-detection/",
+          "title": "WebXR Plane Detection Module, Editor's Draft, 30 March 2026",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The semanticLabel attribute is a string that describes the semantic label of the polygon. This string MAY be either null or empty if there is no semantic information."
+        },
+        {
+          "url": "https://immersive-web.github.io/real-world-meshing/",
+          "title": "WebXR Mesh Detection Module, Draft Community Group Report, 2 February 2026",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "An XRMesh represents a single instance of 3D geometry detected by the underlying XR system."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "via-extension",
+      "note": "The depth sensing module gives the page a depth buffer for the real world, on the processor or as a texture, together with the scale factor that turns its raw values into metres. It is a module, not core, and the raw units are deliberately unspecified until that factor is applied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://immersive-web.github.io/depth-sensing/",
+          "title": "WebXR Depth Sensing Module, Editor's Draft, 25 August 2026",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The rawValueToMeters attribute contains the scale factor by which the raw depth values from a depth buffer must be multiplied in order to get the depth in meters."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "none",
+      "note": "No module hides content behind real surfaces. Occlusion is named only as an example of what a page might build from depth sensing, so every WebXR page that wants it writes its own shader; nothing in the platform draws it, and there is no compositor path.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://immersive-web.github.io/depth-sensing/",
+          "title": "WebXR Depth Sensing Module, Editor's Draft, 25 August 2026",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The example use cases of depth sensing API include (but are not limited to) simulating physical interactions of virtual objects with the real world, occlusion, and non-visual applications that can make use of increased awareness of users' environment."
+        },
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API, W3C Candidate Recommendation Draft, 9 June 2026",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices, including sensors and head-mounted displays, on the Web."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "partial",
+      "note": "The page is told the blend, it does not choose it. The AR module exposes environmentBlendMode as a read-only report of what the compositor is doing, and the technique itself is fixed by the session mode and the display: alpha blend must be used on a pass-through display in immersive-ar. Nothing lets the page dial the amount, style the camera image or cut a hole through a virtual environment.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr-ar-module-1/",
+          "title": "WebXR Augmented Reality Module - Level 1, W3C",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The environmentBlendMode attribute MUST report the XREnvironmentBlendMode value that matches blend technique currently being performed by the XR Compositor ."
+        },
+        {
+          "url": "https://www.w3.org/TR/webxr-ar-module-1/",
+          "title": "WebXR Augmented Reality Module - Level 1, W3C",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "This technique MUST be applied on pass-through displays when the mode is set \"immersive-ar\" ."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.face",
+      "level": "none",
+      "note": "The Device API has no face stream and no body stream. Body tracking exists only as an incubation draft outside the standards track, and the specification's own instinct about reading the user's face is to stop exposing that data rather than to hand it over.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr-ar-module-1/",
+          "title": "WebXR Augmented Reality Module - Level 1, W3C",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Compared to the WebXR Device API it extends, the AR module only provides some additional details about the nature of the device it is running on via the environmentBlendMode and interactionMode attributes."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "out-of-scope",
+      "note": "WebXR is a device API, not a scene format. It gives a page poses, frames and input; where a body may stand in a place is decided by whatever content the page loaded.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "out-of-scope",
+      "note": "WebXR publishes no units of logic. Script identity on the web is the URL and the package registry, neither of which is part of this specification.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "out-of-scope",
+      "note": "No content is published through the Device API. Review, if any, sits with the site and the browser's own safety machinery, outside this specification.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "none",
+      "note": "The anchors module keeps content stuck to a place across a session and the AR module reports what the device is. Neither declares that a map of a place exists, versions it, or publishes a transform to another map, so two browsers cannot be told they are looking at the same map.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr-ar-module-1/",
+          "title": "WebXR Augmented Reality Module - Level 1, W3C",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Compared to the WebXR Device API it extends, the AR module only provides some additional details about the nature of the device it is running on via the environmentBlendMode and interactionMode attributes."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "WebXR has no geographic frame; where on Earth the user is standing comes from the separate Geolocation API, so there is nothing here to declare a coverage area against.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.extension",
+      "level": "native",
+      "note": "The Device API defines requiredFeatures and optionalFeatures; unrecognized optional features are ignored and unavailable required features prevent session creation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "If any value in the list is not a recognized feature descriptor it will be ignored."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebXR specifies a web application's access to XR devices and sensing. This row requires evidence and assurance information accompanying a claim, enabling the relying party to assess how the claim was established. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebXR specifies a web application's access to XR devices and sensing. This row requires declaring the vocabulary, types, and validation schemas needed to interpret and check the structure of a claim. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebXR specifies a web application's access to XR devices and sensing. This row requires pairwise identifiers and presentation mechanisms that reduce correlation across relationships, with their remaining correlation risks stated. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.thumbnail",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebXR specifies a web application's access to XR devices and sensing. This row requires a preview image referenced or packaged with an asset, usable without rendering its three-dimensional contents. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.encryption",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebXR specifies a web application's access to XR devices and sensing. This row requires identifying recipient key material and algorithms that permit confidential communication or encrypted content for an intended subject. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.key-lifecycle",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebXR specifies a web application's access to XR devices and sensing. This row requires rules for changing, revoking, or recovering identity-control keys and for discovering the applicable verification material. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebXR specifies a web application's access to XR devices and sensing. This row requires a defined mechanism to discover the suspension, revocation, or other status of a credential after issuance. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "via-extension",
+      "note": "The DOM Overlays working draft places interactive two-dimensional web content during an immersive session and defines its display relationship; this is an optional module contract.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr-dom-overlays-1/",
+          "title": "WebXR DOM Overlays Module",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Applications can use normal CSS rules to control transparency and 2D placement of content within the DOM overlay itself."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "via-extension",
+      "note": "The Lighting Estimation module specifies illumination values and reflection information returned by the sensing runtime; no universal browser implementation claim is made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr-lighting-estimation-1/",
+          "title": "WebXR Lighting Estimation API Level 1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "An XRLightEstimate provides the estimated lighting values for an XRLightProbe at the time represented by an XRFrame."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.resolve",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebXR specifies a web application's access to XR devices and sensing. This row requires resolving scene resource identifiers against a context or resolver so the referenced resources can subsequently be accessed. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "partial",
+      "note": "Core WebXR provides a target ray and selection events, but does not itself return the intersected virtual scene object or geometry required by this row.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "readonly attribute XRSpace targetRaySpace;"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "via-extension",
+      "note": "The WebXR Layers module specifies projection, quad, cylinder and equirectangular layers with compositor placement; support is module-dependent rather than a core Device API promise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxrlayers-1/",
+          "title": "WebXR Layers API Level 1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "An XRQuadLayer renders a layer that takes up a flat rectangular space in the virtual environment."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebXR specifies a web application's access to XR devices and sensing. This row requires authored runtime relationships that constrain one node's transform using another node and defined evaluation rules. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "partial",
+      "note": "The optional WebXR Layers module provides XRMediaBinding layers backed by HTMLVideoElement and updates their displayed video frames. This supports video-as-scene-content presentation, but the read module does not establish a general audio/video scene synchronization contract.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxrlayers-1/",
+          "title": "WebXR Layers API Level 1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The XRMediaBinding object is used to create layers that display the content of an HTMLVideoElement."
+        },
+        {
+          "url": "https://www.w3.org/TR/webxrlayers-1/",
+          "title": "WebXR Layers API Level 1",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "If the layer is part of the session’s renderState, it will display the current frame of the video."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "native",
+      "note": "The Device API bounded-floor space supplies floor-relative coordinates and a bounds polygon, with an empty array when bounds are unavailable.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "XRBoundedReferenceSpace extends XRReferenceSpace to include boundsGeometry"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebXR specifies a web application's access to XR devices and sensing. This row requires generating audio during playback from an exchanged synthesis model, supporting data, and changing control parameters. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebXR specifies a web application's access to XR devices and sensing. This row requires interchanging identified spatial zones, typed events scoped to them, and summaries with defined spatial and temporal meaning. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.consent",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebXR specifies a web application's access to XR devices and sensing. This row requires carrying a grant of permission with scope, purpose, validity, and withdrawal information for uses of the subject or represented data. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebXR specifies a web application's access to XR devices and sensing. This row requires a machine-readable account of a recipient's evaluation and action, with any signature or integrity proof explicitly identified. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebXR specifies a web application's access to XR devices and sensing. This row requires a destination's pre-arrival approval or refusal response, including any validity limit and optional explanatory information. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebXR specifies a web application's access to XR devices and sensing. This row requires dispatching programmable non-raster GPU workloads against resources available through the graphics-compute API. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.frame-timing",
+      "level": "native",
+      "note": "The read Candidate Recommendation Draft pairs XR animation frames and predicted display time with tracked view poses; this describes the specified API, not browser implementation coverage.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "For an immersive session the predictedDisplayTime attribute MUST return the DOMHighResTimeStamp"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebXR specifies a web application's access to XR devices and sensing. This row requires a specified shader source language and execution semantics enabling implementations to consume the same shader program. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.parametric",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebXR specifies a web application's access to XR devices and sensing. This row requires carrying parametric curves and surfaces in mathematical form so a receiver can evaluate or tessellate them. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebXR specifies a web application's access to XR devices and sensing. This row requires exchanging particle-system emitters and simulation/rendering parameters that a receiving runtime evaluates. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance-recovery",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebXR specifies a web application's access to XR devices and sensing. This row requires locating associated provenance through a supported content fingerprint or watermark when embedded association has been lost. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.style",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebXR specifies a web application's access to XR devices and sensing. This row requires separately expressed styling rules that select feature visibility, color, or other supported display properties from content metadata. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.variant",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebXR specifies a web application's access to XR devices and sensing. This row requires named alternatives of an asset's authored configuration, with a defined selection mechanism. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.voxel",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebXR specifies a web application's access to XR devices and sensing. This row requires interchanging spatial cell volumes and their properties, including updates, as a scene representation. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "via-extension",
+      "note": "The Hit Test module requests intersections against the device's understanding of physical geometry and returns results with poses in reference spaces.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr-hit-test-1/",
+          "title": "WebXR Hit Test Module",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Describes a method for performing hit tests against real world geometry to be used with the WebXR Device API."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.privacy",
+      "level": "native",
+      "note": "The Device API specifies sensed-data access controls and privacy mitigations including data reduction; these are defined runtime controls and guidance, not a promise of universal retention-policy interchange.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "security and privacy threats can be mitigated through data adjustments such as throttling, quantizing, rounding, limiting"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebXR specifies a web application's access to XR devices and sensing. This row requires reconstructing a radiance field or Gaussian representation from observed images and camera information, including optimization controls and a trained scene usable for subsequent view synthesis. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.objectgen",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebXR specifies a web application's access to XR devices and sensing. This row requires producing an individual three-dimensional object from a text or image prompt, with geometry or another renderable representation available for placement in a separately authored scene. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This specification describes support for accessing virtual reality (VR) and augmented reality (AR) devices"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "native",
+      "note": "XRFrame supplies poses relative to a chosen base space at the frame's time, enabling a live series of object poses. A separately recorded pose-sequence format is not asserted.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The getPose(space, baseSpace) method provides the pose of space relative to baseSpace as an XRPose, at the time represented by the XRFrame."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.profile",
+      "level": "partial",
+      "note": "XRInputSource names input profiles for visual and behavior matching. The core page does not make these a complete implementation/content compatibility contract with all requirements, so this is partial profile support.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The profiles attribute is a list of input profile names indicating both the prefered visual representation and behavior of the input source."
+        }
+      ]
+    }
+  ]
+}

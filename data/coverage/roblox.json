@@ -1,0 +1,2699 @@
+{
+  "subject_id": "roblox",
+  "summary": "Roblox is a proprietary platform and also, by a wide margin, the best documented subject in this map: its creator documentation is open source, its engine reference and cloud interface descriptions ship with it, and its scripting language Luau is published separately under a permissive licence with its own site and a standalone runtime, making Luau the one Roblox artefact anyone else can simply pick up and use. One choice collides head-on with everything else here, and Roblox documents it precisely enough to be certain of: the unit of length is the stud, which Roblox converts to twenty-eight centimetres, its mass unit is 21.952 kilograms, and default gravity is 196.2 studs per second squared, which the same page converts to 54.936 metres per second squared, about five and a half times Earth, with Roblox listing 35 studs per second squared separately as the realistic value; the engine performs no unit conversion internally, so a scene authored in metres arrives both the wrong size and falling at the wrong rate, and neither error announces itself. Against that, Roblox is the only platform in this group that can write a neutral format at all: the importer reads FBX, glTF and plain object files, and a beta exporter writes glTF back out with meshes, textures, rigging, cages and facial pose data, though never animation, and only for assets the creator is permitted to take, so content goes in far more freely than it comes out. Two more results deserve a standards audience's attention: Roblox drives every headset through OpenXR, the immersive session standard, and its facial animation is built on the Facial Action Coding System with fifty published poses and seventeen required for marketplace items, which is a shared outside vocabulary rather than a private one. The walls are still walls: the place and model file formats have no published byte-level specification, the wire protocol is unpublished, interactivity never travels with an asset, and travel between places carries only data the client is allowed to read and never leaves the platform.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "partial",
+      "note": "Roblox has a full rasteriser but publishes nothing about its render graph or pass structure, and creators cannot author passes or shaders. The only creator-facing view of pass structure is a read-only debug tool that reports counts per pass. A search of the whole documentation set finds no mention of custom shaders or shader code.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/performance-optimization/scene-analysis",
+          "title": "Scene Analysis",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Returns triangle and draw call counts by render pass."
+        },
+        {
+          "url": "https://create.roblox.com/docs/performance-optimization/improve",
+          "title": "Improve performance",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A draw call is a set of instructions from the engine to the GPU to render something."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "native",
+      "note": "The engine targets four low-level graphics interfaces and picks one automatically per device. This is an engine setting, not a creator binding — there is no way to supply your own graphics code.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/enums/GraphicsMode",
+          "title": "GraphicsMode",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Used to set the graphics API that Roblox uses to render the game."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "native",
+      "note": "Surfaces are described by a physically-based material with colour, normal, roughness, metalness and emissive maps, plus a library of built-in materials and creator-defined variants. One constraint that bites on import: only one material per mesh object, and normal maps must be in one specific convention.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/art/modeling/texture-specifications",
+          "title": "Texture specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Roblox only supports **OpenGL format - Tangent Space** normal maps"
+        },
+        {
+          "url": "https://create.roblox.com/docs/art/modeling/texture-specifications",
+          "title": "Texture specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "**Single material** — Mesh objects can only have one material assigned."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "native",
+      "note": "Several named lighting systems exist, from a coarse voxel light map through shadow mapping to the highest-fidelity option, plus point, spot and surface lights and an ambient term derived from the sky. The choice of system is a property value; the algorithms are not published.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/enums/Technology",
+          "title": "Technology",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Uses a 4&times;4&times;4 voxel map for light and shadow calculation."
+        },
+        {
+          "url": "https://create.roblox.com/docs/environment/lighting",
+          "title": "Lighting",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The `Class.Lighting.EnvironmentDiffuseScale | EnvironmentDiffuseScale` property determines how much ambient light is derived from the environment."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.post",
+      "level": "native",
+      "note": "A fixed set of post effects is offered as objects a creator drops into the scene: bloom, blur, colour correction, colour grading, depth of field and sun rays. Creators pick from the set; they cannot write their own effect.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/environment/post-processing-effects",
+          "title": "Post-processing effects",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The `Class.BlurEffect` effect applies a Gaussian blur to the entirety of the 3D world view."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "native",
+      "note": "Three layers of detail control exist: an automatic per-mesh fidelity that steps down with camera distance, a cloud-built simplified stand-in system for whole models and avatars, and a radius-based streaming system that decides what to send first. The simplified stand-ins are generated on Roblox servers, so the mechanism cannot be used outside Roblox.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/parts/meshes",
+          "title": "Meshes",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "You can dynamically control a mesh's level of detail using its `Enum.RenderFidelity` property. The default value is `Enum.RenderFidelity.Automatic | Automatic`, meaning the mesh's detail is based on its distance from the camera"
+        },
+        {
+          "url": "https://create.roblox.com/docs/workspace/streaming/slim",
+          "title": "SLIM",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "**SLIM** (Scalable Lightweight Interactive Models) is an automatic optimization system that generates lightweight, optimized representations of `Class.Model | Models` and platform avatars using cloud-based transcoding"
+        },
+        {
+          "url": "https://create.roblox.com/docs/workspace/streaming/slim",
+          "title": "SLIM",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The place must be **saved to Roblox** (not a local `.rbxl` file), as SLIM uses cloud transcoding to generate optimized assets."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "none",
+      "note": "A text search of the whole published documentation set finds no mention of Gaussian splatting or radiance fields. The only hits for \"Gaussian\" are the blur post effect.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/environment/post-processing-effects",
+          "title": "Post-processing effects",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Apply a Gaussian [blur](#blur) to the entirety of your game"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "partial",
+      "note": "Terrain is a real voxel system with a scripting interface to read and write voxels, but the grid size is fixed and cannot be changed. There is nothing for point clouds or volumetric video — those words do not appear in the documentation at all.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/parts/terrain",
+          "title": "Terrain",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Terrain is made up of grids of **voxels** which are 4&times;4&times;4 stud regions in the 3D world with a set material."
+        },
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/Terrain",
+          "title": "Terrain",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The voxel resolution; must be exactly `4`."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "native",
+      "note": "Text is drawn into the 3D world by attaching a flat interface surface to a part face, or a camera-facing panel in space. Fonts are ordinary Roblox assets with a family, weight and style.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/ui/in-experience-containers",
+          "title": "In-experience containers",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A `Class.SurfaceGui` allows for the rendering of UI objects onto a part's surface in the 3D world while also allowing for basic user interaction to occur."
+        },
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/datatypes/Font",
+          "title": "Font",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Font families are a type of asset, like images or meshes. Each font family contains a number of font faces, and each face has a different weight and style."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "native",
+      "note": "There is a built-in camera object with third-person and first-person modes, replaceable by creator code, and a headset variant that reports device pose as a position-and-orientation value. Viewpoints are named by Roblox object references, not by any portable camera description.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/workspace/camera",
+          "title": "Customize the camera",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Roblox's built-in camera powers a default **third person** mode and an optional **first person** mode, so you don't need to build your own following camera."
+        },
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/VRService",
+          "title": "VRService",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Returns a CFrame describing the position &amp; orientation of a specified virtual reality device as an offset from a point in real world space."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "native",
+      "note": "Everything in a place is one tree of objects, called the data model, and that tree is the engine's source of truth. The tree only exists inside Roblox; nothing else can read it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/projects/data-model",
+          "title": "Data model",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Every place is represented by a data model, a hierarchy of objects that describe everything about the place."
+        },
+        {
+          "url": "https://create.roblox.com/docs/projects/data-model",
+          "title": "Data model",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Roblox Engine uses the data model as a source of truth for a place's state, so it can simulate and render it on client devices."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "partial",
+      "note": "The axis convention is friendly — right-handed, Y up, forward along negative Z, the same convention glTF uses, and the documented import setting for modelling tools is Y up. The gap is that Roblox's transform value carries only position and a 3x3 rotation, with no scale component; object size lives in a separate property. A scaled node from another tool therefore cannot round-trip through a Roblox transform.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/datatypes/CFrame",
+          "title": "CFrame",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The forward-direction component of the `Datatype.CFrame` object's orientation, equivalent to the negated form of `Datatype.CFrame.ZVector | ZVector`."
+        },
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/datatypes/CFrame",
+          "title": "CFrame",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "`Datatype.CFrame` stores 3D rotation data in a 3&times;3 **rotation matrix**."
+        },
+        {
+          "url": "https://create.roblox.com/docs/art/modeling/export-requirements",
+          "title": "Export settings",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Navigate to **Axis Conversion**, then set the **Up Axis** property to **Y**."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "conflicts",
+      "note": "Roblox's own container files are `.rbxl` and `.rbxlx` for places and `.rbxm` and `.rbxmx` for models. The binary variants are described only as \"compact, but not human-readable\" — no byte-level specification is published anywhere by Roblox — and the upload documentation warns outright that files touched by anything other than Roblox Studio may not work. This is a closed container that cannot be a neutral interchange format for anyone.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/projects/place-files",
+          "title": "Place files",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "`.rbxl` is the binary place file format. This format is compact, but not human-readable."
+        },
+        {
+          "url": "https://create.roblox.com/docs/cloud/guides/usage-assets",
+          "title": "Assets usage guide",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "`.rbxm` or `.rbxmx` files edited outside of [Roblox Studio](../../studio/setup.md) might not upload or function."
+        }
+      ],
+      "direction": "write"
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "partial",
+      "note": "Roblox READS `.fbx`, `.obj` and `.gltf` and applies hard limits (20,000 triangles per mesh, watertight, no n-gons, at most four bone influences per vertex). It can WRITE geometry back out as glTF, but that is a beta feature, and separately as a plain `.obj` through a legacy plugin call. The internal encoding and compression of a stored Roblox mesh is not published at all.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/art/modeling/specifications",
+          "title": "General specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "**Budgets** - Individual meshes can not exceed 20,000 triangles."
+        },
+        {
+          "url": "https://create.roblox.com/docs/art/modeling/specifications",
+          "title": "General specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "**Max influences** - A vertex can not be influenced by more than 4 bones or joints."
+        },
+        {
+          "url": "https://create.roblox.com/docs/studio/importer",
+          "title": "Importer",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "You can import meshes in the `.fbx`, `.obj`, or `.gltf` format."
+        },
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/PluginManagerInterface",
+          "title": "PluginManagerInterface",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Exports all geometry in the current `Class.Selection` to an `.obj` file."
+        }
+      ],
+      "direction": "both"
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "partial",
+      "note": "Images go in as `.png`, `.jpg`, `.tga` or `.bmp`; textures are capped at 4096 by 4096 and the engine re-encodes and streams its own quality levels. No compressed device texture format is exposed to creators either on the way in or on the way out — there is no mention anywhere in the documentation of the usual transmission or GPU texture container formats.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/art/modeling/texture-specifications",
+          "title": "Texture specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "**Resolution** — Roblox supports up to 4096×4096 pixel texture resolutions (4K). As a game loads, the engine automatically starts with lower quality versions of the texture and ramps up quality based on device resources."
+        },
+        {
+          "url": "https://create.roblox.com/docs/cloud/guides/usage-assets",
+          "title": "Assets usage guide",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Must be smaller than 8000x8000 pixels."
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "none",
+      "note": "There is no material interchange. A search of the whole documentation set finds no mention of MaterialX or Universal Scene Description. Roblox's surface-appearance object is its own thing; the beta glTF export carries texture images but not a portable material graph.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/art/modeling/gltf-export",
+          "title": "3D Export",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "glTF export supports the following types of 3D data: Meshes, Textures, Rigging and skinning data, Vertex colors, Cages, Dynamic head FACS data."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "partial",
+      "note": "This is a clean read-only asymmetry. Animation comes IN on an `.fbx` or `.gltf` (one clip per file) and becomes a Roblox asset referenced by a numeric ID; the beta glTF exporter explicitly cannot write animation back out. Animation authored in Roblox cannot leave Roblox.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/art/modeling/gltf-export",
+          "title": "3D Export",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Does not support animation data."
+        },
+        {
+          "url": "https://create.roblox.com/docs/art/modeling/specifications",
+          "title": "General specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "**Single track animation** - Only a single animation track can be exported with a mesh or model."
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "native",
+      "note": "Roblox publishes the exact bone names and parent-child order that a humanoid rig must use, plus a higher-fidelity variant adding up to 37 optional bones for hands, shoulders and spine. This is one of the more genuinely reusable things Roblox has published, because the names are stated in the open documentation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/avatar/character-bodies/specifications",
+          "title": "Character body specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "**Rig Hierarchy** - Humanoid rigs require a specific bone or joint hierarchy and naming convention:"
+        },
+        {
+          "url": "https://create.roblox.com/docs/avatar/character-bodies/specifications",
+          "title": "Character body specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Higher-fidelity humanoid rigs have the same requirements as standard rigs, but they support up to 37 additional optional bones or joints"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "partial",
+      "note": "Shape deformation is documented only for animatable avatar heads, where it is expressed as a named set of facial poses stored as blend shapes in the source model. There is no documented general morph-target support for ordinary meshes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/Roblox/creator-docs/main/content/en-us/marketplace/validation-system.md",
+          "title": "UGC validation system",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "add the missing blend shapes to your head mesh in your 3D modeling software and ensure each [required control](../avatar/dynamic-heads/specifications.md#facs-animation) name matches the expected FACS naming convention"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "native",
+      "note": "The engine collapses repeated identical meshes into one draw call automatically; the creator's job is only to reuse the same mesh and texture rather than to declare instances. There is no explicit instancing object or API, and no instancing information survives into any file Roblox can write. (Careful: the word \"Instance\" in the Roblox API means \"an object in the data model\" and has nothing to do with this.)",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/performance-optimization/improve",
+          "title": "Improve performance",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "the Roblox Engine utilizes a process called _instancing_ to collapse identical meshes with the same texture characteristics into a single draw call"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "partial",
+      "note": "Packages give real referencing, nesting, automatic update and version history, and a copy of a package can override the root attribute values it was published with — those overrides survive an update while everything else is refreshed. The override granularity is limited to those root attributes, and the whole mechanism is Studio-authoring-time and Roblox-only.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/projects/assets/packages",
+          "title": "Packages",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "On any given **copy** of a package, those attribute values can be changed on a per‑instance basis... When package copies are [updated](#update-outdated-copies), modified configuration values will be preserved, while other attributes will be updated to the latest default value."
+        },
+        {
+          "url": "https://create.roblox.com/docs/projects/assets/packages",
+          "title": "Packages",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "You can nest packages inside of other packages to maintain and collaborate on complex hierarchies"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "conflicts",
+      "note": "This is a hard collision with any metre-based common approach. Roblox's length unit, the stud, is officially 28 centimetres, not a metre. Its mass unit is 21.952 kilograms. Its default gravity is 196.2 studs per second squared, which the same page states is 54.936 metres per second squared — about five and a half times Earth gravity — and Roblox lists 35 studs per second squared as the separate \"realistic\" value. Content moved either way needs a 0.28 scale factor and a gravity change, and Roblox states the engine itself does no unit conversion at all.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/physics/units",
+          "title": "Roblox units",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Length | 1 stud | 28 cm"
+        },
+        {
+          "url": "https://create.roblox.com/docs/physics/units",
+          "title": "Roblox units",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Mass | 1 RMU* | 21.952 kg\" and \"* RMU = Roblox Mass Unit"
+        },
+        {
+          "url": "https://create.roblox.com/docs/physics/units",
+          "title": "Roblox units",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Roblox default | 196.2 studs/s² | 54.936 m/s²\" and \"Realistic (real-world) | 35 studs/s² | 9.8 m/s²"
+        },
+        {
+          "url": "https://create.roblox.com/docs/physics/units",
+          "title": "Roblox units",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Internally, the Roblox physics engine does not use unit conversions. You're free to define your own unit interpretations for studs (length) and RMUs (mass), but these should be used in a consistent manner throughout the game."
+        },
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/Workspace",
+          "title": "Workspace",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This value is measured in studs per second squared and by default is set to 196.2 studs/second<sup>2</sup>."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "partial",
+      "note": "Roblox has two rights systems — a per-asset permission state (restricted or open use) held in the account system, and a licence marketplace where a rights holder publishes terms that creators apply to use. Neither puts licence terms inside the asset file. Permission is a fact about an asset ID on Roblox's servers, so it does not travel with anything exported.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/projects/assets/privacy",
+          "title": "Asset privacy",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "**Restricted** — Creators or games can only use the asset after the asset owner grants permission.\" and \"**Open Use** — Any creator or game can use the asset."
+        },
+        {
+          "url": "https://create.roblox.com/docs/ip-licensing/license-manager",
+          "title": "License Manager",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "**License Manager** is an intellectual property (IP) management tool that lets you grant permission to creators to use your established IP in their games."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "none",
+      "note": "Nothing signs an asset or records how it was made. A text search of the entire documentation set returns no hits for content credentials or the C2PA provenance standard. Authorship is only an owner field on a Roblox asset record.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/projects/assets/privacy",
+          "title": "Asset privacy",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The asset privacy system controls which creators and games can use the asset, but others can still see its metadata, such as its name and description."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "native",
+      "note": "A Roblox avatar body is a published specification: fifteen separate mesh objects grouped into six marketplace assets, with a documented outfit description object that captures body parts, clothing, accessories, colours, scales and animations. Every field in that description is a Roblox asset ID, so the description is meaningless off the platform.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/avatar/character-bodies/specifications",
+          "title": "Character body specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Character body models for avatars are made up of 15 separate mesh objects"
+        },
+        {
+          "url": "https://create.roblox.com/docs/avatar/character-bodies/specifications",
+          "title": "Character body specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "the body is split into 6 individual assets: **DynamicHead**, **Torso**, **LeftArm**, **RightArm**, **LeftLeg**, **RightLeg**"
+        },
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/HumanoidDescription",
+          "title": "HumanoidDescription",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "**HumanoidDescription** is an object that stores a description of a `Class.Humanoid` for R6 and R15 rigs."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "native",
+      "note": "The bone names and hierarchy are published in full (see scene.skeleton), which means an animator outside Roblox can build to them. Two body standards coexist — an older six-part body and the current fifteen-part one — and Roblox ships an adapter to run one inside the other.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/characters/r6-to-r15-adapter",
+          "title": "R6 to R15 Adapter",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The **R6 to R15 Adapter** allows R15 avatars to join your R6 game."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "partial",
+      "note": "Roblox publishes a named facial pose list built on the Facial Action Coding System — 50 base poses, of which 17 are mandatory for anything sold on the marketplace. Because the basis is an external anatomical system, the poses map onto other platforms' facial standards by name matching rather than by conversion, and the beta glTF export can carry the pose data out. No viseme set is documented anywhere.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/avatar/dynamic-heads/facs-poses-reference",
+          "title": "FACS poses reference",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The following is a list of 50 base poses that you can use in Roblox to portray a wide range of face emotions."
+        },
+        {
+          "url": "https://create.roblox.com/docs/avatar/dynamic-heads/facs-poses-reference",
+          "title": "FACS poses reference",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "your avatar head must include the required [17 facial base poses](./specifications.md#facs-animation). Marketplace validation rejects assets that do not include these 17 required base poses."
+        },
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/FaceControls",
+          "title": "FaceControls",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The FaceControls properties are based on the Facial Action Coding System (FACS), a comprehensive system for describing all visually discernible facial movement based on anatomy."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "native",
+      "note": "Animation retargeting between differently proportioned bodies is a first-class engine setting, and a joint-mapping system lets a custom rig both play the platform animation library and hand its own animations back to standard bodies. It works only between Roblox rigs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/enums/AnimatorRetargetingMode",
+          "title": "AnimatorRetargetingMode",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Retargeting adapts animations to various character rigs based on their proportions."
+        },
+        {
+          "url": "https://create.roblox.com/docs/characters",
+          "title": "Characters",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "**Custom rig > Avatar requirements** - The animations you create on your custom rigs can instantly retarget to avatars with standard rigging armatures."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "native",
+      "note": "Worn items come in two documented kinds — rigid items pinned to named attachment points, and layered clothing that stretches over a body using inner and outer cage meshes with a fixed naming rule. Attachment point names are published, so an artist outside Roblox can author to them; the items themselves only ever equip on Roblox.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/art/modeling/specifications",
+          "title": "General specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "**Naming conventions** - The inner and outer cage must be named after the primary mesh object with **\\_InnerCage** and **\\_OuterCage** affixed."
+        },
+        {
+          "url": "https://create.roblox.com/docs/avatar/character-bodies/specifications",
+          "title": "Character body specifications",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Attachments are points that determine the specific location where accessories and in-game equippable objects attach to the character's body."
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "native",
+      "note": "There is a documented crowd mechanism: the engine renders simplified stand-in avatars when the real ones are out of streaming range, swaps between the two according to available resources, and throttles their animation. The simplified versions are built by Roblox's cloud, so this cannot be reused elsewhere.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/workspace/streaming/slim",
+          "title": "SLIM",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Renders a SLIM version when an actual avatar model streams out.\" and \"Swaps between SLIM and full-resolution representations based on available resources, even inside the streaming radius.\" and \"Throttles SLIM animations based on scene importance and available bandwidth."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "native",
+      "note": "An avatar always belongs to a Roblox account, and that account can be age-checked by government ID or by facial age estimation. Third-party applications can read a verification flag and an age bracket over standard sign-in. It is a Roblox account identity, not a portable credential.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/production/publishing/account-verification",
+          "title": "Account verification",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "**Account verification** is the process of connecting your identity on Roblox to your real world identity, either through a government ID or through your phone number."
+        },
+        {
+          "url": "https://create.roblox.com/docs/cloud/auth/oauth2-reference",
+          "title": "Authentication",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "verified"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "native",
+      "note": "A distributed rigid-body simulation runs at 240 hertz by default, with an optional adaptive mode that sorts bodies into 240, 120 and 60 hertz solver groups. Everything about the numbers is in Roblox's own units, so see scene.units and physics.material for the interoperability cost.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/physics/adaptive-timestepping",
+          "title": "Adaptive timestepping",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "By default, Roblox simulates physics at 240&nbsp;Hz."
+        },
+        {
+          "url": "https://create.roblox.com/docs/physics/adaptive-timestepping",
+          "title": "Adaptive timestepping",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "the physics engine automatically assigns parts to three \\\"solver&nbsp;islands\\\" by varying their simulation timestep, with an emphasis on 60&nbsp;Hz for best performance"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "native",
+      "note": "Collision shapes are separate from visible geometry and chosen per mesh from a small set of approximations, with collision groups for filtering. The approximation is generated by Roblox from the mesh; the resulting shape is not exposed as data a creator or another tool can read.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/workspace/collisions",
+          "title": "Collisions",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "meshes and solid modeled parts... have a distinctive `Class.TriangleMeshPart.CollisionFidelity | CollisionFidelity` property which determines how precisely the physical bounds align with the visual representation for collision handling"
+        },
+        {
+          "url": "https://create.roblox.com/docs/projects/place-files",
+          "title": "Place files",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "`Enum.CollisionFidelity.Box | Box` and `Enum.CollisionFidelity.Hull | Hull` collision fidelity are more memory efficient than the default."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "native",
+      "note": "A wide family of documented constraints exists — hinge, prismatic, cylindrical, ball-socket, universal, rod, rope, spring, torsion spring, weld, rigid, plane and no-collision — plus force and velocity drivers. Each has its own reference page; none of it is expressed in a portable form.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/physics/mechanical-constraints",
+          "title": "Mechanical constraints",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The physics engine includes the following `Class.Constraint | Constraints` that behave as conceptual mechanical connections, including hinges, springs, ropes, and more. In addition, various [mover constraints](../physics/mover-constraints.md) are available to exert directional or rotational force upon [assemblies](../physics/assemblies.md)."
+        },
+        {
+          "url": "https://create.roblox.com/docs/physics/constraints/ball-socket",
+          "title": "Ball socket constraint",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "`Class.BallSocketConstraint` forces its two attachments into the same position and allows them to freely rotate about all three axes, with optional limits to restrict both tilt and twist"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.material",
+      "level": "conflicts",
+      "note": "Two separate collisions. First, density is expressed in Roblox mass units per cubic stud, where water is 1.0 — numerically the same figure as grams per cubic centimetre but a different unit, and clamped between 0.0001 and 100. Second, when two surfaces meet, friction and restitution are combined by a pairwise weighted average using per-part weight values, which is not the multiply or minimum or maximum rule other engines use, so imported friction numbers will not reproduce the same contact behaviour. Friction also ranges 0 to 2 rather than the usual 0 to 1.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/physics/units",
+          "title": "Roblox units",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Water density | 1 g/cm³ | 1 RMU/stud³"
+        },
+        {
+          "url": "https://create.roblox.com/docs/physics/units",
+          "title": "Roblox units",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Density (RMU/stud³) | 0.0001 | 100\" and \"Friction | 0.0 | 2.0\" and \"Elasticity | 0.0 | 1.0"
+        },
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/datatypes/PhysicalProperties",
+          "title": "PhysicalProperties",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "When two parts interact, the friction and elasticity between them are determined in the same way by the following pairwise weighted average function"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.determinism",
+      "level": "partial",
+      "note": "Roblox's server-authority mode requires clients to reproduce the server's simulation closely enough to compare it frame by frame, roll back and resimulate — so within one engine build there is a working, documented reproducibility mechanism. Roblox never claims bit-exact determinism, publishes no determinism contract, and the adaptive timestep mode moves bodies between solver rates at runtime. Nothing here helps a second implementation reproduce the same result.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/projects/server-authority",
+          "title": "Server authority model",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "When the client receives the authoritative state from the server, it checks that state against a historical record of what it predicted locally for that frame."
+        },
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/Workspace",
+          "title": "Workspace",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "enables `Class.RunService:BindToSimulation()` which calls a function at a fixed frequency... makes the `Global.RobloxGlobals.time()` function return the fixed stepped frame time"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "none",
+      "note": "There is no soft-body or cloth simulation. Layered clothing looks deformable but is fitted geometry: a cage-based wrap plus skin weights that follow the skeleton, computed at fitting time, not simulated. Roblox's documentation only mentions cloth simulation as something you do in Blender before importing.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/avatar/layered-accessories",
+          "title": "Layered accessories",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "To ensure the layered accessory can deform with the character's body, it must be weighted to a rigging armature."
+        },
+        {
+          "url": "https://create.roblox.com/docs/art/accessories/creating/watertight",
+          "title": "Watertight",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Blender's [cloth simulation](https://docs.blender.org/manual/en/latest/physics/cloth/examples.html#using-simulation-to-shape-sculpt-a-mesh) and other sculpting tools."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "native",
+      "note": "Any part can act as a trigger volume: touch and touch-ended events fire whether or not the part physically collides, and a separate switch turns touch events off for performance. The events fire only from physical movement, not from teleporting an object into place — a real behavioural difference worth knowing.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/workspace/collisions",
+          "title": "Collisions",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Even if `Class.BasePart.CanCollide | CanCollide` is disabled for a part, you can detect touch and non‑touch through `Class.BasePart.Touched | Touched` and `Class.BasePart.TouchEnded | TouchEnded` events."
+        },
+        {
+          "url": "https://create.roblox.com/docs/workspace/collisions",
+          "title": "Collisions",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The `Class.BasePart.Touched | Touched` and `Class.BasePart.TouchEnded | TouchEnded` events only fire as a result of **physical** movement, not from a `Class.BasePart.Position | Position` or `Class.BasePart.CFrame | CFrame` changes"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "native",
+      "note": "The current audio system is a signal graph of small objects — a player that reads an asset, an emitter that acts as a speaker in the world, a listener that acts as a microphone, and wires that carry the stream between them. Volume over distance and volume over angle are creator-supplied curves. The older single sound object is now discouraged.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/audio/objects",
+          "title": "Audio objects",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "An `Class.AudioEmitter` is a **virtual speaker** that emits audio into the 3D environment.\" and \"An `Class.AudioListener` is a **virtual microphone** that picks up audio from the 3D environment."
+        },
+        {
+          "url": "https://create.roblox.com/docs/audio/objects",
+          "title": "Audio objects",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "`Class.Sound`, `Class.SoundGroup`, and `Class.SoundEffect` objects are now discouraged in favor of the more robust functionality of audio objects."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "partial",
+      "note": "Direction and distance are handled by creator-defined attenuation curves and an optional acoustic simulation, but Roblox does not name the model used to render direction to the ears. A text search of the whole documentation set finds no mention of head-related transfer functions, binaural rendering or ambisonics.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/audio/objects",
+          "title": "Audio objects",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "set **DistanceAttenuation** to a volume-over-distance curve that determines how loudly the listener hears the emitter according to the distance between them"
+        },
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/AudioListener",
+          "title": "AudioListener",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "use, or uses an inverse rolloff curve if none is provided."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "native",
+      "note": "Reverberation can be computed automatically from the surrounding geometry and its materials, and there is also a hand-tuned reverb effect with decay, density, diffusion and early-reflection controls. Both emitter and listener must opt in for the automatic version to apply.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/AudioListener",
+          "title": "AudioListener",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "When active, a reverb effect is computed from the size and material properties of the surrounding environment. Both the `Class.AudioEmitter` and `Class.AudioListener` must have reverb effectively enabled for the effect to occur on their audio path."
+        },
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/AudioReverb",
+          "title": "AudioReverb",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "`Class.AudioReverb` reverberates audio streams, modeling the natural echoes of"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "native",
+      "note": "Sound is muffled through walls by a filter whose strength depends on the material density and thickness of what is in the way, and a separate switch bends sound around corners. Turning occlusion off also turns the bending off, because the bending is computed from occlusion data.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/AudioListener",
+          "title": "AudioListener",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "When active, a low-pass filter is applied based on the density of materials and thickness of obstacles between the emitter and listener."
+        },
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/AudioListener",
+          "title": "AudioListener",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Disabling occlusion also disables `Class.AudioListener.DiffractionEnabled | DiffractionEnabled`, since diffraction relies on occlusion data."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "partial",
+      "note": "Audio is uploaded as `.mp3`, `.ogg`, `.wav` or `.flac`, up to seven minutes, and Roblox re-encodes it on the way in — so the format actually delivered to clients is Roblox's own and is not published. Delivery at scale happens over Roblox's own network; a creator gets a numeric asset ID, not a stream URL.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/audio/assets",
+          "title": "Audio assets",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "To standardize the playback format and check for corrupt or invalid files, Studio transcodes imported audio before saving it as an asset."
+        },
+        {
+          "url": "https://create.roblox.com/docs/cloud/guides/usage-assets",
+          "title": "Assets usage guide",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Up to 7 minutes of duration."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "native",
+      "note": "Live voice is built in, proximity-based by default, and can be routed through the audio graph as an input device so a creator controls where each voice is heard. It is limited to servers of at most 100 players and to age-checked users, and no transport or codec is published.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/chat/voice-chat",
+          "title": "Voice Chat",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "**Voice Chat** is a feature enabling real-time, spoken communication between yourself and other players. It is only available for places that support a maximum of 100 players."
+        },
+        {
+          "url": "https://create.roblox.com/docs/chat/voice-chat",
+          "title": "Voice Chat",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Voice Chat is **proximity-based** by default, adjusting the volume of participants based on how close they are to each other."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "native",
+      "note": "The server keeps clients in step by replicating the object tree, the physics simulation and chat, and creators cross the boundary explicitly with one-way events, an unreliable one-way variant, and request-response calls. What replicates and when is well documented in behaviour; the wire encoding is not published.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/projects/client-server",
+          "title": "Client-server runtime",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The server constantly updates connected clients, keeping everything in sync across the server and clients through a process called **replication**, which synchronizes the data model, physics simulation, and chat messages."
+        },
+        {
+          "url": "https://create.roblox.com/docs/scripting/events/remote",
+          "title": "Remote events and callbacks",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "`Class.UnreliableRemoteEvent | UnreliableRemoteEvents` enable one-way communication for data that changes continuously or isn't critical to the game's state. These events trade ordering and reliability for improved network performance."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "native",
+      "note": "Authority over a moving object is explicit and assignable. By default the server owns everything, the engine hands nearby unanchored objects to the closest client automatically, and a server script can pin ownership to a chosen player or back to the server. There is also a whole-experience mode that makes the server authoritative for everything.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/BasePart",
+          "title": "BasePart",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Sets the given player as network owner for this and all connected parts. When playerInstance is `nil`, the server will be the owner instead of a player."
+        },
+        {
+          "url": "https://create.roblox.com/docs/physics/network-ownership",
+          "title": "Network ownership",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "the engine assigns **network ownership** of physically simulated `Class.BasePart | BaseParts` to either a client or server to divide the work of calculating physics"
+        },
+        {
+          "url": "https://create.roblox.com/docs/physics/network-ownership",
+          "title": "Network ownership",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "By default, the server retains ownership of any `Class.BasePart`. Additionally, the server **always** owns anchored `Class.BasePart | BaseParts` and you cannot manually change their ownership."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "native",
+      "note": "Content around each player is loaded and unloaded by radius, with a documented inner radius that never unloads and an outer radius past which nothing is sent. Per-model modes decide whether a group arrives as a unit or never unloads, and an opt-in predictive mode pre-loads where the player is likely to go.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/workspace/streaming",
+          "title": "Instance streaming",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This property indicates the radius around the [replication foci](#replication-focus) in which instances stream in at the highest priority... Use the default of `64`"
+        },
+        {
+          "url": "https://create.roblox.com/docs/workspace/streaming",
+          "title": "Instance streaming",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This property controls the maximum distance away from the [replication foci](#replication-focus) in which instances stream in... Use the default of `1024`"
+        },
+        {
+          "url": "https://create.roblox.com/docs/workspace/streaming",
+          "title": "Instance streaming",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Regions inside the `Class.Workspace.StreamingMinRadius` range never stream out."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.prediction",
+      "level": "native",
+      "note": "Roblox documents client-side prediction, misprediction detection, and rollback-and-resimulation in plain terms, including the fact that the client runs ahead of the last known server state by an amount based on latency. It is switched on as a bundle with fixed-rate simulation and streaming. It is entirely internal to the Roblox engine.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/projects/server-authority",
+          "title": "Server authority model",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This system of client‑side prediction, rollback, and resimulation is known as \\\"latency compensation\\\" and helps make server‑authoritative multiplayer games feel smooth and responsive."
+        },
+        {
+          "url": "https://create.roblox.com/docs/projects/server-authority",
+          "title": "Server authority model",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "the client doesn't wait for the server to respond; instead it **predicts** a few frames ahead of the last known server state"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "none",
+      "note": "The wire protocol is not published. Nothing in the creator documentation names a transport; the only network-level material is a profiling tool that shows packet sizes and a test harness that injects artificial latency and packet loss. No third party can speak Roblox's session protocol.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/performance-optimization/microprofiler/network",
+          "title": "Network profiler",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "**High** includes additional information on the items within a batch data packet, the task that deserialized the packet, and the asset ID for any assets in the request or response."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.media",
+      "level": "partial",
+      "note": "Pre-recorded video plays from uploaded `.mp4` or `.mov` assets, up to five minutes, and live voice works, but there is no creator-accessible live media transport. The camera capture service exists for avatar face tracking and is explicitly locked to Roblox's own scripts.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/VideoCaptureService",
+          "title": "VideoCaptureService",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "All of its members require `RobloxScript` security; not callable from experience scripts."
+        },
+        {
+          "url": "https://create.roblox.com/docs/cloud/guides/usage-assets",
+          "title": "Assets usage guide",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Up to 5 minutes of duration."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "native",
+      "note": "Joining is a documented pipeline: the platform finds eligible servers for the player, scores them on signals like age, language and skill, and puts the player on the best one. Authentication is the player's Roblox account; there is no way for another operator to originate a session.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/matchmaking",
+          "title": "Matchmaking",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "When a player tries to join your game, the matchmaking service finds all eligible servers that the player can join, scores these servers using signals, and matches the player to the server with the highest score."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "native",
+      "note": "Moving a player from one world to another, carrying state, is fully supported — including to a different creator's game if the source game allows it — with a data blob attached to the move and read on arrival. Two limits matter: the blob is visible to the client and unencrypted, so anything valuable must go through the server data store instead, and every destination is a Roblox place. There is no handoff to anything outside Roblox.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/projects/teleport",
+          "title": "Teleport between places",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Use `Class.TeleportService` to teleport users between places, to different servers, or even to other games."
+        },
+        {
+          "url": "https://create.roblox.com/docs/projects/teleport",
+          "title": "Teleport between places",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "To send basic **non-secure** data from place to place, call `Class.TeleportOptions:SetTeleportData()` before passing it to `Class.TeleportService:TeleportAsync() | TeleportAsync()`. **Don't** pass secure data using this method; the data is visible to the client and unencrypted."
+        },
+        {
+          "url": "https://create.roblox.com/docs/projects/teleport",
+          "title": "Teleport between places",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "(Studio) **File** > **Experience Settings** > **Security** > **Allow Third Party Teleports** | Controls teleports from your game to **games that you don't own**."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "partial",
+      "note": "A presence endpoint exists and returns where users are, but it is one of the legacy interfaces: it authenticates with a browser cookie rather than an API key or standard sign-in, and Roblox itself warns that legacy interfaces can change without notice. It covers Roblox users only, so there is nothing cross-operator about it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/cloud/openapi.json",
+          "title": "Roblox API OpenAPI description",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Presence_GetUserPresences"
+        },
+        {
+          "url": "https://create.roblox.com/docs/cloud",
+          "title": "Cloud API reference",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Legacy APIs use cookie-based authentication, can incorporate breaking changes without notice, and have minimal stability guarantees."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "native",
+      "note": "Places have numeric IDs inside numeric universes, and Roblox publishes both a web link form and a custom application link form, each able to carry a launch data string. The namespace is entirely Roblox's; the custom scheme resolves only if the Roblox app is installed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/production/promotion/deeplinks",
+          "title": "Deep links",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "`roblox://placeId=<id>&launchData=<string>`"
+        },
+        {
+          "url": "https://create.roblox.com/docs/production/promotion/deeplinks",
+          "title": "Deep links",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "`https://www.roblox.com/games/start?placeId=<id>&launchData=<string>`"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "native",
+      "note": "There are two discovery surfaces: a machine-readable search over the Creator Store catalogue reachable with an API key or standard sign-in, and a recommendation system that decides what players see. Both only ever find Roblox things; nothing here can discover a world or service run by anyone else.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/cloud/openapi.json",
+          "title": "Roblox API OpenAPI description",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Toolbox_SearchCreatorStoreAssets"
+        },
+        {
+          "url": "https://create.roblox.com/docs/discovery",
+          "title": "Discovery",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Recommended for You algorithm decides what games to show each user in two stages"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "native",
+      "note": "There is a real shared clock for ordering events. Every client can ask for the server's Unix time and gets the same answer regardless of time zone or local clock, and the value is guaranteed monotonic and within 0.6 percent of the local clock's rate. Roblox warns it is not secure enough for reward timers.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/Workspace",
+          "title": "Workspace",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This method returns the client's best approximation of the current time on the server. It is useful for creating synchronized experiences, as every client will get roughly the same results regardless of their timezone or local clock."
+        },
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/Workspace",
+          "title": "Workspace",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "It is monotonic; its value will never decrease.\" and \"It moves at the same rate as the local clock to within 0.6%."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "native",
+      "note": "The base identifier is the Roblox user ID, which appears in scripts as a player property and is exposed to outside applications as the subject of a standard sign-in token. It is issued and controlled solely by Roblox.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/cloud/auth/oauth2-overview",
+          "title": "OAuth 2.0 overview",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "OIDC allows applications to verify the identity of users and obtain their basic public profile information, such as user ID, usernames, display names, and profile links."
+        }
+      ],
+      "direction": "write"
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "partial",
+      "note": "Roblox issues signed identity tokens using the OpenID Connect standard, signed with elliptic-curve keys published at a key set endpoint — so a third party can verify a claim about a Roblox user cryptographically. What it is not is a verifiable-credential format: there is one issuer, no holder-held credential, and the claim set is fixed by Roblox.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/cloud/auth/oauth2-reference",
+          "title": "Authentication",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "\\\"jwks_uri\\\": \\\"https://apis.roblox.com/oauth/v1/certs\\\"\" and \"\\\"id_token_signing_alg_values_supported\\\": [\\\"ES256\\\"]"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "native",
+      "note": "Credential exchange uses ordinary OAuth 2.0 authorization-code flow with an OpenID Connect discovery document, so any standard client library works. The flow runs in one direction only — Roblox is always the identity provider, never the consumer.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/cloud/auth/oauth2-reference",
+          "title": "Authentication",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "GET .well-known/openid-configuration"
+        },
+        {
+          "url": "https://create.roblox.com/docs/cloud/auth/oauth2-overview",
+          "title": "OAuth 2.0 overview",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Roblox uses [OpenID Connect (OIDC)](https://openid.net/connect/) as an identity layer on top of the OAuth 2.0 protocol for authentication to protect sensitive account information."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "partial",
+      "note": "Permission is granted by scopes on sign-in tokens and API keys, and separately inside a running world by a capability set attached to a sandboxed part of the object tree. Both vocabularies are Roblox's own and only Roblox can evaluate them, so a party that did not issue the grant cannot read it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/scripting/capabilities",
+          "title": "Script capabilities",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Enabling the `Class.Instance.Sandboxed | Sandboxed` property designates the instance as a sandboxed container inside the `Class.DataModel` tree, which limits the actions that the scripts inside that container can perform based on the set of values in the `Class.Instance.Capabilities | Capabilities` property."
+        },
+        {
+          "url": "https://create.roblox.com/docs/cloud/auth/oauth2-reference",
+          "title": "Authentication",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "\\\"scopes_supported\\\": [\\\"openid\\\", \\\"profile\\\", \\\"email\\\", \\\"verification\\\", \\\"credentials\\\", \\\"age\\\", \\\"premium\\\", \\\"roles\\\"]"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "partial",
+      "note": "Some minimisation is built in: an application asking about age gets an age bracket claim and a verified flag rather than a date of birth, and each claim is gated behind a scope the user approves. It is scope-based coarsening, not selective disclosure — there is no way for the user to prove one attribute without Roblox mediating.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/cloud/auth/oauth2-reference",
+          "title": "Authentication",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "verified"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.social",
+      "level": "partial",
+      "note": "Friends and group membership are readable through the platform interfaces, and groups have roles and memberships on the modern API. The friend endpoints sit in the legacy, cookie-authenticated tier, and none of the relationships mean anything outside Roblox.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/cloud/openapi.json",
+          "title": "Roblox API OpenAPI description",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "/v1/users/{userId}/friends"
+        },
+        {
+          "url": "https://create.roblox.com/docs/cloud",
+          "title": "Cloud API reference",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Legacy APIs use cookie-based authentication, can incorporate breaking changes without notice, and have minimal stability guarantees. We don't recommend them for production applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "partial",
+      "note": "Roblox does enforce licence-like terms at the moment of use: a restricted asset is checked every time it loads and simply will not appear if the game lacks permission. But enforcement is a server-side lookup on a Roblox asset ID, so it works only inside Roblox and cannot express or honour anyone else's terms. Grants are also one-way — the documentation states a game grant cannot be revoked.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/projects/assets/privacy",
+          "title": "Asset privacy",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "If a creator or game doesn't have permission to use an asset, it cannot load in Studio, and a clickable error message displays in the [Output](../../studio/output.md) window."
+        },
+        {
+          "url": "https://create.roblox.com/docs/projects/assets/privacy",
+          "title": "Asset privacy",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "**Game grants are permanent.** Once you grant a game permission to use a restricted asset, that permission cannot be revoked."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "out-of-scope",
+      "note": "Roblox worlds have no relationship to the Earth. The only latitude-shaped setting in the whole documentation set is an artistic control that rotates the sun and moon and explicitly does not change anything else.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/environment/lighting",
+          "title": "Lighting",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The `Class.Lighting.GeographicLatitude | GeographicLatitude` property represents the geographic latitude in degrees. Note that while this property changes the position of the sun and moon, it does not change the `Class.Lighting.ClockTime | ClockTime` and `Class.Lighting.TimeOfDay | TimeOfDay` properties."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "out-of-scope",
+      "note": "There is one coordinate frame per place, defined by that place's own origin in studs, and it is bounded — Roblox clamps the fall height to plus or minus 50,000 studs because parts stop working far from the origin. A text search of the documentation finds no geospatial or coordinate-reference-system material of any kind.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/Workspace",
+          "title": "Workspace",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This property is clamped between -50,000 and 50,000 because `Class.BasePart | BaseParts` do not simulate or render properly at a great distance from the origin due to floating point inaccuracies."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "out-of-scope",
+      "note": "Roblox has no camera-based world understanding. The words for augmented reality, passthrough, plane detection and spatial anchors do not appear in the documentation. The word \"anchored\" in Roblox means an object exempt from physics, not a real-world anchor.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/physics/network-ownership",
+          "title": "Network ownership",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "the server **always** owns anchored `Class.BasePart | BaseParts`"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "out-of-scope",
+      "note": "No shared or persistent real-world anchors. Nothing in the documentation addresses fixing content to a physical place.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/production/publishing/vr-guidelines",
+          "title": "VR guidelines",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Roblox VR uses [OpenXR](https://www.khronos.org/openxr/) as a backend for all VR devices."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.vps",
+      "level": "out-of-scope",
+      "note": "No visual positioning. Camera capture exists solely for avatar face tracking and is reserved to Roblox's own scripts.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/VideoCaptureService",
+          "title": "VideoCaptureService",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Service that manages camera capture for features such as avatar facial-animation tracking. Requires `RobloxScript` security; not callable from experience scripts."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "out-of-scope",
+      "note": "Streaming exists, but it streams a Roblox place by radius around the player, not geospatial tiles referenced to the Earth.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/workspace/streaming",
+          "title": "Instance streaming",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "In-game **instance streaming** allows the Roblox engine to dynamically load and unload 3D content and related instances in the `Class.Workspace`."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.indoor",
+      "level": "out-of-scope",
+      "note": "No structured description of real interior spaces. Roblox has a navigation-mesh pathfinding service for its own worlds, which is a different thing.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/characters/pathfinding",
+          "title": "Pathfinding",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "**Pathfinding** is the process of moving a character or object (agent) along a logical path around obstacles to reach a destination, optionally avoiding hazardous materials or defined regions."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "native",
+      "note": "Immersive sessions are handled by the engine on top of an open industry standard, which is why the same content runs on standalone and tethered headsets. Creators never touch that standard directly — they get a flag saying whether a headset is active and a set of comfort settings. Content cannot be delivered to any other runtime that speaks the same standard.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/production/publishing/vr-guidelines",
+          "title": "VR guidelines",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Roblox VR uses [OpenXR](https://www.khronos.org/openxr/) as a backend for all VR devices. That means the implementation is platform agnostic, allowing games to work interchangeably on Quest and PC VR headsets."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "native",
+      "note": "There is a modern action-and-binding system that maps named actions onto whatever hardware the player has, plus direct access to gamepad state and to headset controller position and orientation. Bindings are authored at edit time and stored in the Roblox object tree.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/input/input-action-system",
+          "title": "Input Action System",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The cross-platform **Input Action System** lets you connect [actions](#input-actions) and arrange [bindings](#input-bindings) across various hardware inputs at edit time."
+        },
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/VRService",
+          "title": "VRService",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This method returns a `Datatype.CFrame` describing the position and orientation of a specified virtual reality (VR) device as an offset from a point in real world space."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "none",
+      "note": "Roblox exposes only whole-device poses — head, left hand and right hand — as single position-and-orientation values. There is no articulated hand pose: the headset service's complete member list contains no joint-level hand data, and no hand-tracking documentation exists.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/VRService",
+          "title": "VRService",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This method returns a `Datatype.CFrame` describing the position and orientation of a specified virtual reality (VR) device as an offset from a point in real world space. This method should be used when implementing VR compatibility into a game to obtain and track the movement of a connected"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.eye",
+      "level": "none",
+      "note": "No gaze input of any kind. The only eye-related material in the documentation is about drawing and animating avatar eyes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/avatar/dynamic-heads/facs-poses-reference",
+          "title": "FACS poses reference",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "`Class.FaceControls.LeftEyeClosed | LeftEyeClosed` closes the character's left eyelid."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "native",
+      "note": "Touch feedback works on gamepads, phones and headset controllers, with both a simple motor-intensity call and a waveform-based effect object. Creators can query support before using it, and output is scaled by the player's own haptics preference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/HapticService",
+          "title": "HapticService",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "`HapticService` allows scripts to query vibration support and set motor intensities on gamepad controllers, VR controllers, and mobile devices."
+        },
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/HapticEffect",
+          "title": "HapticEffect",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Roblox supports haptics for the following devices: Android and iOS phones supporting haptics including most iPhone, Pixel, and Samsung Galaxy devices, PlayStation gamepads, Xbox gamepads, Quest Touch controller"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "native",
+      "note": "A script can ask directly whether the device has a touch screen, keyboard, mouse, gamepad, headset, accelerometer or gyroscope, and can read which input the player is actually using right now so the interface can adapt when they switch. All of it is Roblox's own vocabulary.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/UserInputService",
+          "title": "UserInputService",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This property describes whether the user's device has a touch screen available."
+        },
+        {
+          "url": "https://create.roblox.com/docs/projects/cross-platform",
+          "title": "Cross-platform design",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "`Class.UserInputService.PreferredInput` reports the player's current primary input type... Both update automatically as the player switches devices"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "native",
+      "note": "Roblox's scripting language, Luau, is genuinely open source under the permissive MIT licence, with its own site, specification material, public design proposals and a standalone runtime — it is the one Roblox artefact that is directly reusable by anyone else. What is not reusable is the Roblox engine API that Luau scripts call; that exists only inside Roblox.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/luau-lang/luau/blob/master/LICENSE.txt",
+          "title": "Luau LICENSE.txt",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "MIT License\\n\\nCopyright (c) 2019-2025 Roblox Corporation"
+        },
+        {
+          "url": "https://luau.org/",
+          "title": "Luau",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Luau (lowercase u, /ˈlu.aʊ/) is a small, fast, and embeddable programming language based on Lua with a gradual type system."
+        },
+        {
+          "url": "https://create.roblox.com/docs/luau",
+          "title": "Luau",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Compared to Lua 5.1, Luau adds performance enhancements and many useful features, including an optional typing system, string interpolation, and generalized iteration for tables."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "partial",
+      "note": "Behaviour does travel with an asset — a package or model file carries its scripts and its configuration attributes — but the behaviour is imperative Luau, not a declarative graph, and it only runs inside Roblox. The one declarative graph Roblox ships is for animation blending and state machines, not general interactivity.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/characters",
+          "title": "Characters",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "[Animation Graph Editor](../animation/graph-editor.md) is a visual, node-based tool that composes individual animation clips into runtime logic without the need to handwrite animation controller scripts."
+        },
+        {
+          "url": "https://create.roblox.com/docs/projects/assets/packages",
+          "title": "Packages",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Each script within an **unmodified** package is read-only and shows a notification on the top with a hyperlink to unlock the script."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "native",
+      "note": "This is Roblox's strongest area and the work is public. The language itself is hardened for hostile code: file, process and bytecode access are removed and the global tables are made read-only. On top of that Roblox is rolling out a capability system where a marked part of the object tree can only touch the categories it was granted, with everything else erroring. That second layer is still marked experimental.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://luau.org/sandbox",
+          "title": "Embedding a sandboxed Luau virtual machine",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Luau is safe to embed. Broadly speaking, this means that even in the face of untrusted (and in Roblox case, actively malicious) code, the language and the standard library don't allow unsafe access to the underlying system"
+        },
+        {
+          "url": "https://luau.org/sandbox",
+          "title": "Embedding a sandboxed Luau virtual machine",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "io. library has been removed entirely, as it gives access to files and allows running processes\" and \"package. library has been removed entirely"
+        },
+        {
+          "url": "https://create.roblox.com/docs/scripting/capabilities",
+          "title": "Script capabilities",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "**Script capabilities** let you control which actions scripts can perform inside the `Class.DataModel` subtree. Rather than the default \\\"all-or-nothing system,\\\" you can set a script to only be able to access certain categories, such as audio, physics, data stores, and more."
+        },
+        {
+          "url": "https://create.roblox.com/docs/scripting/capabilities",
+          "title": "Script capabilities",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Script capabilities are experimental and available as a client beta."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "partial",
+      "note": "There is one documented way for a running world to use a language model: an object that takes a system prompt and a player prompt and returns generated text, aimed at talking non-player characters, with a starting rate limit of 100 requests per minute. That is text generation wired into a world, not an agent framework, and there is no interoperable way for an outside agent to act inside a Roblox world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/TextGenerator",
+          "title": "TextGenerator",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A `TextGenerator` instance lets you use a large language model (LLM) to generate text based on a system prompt from you and a user prompt from the player. The most common use of the API is for creating interactive non-player characters (NPCs)."
+        },
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/TextGenerator",
+          "title": "TextGenerator",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Requests are initially limited to 100 per minute, which scales up based on the number of concurrent users."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "partial",
+      "note": "Roblox bounds guest content in pieces rather than as a policy: specific interfaces carry documented rate limits, the runtime mesh-editing interface has a stated client memory budget while the server has none, place files are capped, and there are profiling tools for processor time and memory. What is missing is a general, documented processor-time or memory quota a host could impose on someone else's script.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/EditableMesh",
+          "title": "EditableMesh",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Editable assets are currently expensive for memory usage. To minimize its impact on client performance, `EditableMesh` has strict client-side memory budgets, although the server, Studio, and plugins operate with unlimited memory."
+        },
+        {
+          "url": "https://create.roblox.com/docs/studio/optimization/scriptprofiler",
+          "title": "Script Profiler",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "**Script Profiler** is a tool within the [Developer Console](../../studio/developer-console.md) that allows you to record profiling sessions of all running scripts and view their CPU time costs"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "native",
+      "note": "Two documented stores exist — a durable one keyed per game and shared across every server of that game, and a fast temporary one — both with published limits, versioning, listing and an outside programmatic interface. All of it lives on Roblox's servers and is reachable only with Roblox credentials.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/cloud-services/data-stores",
+          "title": "Data stores",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The `Class.DataStoreService` lets you store data that needs to persist between sessions, like items in a player's inventory or skill points. Data stores are consistent per game, so any place in a game can access and change the same data, including places on different servers."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "native",
+      "note": "Items a user holds are a platform-level fact, readable outside a game through a documented interface covering clothing, accessories, passes, badges, private servers and avatar items, and checkable inside a game for ownership. Items travel across every Roblox experience automatically — and never leave Roblox, because an item is a numeric asset ID in Roblox's catalogue.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/cloud/guides/inventory",
+          "title": "User inventories",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The [Inventory API][1] lets you access most of the same information as the Roblox **My Inventory** page. You can check whether a user owns individual items and retrieve the full list of items that a player owns."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "native",
+      "note": "Accessibility choices are account settings that every Roblox experience can read, so they genuinely follow the player from world to world — background opacity and a reduce-motion preference are both exposed to creator code with documented handling patterns. The scope of \"follows the user\" is all of Roblox and nothing beyond it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/production/publishing/accessibility",
+          "title": "Accessibility",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The **Background&nbsp;Transparency** setting maps to the `Class.GuiService.PreferredTransparency` property."
+        },
+        {
+          "url": "https://create.roblox.com/docs/production/publishing/accessibility",
+          "title": "Accessibility",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The **Reduce&nbsp;Motion** toggle maps to the `Class.GuiService.ReducedMotionEnabled` property. A value of `true` indicates the player wants motion effects through [UI&nbsp;animations/tweens](../../ui/animation.md) to be reduced or completely removed."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "none",
+      "note": "Roblox refers to content by an opaque sequential number issued when the asset was uploaded, written as a custom scheme followed by that number — for example a texture reference is the scheme plus a nine-digit ID. It is a location in Roblox's catalogue, not a hash of the bytes, so identical content uploaded twice gets two different references and nobody can verify content from its reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/projects/assets",
+          "title": "Assets",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "`rbxassetid` points to a user-uploaded asset on Roblox."
+        },
+        {
+          "url": "https://create.roblox.com/docs/projects/assets",
+          "title": "Assets",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Assets and other content stored outside of the current place are identified through **Uniform Resource Identifiers** (URIs) which are formatted strings that point to a file stored online, within the Roblox application package, or saved to the client's device."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "partial",
+      "note": "A runnable Roblox experience is a universe of places, each place published to Roblox servers and optionally saved locally as a place file capped at 100 megabytes. Nothing about that is a portable bundle — there is no artefact you could hand to a non-Roblox runtime, and Roblox's own advice when you hit the size cap is to split into more places joined by teleports.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/projects/place-files",
+          "title": "Place files",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "If other size reduction strategies fail, you can break your place into multiple, smaller places and link them through [teleports](teleport.md). Serialization and upload happen at the place level"
+        },
+        {
+          "url": "https://create.roblox.com/docs/projects/place-files",
+          "title": "Place files",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "If you reach the 100 MB limit on your place file, there's likely an underlying issue that you can troubleshoot."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "native",
+      "note": "Roblox does document its delivery behaviour to creators. An authenticated call returns a short-lived content-delivery URL for an asset, with explicit advice to request it compressed, and inside a running world there is a call that waits until named assets have finished loading. The URLs are temporary and require Roblox credentials to obtain.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/cloud/openapi.json",
+          "title": "Roblox API OpenAPI description",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Returns an object containing a `location` property which is a temporary CDN URL for the asset content. All asset types are supported."
+        },
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/ContentProvider",
+          "title": "ContentProvider",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Yields until all of the assets associated with the given `Class.Instance | Instances` have loaded."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "native",
+      "note": "Versioning is thorough: places have searchable version history with notes and rollback, assets have numbered versions with a rollback call in the outside interface, packages carry version history and optional automatic update of every copy, and the engine reference marks superseded members as deprecated with a message. Deprecation is announced per member; no platform-wide support window is published.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/projects/version-history",
+          "title": "Version History",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "**Version History** lets you track, manage, and restore saved and published versions of a place."
+        },
+        {
+          "url": "https://create.roblox.com/docs/cloud/openapi.json",
+          "title": "Roblox API OpenAPI description",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "/assets/v1/assets/{assetId}/versions"
+        },
+        {
+          "url": "https://create.roblox.com/docs/projects/assets/packages",
+          "title": "Packages",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "If a package copy has [auto-update](#automatic-updates) turned on, it immediately pulls in the updated version when you open the place that contains them."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "none",
+      "note": "There is no conformance suite, and the concept barely applies — there is one implementation and no specification for anyone else to match. A text search of the documentation set returns nothing for conformance or certification. The nearest thing is an automatic checker that validates uploaded avatar items against Roblox's own published avatar specifications, plus an older downloadable checker add-in for modelling tools that Roblox says is no longer maintained. That is content validation, not implementation conformance.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/Roblox/creator-docs/main/content/en-us/marketplace/validation-system.md",
+          "title": "UGC validation system",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The **UGC validation system** is Roblox's technical mechanism that checks if avatar assets meet platform specifications before you can upload and publish them to the Marketplace."
+        },
+        {
+          "url": "https://create.roblox.com/docs/art/characters/validation-tool",
+          "title": "Blender validation tool",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The **Avatar Validation Tool** is a supplemental Blender add-on you can use to quickly identify common issues with your character model. This tool checks that your model meets most of Roblox's avatar [technical specifications](../../avatar/character-bodies/specifications.md)\" — and note \"This tool is no longer in active development."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "partial",
+      "note": "Roblox ships a first-party generative model and it makes objects, not places. The service generates three-dimensional objects from text prompts, up to a multi-part model whose parts a caller names, and it runs inside an experience at run time. Nothing generates a whole place, and what comes out is a Roblox model instance rather than a scene a receiver elsewhere could keep.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/GenerationService",
+          "title": "GenerationService, Roblox Creator Hub engine reference",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Service that allows developers to generate 3D objects from text prompts."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "Roblox is a hosted platform with its own engine, its own asset types and a first-party generative model, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/art/modeling/gltf-export",
+          "title": "3D Export, Roblox Creator Hub",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "glTF export supports the following types of 3D data: Meshes, Textures, Rigging and skinning data, Vertex colors, Cages, Dynamic head FACS data."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "Roblox is a hosted platform with its own engine, its own asset types and a first-party generative model, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/art/modeling/gltf-export",
+          "title": "3D Export, Roblox Creator Hub",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "glTF export supports the following types of 3D data: Meshes, Textures, Rigging and skinning data, Vertex colors, Cages, Dynamic head FACS data."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "none",
+      "note": "A text search of the whole published documentation set finds no mention of Gaussian splatting or radiance fields; the only hits for the word are the blur post-effect. The export path names exactly what a Roblox asset can be, and no splat form is in it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/environment/post-processing-effects",
+          "title": "Post-processing effects, Roblox Creator Hub",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Apply a Gaussian [blur](#blur) to the entirety of your game"
+        },
+        {
+          "url": "https://create.roblox.com/docs/art/modeling/gltf-export",
+          "title": "3D Export, Roblox Creator Hub",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "glTF export supports the following types of 3D data: Meshes, Textures, Rigging and skinning data, Vertex colors, Cages, Dynamic head FACS data."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "out-of-scope",
+      "note": "Roblox is a hosted platform with its own engine, its own asset types and a first-party generative model, and it delivers no captured scene, progressively by region and detail or otherwise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/art/modeling/gltf-export",
+          "title": "3D Export, Roblox Creator Hub",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "glTF export supports the following types of 3D data: Meshes, Textures, Rigging and skinning data, Vertex colors, Cages, Dynamic head FACS data."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "Roblox is a hosted platform with its own engine, its own asset types and a first-party generative model, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/art/modeling/gltf-export",
+          "title": "3D Export, Roblox Creator Hub",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "glTF export supports the following types of 3D data: Meshes, Textures, Rigging and skinning data, Vertex colors, Cages, Dynamic head FACS data."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "none",
+      "note": "Terrain is a real voxel system with a fixed grid, which is the nearest thing here and is not this row. Point clouds do not appear in the documentation at all, in either direction.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/parts/terrain",
+          "title": "Terrain, Roblox Creator Hub",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Terrain is made up of grids of **voxels** which are 4&times;4&times;4 stud regions in the 3D world with a set material."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "Roblox is a hosted platform with its own engine, its own asset types and a first-party generative model, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/art/modeling/gltf-export",
+          "title": "3D Export, Roblox Creator Hub",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "glTF export supports the following types of 3D data: Meshes, Textures, Rigging and skinning data, Vertex colors, Cages, Dynamic head FACS data."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "out-of-scope",
+      "note": "Roblox is a hosted platform with its own engine, its own asset types and a first-party generative model, and it produces no image from a viewing position that no capture camera occupied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/art/modeling/gltf-export",
+          "title": "3D Export, Roblox Creator Hub",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "glTF export supports the following types of 3D data: Meshes, Textures, Rigging and skinning data, Vertex colors, Cages, Dynamic head FACS data."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "Roblox is a hosted platform with its own engine, its own asset types and a first-party generative model, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/art/modeling/gltf-export",
+          "title": "3D Export, Roblox Creator Hub",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "glTF export supports the following types of 3D data: Meshes, Textures, Rigging and skinning data, Vertex colors, Cages, Dynamic head FACS data."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "Roblox is a hosted platform with its own engine, its own asset types and a first-party generative model, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/art/modeling/gltf-export",
+          "title": "3D Export, Roblox Creator Hub",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "glTF export supports the following types of 3D data: Meshes, Textures, Rigging and skinning data, Vertex colors, Cages, Dynamic head FACS data."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "Roblox is a hosted platform with its own engine, its own asset types and a first-party generative model, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/art/modeling/gltf-export",
+          "title": "3D Export, Roblox Creator Hub",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "glTF export supports the following types of 3D data: Meshes, Textures, Rigging and skinning data, Vertex colors, Cages, Dynamic head FACS data."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "Roblox is a hosted platform with its own engine, its own asset types and a first-party generative model, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/art/modeling/gltf-export",
+          "title": "3D Export, Roblox Creator Hub",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "glTF export supports the following types of 3D data: Meshes, Textures, Rigging and skinning data, Vertex colors, Cages, Dynamic head FACS data."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "partial",
+      "note": "The control surface is richer than most: a text prompt, an image to condition on visually, or both, plus a schema that is either a built-in one or a custom list naming the parts to produce, with size and triangle-count limits alongside. Everything arrives as Roblox types inside the engine, so no outside authoring pipeline can drive it with the files it already has.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/GenerationService",
+          "title": "GenerationService, Roblox Creator Hub engine reference",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Provide creative direction through `inputs`: a `TextPrompt`, an `Image` to condition on visually, or both. Control the output structure through `schema`, supplying either a built-in `PredefinedSchema` or a custom `SchemaDefinition` that names the parts to produce."
+        },
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/GenerationService",
+          "title": "GenerationService, Roblox Creator Hub engine reference",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Service that allows developers to generate 3D objects from text prompts."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "Roblox is a hosted platform with its own engine, its own asset types and a first-party generative model, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/art/modeling/gltf-export",
+          "title": "3D Export, Roblox Creator Hub",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "glTF export supports the following types of 3D data: Meshes, Textures, Rigging and skinning data, Vertex colors, Cages, Dynamic head FACS data."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "Roblox is a hosted platform with its own engine, its own asset types and a first-party generative model, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/art/modeling/gltf-export",
+          "title": "3D Export, Roblox Creator Hub",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "glTF export supports the following types of 3D data: Meshes, Textures, Rigging and skinning data, Vertex colors, Cages, Dynamic head FACS data."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "partial",
+      "note": "A 360-degree view of a place is carried and its projection is a cube: the sky object takes six sides, and the same six sides double as the reflection source. There is no equirectangular option, so an image from any capture or generation tool on this map has to be cut into six before it can be used.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/Sky",
+          "title": "Sky, Roblox Creator Hub engine reference",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Changes the default appearance of the experience's sky."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "out-of-scope",
+      "note": "A platform where people build and share 3D experiences in Studio and script them in Luau. Nothing in the engine reads a device's sensors to build a description of the player's room.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/llms.txt",
+          "title": "Roblox Creator Documentation index",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Roblox is a platform where millions of people create and share 3D experiences. Creators use Roblox Studio (the IDE) and Luau (the scripting language) to build games, experiences, and avatar items."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "Classification in Roblox applies to instances the creator placed, not to real surfaces. There is no channel for naming a real floor, wall or person.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/llms.txt",
+          "title": "Roblox Creator Documentation index",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Roblox is a platform where millions of people create and share 3D experiences. Creators use Roblox Studio (the IDE) and Luau (the scripting language) to build games, experiences, and avatar items."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "out-of-scope",
+      "note": "The engine has no real-world depth input. Depth values it exposes belong to its own rendering, not to a measurement of the physical world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/llms.txt",
+          "title": "Roblox Creator Documentation index",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Roblox is a platform where millions of people create and share 3D experiences. Creators use Roblox Studio (the IDE) and Luau (the scripting language) to build games, experiences, and avatar items."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "Experiences render as fully virtual scenes on every supported device. With no passthrough view, there is no real surface for content to hide behind.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/llms.txt",
+          "title": "Roblox Creator Documentation index",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Roblox is a platform where millions of people create and share 3D experiences. Creators use Roblox Studio (the IDE) and Luau (the scripting language) to build games, experiences, and avatar items."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "none",
+      "note": "Roblox renders a wholly virtual place. The only camera capture on the platform exists to drive avatar facial animation and is reserved to Roblox's own scripts, so no experience can obtain the camera image, let alone blend it with the scene or cut a hole through the world for a real object.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/VideoCaptureService",
+          "title": "Roblox Creator Documentation: VideoCaptureService",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Service that manages camera capture for features such as avatar facial-animation tracking. Requires `RobloxScript` security; not callable from experience scripts."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.face",
+      "level": "partial",
+      "note": "The sensing exists and the stream does not reach the developer. Roblox captures camera video to animate a player's avatar face, and the platform exposes a face controls object whose properties follow the Facial Action Coding System, so an experience sees the resulting expression weights on an avatar. The capture service itself requires Roblox's own security level and cannot be called from an experience, so the live sensor stream and its privacy terms stay with the platform.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/VideoCaptureService",
+          "title": "Roblox Creator Documentation: VideoCaptureService",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Service that manages camera capture for features such as avatar facial-animation tracking. Requires `RobloxScript` security; not callable from experience scripts."
+        },
+        {
+          "url": "https://create.roblox.com/docs/reference/engine/classes/FaceControls",
+          "title": "Roblox Creator Documentation: FaceControls",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The FaceControls properties are based on the Facial Action Coding System (FACS), a comprehensive system for describing all visually discernible facial movement based on anatomy."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "partial",
+      "note": "Arrival is a first-class object in the place: spawn locations decide where a player appears and can be restricted to particular players, and they are saved with the place like any other part. The walkable surface is not declared anywhere — paths are computed at run time from the geometry by the pathfinding service — and none of it leaves Roblox's own format.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/Roblox/creator-docs/main/content/en-us/reference/engine/classes/SpawnLocation.yaml",
+          "title": "Roblox Creator Documentation source: SpawnLocation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "SpawnLocations, or \"spawns\" determine where a `Class.Player` respawns when they die."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "none",
+      "note": "Code is distributed as store assets — plugins and models — identified by a numeric asset identifier that Roblox issues and controls. There is no name an author claims and holds, no namespace anybody owns, and a listing's title is a title rather than an address, so nothing here is a permanent public name for a unit of logic.",
+      "confidence": "unverified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/Roblox/creator-docs/main/content/en-us/production/creator-store.md",
+          "title": "Roblox Creator Documentation source: Creator Store",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The **Plugins** category features Studio extensions that enhance workflows and speed up the creative process."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "native",
+      "note": "The strongest example of this row on the map. Every asset uploaded for sale is reviewed by a moderation team before it can be sold, review continues after approval and can remove an item already bought, and experiences carry maturity labels and content descriptors that decide which accounts may enter — a machine-readable statement of what the content is, attached to it. All of it is Roblox's own judgement inside Roblox: nothing about the review travels with an asset to another platform.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/Roblox/creator-docs/main/content/en-us/marketplace/moderation.md",
+          "title": "Roblox Creator Documentation source: Marketplace moderation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "When uploading an asset to the Marketplace, the Moderation team reviews the item before you can sell the item."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/Roblox/creator-docs/main/content/en-us/production/promotion/content-maturity.md",
+          "title": "Roblox Creator Documentation source: Content maturity and compliance",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Content maturity labels determine which Roblox account types can access your experience:"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "Roblox places are virtual and have no relation to a map of the real world.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "An experience is not a service bound to a region of the Earth and declares no such area.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.extension",
+      "level": "partial",
+      "note": "Studio plugins add editor functions; the source does not establish runtime content-extension names and missing-recipient behavior.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/en-us/studio/plugins.md",
+          "title": "Studio plugins",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "an extension that adds additional features or functionality to Studio"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.metadata",
+      "level": "partial",
+      "note": "Custom attributes carry named object properties; a shared domain schema beyond the platform's property values is not established by this source.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/en-us/scripting/attributes.md",
+          "title": "Properties and attributes",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Attributes are essentially custom properties that you define."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "native",
+      "note": "GUI objects define on-screen and in-world interfaces with containers and layout controls.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/en-us/ui.md",
+          "title": "User interface",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "within a game's 3D world"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "native",
+      "note": "Workspace raycasting detects a BasePart or Terrain cell and exposes the hit result for content interaction.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/en-us/workspace/raycasting.md",
+          "title": "Raycasting",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Raycasting allows you to detect collisions and determine the position of objects."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.text",
+      "level": "native",
+      "note": "TextBox accepts string input from a physical or on-screen keyboard through a documented control.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/en-us/ui/text-input.md",
+          "title": "Text input fields",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "allows a user to provide text input"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.bounds",
+      "level": "partial",
+      "note": "Model.GetBoundingBox returns a volume for its BasePart children; this in-memory object operation does not establish pre-load spatial rejection.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/en-us/reference/engine/classes/Model.md",
+          "title": "Model",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "This function returns a description of a volume that contains all [BasePart](/docs/reference/engine/classes/BasePart.md) children within a [Model](/docs/reference/engine/classes/Model.md)."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.collection",
+      "level": "native",
+      "note": "CollectionService provides live query-based groups and tag-based sets of object instances.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/en-us/reference/engine/classes/CollectionService.md",
+          "title": "CollectionService",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "a **live, query-based group** of instances."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "partial",
+      "note": "VideoFrame presents referenced video assets; this source does not define scene-wide synchronization and retains asset-permission limits.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/en-us/ui/video-frames.md",
+          "title": "Video frames",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "allow for video playback in games"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "partial",
+      "note": "ParticleEmitter defines runtime emitter properties; the captured page does not establish interchange of emitter descriptions outside its object model.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/en-us/effects/particle-emitters.md",
+          "title": "Particle emitters",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "emits customizable 2D images (particles) into the world"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.voxel",
+      "level": "partial",
+      "note": "Terrain exposes voxel material and occupancy arrays and saved TerrainRegion chunks; this is a platform object-model route and TerrainRegion data does not replicate between server and client.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/en-us/reference/engine/classes/Terrain.md",
+          "title": "Terrain",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Returns the voxel data for a region of smooth terrain as two 3D arrays:"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.objectgen",
+      "level": "native",
+      "note": "The documented Assistant generate_mesh command creates a separately placeable textured model from a text prompt or reference image; feature availability remains subject to the documented Studio configuration.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/en-us/ai/build-with-assistant.md",
+          "title": "Build your first game with Assistant",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Creates a single textured 3D model from a text prompt or reference image."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.thumbnail",
+      "level": "native",
+      "confidence": "verified",
+      "note": "Marketplace assets carry preview images used in inventories and avatar editors, with custom thumbnail configuration supported before publication.",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/en-us/marketplace/custom-thumbnails.md",
+          "title": "Custom thumbnails",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Thumbnail images provide a preview of the 3D asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "native",
+      "confidence": "verified",
+      "note": "IKControl evaluates an authored target, chain root and end-effector relationship to modify a character's pose at runtime.",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/en-us/reference/engine/classes/IKControl.md",
+          "title": "IKControl",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "ikControl.EndEffector = character.LeftHand ikControl.ChainRoot = character.LeftUpperArm ikControl.Target = target"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.variant",
+      "level": "native",
+      "confidence": "verified",
+      "note": "Named MaterialVariant objects select alternate material configurations through MaterialService or a part's MaterialVariant property.",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/en-us/reference/engine/classes/MaterialVariant.md",
+          "title": "MaterialVariant",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "MaterialVariant has properties that can define the appearance of a material."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.style",
+      "level": "native",
+      "confidence": "verified",
+      "note": "StyleRule separates display-property rules from instances and selects targets by class, name and hierarchy; its declared scope is the platform's user-interface instances.",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/en-us/reference/engine/classes/StyleRule.md",
+          "title": "StyleRule",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "A string specifying which instances the `StyleRule` should affect."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "native",
+      "confidence": "verified",
+      "note": "Roblox Open Cloud defines token introspection with active/status fields and a revocation endpoint for issued access, refresh and ID credentials. This claim is scoped to that OAuth/OIDC credential system.",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/en-us/cloud/auth/oauth2-reference.md",
+          "title": "OAuth 2.0 authentication",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "POST v1/token/introspect"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.consent",
+      "level": "partial",
+      "confidence": "verified",
+      "note": "Open Cloud OAuth has scoped authorization, expiry and revocation. The retained documentation does not define a complete machine-readable consent grant tying authorized data to a stated purpose and withdrawal terms.",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/en-us/cloud/auth/oauth2-reference.md",
+          "title": "OAuth 2.0 authentication",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Can be invalidated before it expires if an app user revokes the authorization."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.key-lifecycle",
+      "level": "partial",
+      "confidence": "verified",
+      "note": "OpenID discovery advertises the public verification-key set, but the reviewed contract does not supply subject control-key recovery and rotation rules.",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/en-us/cloud/auth/oauth2-reference.md",
+          "title": "OAuth 2.0 authentication",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "public key set."
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "native",
+      "confidence": "verified",
+      "note": "Roblox Open Cloud publishes an OIDC claim vocabulary and response schema with issuer, subject, audience, expiry and profile claims. This is the schema of the scoped Roblox identity protocol.",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/en-us/cloud/auth/oauth2-reference.md",
+          "title": "OAuth 2.0 authentication",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "All Discovery Document responses follow the same schema as the following example response."
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "none",
+      "confidence": "verified",
+      "note": "Open Cloud explicitly advertises public subject identifiers and defines sub as the Roblox user ID; this profile provides no pairwise subject-identifier mechanism.",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/en-us/cloud/auth/oauth2-reference.md",
+          "title": "OAuth 2.0 authentication",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "\"subject_types_supported\": [\"public\"]"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "native",
+      "confidence": "verified",
+      "note": "Keyframes associate joint poses with time; Pose stores CFrame and interpolation is handled by animation playback. This is articulated animation, not a geodetic track format.",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/en-us/reference/engine/classes/Keyframe.md",
+          "title": "Keyframe",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "A Keyframe holds the Poses applied to joints in a Model at a given point of time in an animation."
+        }
+      ],
+      "direction": "both"
+    },
+    {
+      "capability_id": "scene.parametric",
+      "level": "native",
+      "confidence": "verified",
+      "note": "Path2D carries authored cubic Bezier control points and provides curve position/tangent evaluation. This is Roblox's serialized 2D mathematical-curve asset support.",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/en-us/reference/engine/classes/Path2D.md",
+          "title": "Path2D",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "`Path2D` stores control points and exposes methods to sample positions along the curve"
+        }
+      ],
+      "direction": "both"
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "native",
+      "confidence": "verified",
+      "note": "Roblox KeyframeSequences carry hierarchical Pose CFrames keyed to the rig's named Motor6D joints. The documented parent-pose rule reconstructs the relative transforms during animation playback.",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/en-us/reference/engine/classes/Pose.md",
+          "title": "Pose",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Animation rigs branch out from the model's root part through such joints."
+        },
+        {
+          "url": "https://create.roblox.com/docs/en-us/reference/engine/classes/Pose.md",
+          "title": "Pose",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Poses are arranged in a [Keyframe](/docs/reference/engine/classes/Keyframe.md) based on joint hierarchy. This means, the Pose's [CFrame](/docs/reference/engine/datatypes/CFrame.md) is applied to the motor connecting the part associated"
+        }
+      ]
+    }
+  ]
+}

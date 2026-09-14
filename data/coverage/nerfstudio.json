@@ -1,0 +1,2248 @@
+{
+  "subject_id": "nerfstudio",
+  "summary": "Nerfstudio is the Apache-2.0 research framework that made radiance-field training approachable, and gsplat is the splat rasteriser that grew out of it and is now the busier of the two. They are scored as one subject because that is how people use them: gsplat provides the rendering kernels, Nerfstudio's splatfacto method provides the training loop, the data ingestion and the viewer. The pair reaches further into ordinary content pipelines than any other free tool here — it ingests captures from Polycam, KIRI Engine, Record3D, Spectacular AI, Metashape, RealityCapture, drone mapping and Aria glasses, it runs COLMAP itself when there are only photographs, and for radiance fields it exports textured meshes and point clouds, not just splats. Two facts a standards audience should hold together. The first is a split in liveness: gsplat has shipped through 2026, taking NVIDIA's 3DGUT, lidar rasterisation, new sensor models and NCore capture support, while the Nerfstudio repository's own main branch has had no commit since 29 July 2025 and its last tagged release is from November 2024, so the documentation a newcomer reads is older than the library it describes. The second is that everything here needs CUDA: this is the group's most capable free trainer and it cannot run on a phone, in a browser, or on any machine without an NVIDIA card. What it writes is a PLY, or a private directory of PNG images when compression is used, and its default world-space normalisation throws away real scale unless the operator turns it off.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "partial",
+      "note": "gsplat is a rasteriser and little else: a differentiable splat pipeline with batch rendering, N-dimensional feature rendering, depth rendering, sparse gradients and multi-card distributed rasterisation. There is still no render graph or pass structure, and no place for triangle geometry beside the splats.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.gsplat.studio/main/",
+          "title": "gsplat documentation, Overview",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "gsplat is an open-source library for CUDA-accelerated differentiable rasterization of 3D gaussians with Python bindings."
+        },
+        {
+          "url": "https://docs.gsplat.studio/main/",
+          "title": "gsplat documentation, feature list",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "gsplat offers many extra features, including batch rasterization , N-D feature rendering , depth rendering , sparse gradient , multi-GPU distributed rasterization"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "native",
+      "note": "CUDA, and only CUDA. The library builds its kernels on first run or from pre-compiled wheels for particular Python, PyTorch and CUDA combinations, which fixes the whole stack to NVIDIA hardware and rules out phones and browsers.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.gsplat.studio/main/",
+          "title": "gsplat documentation, Overview",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "gsplat is an open-source library for CUDA-accelerated differentiable rasterization of 3D gaussians with Python bindings."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "out-of-scope",
+      "note": "No material model. Colour is spherical-harmonic coefficients on each Gaussian, with arbitrary extra per-Gaussian features allowed but no surface description.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.gsplat.studio/main/apis/compression.html",
+          "title": "gsplat documentation, Compression",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Uses quantization and sorting to compress splats into PNG files and uses K-means clustering to compress the spherical harmonic coefficents."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "out-of-scope",
+      "note": "No lights are modelled. Illumination is baked into the fitted appearance of the scene.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.gsplat.studio/main/",
+          "title": "gsplat documentation, Overview",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "gsplat is an open-source library for CUDA-accelerated differentiable rasterization of 3D gaussians with Python bindings."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.post",
+      "level": "out-of-scope",
+      "note": "No post-processing chain; the viewer draws the field and stops.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "partial",
+      "note": "There is an inference-only path that packs a trained scene into compact half-precision layouts and renders it with fused macro-tiles for low latency, and a documented example for rendering very large scenes. Neither defines a level structure or a send order that another system could follow.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.gsplat.studio/main/",
+          "title": "gsplat documentation, feature list",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "gsplat offers many extra features, including batch rasterization , N-D feature rendering , depth rendering , sparse gradient , multi-GPU distributed rasterization"
+        },
+        {
+          "url": "https://docs.gsplat.studio/main/",
+          "title": "gsplat documentation, Overview",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "gsplat is an open-source library for CUDA-accelerated differentiable rasterization of 3D gaussians with Python bindings."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "native",
+      "note": "Splat rasterisation is the library's whole purpose, and it now carries NVIDIA's 3DGUT alongside the original formulation, so both the projected-Gaussian and the unscented-transform paths are in one place.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.gsplat.studio/main/",
+          "title": "gsplat documentation, Overview",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "gsplat is an open-source library for CUDA-accelerated differentiable rasterization of 3D gaussians with Python bindings."
+        },
+        {
+          "url": "https://github.com/nerfstudio-project/gsplat/blob/main/README.md",
+          "title": "gsplat README, news for April 2025",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "[April 2025] [NVIDIA 3DGUT](https://research.nvidia.com/labs/toronto-ai/3DGUT/) is now integrated in gsplat!"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "partial",
+      "note": "Radiance fields and depth are rendered, and lidar rasterisation with hit-distance modes was added in 2026, so point-sampled sensing is drawn as well as pictures. Volumetric video is not: nothing here plays a time-varying capture as media.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/gsplat/blob/main/README.md",
+          "title": "gsplat README, news for March 2026",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "[Mar 2026] **LiDAR** rasterization for 3D Gaussian splatting: spinning-lidar camera models, `eval3d` rendering, depth / hit-distance modes, and related tooling"
+        },
+        {
+          "url": "https://docs.gsplat.studio/main/",
+          "title": "gsplat documentation, feature list",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "gsplat offers many extra features, including batch rasterization , N-D feature rendering , depth rendering , sparse gradient , multi-GPU distributed rasterization"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "out-of-scope",
+      "note": "No text rendering; the framework draws fields, not interfaces.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "partial",
+      "note": "The camera situation is split down the middle and the documentation says so. gsplat's sensor library carries pinhole, fisheye, FTheta and lidar models and reads the model out of capture metadata, while the splat method's own documentation still answers no to fisheye, equirectangular and orthographic rendering because rasterisation assumes a perspective camera.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/gsplat/blob/main/README.md",
+          "title": "gsplat README, news for June 2026",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "**New camera & sensor support** in the sensors library: pinhole, FTheta, fisheye, and LiDAR models."
+        },
+        {
+          "url": "https://docs.nerf.studio/nerfology/methods/splat.html",
+          "title": "Nerfstudio documentation, splatfacto camera models FAQ",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Can I render fisheye, equirectangular, orthographic images? Currently, no. Gaussian rasterization assumes a perspective camera for its rasterization pipeline."
+        },
+        {
+          "url": "https://docs.gsplat.studio/main/examples/ncore.html",
+          "title": "gsplat documentation, NCore v4 capture",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The camera model (pinhole, fisheye, or FTheta) is read automatically from the NCore sequence metadata."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "out-of-scope",
+      "note": "A trained model is a parameter dictionary of tensors, not a scene tree; there is no node structure to carry anywhere.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.gsplat.studio/main/apis/compression.html",
+          "title": "gsplat documentation, Compression",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Uses quantization and sorting to compress splats into PNG files and uses K-means clustering to compress the spherical harmonic coefficents."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "partial",
+      "note": "The conventions are written down, which is rare here: rotations as w, x, y, z quaternions with the rotation matrix given explicitly, and the view matrix defined as world to camera. They are library conventions in documentation, not statements carried inside the exported file.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.gsplat.studio/main/conventions/data_conventions.html",
+          "title": "gsplat documentation, Data Conventions",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We refer to the view matrix \\(W\\) as the world to camera frame transformation (referred to as w2c in some sources)"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "partial",
+      "note": "What comes out is a PLY for splats, an OBJ for a textured mesh or a PLY for a point cloud from a radiance field. No general asset container is written, and compression produces a directory of PNG images rather than a file any other tool can read as a scene.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/quickstart/export_geometry.html",
+          "title": "Nerfstudio documentation, Export geometry",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Here we document how to export point clouds and meshes from nerfstudio. The main command you’ll be working with is ns-export . Our point clouds are exported as .ply files and the textured meshes are exported as .obj files."
+        },
+        {
+          "url": "https://docs.nerf.studio/nerfology/methods/splat.html",
+          "title": "Nerfstudio documentation, Exporting splats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Gaussian splats can be exported as a .ply file which are ingestable by a variety of online web viewers."
+        },
+        {
+          "url": "https://docs.gsplat.studio/main/apis/compression.html",
+          "title": "gsplat documentation, Compression",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Uses quantization and sorting to compress splats into PNG files and uses K-means clustering to compress the spherical harmonic coefficents."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "partial",
+      "note": "Meshes are produced from radiance-field models by truncated signed distance fusion or Poisson reconstruction, and can be simplified and re-textured. The splat path produces no geometry at all, and its documentation says the export is not supported.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/quickstart/export_geometry.html",
+          "title": "Nerfstudio documentation, Export geometry",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Here we document how to export point clouds and meshes from nerfstudio. The main command you’ll be working with is ns-export . Our point clouds are exported as .ply files and the textured meshes are exported as .obj files."
+        },
+        {
+          "url": "https://docs.nerf.studio/quickstart/export_geometry.html",
+          "title": "Nerfstudio documentation, TSDF fusion",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "TSDF (truncated signed distance function) Fusion is a meshing algorithm that uses depth maps to extract a surface as a mesh. This method works for all models."
+        },
+        {
+          "url": "https://docs.nerf.studio/nerfology/methods/splat.html",
+          "title": "Nerfstudio documentation, splatfacto FAQ",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Can I export a mesh or pointcloud? Currently these export options are not supported, but may be in the future."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "partial",
+      "note": "Textured meshes are exported as OBJ with an unwrapped UV map, using xatlas for the unwrap, so texture images are produced for the radiance-field path. Nothing textured comes out of a splat.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/quickstart/export_geometry.html",
+          "title": "Nerfstudio documentation, Export geometry",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Here we document how to export point clouds and meshes from nerfstudio. The main command you’ll be working with is ns-export . Our point clouds are exported as .ply files and the textured meshes are exported as .obj files."
+        },
+        {
+          "url": "https://docs.nerf.studio/nerfology/methods/splat.html",
+          "title": "Nerfstudio documentation, splatfacto FAQ",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Can I export a mesh or pointcloud? Currently these export options are not supported, but may be in the future."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "out-of-scope",
+      "note": "No material definitions are made or exchanged; a textured OBJ carries an image and nothing about how to shade it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/quickstart/export_geometry.html",
+          "title": "Nerfstudio documentation, Export geometry",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Here we document how to export point clouds and meshes from nerfstudio. The main command you’ll be working with is ns-export . Our point clouds are exported as .ply files and the textured meshes are exported as .obj files."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "out-of-scope",
+      "note": "No animation is authored or exported. Camera paths for video rendering are a tool feature, not a clip anyone else can read.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "out-of-scope",
+      "note": "No skeletons anywhere; reconstruction produces fields and clouds.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.gsplat.studio/main/apis/compression.html",
+          "title": "gsplat documentation, Compression",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Uses quantization and sorting to compress splats into PNG files and uses K-means clustering to compress the spherical harmonic coefficents."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "out-of-scope",
+      "note": "No blend shapes or morph targets exist in the representation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.gsplat.studio/main/apis/compression.html",
+          "title": "gsplat documentation, Compression",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Uses quantization and sorting to compress splats into PNG files and uses K-means clustering to compress the spherical harmonic coefficents."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "out-of-scope",
+      "note": "Every primitive is stored once. There is no instancing concept in either library.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.gsplat.studio/main/apis/compression.html",
+          "title": "gsplat documentation, Compression",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Uses quantization and sorting to compress splats into PNG files and uses K-means clustering to compress the spherical harmonic coefficents."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "out-of-scope",
+      "note": "One capture trains one model. Nothing references or overrides anything else.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "partial",
+      "note": "Real scale is available and off by default: world-space normalisation with principal-component alignment and rescaling is applied unless the operator passes the flag that keeps real-world scale, which the documentation recommends for outdoor and large captures. Whichever way it went, the exported file does not say.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.gsplat.studio/main/examples/ncore.html",
+          "title": "gsplat documentation, NCore example, world-space normalisation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "World-space normalization (PCA + scale) is applied by default ( --normalize-world-space is True ). For outdoor or large-scale captures where preserving real-world scale matters, pass --no-normalize-world-space ."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "none",
+      "note": "No licence metadata is written into a PLY, an OBJ or a compressed directory. The Apache licence covers the software, not the captures it makes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/quickstart/export_geometry.html",
+          "title": "Nerfstudio documentation, Export geometry",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Here we document how to export point clouds and meshes from nerfstudio. The main command you’ll be working with is ns-export . Our point clouds are exported as .ply files and the textured meshes are exported as .obj files."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "none",
+      "note": "No authorship or signature is carried in any export, even though the pipeline knows exactly which device and which capture app the images came from.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/quickstart/custom_dataset.html",
+          "title": "Nerfstudio documentation, supported custom data",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We currently support the following custom data types:"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "out-of-scope",
+      "note": "No avatar representation. The framework reconstructs scenes and objects.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "out-of-scope",
+      "note": "No bone naming or hierarchy is produced.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "out-of-scope",
+      "note": "No expression or viseme model exists.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "out-of-scope",
+      "note": "Nothing is rigged, so there is nothing to retarget.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "out-of-scope",
+      "note": "No attachment points or worn items.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "out-of-scope",
+      "note": "No avatar exists to reduce for crowds or weak devices.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "out-of-scope",
+      "note": "No identity binding of any kind is offered.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "out-of-scope",
+      "note": "Nothing is simulated; training fits a static scene.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "out-of-scope",
+      "note": "No collision shapes are derived, though a mesh export from a radiance field could be used as one by whoever receives it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/quickstart/export_geometry.html",
+          "title": "Nerfstudio documentation, Export geometry",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Here we document how to export point clouds and meshes from nerfstudio. The main command you’ll be working with is ns-export . Our point clouds are exported as .ply files and the textured meshes are exported as .obj files."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "out-of-scope",
+      "note": "No bodies and therefore no joints.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.material",
+      "level": "out-of-scope",
+      "note": "No surface response is represented anywhere.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.determinism",
+      "level": "out-of-scope",
+      "note": "There is no simulation to reproduce across machines.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "out-of-scope",
+      "note": "Nothing deformable is modelled by either library.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "out-of-scope",
+      "note": "No regions and no events.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "out-of-scope",
+      "note": "Captures are images, poses and sometimes depth or lidar. No sound is recorded.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/quickstart/custom_dataset.html",
+          "title": "Nerfstudio documentation, supported custom data",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We currently support the following custom data types:"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "out-of-scope",
+      "note": "No spatialisation model, because there is no audio.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/quickstart/custom_dataset.html",
+          "title": "Nerfstudio documentation, supported custom data",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We currently support the following custom data types:"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "out-of-scope",
+      "note": "A reconstructed room has appearance and no acoustics.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/quickstart/custom_dataset.html",
+          "title": "Nerfstudio documentation, supported custom data",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We currently support the following custom data types:"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "out-of-scope",
+      "note": "No acoustic model exists to occlude.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/quickstart/custom_dataset.html",
+          "title": "Nerfstudio documentation, supported custom data",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We currently support the following custom data types:"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "out-of-scope",
+      "note": "No audio is delivered by anything in the stack.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/quickstart/custom_dataset.html",
+          "title": "Nerfstudio documentation, supported custom data",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We currently support the following custom data types:"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "out-of-scope",
+      "note": "No live session and no participants, so no voice.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "out-of-scope",
+      "note": "Nothing is shared live. The viewer serves one operator over a local socket.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "out-of-scope",
+      "note": "No shared state and no authority model.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "out-of-scope",
+      "note": "There are no clients to filter for.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.prediction",
+      "level": "out-of-scope",
+      "note": "No session traffic and no latency to hide.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "out-of-scope",
+      "note": "The viewer runs over a web socket on a port the operator forwards. That is a tool's own control channel, not session transport.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.media",
+      "level": "out-of-scope",
+      "note": "No live audio or video is carried; rendered video is written to a file afterwards.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "out-of-scope",
+      "note": "There is no world to join and no authentication.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "out-of-scope",
+      "note": "No portals and no state to carry between places.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "out-of-scope",
+      "note": "Nothing tracks who is where.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "out-of-scope",
+      "note": "Models are file paths and configuration files. No naming or resolution scheme is defined.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "out-of-scope",
+      "note": "Nothing is discovered; datasets are supplied by the operator.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/quickstart/custom_dataset.html",
+          "title": "Nerfstudio documentation, supported custom data",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We currently support the following custom data types:"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "out-of-scope",
+      "note": "No shared clock and no cross-machine ordering problem.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "out-of-scope",
+      "note": "No identifiers for people, agents or things appear in the data model.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.gsplat.studio/main/apis/compression.html",
+          "title": "gsplat documentation, Compression",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Uses quantization and sorting to compress splats into PNG files and uses K-means clustering to compress the spherical harmonic coefficents."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "out-of-scope",
+      "note": "No verifiable claims are expressed or consumed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.gsplat.studio/main/apis/compression.html",
+          "title": "gsplat documentation, Compression",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Uses quantization and sorting to compress splats into PNG files and uses K-means clustering to compress the spherical harmonic coefficents."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "out-of-scope",
+      "note": "No credential exchange protocol exists.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.gsplat.studio/main/apis/compression.html",
+          "title": "gsplat documentation, Compression",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Uses quantization and sorting to compress splats into PNG files and uses K-means clustering to compress the spherical harmonic coefficents."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "out-of-scope",
+      "note": "No permission model; the framework runs on the operator's own machine and data.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "out-of-scope",
+      "note": "Nothing is selectively disclosed because no claims travel with a capture.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.gsplat.studio/main/apis/compression.html",
+          "title": "gsplat documentation, Compression",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Uses quantization and sorting to compress splats into PNG files and uses K-means clustering to compress the spherical harmonic coefficents."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.social",
+      "level": "out-of-scope",
+      "note": "No relationships or standing are modelled.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "out-of-scope",
+      "note": "No terms are carried, so none can be enforced downstream.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/quickstart/export_geometry.html",
+          "title": "Nerfstudio documentation, Export geometry",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Here we document how to export point clouds and meshes from nerfstudio. The main command you’ll be working with is ns-export . Our point clouds are exported as .ply files and the textured meshes are exported as .obj files."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "none",
+      "note": "Captures come from phones, drones and glasses that all know roughly where they are, and none of that survives: no Earth-referenced position or orientation is read, kept or written.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/quickstart/custom_dataset.html",
+          "title": "Nerfstudio documentation, supported custom data",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We currently support the following custom data types:"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "none",
+      "note": "No coordinate reference system is named. World-space normalisation actively replaces the input frame with a principal-component one unless it is switched off.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.gsplat.studio/main/examples/ncore.html",
+          "title": "gsplat documentation, NCore example, world-space normalisation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "World-space normalization (PCA + scale) is applied by default ( --normalize-world-space is True ). For outdoor or large-scale captures where preserving real-world scale matters, pass --no-normalize-world-space ."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "out-of-scope",
+      "note": "No device session exists in which to anchor content.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "out-of-scope",
+      "note": "No shared or persistent anchors are defined.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.vps",
+      "level": "out-of-scope",
+      "note": "No positioning from imagery is offered as a service; camera poses are solved for training and thrown away with the run.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/quickstart/custom_dataset.html",
+          "title": "Nerfstudio documentation, processing images or video",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We use COLMAP and FFmpeg in our data processing script, please have these installed."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "out-of-scope",
+      "note": "No tiling scheme. A large scene is rendered from one model held in memory.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.gsplat.studio/main/",
+          "title": "gsplat documentation, Overview",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "gsplat is an open-source library for CUDA-accelerated differentiable rasterization of 3D gaussians with Python bindings."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.indoor",
+      "level": "out-of-scope",
+      "note": "Interiors are reconstructed as appearance and geometry, never as a structured description of rooms.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/quickstart/export_geometry.html",
+          "title": "Nerfstudio documentation, Export geometry",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Here we document how to export point clouds and meshes from nerfstudio. The main command you’ll be working with is ns-export . Our point clouds are exported as .ply files and the textured meshes are exported as .obj files."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "out-of-scope",
+      "note": "No immersive session lifecycle; the viewer is a browser page talking to a training process.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "out-of-scope",
+      "note": "No controller input is consumed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "out-of-scope",
+      "note": "No hand tracking is read as input.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.eye",
+      "level": "out-of-scope",
+      "note": "No gaze input, and no eye data is handled at all.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "out-of-scope",
+      "note": "No haptic output of any kind.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "partial",
+      "note": "The stack does discover the sensors it is given: an NCore capture's camera model is read from the sequence metadata, and a capture with several cameras or lidars must have its sensors named explicitly or the parser refuses rather than guessing. This is capability discovery over a dataset, not over a client device.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.gsplat.studio/main/examples/ncore.html",
+          "title": "gsplat documentation, NCore v4 capture",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The camera model (pinhole, fisheye, or FTheta) is read automatically from the NCore sequence metadata."
+        },
+        {
+          "url": "https://docs.gsplat.studio/main/examples/ncore.html",
+          "title": "gsplat documentation, multi-sensor captures",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "When a sequence contains more than one camera or lidar sensor , you must explicitly specify which sensor(s) to use"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "out-of-scope",
+      "note": "The framework is driven by command-line tools and Python. There is no scripting runtime for content.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "out-of-scope",
+      "note": "No interactivity travels with an exported model.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/nerfology/methods/splat.html",
+          "title": "Nerfstudio documentation, Exporting splats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Gaussian splats can be exported as a .ply file which are ingestable by a variety of online web viewers."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "out-of-scope",
+      "note": "There is no untrusted guest content; the operator runs their own training code.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "out-of-scope",
+      "note": "No agents act inside anything produced here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "out-of-scope",
+      "note": "Memory and time are bounded by training flags for the tool's own run; there is no guest content to budget.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.gsplat.studio/main/",
+          "title": "gsplat documentation, Overview",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "gsplat is an open-source library for CUDA-accelerated differentiable rasterization of 3D gaussians with Python bindings."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "out-of-scope",
+      "note": "Nothing runs after training. Checkpoints let a run resume, which is not world state.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "out-of-scope",
+      "note": "No items and no holders.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "out-of-scope",
+      "note": "No portable user settings; the viewer's state is local to a session.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "out-of-scope",
+      "note": "Outputs are named by path. No hashing or content addressing is offered.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/quickstart/export_geometry.html",
+          "title": "Nerfstudio documentation, Export geometry",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Here we document how to export point clouds and meshes from nerfstudio. The main command you’ll be working with is ns-export . Our point clouds are exported as .ply files and the textured meshes are exported as .obj files."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "out-of-scope",
+      "note": "The outputs are assets and checkpoints, not a runnable experience.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/quickstart/export_geometry.html",
+          "title": "Nerfstudio documentation, Export geometry",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Here we document how to export point clouds and meshes from nerfstudio. The main command you’ll be working with is ns-export . Our point clouds are exported as .ply files and the textured meshes are exported as .obj files."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "out-of-scope",
+      "note": "Delivery is somebody else's job; the framework writes files to disk.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/nerfology/methods/splat.html",
+          "title": "Nerfstudio documentation, Exporting splats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Gaussian splats can be exported as a .ply file which are ingestable by a variety of online web viewers."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "out-of-scope",
+      "note": "No versioning of exported content and no update path once a file has left.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/quickstart/export_geometry.html",
+          "title": "Nerfstudio documentation, Export geometry",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Here we document how to export point clouds and meshes from nerfstudio. The main command you’ll be working with is ns-export . Our point clouds are exported as .ply files and the textured meshes are exported as .obj files."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "partial",
+      "note": "gsplat carries the nearest thing to a conformance test in this whole group: a standalone script that reproduces the original Gaussian splatting implementation's published quality numbers and converged Gaussian count, with the results documented. It tests agreement with one reference implementation, not with any specification of a format or an interface.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/gsplat/blob/main/README.md",
+          "title": "gsplat README, Evaluation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "This repo comes with a standalone script that reproduces the official Gaussian Splatting with exactly the same performance on PSNR, SSIM, LPIPS, and converged number of Gaussians."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "Nothing is generated from a prompt or a picture. Every parameter is fitted to real observations.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "The trained model is a static scene, not a world model that continues in response to a viewer.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "native",
+      "note": "This is the one row where the pair is unambiguously complete: photographs or video go in, camera poses are solved with COLMAP inside the tool, a field is trained, and a textured mesh comes out as an OBJ with a UV unwrap. Phone captures from Polycam, KIRI Engine, Record3D and Spectacular AI can replace the pose-solving step entirely.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/quickstart/custom_dataset.html",
+          "title": "Nerfstudio documentation, processing images or video",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We use COLMAP and FFmpeg in our data processing script, please have these installed."
+        },
+        {
+          "url": "https://docs.nerf.studio/quickstart/export_geometry.html",
+          "title": "Nerfstudio documentation, Export geometry",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Here we document how to export point clouds and meshes from nerfstudio. The main command you’ll be working with is ns-export . Our point clouds are exported as .ply files and the textured meshes are exported as .obj files."
+        },
+        {
+          "url": "https://docs.nerf.studio/quickstart/custom_dataset.html",
+          "title": "Nerfstudio documentation, supported custom data",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We currently support the following custom data types:"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "partial",
+      "note": "A trained splat exports as a PLY that the named third-party viewers read, which is the interchange path. The compression path is not interchange at all: it writes a directory of PNG images with sorted, quantised attributes and clustered harmonic coefficients, readable only by the same library.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/nerfology/methods/splat.html",
+          "title": "Nerfstudio documentation, Exporting splats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Gaussian splats can be exported as a .ply file which are ingestable by a variety of online web viewers."
+        },
+        {
+          "url": "https://docs.nerf.studio/nerfology/methods/splat.html",
+          "title": "Nerfstudio documentation, third-party splat viewers",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio’s splat export currently supports multiple third-party splat viewers:"
+        },
+        {
+          "url": "https://docs.gsplat.studio/main/apis/compression.html",
+          "title": "gsplat documentation, Compression",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Uses quantization and sorting to compress splats into PNG files and uses K-means clustering to compress the spherical harmonic coefficents."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "none",
+      "note": "Nothing is delivered progressively. The inference path packs a scene for low-latency local rendering, which is a memory layout rather than a way of sending a scene to somebody else by region or detail.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.gsplat.studio/main/",
+          "title": "gsplat documentation, feature list",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "gsplat offers many extra features, including batch rasterization , N-D feature rendering , depth rendering , sparse gradient , multi-GPU distributed rasterization"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "none",
+      "note": "No time-varying capture is carried or replayed as media. The dynamic work that exists is a research port, not a playback path.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/gsplat/blob/main/README.md",
+          "title": "gsplat README, news for June 2026",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "[Jun 2026] **G-SHARP** -- dynamic surgical-scene reconstruction for Gaussian splatting."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "partial",
+      "note": "Point clouds go both ways: they are read to initialise training, including lidar points from an NCore capture, and radiance-field models export them as PLY. The splat path exports none, by its own documentation.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/quickstart/export_geometry.html",
+          "title": "Nerfstudio documentation, Export geometry",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Here we document how to export point clouds and meshes from nerfstudio. The main command you’ll be working with is ns-export . Our point clouds are exported as .ply files and the textured meshes are exported as .obj files."
+        },
+        {
+          "url": "https://docs.gsplat.studio/main/examples/ncore.html",
+          "title": "gsplat documentation, NCore v4 capture",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The camera model (pinhole, fisheye, or FTheta) is read automatically from the NCore sequence metadata."
+        },
+        {
+          "url": "https://docs.nerf.studio/nerfology/methods/splat.html",
+          "title": "Nerfstudio documentation, splatfacto FAQ",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Can I export a mesh or pointcloud? Currently these export options are not supported, but may be in the future."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "partial",
+      "note": "Depth is a first-class input and output inside the library — depth rendering, lidar hit distances, and phone captures whose own depth sensor solved the poses — but nothing here carries a scene onward as calibrated views plus depth. It consumes that shape and does not produce it.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://docs.gsplat.studio/main/",
+          "title": "gsplat documentation, feature list",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "gsplat offers many extra features, including batch rasterization , N-D feature rendering , depth rendering , sparse gradient , multi-GPU distributed rasterization"
+        },
+        {
+          "url": "https://docs.nerf.studio/quickstart/custom_dataset.html",
+          "title": "Nerfstudio documentation, Record3D capture",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "This uses the iPhone’s LiDAR sensors to calculate camera poses, so COLMAP is not needed."
+        },
+        {
+          "url": "https://github.com/nerfstudio-project/gsplat/blob/main/README.md",
+          "title": "gsplat README, news for March 2026",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "[Mar 2026] **LiDAR** rasterization for 3D Gaussian splatting: spinning-lidar camera models, `eval3d` rendering, depth / hit-distance modes, and related tooling"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "native",
+      "note": "Rendering the scene from viewpoints no camera occupied is the point of both libraries, with the quality of the result measured against the reference implementation on published benchmarks.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.gsplat.studio/main/",
+          "title": "gsplat documentation, Overview",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "gsplat is an open-source library for CUDA-accelerated differentiable rasterization of 3D gaussians with Python bindings."
+        },
+        {
+          "url": "https://github.com/nerfstudio-project/gsplat/blob/main/README.md",
+          "title": "gsplat README, Evaluation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "This repo comes with a standalone script that reproduces the official Gaussian Splatting with exactly the same performance on PSNR, SSIM, LPIPS, and converged number of Gaussians."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "partial",
+      "note": "Time appears once, as an experimental research port for dynamic surgical scenes added in June 2026. There is no general four-dimensional training path, no time axis in any export, and no playback of a captured sequence.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/gsplat/blob/main/README.md",
+          "title": "gsplat README, news for June 2026",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "[Jun 2026] **G-SHARP** -- dynamic surgical-scene reconstruction for Gaussian splatting."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "none",
+      "note": "Captured appearance stays as captured. No lighting or material terms are separated that another system could relight from.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.gsplat.studio/main/apis/compression.html",
+          "title": "gsplat documentation, Compression",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Uses quantization and sorting to compress splats into PNG files and uses K-means clustering to compress the spherical harmonic coefficents."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "none",
+      "note": "There is no editing of a trained capture. Cropping, deleting and recolouring happen in the third-party editors that read the exported PLY.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/nerfology/methods/splat.html",
+          "title": "Nerfstudio documentation, third-party splat viewers",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio’s splat export currently supports multiple third-party splat viewers:"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "Nothing is generated, so nothing can be regenerated by description.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "There is no generating system to give a specification to.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "partial",
+      "note": "A radiance field yields a textured mesh and a point cloud through two documented meshing routes; a splat yields neither, and the documentation states plainly that those export options are not supported. The most-used representation is the one with no way back to ordinary assets.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/quickstart/export_geometry.html",
+          "title": "Nerfstudio documentation, Export geometry",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Here we document how to export point clouds and meshes from nerfstudio. The main command you’ll be working with is ns-export . Our point clouds are exported as .ply files and the textured meshes are exported as .obj files."
+        },
+        {
+          "url": "https://docs.nerf.studio/quickstart/export_geometry.html",
+          "title": "Nerfstudio documentation, TSDF fusion",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "TSDF (truncated signed distance function) Fusion is a meshing algorithm that uses depth maps to extract a surface as a mesh. This method works for all models."
+        },
+        {
+          "url": "https://docs.nerf.studio/nerfology/methods/splat.html",
+          "title": "Nerfstudio documentation, splatfacto FAQ",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Can I export a mesh or pointcloud? Currently these export options are not supported, but may be in the future."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "No agent actions or control signals are carried in or out.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "none",
+      "note": "Three-hundred-and-sixty-degree data is a documented input type for processing into perspective views, and nothing panoramic is produced: the splat renderer cannot even draw an equirectangular image.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/quickstart/custom_dataset.html",
+          "title": "Nerfstudio documentation, supported custom data",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We currently support the following custom data types:"
+        },
+        {
+          "url": "https://docs.nerf.studio/nerfology/methods/splat.html",
+          "title": "Nerfstudio documentation, splatfacto camera models FAQ",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Can I render fisheye, equirectangular, orthographic images? Currently, no. Gaussian rasterization assumes a perspective camera for its rasterization pipeline."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "partial",
+      "note": "A mesh of a real space is produced, from photographs rather than from a device's own sensors, and it arrives minutes to hours later rather than live. Phone captures whose lidar did the sensing are read as input, so the sensing happened elsewhere.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/quickstart/export_geometry.html",
+          "title": "Nerfstudio documentation, TSDF fusion",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "TSDF (truncated signed distance function) Fusion is a meshing algorithm that uses depth maps to extract a surface as a mesh. This method works for all models."
+        },
+        {
+          "url": "https://docs.nerf.studio/quickstart/custom_dataset.html",
+          "title": "Nerfstudio documentation, Record3D capture",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "This uses the iPhone’s LiDAR sensors to calculate camera poses, so COLMAP is not needed."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "Nothing is labelled or classified. A wall and a person are the same to the trainer.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "partial",
+      "note": "Depth is rendered from a trained model and lidar hit distances are rasterised, so depth comes out; no live per-pixel depth from a device sensor is read except as it arrives inside a phone capture.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://docs.gsplat.studio/main/",
+          "title": "gsplat documentation, feature list",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "gsplat offers many extra features, including batch rasterization , N-D feature rendering , depth rendering , sparse gradient , multi-GPU distributed rasterization"
+        },
+        {
+          "url": "https://github.com/nerfstudio-project/gsplat/blob/main/README.md",
+          "title": "gsplat README, news for March 2026",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "[Mar 2026] **LiDAR** rasterization for 3D Gaussian splatting: spinning-lidar camera models, `eval3d` rendering, depth / hit-distance modes, and related tooling"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "There is no live camera view for reconstructed geometry to hide anything in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "out-of-scope",
+      "note": "No passthrough or blending with a live view; the viewer is an ordinary browser page.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.face",
+      "level": "out-of-scope",
+      "note": "No face or body tracking is consumed as input.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "out-of-scope",
+      "note": "Nothing says where a body may stand. An exported mesh is a surface with no walkability claim.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/quickstart/export_geometry.html",
+          "title": "Nerfstudio documentation, Export geometry",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Here we document how to export point clouds and meshes from nerfstudio. The main command you’ll be working with is ns-export . Our point clouds are exported as .ply files and the textured meshes are exported as .obj files."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "out-of-scope",
+      "note": "No published unit of logic and so no permanent naming question.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/nerfstudio-project/nerfstudio/blob/main/README.md",
+          "title": "Nerfstudio README, About",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio provides a simple API that allows for a simplified end-to-end process of creating, training, and testing NeRFs."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "out-of-scope",
+      "note": "Nothing stands between a capture and its audience: training and viewing are local, and publishing happens in whatever tool receives the exported file.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/nerfology/methods/splat.html",
+          "title": "Nerfstudio documentation, third-party splat viewers",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Nerfstudio’s splat export currently supports multiple third-party splat viewers:"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "No map of a place is declared or aligned to anything; the default normalisation moves the scene into its own frame.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.gsplat.studio/main/examples/ncore.html",
+          "title": "gsplat documentation, NCore example, world-space normalisation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "World-space normalization (PCA + scale) is applied by default ( --normalize-world-space is True ). For outdoor or large-scale captures where preserving real-world scale matters, pass --no-normalize-world-space ."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "No geographic area is declared for a capture at any point.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/quickstart/custom_dataset.html",
+          "title": "Nerfstudio documentation, supported custom data",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We currently support the following custom data types:"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "out-of-scope",
+      "note": "Nerfstudio and gsplat is assessed here as NeRF and Gaussian training pipelines, developer APIs, optional methods and a training viewer. The subject does not issue or exchange trust claims whose establishment a relying party evaluates; reconstruction confidence is a different quantity.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "out-of-scope",
+      "note": "Nerfstudio and gsplat is assessed here as NeRF and Gaussian training pipelines, developer APIs, optional methods and a training viewer. The subject's scene or model data types are not a vocabulary for identity claims exchanged with a relying party.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "out-of-scope",
+      "note": "Nerfstudio and gsplat is assessed here as NeRF and Gaussian training pipelines, developer APIs, optional methods and a training viewer. The subject is not an identity-presentation system with pairwise relationship identifiers and correlation guarantees.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.encryption",
+      "level": "out-of-scope",
+      "note": "Nerfstudio and gsplat is assessed here as NeRF and Gaussian training pipelines, developer APIs, optional methods and a training viewer. Image, geometry and device processing do not define recipient identity keys or confidential identity delivery.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.key-lifecycle",
+      "level": "out-of-scope",
+      "note": "Nerfstudio and gsplat is assessed here as NeRF and Gaussian training pipelines, developer APIs, optional methods and a training viewer. The subject does not govern identity-control key rotation, revocation or recovery; account administration belongs to its host.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "out-of-scope",
+      "note": "Nerfstudio and gsplat is assessed here as NeRF and Gaussian training pipelines, developer APIs, optional methods and a training viewer. The subject does not issue portable credentials with a post-issuance status-discovery mechanism.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "out-of-scope",
+      "note": "Nerfstudio and gsplat is assessed here as NeRF and Gaussian training pipelines, developer APIs, optional methods and a training viewer. Captured appearance and inferred training exposure are not runtime environmental illumination estimates supplied to content.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "out-of-scope",
+      "note": "Nerfstudio and gsplat is assessed here as NeRF and Gaussian training pipelines, developer APIs, optional methods and a training viewer. Offline calibration targets or reference photos do not expose runtime physical-marker detection with tracked poses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "partial",
+      "note": "The viewer authors camera keyframes and renders their path, but this source does not fully specify the time-tagged exported pose schema or interpolation rules.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/quickstart/first_nerf.html",
+          "title": "Training your first model",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This will set the first camera key frame."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "out-of-scope",
+      "note": "Nerfstudio and gsplat is assessed here as NeRF and Gaussian training pipelines, developer APIs, optional methods and a training viewer. Editor selection or image masking is not an exposed runtime picking interface that returns the intersected scene object or geometry.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.text",
+      "level": "out-of-scope",
+      "note": "Nerfstudio and gsplat is assessed here as NeRF and Gaussian training pipelines, developer APIs, optional methods and a training viewer. Prompt strings or command-line parameters are authoring inputs, not a defined runtime character-entry interface for scene applications.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "out-of-scope",
+      "note": "Nerfstudio and gsplat is assessed here as NeRF and Gaussian training pipelines, developer APIs, optional methods and a training viewer. The selected interface is not a display compositor accepting independently shaped image layers and composition properties.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.bounds",
+      "level": "partial",
+      "note": "SceneBox exposes minimum/maximum bounds and point containment for training and rendering; the read API does not define a pre-load hierarchy for scene traversal.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/reference/api/data/index.html",
+          "title": "Nerfstudio Data API — SceneBox",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Returns the instance of SceneBox that fully envelopes a set of poses"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "out-of-scope",
+      "note": "Nerfstudio and gsplat is assessed here as NeRF and Gaussian training pipelines, developer APIs, optional methods and a training viewer. Fitted motion and ordinary parenting are not authored node-to-node transform constraints with runtime evaluation rules.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "out-of-scope",
+      "note": "Nerfstudio and gsplat is assessed here as NeRF and Gaussian training pipelines, developer APIs, optional methods and a training viewer. Image sequences used as reconstruction observations do not reference synchronized audiovisual media as content within a separately authored scene.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "out-of-scope",
+      "note": "Nerfstudio and gsplat is assessed here as NeRF and Gaussian training pipelines, developer APIs, optional methods and a training viewer. Capture extents or a training region do not report the user's usable physical play area and floor-relative reference.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "out-of-scope",
+      "note": "Nerfstudio and gsplat is assessed here as NeRF and Gaussian training pipelines, developer APIs, optional methods and a training viewer. The selected reconstruction or sensing interface does not exchange a sound-synthesis model for evaluation during playback.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "out-of-scope",
+      "note": "Nerfstudio and gsplat is assessed here as NeRF and Gaussian training pipelines, developer APIs, optional methods and a training viewer. The subject does not publish an exchange of identified spatial zones and typed, temporally scoped events; scene bounds or capture locations are not that protocol.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.consent",
+      "level": "out-of-scope",
+      "note": "Nerfstudio and gsplat is assessed here as NeRF and Gaussian training pipelines, developer APIs, optional methods and a training viewer. An application permission dialog or dataset licence does not carry a subject-bound grant with scope, purpose, validity and withdrawal information.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "out-of-scope",
+      "note": "Nerfstudio and gsplat is assessed here as NeRF and Gaussian training pipelines, developer APIs, optional methods and a training viewer. Training metrics and processing status are not machine-readable accounts of a recipient evaluating and acting on an arriving subject or claim.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "Nerfstudio and gsplat is assessed here as NeRF and Gaussian training pipelines, developer APIs, optional methods and a training viewer. The selected subject does not define arrival between independent destinations; local API setup and asset loading are not pre-arrival admission responses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.frame-timing",
+      "level": "out-of-scope",
+      "note": "Nerfstudio and gsplat is assessed here as NeRF and Gaussian training pipelines, developer APIs, optional methods and a training viewer. Offline fitting or ordinary preview playback does not coordinate application frame submission with a predicted headset display time and matching view poses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "out-of-scope",
+      "note": "Nerfstudio and gsplat is assessed here as NeRF and Gaussian training pipelines, developer APIs, optional methods and a training viewer. Implementation shaders or learned weights do not make the subject a specified shader language with common execution semantics.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.parametric",
+      "level": "out-of-scope",
+      "note": "Nerfstudio and gsplat is assessed here as NeRF and Gaussian training pipelines, developer APIs, optional methods and a training viewer. The selected representation is sampled imagery, points, splats or meshes; it does not carry exact parametric curves and surfaces for another system to evaluate.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "out-of-scope",
+      "note": "Nerfstudio and gsplat is assessed here as NeRF and Gaussian training pipelines, developer APIs, optional methods and a training viewer. Gaussian primitives and optimized point samples are a representation, not exchanged emitters with runtime particle simulation parameters.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.style",
+      "level": "out-of-scope",
+      "note": "Nerfstudio and gsplat is assessed here as NeRF and Gaussian training pipelines, developer APIs, optional methods and a training viewer. Capture edits and model appearance are not separate metadata-driven rules for selecting scene-feature visibility or color.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "out-of-scope",
+      "note": "Nerfstudio and gsplat is assessed here as NeRF and Gaussian training pipelines, developer APIs, optional methods and a training viewer. Offline reconstructed geometry is not a sensing runtime that answers physical-environment ray queries with hit poses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "out-of-scope",
+      "note": "Nerfstudio and gsplat is assessed here as NeRF and Gaussian training pipelines, developer APIs, optional methods and a training viewer. The subject does not expose a musical-instrument device or recorded-event input interface with channels, notes and controllers.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "native",
+      "note": "Nerfstudio trains NeRF/Gaussian methods with configurable data and optimization, supports checkpoint resumption, and renders or exports trained results; optional research methods remain separately installed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/quickstart/first_nerf.html",
+          "title": "Training your first model",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Once you have a NeRF model you can either render out a video or export a point cloud."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.objectgen",
+      "level": "via-extension",
+      "note": "The named Generfacto method adds text-to-object NeRF generation after additional generative dependencies and diffusion weights are installed; this is individual-object output, not a whole-place generator.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/nerfology/methods/generfacto.html",
+          "title": "Generfacto",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Generate 3D models from text"
+        },
+        {
+          "url": "https://docs.nerf.studio/quickstart/export_geometry.html",
+          "title": "Export geometry — Nerfstudio",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This method works for all models."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.extension",
+      "level": "partial",
+      "note": "Nerfstudio discovers named method-config plugins and skips invalid MethodSpecification registrations. The retained registry does not state recipient behavior when a requested extension is absent or unimplemented.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.nerf.studio/_modules/nerfstudio/plugins/registry.html",
+          "title": "nerfstudio.plugins.registry - nerfstudio",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Discovers all methods registered using the `nerfstudio.method_configs` entrypoint."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "native",
+      "note": "Nerfstudio's viewer lays out custom controls in named folders derived from the Pipeline module hierarchy, including buttons, text, numbers, sliders and dropdowns beside its rendered view.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/nerfstudio-project/nerfstudio/50e0e3c70c775e89333256213363badbf074f29d/docs/developer_guides/viewer/custom_gui.md",
+          "title": "Custom GUI",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "arranges parameters into folders based on their variable names."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "native",
+      "note": "The pinned gsplat backend within the reviewed Nerfstudio/gsplat boundary implements Adam parameter updates as a CUDA kernel launch over parameter, gradient and moment tensors on the current CUDA stream. This establishes non-raster compute for that backend; it does not generalize to every Nerfstudio method.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/nerfstudio-project/gsplat/28e794ca44a4c25ffc39175370c5ee7b38bfcc36/gsplat/cuda/csrc/AdamCUDA.cu",
+          "title": "gsplat gsplat cuda csrc AdamCUDA.cu",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "adam_kernel<scalar_t><<<grid, threads, shmem_size, at::cuda::getCurrentCUDAStream()>>>"
+        }
+      ]
+    }
+  ]
+}

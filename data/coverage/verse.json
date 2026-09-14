@@ -1,0 +1,2761 @@
+{
+  "subject_id": "verse",
+  "summary": "Verse is Epic Games' programming language for gameplay, the one Unreal Editor for Fortnite runs and the one Epic says its future engine will use. It is a subject on this map because of what it says about code, not about content: every function declares in its own signature what it may do — read memory, write it, fail, suspend, or run on the client ahead of the server — and the compiler enforces that declaration; state changed inside a failing branch is rolled back automatically; concurrency is in the language itself, with expressions that run several things at once, race them, or let one outlive its scope; and every published module has a permanent address that nobody else may ever claim. The row that should interest a standards group most is versioning: compatibility here is not a convention but a rule checked when code is published — a public definition can never be removed, renamed or changed in kind, and effects may only ever be dropped, never added — which is enforcement rather than policy, and is the one mechanism here a working group could copy rather than merely record. Everything about scenes, geometry, avatars, audio, positioning and devices is out of scope: this is a language, and its reference specifies none of it. Two traps. First, portability: the language reference is published under a public-domain dedication and is genuinely open to read, but the only implementation is a virtual machine held in a repository Epic has not published, so Verse code cannot be run, checked or replayed anywhere except inside Epic's own service — the 594 executable tests that ship with the reference cannot be run without Epic's binaries. Second, the reference documents the head of a development branch, so several things it describes in full — client prediction, reactive live variables, serialisation of saved data — are marked in the text itself as not yet released, and a reader who scores from the prose alone will credit Verse with features nobody can use today.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "out-of-scope",
+      "note": "The language reference specifies no renderer at all: its nineteen chapters cover expressions, types, effects, concurrency, modules and persistence, and nothing about drawing. There is no rasterizer, render graph or pass structure anywhere in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "out-of-scope",
+      "note": "The language reference specifies no renderer at all: its nineteen chapters cover expressions, types, effects, concurrency, modules and persistence, and nothing about drawing. The reference names no graphics interface; the only escape to native code it documents is the intrinsic function, written in C++ and unavailable to Verse authors.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/02_primitives.md",
+          "title": "Book of Verse, Primitives, Intrinsics",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "*intrinsic functions* are built-in operations provided directly by the runtime that cannot be implemented in pure Verse code."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "out-of-scope",
+      "note": "The language reference specifies no renderer at all: its nineteen chapters cover expressions, types, effects, concurrency, modules and persistence, and nothing about drawing. No surface or shading model appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "out-of-scope",
+      "note": "The language reference specifies no renderer at all: its nineteen chapters cover expressions, types, effects, concurrency, modules and persistence, and nothing about drawing. No light, shadow or probe model appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.post",
+      "level": "out-of-scope",
+      "note": "The language reference specifies no renderer at all: its nineteen chapters cover expressions, types, effects, concurrency, modules and persistence, and nothing about drawing. No post-processing stage appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "out-of-scope",
+      "note": "The language reference specifies no renderer at all: its nineteen chapters cover expressions, types, effects, concurrency, modules and persistence, and nothing about drawing. No detail selection or streaming order appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "out-of-scope",
+      "note": "The language reference specifies no renderer at all: its nineteen chapters cover expressions, types, effects, concurrency, modules and persistence, and nothing about drawing. No splat or radiance field representation appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "out-of-scope",
+      "note": "The language reference specifies no renderer at all: its nineteen chapters cover expressions, types, effects, concurrency, modules and persistence, and nothing about drawing. No point cloud, voxel or volumetric video representation appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "out-of-scope",
+      "note": "The language reference specifies no renderer at all: its nineteen chapters cover expressions, types, effects, concurrency, modules and persistence, and nothing about drawing. The reference defines the `string`, `char` and `char32` types and text interpolation, and stops there; nothing about fonts, layout or drawing text in three dimensions.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "out-of-scope",
+      "note": "The language reference specifies no renderer at all: its nineteen chapters cover expressions, types, effects, concurrency, modules and persistence, and nothing about drawing. No viewpoint model appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "out-of-scope",
+      "note": "The language reference has no scene chapter and defines no node tree. A scene graph module exists in Epic's generated API listing beside the language, but it is API surface, not language, and the reference does not describe it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api",
+          "title": "Epic Games, Verse API reference",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "an automatically generated reference manual from the modules that currently exist in Verse"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "partial",
+      "confidence": "verified",
+      "note": "The language itself fixes no handedness, axis order or transform composition rule. What ships beside it is a bundled maths module whose own path marks it provisional, and whose rotation helpers document their angle order one function at a time. So a Verse program has a spatial vocabulary but the language guarantees nothing about it, and the reference warns the module may be reorganised.",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/16_modules.md",
+          "title": "Book of Verse, Modules, standard modules",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "`/UnrealEngine.com/Temporary/SpatialMath` - 3D math and spatial operations"
+        },
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/16_modules.md",
+          "title": "Book of Verse, Modules, Paths",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The use of \"Temporary\" in some paths indicates that these modules are provisional and may be reorganized in future versions of Verse."
+        },
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/VerseSyntaxValidation.md",
+          "title": "Book of Verse, syntax validation fixture, SpatialMath digest",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Makes a `rotation` by applying `YawRightDegrees`, `PitchUpDegrees`, and `RollClockwiseDegrees`, in that order"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "out-of-scope",
+      "note": "The reference defines no file that carries a model or a scene; its unit of exchange is a module of code, addressed by path.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "out-of-scope",
+      "note": "No mesh encoding or compression appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "out-of-scope",
+      "note": "No image format or texture compression appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "out-of-scope",
+      "note": "No material definition, and therefore no material exchange, appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "out-of-scope",
+      "note": "No keyframe or clip encoding appears in the reference; time in Verse is expressed as suspending code, not as stored curves.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "out-of-scope",
+      "note": "No bone hierarchy or binding appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "out-of-scope",
+      "note": "No shape deformation appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "out-of-scope",
+      "note": "No instancing mechanism appears in the reference; class instantiation is an object model matter, not a rendering one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "out-of-scope",
+      "note": "Verse composes code, not scenes: modules layer, reference and override definitions, and the reference says nothing about layering scene content from several sources.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "out-of-scope",
+      "note": "The reference defines numeric types, including exact rationals, but no real-world unit or scale agreement.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "out-of-scope",
+      "note": "No rights or licence metadata appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "out-of-scope",
+      "note": "No signing or authorship record appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "out-of-scope",
+      "note": "The reference defines no avatar; the `player` and `agent` types a Verse author uses come from Epic's Fortnite modules, not from the language.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api",
+          "title": "Epic Games, Verse API reference",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "an automatically generated reference manual from the modules that currently exist in Verse"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "out-of-scope",
+      "note": "No bone naming or structure appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api",
+          "title": "Epic Games, Verse API reference",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "an automatically generated reference manual from the modules that currently exist in Verse"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "out-of-scope",
+      "note": "No expression or viseme vocabulary appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api",
+          "title": "Epic Games, Verse API reference",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "an automatically generated reference manual from the modules that currently exist in Verse"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "out-of-scope",
+      "note": "No retargeting appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api",
+          "title": "Epic Games, Verse API reference",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "an automatically generated reference manual from the modules that currently exist in Verse"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "out-of-scope",
+      "note": "No attachment or wearable model appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api",
+          "title": "Epic Games, Verse API reference",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "an automatically generated reference manual from the modules that currently exist in Verse"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "out-of-scope",
+      "note": "No reduced avatar representation appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api",
+          "title": "Epic Games, Verse API reference",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "an automatically generated reference manual from the modules that currently exist in Verse"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "out-of-scope",
+      "note": "No binding of an avatar to a credential appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api",
+          "title": "Epic Games, Verse API reference",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "an automatically generated reference manual from the modules that currently exist in Verse"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "out-of-scope",
+      "note": "No bodies, mass or velocity appear in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "out-of-scope",
+      "note": "No collision shapes appear in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "out-of-scope",
+      "note": "No joints or constraints appear in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.material",
+      "level": "out-of-scope",
+      "note": "No friction or restitution model appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.determinism",
+      "level": "partial",
+      "confidence": "verified",
+      "note": "Verse gives determinism at the language level and says nothing about simulation across machines. Functions marked pure are deterministic by the compiler's rule, the wall clock is frozen inside a transaction so a retry cannot see a different time, and module initialisation is deterministic by construction. None of that is a promise that two machines running the same world reach the same state; the reference never makes that promise.",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/13_effects.md",
+          "title": "Book of Verse, Effects, pure computation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The `<computes>` specifier marks pure functions — those that neither read nor write mutable state. These functions are deterministic: given the same inputs, they always produce the same outputs."
+        },
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/14_concurrency.md",
+          "title": "Book of Verse, Concurrency, GetSecondsSinceEpoch",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Within a single transaction, `GetSecondsSinceEpoch()` returns the **same value** every time it is called. This ensures deterministic behavior and prevents time-related race conditions"
+        },
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/16_modules.md",
+          "title": "Book of Verse, Modules, initialization",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The restriction ensures that module initialization is deterministic and does not execute arbitrary code when the module is loaded."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "out-of-scope",
+      "note": "No deformable simulation appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "out-of-scope",
+      "note": "No trigger volume appears in the reference; the reference's event and reactive constructs are language machinery, not regions of space.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "out-of-scope",
+      "note": "No positioned sound appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "out-of-scope",
+      "note": "No spatialization model appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "out-of-scope",
+      "note": "No room acoustics appear in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "out-of-scope",
+      "note": "No sound occlusion appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "out-of-scope",
+      "note": "No audio delivery appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "out-of-scope",
+      "note": "No voice transport appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "none",
+      "confidence": "verified",
+      "note": "The language assumes a split between an authoritative server and a predicting client — that is what its prediction effect family is for — but it specifies no replicated state, no update rate and no wire form. A Verse author cannot say in the language which state is shared.",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/13_effects.md",
+          "title": "Book of Verse, Effects, Prediction effects",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The prediction family determines where code runs in a client-server architecture. By default, functions have the `dictates` effect, meaning they run authoritatively on the server."
+        },
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "partial",
+      "confidence": "verified",
+      "note": "Authority is in the type system, not in an object model: every function is server-authoritative unless it is marked as predicting, and the compiler enforces that. What the reference does not give is per-object ownership, transfer of authority, or any way to name who decides for a given thing.",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/13_effects.md",
+          "title": "Book of Verse, Effects, Prediction effects",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "By default, functions have the `dictates` effect, meaning they run authoritatively on the server."
+        },
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/13_effects.md",
+          "title": "Book of Verse, Effects, effect table",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Building a predictive client system that must run on players' machines? Use `<predicts>` to ensure no server-only operations sneak in."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "out-of-scope",
+      "note": "No interest management appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.prediction",
+      "level": "partial",
+      "confidence": "verified",
+      "note": "The language has a prediction effect that lets a function run early on the client and be corrected by the server afterwards, and it is written into the effect table as a whole effect family. The reference marks it not yet released, and it describes no reconciliation rule, so what exists today is the declaration, not the mechanism.",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/13_effects.md",
+          "title": "Book of Verse, Effects, Prediction effects",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The `<predicts>` specifier allows functions to run predictively on clients for responsiveness, with the server later validating and potentially correcting the results."
+        },
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/13_effects.md",
+          "title": "Book of Verse, Effects, Prediction effects, unreleased note",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The `<predicts>` effect is not yet released."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "out-of-scope",
+      "note": "No wire protocol appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.media",
+      "level": "out-of-scope",
+      "note": "No audio or video stream carriage appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "out-of-scope",
+      "note": "No session establishment or authentication appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "out-of-scope",
+      "note": "No portal or state handoff appears in the reference; a Verse module's path is permanent, but it addresses code, not a destination a person can travel to.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "out-of-scope",
+      "note": "No roster or presence model appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "out-of-scope",
+      "note": "Verse names code, not places. Its path scheme is a permanent global namespace rooted at internet domain names, and it resolves to a module of code; nothing in the reference resolves a name to a reachable world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/16_modules.md",
+          "title": "Book of Verse, Modules, Paths",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Once a module is published at a particular path, that path belongs to it forever. No other module can ever claim the same path, ensuring that dependencies always resolve to the correct code."
+        },
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "out-of-scope",
+      "note": "The reference claims discoverability only for code: because paths follow a predictable pattern a developer can guess where a module lives. There is no service, node or world discovery.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/16_modules.md",
+          "title": "Book of Verse, Modules, Paths",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Because paths follow a predictable pattern, developers can often guess or easily find the modules they need."
+        },
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "partial",
+      "confidence": "verified",
+      "note": "The language supplies a wall clock in seconds since 1970 and a way to align code with the simulation tick, and it freezes the clock inside a transaction so a retry sees one consistent time. It does not synchronise clocks between machines; the reference's own worked example computes clock skew against a server time the author has to fetch.",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/14_concurrency.md",
+          "title": "Book of Verse, Concurrency, Getting Current Time",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The `GetSecondsSinceEpoch()` function returns the current Unix timestamp—the number of seconds elapsed since January 1, 1970, 00:00:00 UTC."
+        },
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/14_concurrency.md",
+          "title": "Book of Verse, Concurrency, NextTick",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "`NextTick()` provides stronger timing guarantees when you need to align with the simulation clock."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "out-of-scope",
+      "note": "The reference defines no identifier for a person, agent or thing; the player type a Verse author uses is supplied by Epic's Fortnite modules.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api",
+          "title": "Epic Games, Verse API reference",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "an automatically generated reference manual from the modules that currently exist in Verse"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "out-of-scope",
+      "note": "No verifiable claim format appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "out-of-scope",
+      "note": "No credential request or presentation protocol appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "out-of-scope",
+      "note": "Verse has a capability system, but it grants permissions to code, not to identities: effect specifiers say what a function may do, access specifiers and named scopes say which modules may call it, and both are compiler-enforced. Nothing in the reference expresses what a person or agent is permitted to do, which is what this row asks.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/13_effects.md",
+          "title": "Book of Verse, Effects, families",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse organizes effects into families, each tracking a specific aspect of computation. Each family contains fundamental effects, and effect specifiers declare which effects a function may perform."
+        },
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "out-of-scope",
+      "note": "No selective disclosure appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.social",
+      "level": "out-of-scope",
+      "note": "No relationship or standing model appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "out-of-scope",
+      "note": "No licence enforcement appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "out-of-scope",
+      "note": "Nothing in the reference expresses position against the Earth.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "out-of-scope",
+      "note": "No coordinate reference frame appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "out-of-scope",
+      "note": "No anchoring to a place appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "out-of-scope",
+      "note": "No shared or persistent anchor appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.vps",
+      "level": "out-of-scope",
+      "note": "No visual positioning appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "out-of-scope",
+      "note": "No tiled streaming appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.indoor",
+      "level": "out-of-scope",
+      "note": "No indoor description appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "out-of-scope",
+      "note": "The reference defines no immersive session; its unit of time is the simulation tick, not a device session.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api",
+          "title": "Epic Games, Verse API reference",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "an automatically generated reference manual from the modules that currently exist in Verse"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "out-of-scope",
+      "note": "No controller input appears in the reference; input modules exist in Epic's generated API listing beside the language, not in the language.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api",
+          "title": "Epic Games, Verse API reference",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "an automatically generated reference manual from the modules that currently exist in Verse"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "out-of-scope",
+      "note": "No hand tracking appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api",
+          "title": "Epic Games, Verse API reference",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "an automatically generated reference manual from the modules that currently exist in Verse"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.eye",
+      "level": "out-of-scope",
+      "note": "No gaze input appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api",
+          "title": "Epic Games, Verse API reference",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "an automatically generated reference manual from the modules that currently exist in Verse"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "out-of-scope",
+      "note": "No haptic feedback appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api",
+          "title": "Epic Games, Verse API reference",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "an automatically generated reference manual from the modules that currently exist in Verse"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "out-of-scope",
+      "note": "No device capability query appears in the reference; the nearest thing is a published availability marker on API definitions, which reports a service version, not a device.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api",
+          "title": "Epic Games, Verse API reference",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "an automatically generated reference manual from the modules that currently exist in Verse"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "native",
+      "confidence": "verified",
+      "note": "This is the whole of the subject. Verse is a statically checked, multi-paradigm language with everything-is-an-expression semantics, failure as first-class control flow, a compiler-enforced effect system, structured concurrency and a type system that catches errors before the code runs.",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/00_overview.md",
+          "title": "Book of Verse, Overview",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a multi-paradigm programming language developed by Epic Games for creating gameplay in Unreal Editor for Fortnite and building experiences in the metaverse."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        },
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/11_types.md",
+          "title": "Book of Verse, Types",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The type system combines static verification with practical flexibility, catching errors at compile time while still allowing sophisticated patterns of code reuse and abstraction."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "conflicts",
+      "confidence": "verified",
+      "note": "Verse expresses interactivity as compiled code held in modules, not as declarative data carried inside an asset, and the only implementation is a virtual machine that lives in a repository Epic has not published — the documentation's own build instructions require access to it. So a behaviour written in Verse cannot be read, checked or replayed by any other runtime, which is exactly what a portable behaviour graph is for.",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/DEVELOPMENT.md",
+          "title": "Book of Verse, DEVELOPMENT.md, prerequisites",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The scripts in `bin/` require the Verse VMs from the fortniteMain repository."
+        },
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/16_modules.md",
+          "title": "Book of Verse, Modules",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Each module is intrinsically linked to the file system structure of your project."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "partial",
+      "confidence": "verified",
+      "note": "Safety for untrusted code is a stated design aim and the machinery for it is real and compiler-enforced: an effect system in six families that says what a function may do, access specifiers and named scopes that say who may call it, and no way to launder an effect through an intermediate function. What is missing is the other half of the definition — the reference sets no limit on memory, time or calls, and the divergence family that would prove termination is described as still in planning.",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/00_overview.md",
+          "title": "Book of Verse, Overview, design aims",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**Safe enough** for untrusted code to run in a shared environment, with strong sandboxing and effect tracking."
+        },
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/13_effects.md",
+          "title": "Book of Verse, Effects, propagation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This propagation ensures that effects can't be hidden or laundered through intermediate functions — the true nature of an operation is always visible at every level of the call stack."
+        },
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/13_effects.md",
+          "title": "Book of Verse, Effects, Divergence effects",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Currently in planning, the divergence family will track whether functions are guaranteed to terminate."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "out-of-scope",
+      "note": "The reference describes no autonomous agent. The word agent in Verse is a Fortnite type from Epic's modules, and the artificial intelligence modules in the generated API listing sit beside the language rather than in it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api",
+          "title": "Epic Games, Verse API reference",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "an automatically generated reference manual from the modules that currently exist in Verse"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "none",
+      "confidence": "verified",
+      "note": "A language written for untrusted guest code in a shared simulation is exactly the kind of thing that should bound memory, time and calls, and this one does not. The reference states no budget of any kind. The nearest thing is a termination guarantee marked as still in planning, and it proves a function finishes, not that it stays inside a limit.",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/13_effects.md",
+          "title": "Book of Verse, Effects, Divergence effects",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Currently in planning, the divergence family will track whether functions are guaranteed to terminate. The `<converges>` specifier marks functions that provably complete in finite time, while functions without it might run forever."
+        },
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/00_overview.md",
+          "title": "Book of Verse, Overview, design aims",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**Safe enough** for untrusted code to run in a shared environment, with strong sandboxing and effect tracking."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "partial",
+      "confidence": "verified",
+      "direction": "both",
+      "note": "Persistence in Verse is per person, not per world. A module-scoped map keyed by player, holding any type marked persistable, is saved and is loaded again automatically when that player next arrives. There is no world-scoped store: nothing in the reference persists the state of a place, only what each participant carried.",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/17_persistable.md",
+          "title": "Book of Verse, Persistable Types",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Persistable data is stored using module-scoped `weak_map(player, t)` variables, where `t` is any persistable type. When a player joins a game, their previously saved data is automatically loaded into all module-scoped variables of type `weak_map(player, t)`."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "partial",
+      "confidence": "verified",
+      "direction": "both",
+      "note": "The language supplies the store an inventory is built on and no item model at all, and what it stores cannot travel. A persistable class is frozen on publication — final, no superclass, no variable fields, no generics — and a persistable struct cannot be modified after the island is published, so the schema is welded to the place that published it. The serialisation that would let the data out is documented as not yet released.",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/17_persistable.md",
+          "title": "Book of Verse, Persistable Types, struct requirements",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Cannot be modified after island publication"
+        },
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/17_persistable.md",
+          "title": "Book of Verse, Persistable Types, JSON Serialization",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "JSON Serialization have not yet been released and is not publicly available."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "none",
+      "confidence": "verified",
+      "note": "Settings could be stored in the per-player map like anything else, but the reference defines no preference or accessibility model and no way for such data to follow a person from one publisher's content to another's.",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/17_persistable.md",
+          "title": "Book of Verse, Persistable Types",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Persistable data is stored using module-scoped `weak_map(player, t)` variables, where `t` is any persistable type."
+        },
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "none",
+      "confidence": "verified",
+      "note": "Verse solves the same problem the other way round. Code is referred to by a permanent path that no one else may ever claim, so the name is the stable handle; there is no hash-based reference anywhere in the reference, and nothing content-addressed to check a payload against.",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/16_modules.md",
+          "title": "Book of Verse, Modules, Paths",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Once a module is published at a particular path, that path belongs to it forever. No other module can ever claim the same path, ensuring that dependencies always resolve to the correct code."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "partial",
+      "confidence": "verified",
+      "note": "The reference does define a unit of shipped code — a folder is a module, every file in it shares one namespace, and a package sits at the root of a path — and it defines the permanent address that unit is published at. It defines no file format, no manifest and no dependency declaration, and it names no publication route other than Epic's own, so there is nothing a second implementation could package or unpack.",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/16_modules.md",
+          "title": "Book of Verse, Modules",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Each module is intrinsically linked to the file system structure of your project. When you create a folder in your Verse project, that folder automatically becomes a module."
+        },
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/16_modules.md",
+          "title": "Book of Verse, Modules, Paths",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The module system is designed to support the vision of a persistent, shared Metaverse where code can be published once and used by anyone, anywhere, with confidence that it will continue to work even as the original author updates and improves it."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "out-of-scope",
+      "note": "No content delivery appears in the reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This documentation provides an in-depth look at the Verse programming language, its philosophy, and core concepts."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "native",
+      "confidence": "verified",
+      "note": "This is the strongest row in the subject and the one a standards audience should read first. Compatibility is not advice, it is a checked rule enforced when code is published: a public definition can never be removed, renamed or changed in kind, a closed set of named values can never gain a member, effects may only ever be dropped and never added, and a breaking edit is refused at publication rather than discovered later. Deprecation is staged, warning first and failing only when an author moves to a new language version.",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/18_evolution.md",
+          "title": "Book of Verse, Code Evolution, enforcement",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse actively prevents developers from publishing updates that would violate compatibility guarantees, turning what might be runtime failures in other systems into publication-time errors that must be resolved before code can be deployed."
+        },
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/18_evolution.md",
+          "title": "Book of Verse, Code Evolution, catalogue",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**Cannot remove public definitions.** Once a public variable, function, class, or other definition is published, it must remain available."
+        },
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/18_evolution.md",
+          "title": "Book of Verse, Code Evolution, effects",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Future versions of the function can have fewer effects—evolving from `<reads>` to `<computes>`—but never more."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "partial",
+      "confidence": "verified",
+      "note": "Half of a conformance suite is public and the other half is not. The reference repository ships 594 executable test files and a runner for them, which is a real corpus of expected behaviour; but the runner needs Epic's own virtual machine binaries, and the documentation's build instructions say those come from a repository that is not published. So nobody outside Epic can run the tests, and there is no statement anywhere of what passing them would prove.",
+      "sources": [
+        {
+          "url": "https://github.com/verselang/book/blob/main/DEVELOPMENT.md",
+          "title": "Book of Verse, DEVELOPMENT.md, prerequisites",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The scripts in `bin/` require the Verse VMs from the fortniteMain repository."
+        },
+        {
+          "url": "https://github.com/verselang/book/blob/main/DEVELOPMENT.md",
+          "title": "Book of Verse, DEVELOPMENT.md, Testing",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "`bin/vtest <file-or-directory>` - Run Verse tests"
+        },
+        {
+          "url": "https://github.com/verselang/book/blob/main/Tests/Attributes/allocates.versetest",
+          "title": "Book of Verse, test corpus, one of 594 test files",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "assert_semantic_error(3565)      {   c := class<transacts><allocates> { Value:int = 0 } }"
+        },
+        {
+          "url": "https://github.com/verselang/book/blob/main/docs/index.md",
+          "title": "Book of Verse, documentation index, standing note",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The documentation pertains to the head of the main development branch of Verse, some features may be discussed before they are officially released and are thus subject to change. Some Epic internal features may also be discussed."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "Verse is a statically-checked programming language, and its reference specifies no renderer and no asset, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "Verse is a statically-checked programming language, and its reference specifies no renderer and no asset, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "Verse is a statically-checked programming language, and its reference specifies no renderer and no asset, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "out-of-scope",
+      "note": "Verse is a statically-checked programming language, and its reference specifies no renderer and no asset, and it names no Gaussian splat interchange format and carries no splat data.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "out-of-scope",
+      "note": "Verse is a statically-checked programming language, and its reference specifies no renderer and no asset, and it delivers no captured scene, progressively by region and detail or otherwise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "Verse is a statically-checked programming language, and its reference specifies no renderer and no asset, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "out-of-scope",
+      "note": "Verse is a statically-checked programming language, and its reference specifies no renderer and no asset, and it defines no encoding or compression for a set of points with attributes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "Verse is a statically-checked programming language, and its reference specifies no renderer and no asset, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "out-of-scope",
+      "note": "Verse is a statically-checked programming language, and its reference specifies no renderer and no asset, and it produces no image from a viewing position that no capture camera occupied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "Verse is a statically-checked programming language, and its reference specifies no renderer and no asset, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "Verse is a statically-checked programming language, and its reference specifies no renderer and no asset, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "Verse is a statically-checked programming language, and its reference specifies no renderer and no asset, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "Verse is a statically-checked programming language, and its reference specifies no renderer and no asset, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "Verse is a statically-checked programming language, and its reference specifies no renderer and no asset, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "Verse is a statically-checked programming language, and its reference specifies no renderer and no asset, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "Verse is a statically-checked programming language, and its reference specifies no renderer and no asset, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "out-of-scope",
+      "note": "Verse is a statically-checked programming language, and its reference specifies no renderer and no asset, and it carries no full 360-degree view of a place as an image with its projection stated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "out-of-scope",
+      "note": "A statically checked programming language for gameplay. A language defines types and control flow; reading a room from a device's sensors is a platform capability, not a language feature.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "Its naming is of program symbols. No part of the language describes classes of real-world surface.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "out-of-scope",
+      "note": "No depth channel exists in the language or its documented interface.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "Rendering and composition against a real view are outside a language specification.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Games, Fortnite documentation, Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "out-of-scope",
+      "note": "Verse is a programming language. Drawing, and any blend with a camera view of the room, is done by the host it runs inside.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.face",
+      "level": "out-of-scope",
+      "note": "The language defines types, effects and concurrency. Reading a person's face is a device runtime's job, exposed to Verse through whatever host APIs the platform provides.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "out-of-scope",
+      "note": "The language carries no place description, so walkable surface and arrival points are the host's to declare.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "native",
+      "note": "This is the row's definition made into a language feature. Every module has a globally unique path shaped like a web address, and once a module is published at a path that path belongs to it forever with no other module able to claim it, so a dependency always resolves to the code it named. The domain part says who maintains it, an email-shaped identifier lets an individual hold a namespace without owning a domain, and strict backward compatibility rules keep the code behind a path usable as its author improves it.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://verselang.github.io/book/16_modules/",
+          "title": "Book of Verse: Modules and Paths",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Persistent and unique identification : Once a module is published at a particular path, that path belongs to it forever. No other module can ever claim the same path, ensuring that dependencies always resolve to the correct code."
+        },
+        {
+          "url": "https://verselang.github.io/book/16_modules/",
+          "title": "Book of Verse: Modules and Paths",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The module system is designed to support the vision of a persistent, shared Metaverse where code can be published once and used by anyone, anywhere, with confidence that it will continue to work even as the original author updates and improves it."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "out-of-scope",
+      "note": "A language has no publishing path to an audience. The review that stands in front of Verse code shipping to players belongs to the platform, which is scored on Fortnite.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "No geographic frame in the language, so no map to declare or align.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "The language declares no area of the Earth where anything applies.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verse is a programming language with Epic's published implementation modules, rather than an independent asset or network interchange standard. This row requires evidence and assurance information accompanying a claim, enabling the relying party to assess how the claim was established. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://verselang.github.io/book/",
+          "title": "Book of Verse",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Verse is a multi-paradigm programming language developed by Epic Games"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verse is a programming language with Epic's published implementation modules, rather than an independent asset or network interchange standard. This row requires declaring the vocabulary, types, and validation schemas needed to interpret and check the structure of a claim. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://verselang.github.io/book/",
+          "title": "Book of Verse",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Verse is a multi-paradigm programming language developed by Epic Games"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verse is a programming language with Epic's published implementation modules, rather than an independent asset or network interchange standard. This row requires pairwise identifiers and presentation mechanisms that reduce correlation across relationships, with their remaining correlation risks stated. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://verselang.github.io/book/",
+          "title": "Book of Verse",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Verse is a multi-paradigm programming language developed by Epic Games"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.encryption",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verse is a programming language with Epic's published implementation modules, rather than an independent asset or network interchange standard. This row requires identifying recipient key material and algorithms that permit confidential communication or encrypted content for an intended subject. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://verselang.github.io/book/",
+          "title": "Book of Verse",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Verse is a multi-paradigm programming language developed by Epic Games"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.key-lifecycle",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verse is a programming language with Epic's published implementation modules, rather than an independent asset or network interchange standard. This row requires rules for changing, revoking, or recovering identity-control keys and for discovering the applicable verification material. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://verselang.github.io/book/",
+          "title": "Book of Verse",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Verse is a multi-paradigm programming language developed by Epic Games"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verse is a programming language with Epic's published implementation modules, rather than an independent asset or network interchange standard. This row requires a defined mechanism to discover the suspension, revocation, or other status of a credential after issuance. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://verselang.github.io/book/",
+          "title": "Book of Verse",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Verse is a multi-paradigm programming language developed by Epic Games"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "via-extension",
+      "note": "The named Epic host module UnrealEngine.com/Temporary/UI supplies widget slots, anchors, alignment and layout containers for Verse in its host. This is a vendor module route, not a capability of the portable Verse language core.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/unrealenginedotcom/temporary/ui",
+          "title": "Verse API reference page for the UI module | Fortnite Documentation | Epic Developer Community",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The anchors of a widget determine its the position and sizing relative to its parent."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verse is a programming language with Epic's published implementation modules, rather than an independent asset or network interchange standard. This row requires runtime-reported physical play-area bounds and floor-relative reference information available to an application. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://verselang.github.io/book/",
+          "title": "Book of Verse",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Verse is a multi-paradigm programming language developed by Epic Games"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.protection",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verse is a programming language with Epic's published implementation modules, rather than an independent asset or network interchange standard. This row requires declaring the protection scheme associated with protected content components so recipients can identify the required protection mechanism. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://verselang.github.io/book/",
+          "title": "Book of Verse",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Verse is a multi-paradigm programming language developed by Epic Games"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verse is a programming language with Epic's published implementation modules, rather than an independent asset or network interchange standard. This row requires interchanging identified spatial zones, typed events scoped to them, and summaries with defined spatial and temporal meaning. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://verselang.github.io/book/",
+          "title": "Book of Verse",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Verse is a multi-paradigm programming language developed by Epic Games"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.consent",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verse is a programming language with Epic's published implementation modules, rather than an independent asset or network interchange standard. This row requires carrying a grant of permission with scope, purpose, validity, and withdrawal information for uses of the subject or represented data. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://verselang.github.io/book/",
+          "title": "Book of Verse",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Verse is a multi-paradigm programming language developed by Epic Games"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verse is a programming language with Epic's published implementation modules, rather than an independent asset or network interchange standard. This row requires a machine-readable account of a recipient's evaluation and action, with any signature or integrity proof explicitly identified. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://verselang.github.io/book/",
+          "title": "Book of Verse",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Verse is a multi-paradigm programming language developed by Epic Games"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verse is a programming language with Epic's published implementation modules, rather than an independent asset or network interchange standard. This row requires a destination's pre-arrival approval or refusal response, including any validity limit and optional explanatory information. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://verselang.github.io/book/",
+          "title": "Book of Verse",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Verse is a multi-paradigm programming language developed by Epic Games"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.privacy",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verse is a programming language with Epic's published implementation modules, rather than an independent asset or network interchange standard. This row requires sensed-data disclosure controls such as spatial coarsening, payload use/retention declarations, and restricted or pseudonymous pose publication. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://verselang.github.io/book/",
+          "title": "Book of Verse",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Verse is a multi-paradigm programming language developed by Epic Games"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verse is a programming language with Epic's published implementation modules, rather than an independent asset or network interchange standard. This row requires reconstructing a radiance field or Gaussian representation from observed images and camera information, including optimization controls and a trained scene usable for subsequent view synthesis. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://verselang.github.io/book/",
+          "title": "Book of Verse",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Verse is a multi-paradigm programming language developed by Epic Games"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.objectgen",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Verse is a programming language with Epic's published implementation modules, rather than an independent asset or network interchange standard. This row requires producing an individual three-dimensional object from a text or image prompt, with geometry or another renderable representation available for placement in a separately authored scene. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://verselang.github.io/book/",
+          "title": "Book of Verse",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Verse is a multi-paradigm programming language developed by Epic Games"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.color",
+      "level": "partial",
+      "note": "The published Colors module specifies linear ACES 2065-1 values and sRGB conversions. It does not establish a full image/texture/output-range declaration contract, and this claim concerns Epic's API alongside the language.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/colors",
+          "title": "Verse API reference page for the Colors module | Fortnite Documentation | Epic Developer Community",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Makes an ACES 2065-1 color from sRGB components Red, Green, and Blue."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.resolve",
+      "level": "via-extension",
+      "note": "UEFN asset reflection exposes saved project assets as named Verse symbols in Assets.digest.verse, resolved through generated module paths for access by Verse APIs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/exposing-assets-with-asset-reflection-to-verse-in-unreal-editor-for-fortnite",
+          "title": "Exposing Assets with Asset Reflection to Verse in Unreal Editor for Fortnite | Fortnite Documentation | Epic Developer Community",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "you can access your asset from its Verse Path."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "via-extension",
+      "note": "Epic's SceneGraph KeyframedMovement module supplies timed transform keyframes with interpolation and pre-physics evaluation, describing changing local position and rotation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/scenegraph/keyframedmovement",
+          "title": "Verse API reference page for the KeyframedMovement module | Fortnite Documentation | Epic Developer Community",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Represents a change in pose and scale over a duration."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.collection",
+      "level": "via-extension",
+      "note": "The Epic SceneGraph module queries entity descendants by tags, yielding a metadata-selected set for subsequent scene operations.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/scenegraph/finddescendantentitieswithtag",
+          "title": "Verse API reference page for the (InEntity:entity).FindDescendantEntitiesWithTag extension | Fortnite Documentation | Epic Developer Community",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Finds all descendant entities including InEntity that has any tags of type tag_type."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "via-extension",
+      "note": "Epic's SceneGraph transform_component declares an alternate origin, local transform and computed global transform, with pre/post-physics update events. This constrains a node's frame using its parent/origin.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/scenegraph/transform_component",
+          "title": "Verse API reference page for the transform_component class | Fortnite Documentation | Epic Developer Community",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "alternate origin than the default parent entity"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "via-extension",
+      "note": "Epic SceneGraph prefabs serialize editor-authored entity/component hierarchies into generated Verse classes in Assets.digest.verse. Parent-child transforms and their origin rules reconstruct those linked frames when the prefab is instantiated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/scenegraph/entity",
+          "title": "Verse API reference page for the entity class | Fortnite Documentation | Epic Developer Community",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Entities are hierarchical. You can query your parent using GetParent and add child entities using AddEntities."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/scenegraph/entity",
+          "title": "Verse API reference page for the entity class | Fortnite Documentation | Epic Developer Community",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Primarily prefabs are authored through the editor, with their Verse classes generated as part of the build into the projects Assets.digest.verse file."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/scenegraph/transform_component",
+          "title": "Verse API reference page for the transform_component class | Fortnite Documentation | Epic Developer Community",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "alternate origin than the default parent entity"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "via-extension",
+      "note": "Through UEFN asset reflection and Epic's SceneGraph module, authored Niagara particle-system assets are exposed by name, spawned and simulated at scene entities. This is the named host asset/effect route.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/scenegraph/particle_system_component",
+          "title": "Verse API reference page for the particle_system_component class | Fortnite Documentation | Epic Developer Community",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The particle_system will simulate while the particle_system_component is in the scene."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/exposing-assets-with-asset-reflection-to-verse-in-unreal-editor-for-fortnite",
+          "title": "Exposing Assets with Asset Reflection to Verse in Unreal Editor for Fortnite | Fortnite Documentation | Epic Developer Community",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Create your particle system in UEFN."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/exposing-assets-with-asset-reflection-to-verse-in-unreal-editor-for-fortnite",
+          "title": "Exposing Assets with Asset Reflection to Verse in Unreal Editor for Fortnite | Fortnite Documentation | Epic Developer Community",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "You can then spawn the particle system using the SpawnParticleSystem() function."
+        }
+      ]
+    }
+  ]
+}

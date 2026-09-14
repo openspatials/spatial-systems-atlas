@@ -1,0 +1,1640 @@
+{
+  "subject_id": "um",
+  "summary": "Universal Manifest is a portable signed identity envelope: a JSON-LD document carrying who a person, agent or device is, what they consent to, and pointers to the heavier things they own, signed with a profile called Signature Profile A. That profile is Ed25519 over RFC 8785 canonical JSON with the signature member removed, and the key is named by a URI reference that must resolve. The envelope never hosts anything; pointers exist so that heavy files stay where they are. Around that core sits a published document set: a primer, a Tier-0/Tier-1 base specification, three tier extensions, an optional-features profile and a cookbook, with per-version conformance fixtures. Version 0.3 is named as the stable published reference and 0.4 as the production-candidate milestone, dated 9 July 2026, under the W3C Software and Document Licence with the Universal Manifest Working Group as editors. It is the only subject in this group with both a written specification and a real conformance suite, and the project's own implementation verifies byte for byte against the reference validators. Three things a standards audience should hold onto. First, the base is a boundary model: six stages run on arrival, a receipt is written, and nothing re-checks during a live session; the bilateral session model is published as preview. Second, the previous claim that nobody outside this stack had adopted it is no longer true, and this is the largest change in this file: the public TeleportXR repositories accept a Universal Manifest address in place of an avatar URL, verify Signature Profile A, gate each facet on the subject's consent with default-deny, and return a receipt. Third, only trust tier zero, signature-only, is verified by that implementation, and verification is explicitly not proof that the presenter is the subject.",
+  "coverage": [
+    {
+      "capability_id": "identity.root",
+      "level": "native",
+      "note": "The signature block names its verification key by URI reference and the specification requires that reference to be present, recommending a decentralized identifier URL or an HTTPS URL. An embedded public key may travel beside it for offline verification, but the reference itself must still resolve. A third-party implementation states the reason plainly: accepting an inline key without checking it against the reference is exactly what would let an attacker re-sign a modified document with their own key.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "signature.keyRef — URI reference to verification key material (recommended: DID URL or HTTPS URL). MUST be present."
+        },
+        {
+          "url": "https://github.com/teleportxr/Teleport/blob/main/TeleportServer/ManifestVerify.h",
+          "title": "TeleportServer/ManifestVerify.h (teleportxr/Teleport, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "//! Extract the 32 raw Ed25519 public key bytes from each supported\n\t\t//! keyRef form. Return false when the reference cannot be resolved —\n\t\t//! which is a verification failure even when an inline key is present,\n\t\t//! because accepting an inline key without checking it against the\n\t\t//! keyRef is exactly what lets an attacker re-sign a modified manifest\n\t\t//! with their own key."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "native",
+      "note": "This is the subject's core and it is now published in full. Signature Profile A is the baseline normative profile: RFC 8785 canonical JSON with the signature member removed, signed with Ed25519, the value base64url without padding. The evaluator checklist is ordered and mandatory, and a manifest whose only signature uses an unsupported profile is rejected rather than accepted quietly. The context document is pinned by its own content hash, so the meaning of the terms cannot be swapped underneath a verifier.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Signature Profile A uses JSON Canonicalization Scheme (JCS, RFC 8785 ) for canonicalization and Ed25519 [ RFC 8032 ] for signing."
+        },
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A manifest whose only signature uses an unsupported profile is rejected."
+        },
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "this version's context document, with its content hash, is reproduced in Appendix B and is normative for context integrity"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "partial",
+      "note": "The base model is still an evaluation of a presented document rather than an interactive request-and-present protocol, and the interactive parts, holder binding and presentation proof, live in a companion profile with several sections still marked preview. But the older reading of this row, that the three specifications it would present to all leave the slot empty and no plug is specified, is no longer true. One of the three now has a plug: the public TeleportXR repository accepts a manifest address in place of an avatar URL, resolves it, verifies Signature Profile A, and answers with a receipt. A live replay weakness found in the project's own reciprocal-control holder binding, and fixed locally by binding the full content hash, was never delivered upstream; that remains a project-local record.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/ext-t1/",
+          "title": "Universal Manifest v0.4 EXT-T1, Tier-1 binding profile",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "T1.1. Holder Binding Manifests without holderBinding on their claims MUST NOT be treated as providing identity assurance above Tier 0, regardless of the trust tier declared by the holder."
+        },
+        {
+          "url": "https://github.com/teleportxr/Teleport/blob/main/docs/protocol/signaling.rst",
+          "title": "TeleportXR signaling.rst (teleportxr/Teleport, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "An offer may name the avatar directly by URL, or indirectly by the address of a signed manifest describing it — see :ref:`avatar_manifest`."
+        },
+        {
+          "url": "https://github.com/teleportxr/Teleport/blob/main/TeleportCore/export_include/TeleportCore/Manifest.h",
+          "title": "TeleportCore/Manifest.h (teleportxr/Teleport, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "//! Universal Manifest (https://universalmanifest.net) envelope handling."
+        },
+        {
+          "url": "/Users/grig/work/spatial-computing-research-projects-msf/repo/open-spatial-lab/docs/UPSTREAM-REGISTER.md",
+          "title": "Upstream register, item D6",
+          "retrieved": "2026-08-22",
+          "kind": "local-evidence",
+          "quote": "cross-manifest replay-vulnerable"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "native",
+      "note": "Permission is expressed as consent records inside the signed envelope, each naming the operations it allows, the purpose it allows them for, and a validity window; a separate pointer type declares delegated session authority for an agent. The evaluation rule is default-deny and it is normative: a facet with no consent entry governing it is recorded as consent-missing, and an evaluator must not process facet data when required consent is absent, expired or withdrawn. Every decision, allow or refuse, is recorded in a structured receipt.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Evaluators MUST NOT process facet data when required consent is absent, expired, or withdrawn."
+        },
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "the intended operation MUST appear in the consent's scope array, the intended use MUST fall within the consent's declared purpose , and the current time MUST be within the validity window"
+        },
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The um:agentDelegation pointer type, which declares delegated session authority, is defined in §6.5"
+        },
+        {
+          "url": "https://github.com/teleportxr/teleport-nodejs/blob/main/manifest/consent.js",
+          "title": "teleport-nodejs manifest/consent.js (teleportxr/teleport-nodejs, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "// The rule is default-deny. A projected facet with no matching consent\n// entry is `consent-missing` and its data MUST NOT be processed."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "native",
+      "note": "Selective disclosure is a normative stage of the evaluation sequence rather than an add-on: the evaluator must extract only the facets, claims, pointers and device entries relevant to its processing context, and the specification calls this the bounded selective minimum disclosure profile. Beneath it sit encrypted facets, sealed with JSON Web Encryption inside the envelope, where a facet the evaluator cannot open must be acknowledged as present but unread rather than guessed at or treated as a failure. The stronger tracks, zero-knowledge proofs and unlinkable disclosure, are published as preview and should not be counted as shipping.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The evaluator MUST extract only the facets, claims, pointers, and device entries relevant to its processing context."
+        },
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "If a facet is encrypted ( §2.3 ) and the evaluator lacks a decryption key, the evaluator MUST acknowledge the facet as a sealed entry (present but not read), recorded with the facet status \"opaque\""
+        },
+        {
+          "url": "https://universalmanifest.net/spec/latest/",
+          "title": "Universal Manifest v0.4 document set index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "EXT-T2 — Tier-2 ZKP proof profiles (2A/2B), the BBS+ unlinkable disclosure track, post-quantum migration."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "partial",
+      "note": "Terms are acted on at the point of use, but the terms are consents rather than licences: an operation outside the granted scope, or a use outside the declared purpose, is refused and recorded, and an expired or withdrawn grant is treated as absent. There is no licence vocabulary and no enforcement of asset rights. The worked example of a denied cross-world link keeping a link local is the project's own integration and has no public source.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "a matching entry exists but operation is not in scope , use is not within purpose , or a condition is violated/unenforceable → \"consent-denied\""
+        },
+        {
+          "url": "/Users/grig/work/spatial-computing-research-projects-msf/repo/open-spatial-lab/docs/ecosystem/layers/rp1-spatial-fabric.md",
+          "title": "RP1 entity document, fail-closed model table",
+          "retrieved": "2026-08-22",
+          "kind": "local-evidence",
+          "quote": "a denied spatial.crossWorldLinking keeps the link local-only"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.social",
+      "level": "partial",
+      "note": "Standing between parties is expressed, a relationship graph is not. The optional-features profile defines a typed trust weight and category trust, and a bilateral session model where two parties each evaluate the other and each keeps a receipt. There is no follower model, no portable contact list and no social graph of any kind.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/ext-opt/",
+          "title": "Universal Manifest v0.4 EXT-OPT, optional features",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "O8. Category Trust and trustWeight PREVIEW"
+        },
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Two devices MAY exchange manifests via local transport (NFC, BLE, QR) and each independently verify the other's claims at the declared tier without a server"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "conflicts",
+      "note": "Universal Manifest signs with Ed25519 over RFC 8785 canonical JSON, bound to a key named by a decentralized identifier. The RP1 fabric it points at signs with a compact JSON Web Signature, RS256 and an X.509 chain. A verifier for one cannot verify the other, and the project's integration resolved that by refusing to merge them: the bridge is a pointer from the manifest to the fabric URL, never a re-signing. They answer different questions, who the person is and who published these bytes, and both are needed. The public specification states the profile; the framing of it as deliberately not a JSON Web Signature, and the bridge decision, are the project's own record.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Canonicalize the remaining object using JCS ( RFC 8785 ), producing a UTF-8 byte sequence."
+        },
+        {
+          "url": "/Users/grig/work/spatial-computing-research-projects-msf/repo/open-spatial-lab/docs/ecosystem/layers/msf-fabric-file.md",
+          "title": "Fabric file entity document, reuse notes",
+          "retrieved": "2026-08-22",
+          "kind": "local-evidence",
+          "quote": "The bridge is a pointer (rp1.fabric to the .msf URL). Do not \"unify\" them."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "native",
+      "note": "The binding is real but it is generic, and a working group should know which half is standardised. The specification defines a typed pointer array: every pointer must carry a type and a target, the pointers sit inside the bytes the signature covers, and an evaluator meeting a pointer type it does not recognise must record it and must not act on it. It names no avatar pointer. The avatar meaning comes from a published fixture set and from a third-party implementation, both of which use the pointer name portableIdentity.avatar. So a destination can check that this person really claims this avatar, and it learns nothing about what the avatar file contains.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A base pointer object MUST contain @type (a string identifying the pointer type; MUST be present) and target (a URI referencing the external resource; MUST be present)."
+        },
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Evaluators encountering an unrecognized pointer @type MUST record the pointer as present in the receipt but MUST NOT act on it."
+        },
+        {
+          "url": "https://github.com/teleportxr/Teleport/blob/main/TeleportCore/export_include/TeleportCore/Manifest.h",
+          "title": "TeleportCore/Manifest.h (teleportxr/Teleport, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "//! The pointer name the published Universal Manifest XR fixtures use\n\t\t//! for an avatar asset. Used when a deployment names none.\n\t\tconstexpr const char *kDefaultAvatarPointer = \"portableIdentity.avatar\";"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "none",
+      "note": "Universal Manifest points at an avatar and never describes one. Pointers exist precisely so that heavy files stay where they are, so format, rig, scale and wearables are somebody else's problem by declaration.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "each referencing an external data source, delegation relationship, or canonical resource connected to the"
+        },
+        {
+          "url": "https://universalmanifest.net/",
+          "title": "Universal Manifest, project site",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Pointers. References, hashes, locations, or handles for heavier files and records that should not ride inside the handshake."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "partial",
+      "note": "The envelope is the natural carrier for carried items and the general machinery is there, typed facets and typed pointers inside the signed bytes, but the specification defines no inventory, no item list and no equipment vocabulary. The project's working crossing did move an equipped-items list with the person; that list is a project-local profile with its own version string and the research record says plainly it is not a standards claim until the exact schema version is fixed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The pointers array contains zero or more pointer objects, each referencing an external data source, delegation relationship, or canonical resource connected to the subject ."
+        },
+        {
+          "url": "/Users/grig/work/spatial-computing-research-projects-msf/research/xr-runtime-comparison/universal-manifest/source-note.md",
+          "title": "Universal Manifest source note",
+          "retrieved": "2026-08-22",
+          "kind": "local-evidence",
+          "quote": "the `equippedItems[]` shape is a project-specific implementation profile, not a canonical UM standard claim"
+        },
+        {
+          "url": "/Users/grig/work/spatial-computing-research-projects-msf/repo/open-spatial-lab/web/live-adapter-portal-traversal-controller.mjs",
+          "title": "Open Spatial Lab portal traversal controller",
+          "retrieved": "2026-08-22",
+          "kind": "local-evidence",
+          "quote": "equipment_profile: \"msf.phase0b.avatar-equipment.v0\""
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "partial",
+      "note": "What follows the person is policy, not settings. Consent records travel inside the signed envelope, each carrying the operations it permits, the purpose it permits them for and its validity window, so a person's standing decisions about use are portable and are re-evaluated at every destination. Accessibility choices and rendering preferences are not modelled at all: the specification has no preference vocabulary. The spatial bookmarks described elsewhere in this project are its own profile and are not in the published context.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The consents array contains zero or more consent entry objects, each recording a permission grant governing how an evaluator may act on specific facets."
+        },
+        {
+          "url": "https://universalmanifest.net/ns/v0.4",
+          "title": "Universal Manifest v0.4 JSON-LD context",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "\"consents\": {\n      \"@id\": \"um:consents\",\n      \"@container\": \"@set\"\n    },"
+        },
+        {
+          "url": "/Users/grig/work/spatial-computing-research-projects-msf/repo/open-spatial-lab/docs/ecosystem/layers/universalmanifest.md",
+          "title": "Universal Manifest entity document, section 1",
+          "retrieved": "2026-08-22",
+          "kind": "local-evidence",
+          "quote": "spatial bookmarks (fabric DID + GeoPose)"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "partial",
+      "note": "One thing is addressed by hash and it is the right one: the JSON-LD context document is named by a content hash, that hash is normative for context integrity, and the optional-features profile fixes the hash function as SHA-256 in multihash form. So the meaning of every term in the envelope is pinned to exact bytes. The envelope's own pointers out to heavy files remain plain locations; the base pointer requires a target URI and does not require a digest.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "this version's context document, with its content hash, is reproduced in Appendix B and is normative for context integrity"
+        },
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/ext-opt/",
+          "title": "Universal Manifest v0.4 EXT-OPT, optional features",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "the multihash function MUST be SHA-256"
+        },
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A base pointer object MUST contain @type (a string identifying the pointer type; MUST be present) and target (a URI referencing the external resource; MUST be present)."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "partial",
+      "note": "A manifest is fetched from an address, or resolved from a short identifier by a hosted resolver, and the manifest points onward at the things it describes. The resolver is a locator and nothing more: a third-party implementation records that although the resolver serves a one-minute HTTP cache header, consumers must enforce the manifest's own lifetime regardless of HTTP caching, so resolution and trust stay separate steps.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/",
+          "title": "Universal Manifest, project site",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The spec is the technical reference for implementers. The Standards Registry shows how UM composes with DID, VC, OID4VP, HPKE, mDL, resolver patterns, and conformance fixtures while leaving heavy files and future formats in their native systems."
+        },
+        {
+          "url": "/Users/grig/work/spatial-computing-research-projects-msf/repo/open-spatial-lab/docs/ecosystem/README.md",
+          "title": "Spatial fabric ecosystem map, typology catalog",
+          "retrieved": "2026-08-22",
+          "kind": "local-evidence",
+          "quote": "Read-only \"DNS for manifests\"; no signing/verify (client-side)."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "partial",
+      "note": "The base model still evaluates at a boundary: a document arrives, six stages run in order, a receipt is written, and nothing in the base re-checks anything while an interaction is running. A bilateral session model does exist but it is carried in the optional-features profile and marked preview. That matters because the gap has now been filled from the other side: TeleportXR, which lives entirely in the during-session layer, has shipped a message that invalidates an accepted avatar mid-session, and nothing on this side is specified to drive it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Execute all six stages in order (Arrive, Verify, Project, Consent, Compose, Receipt)."
+        },
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Infrastructure (PREVIEW): bilateral session model, agent-delegation scope registry, profile registration, federation — EXT-OPT ."
+        },
+        {
+          "url": "https://github.com/teleportxr/Teleport/blob/main/docs/protocol/signaling.rst",
+          "title": "TeleportXR signaling.rst (teleportxr/Teleport, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Servers may later send ``avatar-revoke`` to invalidate an accepted avatar."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "partial",
+      "note": "The envelope is the state that crosses the boundary, and the specification supplies the general machinery: facets, claims, consents and pointers inside one signed document that a destination evaluates on arrival. What crossed in practice, pose, session, equipment, a continuity identifier and fifteen manifest facets between two separate world servers, together with the fail-closed gate that decided whether traversal was allowed at all, is the project's own working crossing and has no public source. What it did not carry was velocity, and it performed no scale or precision change.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "What a particular manifest is — identity capsule, device-capability descriptor, consent record, receipt — is determined by which facets, claims, consents, pointers, and reserved members it carries, not by a distinct schema per kind."
+        },
+        {
+          "url": "/Users/grig/work/spatial-computing-research-projects-msf/repo/open-spatial-lab/docs/DESIGN-NOTE-fabric-as-precision-domain.md",
+          "title": "Design note, crossing comparison table",
+          "retrieved": "2026-08-22",
+          "kind": "local-evidence",
+          "quote": "transfers pose, session, equipment, continuity_id, and 15 UM facets — but NOT velocity"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "partial",
+      "note": "Agents are a first-class subject of the envelope rather than an afterthought. A manifest's subject may be a person, an agent, a device or an organisation; a pointer type declares delegated session authority, so an agent can carry evidence that it acts for someone; and the scope vocabulary in the optional-features profile includes participating in a spatial session on the subject's behalf. What is not here is any agent behaviour, lifecycle or runtime; the envelope says who is acting and under what authority, and stops there.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The um:agentDelegation pointer type, which declares delegated session authority, is defined in §6.5"
+        },
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/ext-opt/",
+          "title": "Universal Manifest v0.4 EXT-OPT, optional features",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "participate in spatial computing sessions on behalf of the subject"
+        },
+        {
+          "url": "https://universalmanifest.net/",
+          "title": "Universal Manifest, project site",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Universal Manifest is a small signed package of context for fast handshakes between things that meet: people, agents, devices, vehicles, drones, assets, facilities, and public infrastructure."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "partial",
+      "note": "Versioning is explicit and the honesty about its cost is unusual. Each version has its own document set, its own context URL and its own conformance fixtures, v0.3 is named as the stable published reference and v0.4 as the production-candidate milestone, and the specification states outright that while the line is still 0.x a minor bump may include breaking changes in a new version folder. So a reader can always tell which vocabulary it is holding. What there is not is a negotiation mechanism or a deprecation policy: an evaluator either accepts a context value or does not.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/latest/",
+          "title": "Universal Manifest v0.4 document set index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "v0.3 remains the stable published reference; v0.4 is the production-candidate milestone."
+        },
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Because Universal Manifest is still in the v0.x line, minor-version bumps may include breaking changes reflected by a new version folder."
+        },
+        {
+          "url": "https://github.com/teleportxr/Teleport/blob/main/TeleportCore/export_include/TeleportCore/Manifest.h",
+          "title": "TeleportCore/Manifest.h (teleportxr/Teleport, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "\t\tconstexpr const char *kManifestContextV03 = \"https://universalmanifest.net/ns/v0.3\";\n\t\tconstexpr const char *kManifestContextV04 = \"https://universalmanifest.net/ns/v0.4\";"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "out-of-scope",
+      "note": "Declared pointer-only. The envelope never packages a runnable experience and never hosts one: pointers exist so that heavy files and records stay outside the handshake, and the project describes itself as an open specification rather than a platform.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/",
+          "title": "Universal Manifest, project site",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Heavy files stay where they belong."
+        },
+        {
+          "url": "https://universalmanifest.net/",
+          "title": "Universal Manifest, project site",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Universal Manifest is an open spec, not a platform. It composes with existing standards rather than replacing them."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "native",
+      "note": "The one subject in this group with a written specification and a real conformance suite, and both are public. Requirement keywords are used under BCP 14, the evaluation sequence names the six stages an evaluator must run in order and requires a structured receipt for every processed manifest, and fixture suites are published per version with valid cases, invalid cases and an expected-results file. One finding a standards audience will want, and it is the project's own and was never reported upstream: the implementation's canonicalizer turned out to follow RFC 8785 more closely than the specification's own reference canonicalizer.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Execute all six stages in order (Arrive, Verify, Project, Consent, Compose, Receipt). Produce a structured receipt ( §3.3 ) for every processed manifest."
+        },
+        {
+          "url": "https://universalmanifest.net/conformance/v0.4/",
+          "title": "Universal Manifest v0.4 conformance fixture suite",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The v0.4 fixture suite is served from this path."
+        },
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "are to be interpreted as described in BCP 14"
+        },
+        {
+          "url": "/Users/grig/work/spatial-computing-research-projects-msf/repo/open-spatial-lab/docs/ecosystem/layers/universalmanifest.md",
+          "title": "Universal Manifest entity document, cross-verification row",
+          "retrieved": "2026-08-22",
+          "kind": "local-evidence",
+          "quote": "OSL's JCS is more RFC-8785-correct than UM's own reference canonicalizer"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "out-of-scope",
+      "note": "It carries no geometry and no scene. Its relation to a spatial fabric or an asset is a pointer and nothing more, and a pointer is required to carry a type and a target and nothing else.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A base pointer object MUST contain @type (a string identifying the pointer type; MUST be present) and target (a URI referencing the external resource; MUST be present)."
+        },
+        {
+          "url": "https://universalmanifest.net/",
+          "title": "Universal Manifest, project site",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Heavy files stay where they belong."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "none",
+      "note": "This row previously claimed a working geographic pose and that was too generous. The published specification lists a GeoPose primary pose value profile among its design-stage candidate profiles, marked preview and not yet on the wire, and states that the candidate members are absent from the published schema, context and fixtures until finalized. The published v0.4 context confirms it: none of its terms names a pose, a coordinate, a geographic frame or a spatial anchor. The spatial bookmarks pairing a fabric identifier with a pose exist in this project's own material and not in the specification.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Design-stage candidate profiles (PREVIEW, not yet on the wire): current policy-state resolution, asset-bound represented-person consent, signed referral-route attribution, and GeoPose primary pose values — drafted in EXT-OPT ; their candidate members are absent from the published schema/context and fixtures until finalized."
+        },
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/ext-opt/",
+          "title": "Universal Manifest v0.4 EXT-OPT, optional features",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "GeoPose Primary Pose Value Profile"
+        },
+        {
+          "url": "https://universalmanifest.net/ns/v0.4",
+          "title": "Universal Manifest v0.4 JSON-LD context",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "\"Manifest\": \"um:Manifest\","
+        },
+        {
+          "url": "/Users/grig/work/spatial-computing-research-projects-msf/repo/open-spatial-lab/docs/ecosystem/layers/universalmanifest.md",
+          "title": "Universal Manifest entity document, section 1",
+          "retrieved": "2026-08-22",
+          "kind": "local-evidence",
+          "quote": "spatial bookmarks (fabric DID + GeoPose)"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.raster",
+      "level": "out-of-scope",
+      "note": "It draws nothing. It is a document format, an evaluation contract and a set of checkers; the specification's whole output is a verdict and a receipt.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Produce a structured receipt ( §3.3 ) for every processed manifest."
+        },
+        {
+          "url": "https://universalmanifest.net/",
+          "title": "Universal Manifest, project site",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Universal Manifest is an open spec, not a platform. It composes with existing standards rather than replacing them."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "out-of-scope",
+      "note": "Explicitly not a host, a store or a transport. The envelope is fetched over whatever the deployment uses and the specification is careful to keep transport out: it notes that two devices may exchange manifests over a local link such as near-field, Bluetooth or a printed code and each verify the other without a server.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Two devices MAY exchange manifests via local transport (NFC, BLE, QR) and each independently verify the other's claims at the declared tier without a server"
+        },
+        {
+          "url": "https://universalmanifest.net/standards/",
+          "title": "Universal Manifest standards page",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "UM is a composition layer. It does not replace identity, credential, encryption, or wallet standards."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "Universal Manifest is a signed identity envelope that points at heavy things rather than carrying them, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A base pointer object MUST contain @type (a string identifying the pointer type; MUST be present) and target (a URI referencing the external resource; MUST be present)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "Universal Manifest is a signed identity envelope that points at heavy things rather than carrying them, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A base pointer object MUST contain @type (a string identifying the pointer type; MUST be present) and target (a URI referencing the external resource; MUST be present)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "Universal Manifest is a signed identity envelope that points at heavy things rather than carrying them, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A base pointer object MUST contain @type (a string identifying the pointer type; MUST be present) and target (a URI referencing the external resource; MUST be present)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "out-of-scope",
+      "note": "The manifest names a resource by pointer and never inspects it, so a splat file is exactly as opaque to it as a photograph. Its own site states the design: heavy files stay where they are.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/",
+          "title": "Universal Manifest, project site",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Heavy files stay where they belong."
+        },
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A base pointer object MUST contain @type (a string identifying the pointer type; MUST be present) and target (a URI referencing the external resource; MUST be present)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "out-of-scope",
+      "note": "Universal Manifest is a signed identity envelope that points at heavy things rather than carrying them, and it delivers no captured scene, progressively by region and detail or otherwise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A base pointer object MUST contain @type (a string identifying the pointer type; MUST be present) and target (a URI referencing the external resource; MUST be present)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "Universal Manifest is a signed identity envelope that points at heavy things rather than carrying them, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A base pointer object MUST contain @type (a string identifying the pointer type; MUST be present) and target (a URI referencing the external resource; MUST be present)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "out-of-scope",
+      "note": "Universal Manifest is a signed identity envelope that points at heavy things rather than carrying them, and it defines no encoding or compression for a set of points with attributes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A base pointer object MUST contain @type (a string identifying the pointer type; MUST be present) and target (a URI referencing the external resource; MUST be present)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "Universal Manifest is a signed identity envelope that points at heavy things rather than carrying them, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A base pointer object MUST contain @type (a string identifying the pointer type; MUST be present) and target (a URI referencing the external resource; MUST be present)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "out-of-scope",
+      "note": "Universal Manifest is a signed identity envelope that points at heavy things rather than carrying them, and it produces no image from a viewing position that no capture camera occupied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A base pointer object MUST contain @type (a string identifying the pointer type; MUST be present) and target (a URI referencing the external resource; MUST be present)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "Universal Manifest is a signed identity envelope that points at heavy things rather than carrying them, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A base pointer object MUST contain @type (a string identifying the pointer type; MUST be present) and target (a URI referencing the external resource; MUST be present)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "Universal Manifest is a signed identity envelope that points at heavy things rather than carrying them, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A base pointer object MUST contain @type (a string identifying the pointer type; MUST be present) and target (a URI referencing the external resource; MUST be present)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "Universal Manifest is a signed identity envelope that points at heavy things rather than carrying them, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A base pointer object MUST contain @type (a string identifying the pointer type; MUST be present) and target (a URI referencing the external resource; MUST be present)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "Universal Manifest is a signed identity envelope that points at heavy things rather than carrying them, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A base pointer object MUST contain @type (a string identifying the pointer type; MUST be present) and target (a URI referencing the external resource; MUST be present)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "Universal Manifest is a signed identity envelope that points at heavy things rather than carrying them, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A base pointer object MUST contain @type (a string identifying the pointer type; MUST be present) and target (a URI referencing the external resource; MUST be present)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "Universal Manifest is a signed identity envelope that points at heavy things rather than carrying them, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A base pointer object MUST contain @type (a string identifying the pointer type; MUST be present) and target (a URI referencing the external resource; MUST be present)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "Universal Manifest is a signed identity envelope that points at heavy things rather than carrying them, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A base pointer object MUST contain @type (a string identifying the pointer type; MUST be present) and target (a URI referencing the external resource; MUST be present)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "out-of-scope",
+      "note": "Universal Manifest is a signed identity envelope that points at heavy things rather than carrying them, and it carries no full 360-degree view of a place as an image with its projection stated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification (Tier-0 / Tier-1 Core)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A base pointer object MUST contain @type (a string identifying the pointer type; MUST be present) and target (a URI referencing the external resource; MUST be present)."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "out-of-scope",
+      "note": "A manifest that points at assets and declares what they are, composing with other standards rather than replacing them. It describes prepared content, not a live reading of the room around a device.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/",
+          "title": "Universal Manifest, project site",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Universal Manifest is an open spec, not a platform. It composes with existing standards rather than replacing them."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "Its vocabulary names the parts of a declared experience. Nothing in it labels a real surface a camera has seen.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/",
+          "title": "Universal Manifest, project site",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Universal Manifest is an open spec, not a platform. It composes with existing standards rather than replacing them."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "out-of-scope",
+      "note": "No depth channel exists. The manifest carries pointers and metadata, and heavy data stays where it lives.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/",
+          "title": "Universal Manifest, project site",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Universal Manifest is an open spec, not a platform. It composes with existing standards rather than replacing them."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "Drawing is not the manifest's business at all, so how virtual content sits against real surfaces is outside it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/",
+          "title": "Universal Manifest, project site",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Universal Manifest is an open spec, not a platform. It composes with existing standards rather than replacing them."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "out-of-scope",
+      "note": "The manifest is evaluated before anything is shown. It carries no presentation control, so how a viewer blends a camera view of the room is outside it.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.face",
+      "level": "out-of-scope",
+      "note": "Universal Manifest speaks about consent for sensor-derived data rather than delivering a stream: no face or body pose reaches an application through it.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "out-of-scope",
+      "note": "The manifest describes trust, consent and policy for a piece of content, not the shape of a place, so walkable surface and arrival points are outside it.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "none",
+      "note": "The only permanent name in the specification is its own: a versioned namespace URI that says which version of the manifest schema a document conforms to. Nothing names a published unit of world logic, so no author can depend on a name here and no name is protected from a second claimant.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4, core specification",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Manifest namespace for the specification version being implemented"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "partial",
+      "note": "This is the closest thing on the map to the interoperable half of the row: content arrives with a manifest, and a six-stage evaluation — arrive, verify, project, consent, compose, receipt — runs before it is composed into the receiving surface, leaving a receipt behind. It is a trust and consent gate rather than a content review: nothing in it says who looked at the content, what they judged, or that a review happened at all.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4, core specification",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "which established the evaluation contract, the six-stage evaluation"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "The specification's only geographic idea is a candidate profile carrying GeoPose values, and even that is drafted rather than on the wire. It declares no map of a place and no transform between two maps.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "A manifest travels with content and describes its trust conditions, not an area of the Earth where a service or dataset applies.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.extension",
+      "level": "native",
+      "note": "The v0.4 Base defines typed extensions and explicit unprocessable/unacted handling for unknown claims and pointers; v0.3 remains the stable published reference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "Evaluators encountering an unrecognized"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.profile",
+      "level": "native",
+      "note": "The v0.4 conformance-tier stack names Base and companion profiles with stated requirements; Tier-2/3 and designated optional features retain their preview status.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "Evaluators claiming Tier 0 acceptance MUST verify the manifest signature per the declared profile."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.color",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Universal Manifest v0.4 specifies a subject manifest with claims, consents, pointers and evaluator receipts. This row requires declaring the color interpretation and output range of images, textures, and rendering surfaces so receivers can perform the required conversions. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "native",
+      "note": "Claims carry proof and holder-binding information plus a minimum trust tier; higher-tier proof procedures depend on the named companion profiles and their stated maturity.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "requiredTrustTier — Integer (0–3) declaring the minimum trust tier for this claim"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "native",
+      "note": "Base claims carry required types, issuer identity and typed schema semantics with defined handling of unrecognized claim types; this is the production-candidate v0.4 document.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the @type field determines which additional fields are expected."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "via-extension",
+      "note": "The preview EXT-T2 Track B profile specifies BBS+ derived presentations and per-verifier pseudonym scope, with residual correlation risks. It is a named candidate extension, not a stable or demonstrated deployed cryptographic guarantee.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/ext-t2/",
+          "title": "Universal Manifest v0.4 EXT-T2 Cryptographic-Binding Profile Preview",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Unlinkable selective disclosure using BBS+ derived proofs"
+        },
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/ext-t2/",
+          "title": "Universal Manifest v0.4 EXT-T2 Cryptographic-Binding Profile Preview",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "evaluators MUST NOT use a shared pseudonym scope for multiple independent verifier relationships"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.encryption",
+      "level": "native",
+      "note": "The v0.4 Base JWE inline profile identifies recipients and mandates an interoperable key-management/content-encryption pair; this is specification support, not proof of implementations.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "ECDH-ES+A256KW (key management) with A256GCM (content encryption)."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "via-extension",
+      "note": "The named EXT-OPT statusRef schema defines status lookup and stale-status handling for revocation-aware verification; Base evaluators without that profile must report status unchecked.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/ext-opt/",
+          "title": "Universal Manifest v0.4 EXT-OPT Optional-Feature Profiles",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "the evaluator MUST parse the response and evaluate the status field."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Universal Manifest v0.4 specifies a subject manifest with claims, consents, pointers and evaluator receipts. This row requires layout and presentation of two-dimensional interface regions, including their size, alignment, and relationship to a display or scene. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Universal Manifest v0.4 specifies a subject manifest with claims, consents, pointers and evaluator receipts. This row requires runtime estimates of environmental illumination made available to content for lighting or reflections. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Universal Manifest v0.4 specifies a subject manifest with claims, consents, pointers and evaluator receipts. This row requires detecting recognized physical markers or images and reporting their tracked pose relative to a runtime reference space. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Universal Manifest v0.4 specifies a subject manifest with claims, consents, pointers and evaluator receipts. This row requires time-associated pose sequences or streams describing an object's changing location and orientation, with any interpolation rules declared separately. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Universal Manifest v0.4 specifies a subject manifest with claims, consents, pointers and evaluator receipts. This row requires picking scene content from pointing input and reporting the intersected object or geometry to the application. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.text",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Universal Manifest v0.4 specifies a subject manifest with claims, consents, pointers and evaluator receipts. This row requires receiving character or string entry through a defined input interface, separate from interpreting physical controller actions. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Universal Manifest v0.4 specifies a subject manifest with claims, consents, pointers and evaluator receipts. This row requires submitting distinct shaped image layers to a display compositor with their placement and composition properties. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.bounds",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Universal Manifest v0.4 specifies a subject manifest with claims, consents, pointers and evaluator receipts. This row requires bounding volumes associated with scene content, organized for spatial rejection, traversal, or selection before detailed geometry is loaded. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.collection",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Universal Manifest v0.4 specifies a subject manifest with claims, consents, pointers and evaluator receipts. This row requires named or rule-defined sets of scene objects that consumers can use as targets for scene operations. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Universal Manifest v0.4 specifies a subject manifest with claims, consents, pointers and evaluator receipts. This row requires authored runtime relationships that constrain one node's transform using another node and defined evaluation rules. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Universal Manifest v0.4 specifies a subject manifest with claims, consents, pointers and evaluator receipts. This row requires referencing timed audiovisual media inside a scene and defining the synchronization needed to present it as scene content. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Universal Manifest v0.4 specifies a subject manifest with claims, consents, pointers and evaluator receipts. This row requires runtime-reported physical play-area bounds and floor-relative reference information available to an application. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Universal Manifest v0.4 specifies a subject manifest with claims, consents, pointers and evaluator receipts. This row requires generating audio during playback from an exchanged synthesis model, supporting data, and changing control parameters. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Universal Manifest v0.4 specifies a subject manifest with claims, consents, pointers and evaluator receipts. This row requires interchanging linked poses and transforms as chains or graphs so related frames can be reconstructed consistently. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Universal Manifest v0.4 specifies a subject manifest with claims, consents, pointers and evaluator receipts. This row requires interchanging identified spatial zones, typed events scoped to them, and summaries with defined spatial and temporal meaning. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.consent",
+      "level": "native",
+      "note": "Consent entries carry facet scope, purpose, grant/expiry time and withdrawal; evaluators fail closed for unknown scope or unenforceable conditions under the v0.4 Base rules.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "withdrawnAt — RFC 3339 date-time of withdrawal."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "native",
+      "note": "Base structured receipts record evaluation and per-facet action/status; signing a receipt envelope and chained receipt features are distinct optional preview mechanisms.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "A receipt MUST include a facetStatuses array"
+        },
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "Unsigned receipts are valid evaluation outputs but provide weaker non-repudiation."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Universal Manifest v0.4 specifies a subject manifest with claims, consents, pointers and evaluator receipts. This row requires dispatching programmable non-raster GPU workloads against resources available through the graphics-compute API. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.frame-timing",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Universal Manifest v0.4 specifies a subject manifest with claims, consents, pointers and evaluator receipts. This row requires coordinating frame submission with predicted display timing and the view poses associated with that time. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Universal Manifest v0.4 specifies a subject manifest with claims, consents, pointers and evaluator receipts. This row requires a specified shader source language and execution semantics enabling implementations to consume the same shader program. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.parametric",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Universal Manifest v0.4 specifies a subject manifest with claims, consents, pointers and evaluator receipts. This row requires carrying parametric curves and surfaces in mathematical form so a receiver can evaluate or tessellate them. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Universal Manifest v0.4 specifies a subject manifest with claims, consents, pointers and evaluator receipts. This row requires exchanging particle-system emitters and simulation/rendering parameters that a receiving runtime evaluates. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance-recovery",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Universal Manifest v0.4 specifies a subject manifest with claims, consents, pointers and evaluator receipts. This row requires locating associated provenance through a supported content fingerprint or watermark when embedded association has been lost. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.style",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Universal Manifest v0.4 specifies a subject manifest with claims, consents, pointers and evaluator receipts. This row requires separately expressed styling rules that select feature visibility, color, or other supported display properties from content metadata. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.variant",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Universal Manifest v0.4 specifies a subject manifest with claims, consents, pointers and evaluator receipts. This row requires named alternatives of an asset's authored configuration, with a defined selection mechanism. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.voxel",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Universal Manifest v0.4 specifies a subject manifest with claims, consents, pointers and evaluator receipts. This row requires interchanging spatial cell volumes and their properties, including updates, as a scene representation. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Universal Manifest v0.4 specifies a subject manifest with claims, consents, pointers and evaluator receipts. This row requires asking a sensing runtime for ray intersections with its estimate of physical surroundings and receiving hit poses. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.privacy",
+      "level": "via-extension",
+      "note": "The preview EXT-OPT O9.1 profile defines derived-variant sensor consent keys, purpose-bound grants and fail-closed behavior for ungranted data variants. The proposed carrier is a candidate extension and is not claimed to be stable or deployed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/ext-opt/",
+          "title": "Universal Manifest v0.4 EXT-OPT Optional-Feature Profiles",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "absent an explicit grant for a derived variant, evaluators MUST fail closed."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Universal Manifest v0.4 specifies a subject manifest with claims, consents, pointers and evaluator receipts. This row requires receiving typed musical instrument events with channel, note or control identifiers and values through a documented device or recorded-event input interface. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Universal Manifest v0.4 specifies a subject manifest with claims, consents, pointers and evaluator receipts. This row requires reconstructing a radiance field or Gaussian representation from observed images and camera information, including optimization controls and a trained scene usable for subsequent view synthesis. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.objectgen",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Universal Manifest v0.4 specifies a subject manifest with claims, consents, pointers and evaluator receipts. This row requires producing an individual three-dimensional object from a text or image prompt, with geometry or another renderable representation available for placement in a separately authored scene. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    }
+  ]
+}

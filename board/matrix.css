@@ -1,0 +1,305 @@
+:root{
+  --paper:#ECEBE4; --paper-raised:#F7F6F1; --paper-sunk:#E2E1D8;
+  --ink:#1B1D1A; --ink-soft:#55584E; --ink-faint:#7E8177;
+  --rule:#C7C5B8; --rule-strong:#A9A79A;
+  --chart:#2C5F6B; --chart-fill:#CFE0E1;
+  --contour:#8A6634; --contour-fill:#EBDCC2;
+  --survey:#A33328; --survey-fill:#F0D6D0;
+  --spine:#8A6634;
+  --c4-shadow:0 1px 0 rgba(27,29,26,.06), 0 2px 10px rgba(27,29,26,.06);
+  --c4-band-r:3px;
+  --f-label:"IBM Plex Sans Condensed",ui-sans-serif,system-ui,sans-serif;
+  --f-body:"IBM Plex Serif",Georgia,serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#15171A; --paper-raised:#1D2024; --paper-sunk:#101215;
+  --ink:#E9E7DE; --ink-soft:#9C9E94; --ink-faint:#75786F;
+  --rule:#32363A; --rule-strong:#474C51;
+  --chart:#74B6C2; --chart-fill:#1B3238;
+  --contour:#CBA469; --contour-fill:#312819;
+  --survey:#E37365; --survey-fill:#35201D; --spine:#CBA469;
+  --c4-shadow:0 1px 0 rgba(0,0,0,.3), 0 2px 12px rgba(0,0,0,.35);
+}}
+:root[data-theme="dark"]{
+  --paper:#15171A; --paper-raised:#1D2024; --paper-sunk:#101215;
+  --ink:#E9E7DE; --ink-soft:#9C9E94; --ink-faint:#75786F;
+  --rule:#32363A; --rule-strong:#474C51;
+  --chart:#74B6C2; --chart-fill:#1B3238;
+  --contour:#CBA469; --contour-fill:#312819;
+  --survey:#E37365; --survey-fill:#35201D; --spine:#CBA469;
+  --c4-shadow:0 1px 0 rgba(0,0,0,.3), 0 2px 12px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+/* An author rule always beats the browser's own [hidden] rule, so a class that sets
+   display would leave a hidden element on screen. This puts hiding back on top. */
+[hidden]{display:none!important}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+h1{margin:0;font-family:var(--f-label);font-weight:700;font-size:clamp(22px,3vw,32px);letter-spacing:-.01em}
+.wrap{padding:20px max(16px,3vw) 60px;display:flex;flex-direction:column;gap:14px}
+.eyebrow{font-family:var(--f-label);font-weight:600;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft)}
+.lede{font-size:15px;color:var(--ink-soft);max-width:78ch;font-style:italic}
+.bar{position:static;background:var(--paper);border-bottom:1px solid var(--rule);
+     padding:10px 0 8px;display:flex;flex-direction:column;gap:8px}
+.setlabel{font-family:var(--f-label);font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-faint)}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+button{font:inherit;color:inherit;cursor:pointer}
+.chip{font-family:var(--f-label);font-weight:600;font-size:12px;background:var(--paper-raised);
+      border:1px solid var(--rule);border-radius:2px;padding:5px 9px}
+.chip:hover{border-color:var(--rule-strong)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip.off{opacity:.42}
+.chip:focus-visible{outline:2px solid var(--survey);outline-offset:2px}
+.sgroups{display:flex;flex-direction:column;gap:6px}
+.sgroup{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.ghead{font-family:var(--f-label);font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+       color:var(--ink-soft);background:none;border:1px solid transparent;border-radius:2px;padding:4px 7px;min-width:14ch;text-align:left}
+.ghead:hover{border-color:var(--rule-strong)}
+.ghead[data-state="all"]{color:var(--ink)}
+.ghead[data-state="none"]{opacity:.5}
+.ghead::before{content:"\25A0";display:inline-block;width:1.2em;color:var(--ink-faint)}
+.ghead[data-state="all"]::before{color:var(--chart)}
+.ghead[data-state="some"]::before{content:"\25A3"}
+.ghead[data-state="none"]::before{content:"\25A1"}
+.ghead:focus-visible{outline:2px solid var(--survey);outline-offset:2px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-family:var(--f-label);font-size:12px;color:var(--ink-soft);align-items:center}
+.key{display:inline-flex;align-items:center;gap:6px}
+.sw{width:20px;height:12px;border:1px solid var(--rule-strong);display:inline-block;border-radius:2px}
+.sw.n{background:var(--chart-fill);border-color:var(--chart)}
+.sw.x{background:repeating-linear-gradient(135deg,var(--chart-fill) 0 5px,transparent 5px 10px);border-color:var(--chart)}
+.sw.p{background:repeating-linear-gradient(135deg,var(--contour-fill) 0 5px,transparent 5px 10px);border-color:var(--contour)}
+.sw.z{background:var(--survey-fill);border:1px dashed var(--survey)}
+.sw.c{background:var(--survey-fill);border-color:var(--survey);border-width:2px}
+.grpname{font-family:var(--f-label);font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;
+         color:var(--ink-soft);margin:14px 0 6px;border-bottom:1px solid var(--rule);padding-bottom:4px}
+.rows{display:flex;flex-direction:column;gap:3px}
+.row{display:grid;grid-template-columns:minmax(190px,22%) 62px 1fr;gap:10px;align-items:start;
+     padding:5px 6px;border:1px solid transparent;border-radius:2px}
+.row:hover{background:var(--paper-raised);border-color:var(--rule)}
+.cname{font-family:var(--f-label);font-weight:600;font-size:13px;line-height:1.25}
+.cdef{font-size:11.5px;color:var(--ink-faint);line-height:1.35;margin-top:1px}
+.cscore{font-family:var(--f-mono);font-size:10px;letter-spacing:.04em;color:var(--ink-faint);margin-top:3px}
+.bind{font-family:var(--f-mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);padding-top:2px}
+.bind.connect{color:var(--survey)}
+/* The must-interoperate mark. The inset shadow rather than a border, so a marked row keeps the
+   same width as every other row and nothing shifts when the filter changes. */
+.row.mustrow{box-shadow:inset 3px 0 0 var(--spine)}
+.mustmark{display:inline-block;font-family:var(--f-mono);font-size:8.5px;letter-spacing:.09em;
+          text-transform:uppercase;color:var(--spine);border:1px solid var(--spine);
+          border-radius:2px;padding:0 4px;margin-top:4px;line-height:1.7}
+.mustmark:focus-visible{outline:2px solid var(--survey);outline-offset:2px}
+.cells{display:flex;flex-wrap:wrap;gap:3px}
+.cell{font-family:var(--f-mono);font-size:10px;padding:2px 6px;border:1px solid var(--rule-strong);
+      border-radius:2px;background:var(--paper-raised);white-space:nowrap;margin:0;text-align:left;
+      line-height:1.5;-webkit-appearance:none;appearance:none}
+.cell:hover{border-color:var(--ink-soft)}
+.cell:focus-visible{outline:2px solid var(--survey);outline-offset:2px}
+.cell[aria-expanded="true"]{box-shadow:0 0 0 2px var(--spine)}
+.cell.native{background:var(--chart-fill);border-color:var(--chart)}
+.cell.viaextension{background:repeating-linear-gradient(135deg,var(--chart-fill) 0 5px,transparent 5px 10px);border-color:var(--chart)}
+.cell.partial{background:repeating-linear-gradient(135deg,var(--contour-fill) 0 5px,transparent 5px 10px);border-color:var(--contour)}
+.cell.none{background:var(--survey-fill);border:1px dashed var(--survey);color:var(--survey)}
+.cell.conflicts{background:var(--survey-fill);border:2px solid var(--survey);font-weight:600}
+.cell.outofscope{display:none}
+.empty{font-family:var(--f-mono);font-size:10px;color:var(--survey);letter-spacing:.06em}
+.stat{font-family:var(--f-mono);font-size:11.5px;color:var(--ink-faint)}
+.note{font-size:12px;color:var(--ink-soft);grid-column:3;margin-top:2px;max-width:96ch}
+.hidden{display:none}
+
+/* Claim detail: opens under the row when a cell is clicked. */
+.detail{grid-column:1/-1;margin:7px 0 3px;padding:10px 12px;background:var(--paper-sunk);
+        border:1px solid var(--rule);border-left:3px solid var(--spine);border-radius:2px}
+.dhead{font-family:var(--f-label);font-weight:700;font-size:13.5px;line-height:1.3}
+.dmeta{font-family:var(--f-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+       color:var(--ink-faint);margin-top:3px}
+.dnote{font-size:13px;color:var(--ink-soft);margin-top:7px;max-width:92ch}
+.dsub{font-family:var(--f-label);font-weight:700;font-size:10.5px;letter-spacing:.14em;
+      text-transform:uppercase;color:var(--ink-faint);margin-top:10px}
+.slist{list-style:none;margin:5px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.slist li{font-size:12.5px;line-height:1.4;max-width:92ch}
+.slist a{color:var(--chart)}
+.slist a:hover{color:var(--survey)}
+.skind{font-family:var(--f-mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;
+       color:var(--ink-faint);margin-left:7px;white-space:nowrap}
+.sprivate{color:var(--ink-faint);font-style:italic}
+.squote{font-family:var(--f-body);font-style:italic;color:var(--ink-soft);
+        border-left:2px solid var(--rule);padding-left:9px;margin-top:4px}
+.dfoot{font-family:var(--f-label);font-size:10.5px;color:var(--ink-faint);margin-top:9px}
+
+/* Written explanation of one item on the page. One box, moved and refilled; no library. */
+.tip{position:fixed;z-index:60;max-width:46ch;background:var(--paper-raised);color:var(--ink);
+     border:1px solid var(--rule-strong);border-left:3px solid var(--spine);border-radius:2px;
+     padding:9px 11px;font-family:var(--f-body);font-size:12.5px;line-height:1.45;
+     box-shadow:0 6px 18px rgba(0,0,0,.18);pointer-events:none}
+.tip[hidden]{display:none}
+[data-tip]{cursor:help}
+[data-tip]:focus-visible{outline:2px solid var(--survey);outline-offset:2px}
+.chip[data-tip],.ghead[data-tip],.cell[data-tip]{cursor:pointer}
+.toggle{margin-left:10px;border-left:1px solid var(--rule);padding-left:12px}
+
+/* The two page chips: the explanations switch, and the export menu it opens under itself. */
+.pagechips{display:flex;flex-wrap:wrap;gap:5px;align-items:flex-start}
+.exportwrap{position:relative}
+.exportmenu{position:absolute;z-index:70;top:calc(100% + 6px);left:0;min-width:22ch;
+            display:flex;flex-direction:column;gap:1px;padding:4px;
+            background:var(--paper-raised);border:1px solid var(--rule-strong);
+            border-left:3px solid var(--spine);border-radius:2px;
+            box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.exportmenu[hidden]{display:none}
+.exportitem{font-family:var(--f-label);font-weight:600;font-size:12px;color:var(--ink);
+            background:transparent;border:0;border-radius:2px;padding:7px 10px;margin:0;
+            text-align:left;text-decoration:none;white-space:nowrap;cursor:pointer;
+            -webkit-appearance:none;appearance:none}
+.exportitem:hover{background:var(--paper-sunk)}
+.exportitem:focus-visible{outline:2px solid var(--survey);outline-offset:-2px}
+.exportnote{font-family:var(--f-mono);font-size:11px;line-height:1.4;color:var(--ink-faint);
+            margin-top:6px;max-width:60ch}
+.exportnote[hidden]{display:none}
+.statpart{cursor:help}
+.statpart:focus-visible{outline:2px solid var(--survey);outline-offset:2px}
+
+/* Mode switch: one segmented control, two options, at the top of the bar. */
+.modes{display:flex;width:fit-content;border:1px solid var(--rule-strong);border-radius:2px;
+       overflow:hidden}
+.mode{font-family:var(--f-label);font-weight:600;font-size:12px;background:var(--paper-raised);
+      border:0;border-right:1px solid var(--rule-strong);border-radius:0;padding:6px 14px;
+      margin:0;-webkit-appearance:none;appearance:none}
+.mode:last-child{border-right:0}
+.mode:hover{background:var(--paper-sunk)}
+.mode[aria-checked="true"]{background:var(--ink);color:var(--paper)}
+.mode:focus-visible{outline:2px solid var(--survey);outline-offset:-2px}
+
+/* C4 mode: the view picker, the claim panel, and the drawing.
+   The rules below are the narrative board's own — its band, its card, its eyebrow and its
+   connectors, copied from board/index.html and prefixed c4- so none of them can reach the
+   matrix rows above. Only the tokens the bands need were copied with them. */
+#c4panel{display:flex;flex-direction:column;gap:10px}
+#c4panel.hidden{display:none}
+#stage{background:var(--paper-sunk);border-top:1px solid var(--rule-strong);
+       border-bottom:1px solid var(--rule-strong);padding:16px 12px;overflow-x:auto;
+       min-height:140px}
+.c4-fallback{margin:0;color:var(--survey);max-width:80ch}
+
+.c4-board{position:relative;display:flex;flex-direction:column;gap:60px;min-width:320px}
+.c4-wires{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+.c4-wire{fill:none;stroke:var(--rule-strong);stroke-width:1.6}
+.c4-wire.native{stroke:var(--ink)}
+.c4-wire.viaextension{stroke:var(--chart)}
+.c4-wire.conflicts{stroke:var(--survey);stroke-width:2.2}
+.c4-dot{stroke:none;fill:var(--rule-strong)}
+.c4-dot.native{fill:var(--ink)}
+.c4-dot.viaextension{fill:var(--chart)}
+.c4-dot.conflicts{fill:var(--survey)}
+
+.c4-plane{position:relative;z-index:1;border:1px solid var(--rule-strong);
+          background:var(--paper-raised);border-radius:var(--c4-band-r);
+          padding:14px 16px 16px;box-shadow:var(--c4-shadow)}
+.c4-plane-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;
+               border-bottom:1px solid var(--rule);padding-bottom:7px;margin-bottom:12px}
+.c4-plane-no{font-family:var(--f-mono);font-size:11px;color:var(--survey);letter-spacing:.04em}
+.c4-plane-title{margin:0;font-family:var(--f-label);font-weight:700;font-size:16px;
+                letter-spacing:.06em;text-transform:uppercase}
+.c4-plane-sub{font-family:var(--f-body);font-style:italic;font-size:13px;color:var(--ink-soft);
+              margin-left:auto;text-align:right}
+.c4-cards{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(186px,1fr))}
+
+.c4-card{position:relative;margin:0;text-align:left;font:inherit;color:inherit;
+         border:1px solid var(--rule-strong);border-radius:2px;background:var(--paper);
+         padding:9px 10px;display:flex;flex-direction:column;gap:4px;min-height:78px;
+         -webkit-appearance:none;appearance:none;transition:opacity .15s,border-color .15s}
+button.c4-card{cursor:pointer}
+.c4-card:hover{border-color:var(--ink-soft)}
+.c4-card:focus-visible{outline:2px solid var(--survey);outline-offset:2px}
+.c4-card.c4-cap{border-top:3px solid var(--chart)}
+.c4-card.c4-subject{border-top:3px solid var(--contour)}
+.c4-card.c4-group{border-top:3px solid var(--spine)}
+.c4-card.c4-stack{border-top:5px double var(--ink)}
+.c4-card-over{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.09em;
+              text-transform:uppercase;color:var(--ink-faint)}
+/* A card for a row two independent systems have to agree on. Inset rather than a border, so
+   the mark sits beside the level colour on the left edge without taking it over. */
+.c4-card[data-must]{box-shadow:inset 3px 0 0 var(--spine)}
+.c4-must{font-family:var(--f-mono);font-size:8.5px;letter-spacing:.09em;text-transform:uppercase;
+         color:var(--spine);border:1px solid var(--spine);border-radius:2px;padding:0 4px;
+         align-self:flex-start;line-height:1.7}
+.c4-card-name{font-family:var(--f-label);font-weight:600;font-size:13.5px;line-height:1.25}
+.c4-card-meta{font-family:var(--f-mono);font-size:10px;color:var(--ink-soft);line-height:1.4}
+.c4-card-note{font-size:11.5px;color:var(--ink-soft);line-height:1.35;margin-top:auto;
+              padding-top:3px}
+.c4-card-foot{display:flex;flex-wrap:wrap;gap:4px;margin-top:auto;padding-top:6px}
+.c4-t{font-family:var(--f-mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;
+      border:1px solid var(--rule-strong);border-radius:2px;padding:1px 4px;
+      color:var(--ink-faint);white-space:nowrap}
+.c4-t.n{background:var(--chart-fill);border-color:var(--chart);color:var(--chart)}
+.c4-t.x{background:repeating-linear-gradient(135deg,var(--chart-fill) 0 5px,transparent 5px 10px);
+        border-color:var(--chart);color:var(--chart)}
+.c4-t.p{background:repeating-linear-gradient(135deg,var(--contour-fill) 0 5px,transparent 5px 10px);
+        border-color:var(--contour);color:var(--contour)}
+.c4-t.c{background:var(--survey-fill);border-color:var(--survey);color:var(--survey)}
+.c4-t.z{background:var(--survey-fill);border:1px dashed var(--survey);color:var(--survey)}
+
+/* Hovering or focusing one card brings its claims forward and fades the rest. */
+.c4-board.c4-focus .c4-card{opacity:.28}
+.c4-board.c4-focus .c4-card.c4-on{opacity:1;border-color:var(--spine);
+                                  box-shadow:0 0 0 2px var(--spine)}
+.c4-board.c4-focus .c4-wire,.c4-board.c4-focus .c4-dot{opacity:.07}
+.c4-board.c4-focus .c4-wire.c4-on{opacity:1;stroke-width:2.6}
+.c4-board.c4-focus .c4-dot.c4-on{opacity:1}
+
+/* The claim panel: the same row the matrix draws, for the capability card just clicked. */
+.c4-claim{background:var(--paper-sunk);border:1px solid var(--rule);
+          border-left:3px solid var(--spine);border-radius:2px;padding:9px 12px 11px}
+.c4-claim.hidden{display:none}
+.c4-claim-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.c4-close{font-family:var(--f-label);font-weight:600;font-size:10.5px;letter-spacing:.12em;
+          text-transform:uppercase;background:var(--paper-raised);border:1px solid var(--rule);
+          border-radius:2px;padding:3px 9px;margin-left:auto}
+.c4-close:hover{border-color:var(--rule-strong)}
+.c4-close:focus-visible{outline:2px solid var(--survey);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.c4-card{transition:none}}
+
+/* The search field at the top of the bar, and the list it offers under itself. */
+.searchwrap{display:flex;flex-direction:column;gap:4px;max-width:56ch}
+.searchbox{position:relative}
+.searchfield{font-family:var(--f-label);font-size:13px;color:var(--ink);width:100%;
+             background:var(--paper-raised);border:1px solid var(--rule-strong);border-radius:2px;
+             padding:7px 10px;margin:0;-webkit-appearance:none;appearance:none}
+.searchfield::placeholder{color:var(--ink-faint);opacity:1}
+.searchfield:hover{border-color:var(--ink-soft)}
+.searchfield:focus-visible{outline:2px solid var(--survey);outline-offset:1px}
+.searchlist{position:absolute;z-index:70;top:calc(100% + 4px);left:0;right:0;margin:0;padding:4px;
+            list-style:none;max-height:46vh;overflow-y:auto;
+            background:var(--paper-raised);border:1px solid var(--rule-strong);
+            border-left:3px solid var(--spine);border-radius:2px;
+            box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.searchlist[hidden]{display:none}
+.searchitem{display:flex;align-items:baseline;gap:8px;padding:6px 8px;border-radius:2px;
+            cursor:pointer}
+.searchitem:hover,.searchitem[aria-selected="true"]{background:var(--paper-sunk)}
+.searchitem[aria-selected="true"]{box-shadow:inset 2px 0 0 var(--spine)}
+.searchname{font-family:var(--f-label);font-weight:600;font-size:12.5px}
+.searchkind{font-family:var(--f-mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;
+            color:var(--ink-faint);margin-left:auto;white-space:nowrap}
+.searchnote{font-family:var(--f-mono);font-size:11px;line-height:1.4;color:var(--ink-faint);
+            max-width:60ch}
+.searchnote[hidden]{display:none}
+
+/* What the search just went to, marked for three seconds. */
+.hit{outline:2px solid var(--spine);outline-offset:2px;background:var(--contour-fill)}
+.chip.hit,.c4-card.hit{background:var(--contour-fill);color:var(--ink);border-color:var(--spine)}
+.c4-board.c4-focus .c4-card.hit{opacity:1}
+
+/* The counts line: the claim counts, the coverage metric, and the two chips that say which
+   subjects the metric counts. */
+.countline{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.metric{font-family:var(--f-label);font-weight:600;font-size:13px;color:var(--ink)}
+.metricnote{margin:0;max-width:88ch;font-size:12.5px;line-height:1.45;color:var(--ink-soft)}
+
+/* The two links beside the mode switch, and the line under them. */
+.linkchip{font-family:var(--f-label);font-weight:600;font-size:12px;color:var(--ink);
+          background:var(--paper-raised);border:1px solid var(--rule);border-radius:2px;
+          padding:5px 9px;text-decoration:none;display:inline-block}
+.linkchip:hover{border-color:var(--rule-strong);background:var(--paper-sunk)}
+.linkchip:focus-visible{outline:2px solid var(--survey);outline-offset:2px}
+.commentnote{font-family:var(--f-mono);font-size:10px;line-height:1.4;color:var(--ink-faint);
+             margin-top:5px;max-width:46ch}

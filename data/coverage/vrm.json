@@ -1,0 +1,1396 @@
+{
+  "subject_id": "vrm",
+  "summary": "VRM is a humanoid avatar format built on glTF 2.0: a VRM file is a binary glTF file with one added extension and a changed file suffix, so everything the base format settles about meshes, textures and skins is inherited unchanged. What VRM adds is the part that makes an avatar work in a place it was not made for, and the base format has none of it: a fixed set of 55 named human bones with fixed parentage, 15 of them required; a normative rest pose that fixes which way the model faces and puts the soles on the ground plane at zero; and 18 named facial expressions covering five moods, five mouth shapes for speech, three eye closings and four gaze directions. It also carries permission data, which no other asset format on this map does, with required author names, a required link to the VRM Public License, and eleven machine-readable settings covering who may wear the model, commercial use, credit, modification, redistribution and violent, sexual, political or hateful content, every one of them defaulting to the restrictive value. Three traps for a standards audience: the expression names are agreed but the faces are not, because the specification says plainly that there is no specification for the facial deformation itself, so the same named expression need not look alike on two models; a VRM file carries no animation at all, because the core declares the base format's animation and camera arrays unused and puts humanoid motion in a separate file defined by a separate extension; and there is nothing for worn items, no attachment point, no socket and no way to reference a second file, so clothing has to be baked into the avatar mesh before export. Version 1.0 is the current one, released in September 2022; the older 0.x line used a different and incompatible extension key and is now deprecated.",
+  "coverage": [
+    {
+      "capability_id": "avatar.body",
+      "level": "native",
+      "note": "This is the subject: a portable humanoid avatar carried as a binary glTF file with the VRMC_vrm extension and the .vrm suffix.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF represent an entire Scene, whereas VRM represent a Humanoid for VR avatar."
+        },
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification, Format and Extension",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Saved in `.glb` format and using `.vrm` as the extension."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "native",
+      "note": "The strongest part of VRM and the thing the base format lacks: 55 named human bones in five tables, 15 of them required, each with a fixed parent and a stated rule for skipping absent parents, plus a normative rest pose fixing the facing direction, the ground plane and the finger orientations.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/humanoid.md",
+          "title": "VRMC_vrm.humanoid",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The parent bone of the humanoid bone is fixed."
+        },
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/tpose.md",
+          "title": "VRM T-pose: the specification of the rest pose in VRM",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "VRM models must be grounded on the plane at Y: 0.0 in appearance."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "native",
+      "note": "18 named preset expressions: happy, angry, sad, relaxed, surprised; the mouth shapes aa, ih, ou, ee, oh; blink, blinkLeft, blinkRight; lookUp, lookDown, lookLeft, lookRight; and neutral. Custom names are allowed but may not reuse a preset name. The trap is that only the names are agreed, not the faces.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/expressions.md",
+          "title": "VRMC_vrm.expressions",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "There are no specific specifications for facial deformation."
+        },
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/expressions.md",
+          "title": "VRMC_vrm.expressions, Custom Expressions",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Custom Expressions cannot have names that are the same as any Preset Expressions."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "via-extension",
+      "note": "The named bone set and the normative rest pose in the core are what let motion move between bodies; the portable motion file itself is a separate extension, VRMC_vrm_animation 1.0. What is missing is normative force for the hard part: the rules for reconciling models with different rest rotations and different optional bones sit in a document the project marks as non-normative.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm_animation-1.0/README.md",
+          "title": "VRM Animation 1.0 (VRMC_vrm_animation)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "describes animation that can be applied to any humanoid model"
+        },
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm_animation-1.0/how_to_transform_human_pose.md",
+          "title": "About pose data compatibility",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This document is non-normative."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "none",
+      "note": "VRM defines no worn item, no attachment point and no socket. Clothing, hats and held props must be part of the avatar's own mesh hierarchy before export; the only thing an implementation can hang an item on is the named bone set, and nothing in the specification says how. The spring bone extension mentions costumes only as something that should sway.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_springBone-1.0/README.md",
+          "title": "VRMC_springBone 1.0",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "It is intended for use with the appearance of shaking hair and costumes."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "none",
+      "note": "No reduced avatar representation of any kind. The nearest thing, the first-person mesh annotation, switches whole meshes on and off per camera to keep the wearer's own head out of their view; it does not reduce detail and does not help with crowds or weak devices.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/firstPerson.md",
+          "title": "VRMC_vrm.firstPerson",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "the renderings from the HMD and the others are separated"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "none",
+      "note": "Nothing ties a VRM file to a person or a credential. The meta block names authors as free text and offers contact information, but there is no identifier, no signature and no way to check that the named author made the file.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/meta.md",
+          "title": "VRMC_vrm.meta",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Authors of the model"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "native",
+      "note": "Defines its own file: binary glTF with a required VRMC_vrm extension carrying specVersion, humanoid and meta, saved with the .vrm suffix. The container is glTF's; what makes it a VRM is the required extension.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Saved in `.glb` format and using `.vrm` as the extension."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "native",
+      "note": "Binding and skinning are glTF's; the part VRM adds is the mapping from each named human bone to a glTF node, which is what makes the rig readable by a runtime that never saw the model. Bone transforms are constrained further: scale must be uniform and positive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/humanoid.md",
+          "title": "VRMC_vrm.humanoid",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "For transforms of humanoid bones, scale components MUST have positive values (zero is not permitted)."
+        },
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/tpose.md",
+          "title": "VRM T-pose",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "All node transforms must be in a positive uniform scale."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "partial",
+      "note": "The shape deformation itself is glTF's morph targets, which VRM does not change. What VRM adds is naming: expressions bind groups of morph targets to an agreed name, and because glTF has no name for a morph target the specification recommends putting one in the mesh extras. Missing: VRM specifies no encoding of its own.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification, names of morphTargets",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Since there is no `meshes[*].primitives[*].targets.name`"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "via-extension",
+      "note": "A VRM file carries no animation: the core says the glTF animations and cameras arrays are not used. Humanoid motion lives in a separate file defined by VRMC_vrm_animation 1.0, which reuses glTF's own keyframe machinery and adds the mapping to named bones, expressions and gaze.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification, Unused Items",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The following items are not used:"
+        },
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm_animation-1.0/README.md",
+          "title": "VRM Animation 1.0",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "It is intended to be used for separate glTF files that only describe animations."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "partial",
+      "note": "Mesh encoding is glTF's and VRM specifies none of it. What VRM adds is two restrictions aimed at making models load the same everywhere: stored tangents may be left out and recalculated, and morph target tangents should be neither exported nor imported.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification, Allow ignore stored TANGENT",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "it is allowed to not export any tangents"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "partial",
+      "note": "Image encoding is glTF's. VRM adds one restriction and it is a narrow one: the model thumbnail must be square and must be a jpg or png supported by glTF's core, with extension formats forbidden. Missing: nothing is said about texture compression for the model's own textures.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/meta.md",
+          "title": "VRMC_vrm.meta, thumbnailImage",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Use of other formats using extensions is not allowed."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "partial",
+      "note": "Handedness and axis order come from glTF and VRM restates none of it. VRM does add the convention glTF lacks for characters: in the rest pose the model stands facing positive Z, symmetrical about X, arms out along X, and every node scale must be uniform and positive. Missing: no transform convention of its own beyond the rest pose.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/tpose.md",
+          "title": "VRM T-pose",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Standing straight toward the +Z axis, symmetrical on the X axis in appearance"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "partial",
+      "note": "Metric scale is inherited from glTF. VRM adds the rule that makes avatar size and grounding usable: the sole surface sits on the plane at Y zero in appearance, so a receiving world can place the feet and read the height without guessing where the ankle bone is. Missing: the unit agreement itself is glTF's.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification, Coordinate Units",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Metric units based on glTF"
+        },
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/tpose.md",
+          "title": "VRM T-pose",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The foot is grounded at Y: 0.0 in appearance"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "native",
+      "note": "Unusual for a 3D format and the reason VRM matters to the rights columns. The meta block requires a name, at least one author and a licence document link that must point at the VRM Public License, and then adds eleven machine-readable settings: who may act as this avatar, commercial use, credit, redistribution, modification, and flags for violent, sexual, political or religious, and antisocial or hateful use. Every default is the restrictive one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/meta.md",
+          "title": "VRMC_vrm.meta",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "It must be a unique URL to VRM Public License."
+        },
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/meta.md",
+          "title": "VRMC_vrm.meta, avatarPermission",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The person who can perform as an avatar with this model."
+        },
+        {
+          "url": "https://vrm.dev/licenses/1.0/",
+          "title": "VRM Public License 1.0",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "partial",
+      "note": "Authorship is recorded and required: authors, and optionally copyright holder, contact, references to original works, and third party licences. Missing is the whole verifiable half. Nothing is signed, there is no issuer and no way for a recipient to tell a true author field from an invented one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/meta.md",
+          "title": "VRMC_vrm.meta",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Must have at least one entry that is not an empty string."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "partial",
+      "note": "A VRM model keeps its glTF core material, so a plain physically based renderer will show something. What will not carry is the intended look: the toon material is defined by reference to particular rendering techniques, so shade colour, rim light, matcap and outline are reproduced only by a renderer that implements the extension.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_materials_mtoon-1.0/README.md",
+          "title": "VRMC_materials_mtoon 1.0",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "this definition includes definitions that depend on specific rendering techniques"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "none",
+      "note": "A VRM file is one self-contained humanoid. There is no referencing another file, no layering and no override, which is the structural reason a wearable cannot be shipped separately from the avatar it is worn on.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF represent an entire Scene, whereas VRM represent a Humanoid for VR avatar."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "via-extension",
+      "note": "VRMC_materials_mtoon 1.0 defines a toon surface model with shade colour, shading shift and toony factor, matcap and parametric rim light, an outline mode and an explicit render queue. It sits alongside the glTF material rather than replacing it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_materials_mtoon-1.0/README.md",
+          "title": "VRMC_materials_mtoon 1.0",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This extension defines a material with toon shading for VRM models."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "partial",
+      "note": "VRM removes glTF cameras from use, then defines the one viewpoint an avatar needs: the wearer's own. Meshes are annotated third person only, first person only, both or auto, and the auto rule splits a mesh by head bone weight so the wearer does not see the inside of their own face. Missing: no camera definition, no viewpoint binding, no way to move between viewpoints.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/firstPerson.md",
+          "title": "VRMC_vrm.firstPerson",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "the renderings from the HMD and the others are separated"
+        },
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification, Unused Items",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The following items are not used:"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "partial",
+      "note": "Collision shapes exist but serve one purpose only. VRMC_springBone defines sphere and capsule colliders, and VRMC_springBone_extended_collider adds inside sphere, inside capsule and plane with a stated fallback for readers that do not know them. Missing: these are read only by the spring solver; there is no general contact test and no collision geometry for the body itself.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_springBone-1.0/README.md",
+          "title": "VRMC_springBone 1.0",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "collision detection node (collider: sphere / capsule)"
+        },
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_springBone_extended_collider-1.0/README.md",
+          "title": "VRMC_springBone_extended_collider 1.0",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "partial",
+      "note": "VRMC_springBone 1.0 gives hair and clothing their swing, with stiffness, drag and gravity per joint and a written update procedure. Missing: it is a chain of bones, not a deformable simulation. There is no cloth solver, no mesh deformation, branching chains are undefined, and two runtimes stepping at different rates will not match.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_springBone-1.0/README.md",
+          "title": "VRMC_springBone 1.0",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Implements a procedural animation that behaves like a spring"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "partial",
+      "note": "The terms travel with the file in a form a program can read, which is the hard half and the half almost nobody does. Missing is the acting half: the settings are unsigned, no protocol checks them, nothing binds a receiving world to honour them, and the licence text they refer to is enforced by law rather than by the format.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/meta.md",
+          "title": "VRMC_vrm.meta, License",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "License settings are settings that are referred from the license document and a licenser of the model can specify."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "partial",
+      "note": "Each extension carries its own version string, so a reader can tell what it is holding. Missing: no compatibility rule. VRM 0.x is a different extension key holding a different shape of data, so a 1.0 reader cannot read a 0.x file and the older line is now deprecated rather than bridged.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification, Version of VRMC_vrm specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "extensions.VRMC_vrm.specVersion = \"1.0\""
+        },
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/0.0/README.md",
+          "title": "VRM 0.x specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "VRM is based on glb format"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "partial",
+      "note": "There is machine-checkable structure: fourteen JSON Schema files for the core extension, and the consortium keeps a fork of the glTF validator that knows the VRM 1.0 extension. Missing: no test model corpus, no pass criteria and no certification, so structure can be checked but behaviour cannot. The validator fork has not been touched since 2022.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/tree/master/specification/VRMC_vrm-1.0/schema",
+          "title": "VRMC_vrm 1.0 JSON Schema",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        },
+        {
+          "url": "https://github.com/vrm-c/glTF-Validator",
+          "title": "vrm-c/glTF-Validator",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Tool to validate glTF assets. vrm-1.0 extension"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "none",
+      "note": "Nothing executable or interactive travels with a VRM. Expressions and constraints are declarative state a runtime evaluates every frame, not rules the avatar carries about how it responds to a world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_node_constraint-1.0/README.md",
+          "title": "VRMC_node_constraint 1.0",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "out-of-scope",
+      "note": "VRM is the thing that would be carried through a portal, not the protocol that carries it. It says nothing about leaving or arriving anywhere.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "out-of-scope",
+      "note": "A file format. It describes one avatar at rest and has no notion of a session, a peer or shared state.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "out-of-scope",
+      "note": "No language, no runtime, no executable content of any kind.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "VRM is a glTF extension set for one humanoid avatar at rest, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF represent an entire Scene, whereas VRM represent a Humanoid for VR avatar."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "VRM is a glTF extension set for one humanoid avatar at rest, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF represent an entire Scene, whereas VRM represent a Humanoid for VR avatar."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "VRM is a glTF extension set for one humanoid avatar at rest, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF represent an entire Scene, whereas VRM represent a Humanoid for VR avatar."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "out-of-scope",
+      "note": "VRM is a glTF extension set for one humanoid avatar at rest, and it names no Gaussian splat interchange format and carries no splat data.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF represent an entire Scene, whereas VRM represent a Humanoid for VR avatar."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "out-of-scope",
+      "note": "VRM is a glTF extension set for one humanoid avatar at rest, and it delivers no captured scene, progressively by region and detail or otherwise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF represent an entire Scene, whereas VRM represent a Humanoid for VR avatar."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "VRM is a glTF extension set for one humanoid avatar at rest, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF represent an entire Scene, whereas VRM represent a Humanoid for VR avatar."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "out-of-scope",
+      "note": "VRM is a glTF extension set for one humanoid avatar at rest, and it defines no encoding or compression for a set of points with attributes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF represent an entire Scene, whereas VRM represent a Humanoid for VR avatar."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "VRM is a glTF extension set for one humanoid avatar at rest, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF represent an entire Scene, whereas VRM represent a Humanoid for VR avatar."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "out-of-scope",
+      "note": "VRM is a glTF extension set for one humanoid avatar at rest, and it produces no image from a viewing position that no capture camera occupied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF represent an entire Scene, whereas VRM represent a Humanoid for VR avatar."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "VRM is a glTF extension set for one humanoid avatar at rest, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF represent an entire Scene, whereas VRM represent a Humanoid for VR avatar."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "VRM is a glTF extension set for one humanoid avatar at rest, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF represent an entire Scene, whereas VRM represent a Humanoid for VR avatar."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "VRM is a glTF extension set for one humanoid avatar at rest, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF represent an entire Scene, whereas VRM represent a Humanoid for VR avatar."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "VRM is a glTF extension set for one humanoid avatar at rest, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF represent an entire Scene, whereas VRM represent a Humanoid for VR avatar."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "VRM is a glTF extension set for one humanoid avatar at rest, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF represent an entire Scene, whereas VRM represent a Humanoid for VR avatar."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "VRM is a glTF extension set for one humanoid avatar at rest, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF represent an entire Scene, whereas VRM represent a Humanoid for VR avatar."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "VRM is a glTF extension set for one humanoid avatar at rest, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF represent an entire Scene, whereas VRM represent a Humanoid for VR avatar."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "out-of-scope",
+      "note": "VRM is a glTF extension set for one humanoid avatar at rest, and it carries no full 360-degree view of a place as an image with its projection stated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF represent an entire Scene, whereas VRM represent a Humanoid for VR avatar."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "out-of-scope",
+      "note": "An avatar format: where glTF represents a whole scene, VRM represents a humanoid. It describes a character, not the room a person is standing in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF represent an entire Scene, whereas VRM represent a Humanoid for VR avatar."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "Its named parts are bones, expressions and look-at behaviour on that character. Nothing labels a real surface.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF represent an entire Scene, whereas VRM represent a Humanoid for VR avatar."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "out-of-scope",
+      "note": "No depth of the physical world is carried; the format holds an avatar's geometry and metadata.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF represent an entire Scene, whereas VRM represent a Humanoid for VR avatar."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "Whether an avatar is hidden by a real wall is a decision for the application drawing it, not for the avatar format.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vrm-c/vrm-specification/blob/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "glTF represent an entire Scene, whereas VRM represent a Humanoid for VR avatar."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "out-of-scope",
+      "note": "VRM describes a humanoid avatar file. It never presents anything, so how a runtime blends its drawing with a camera view of the room cannot be its business.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.face",
+      "level": "out-of-scope",
+      "note": "This row is the sensor, VRM is the file. VRM defines the expressions an avatar can hold, which is avatar.expression; it reads no face and delivers no live stream.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "out-of-scope",
+      "note": "VRM carries a character, not a place. There is no floor in it for anyone to stand on and no arrival point to declare.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "out-of-scope",
+      "note": "An avatar file publishes no units of logic. Its expression names are fixed vocabulary inside one document, not addresses other authors depend on.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "out-of-scope",
+      "note": "VRM carries author-set usage permissions with the avatar, which is identity.rights. It describes no review of finished content and no publishing path where one could stand.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "No geographic frame in an avatar format, so no map to declare and nothing to align it to.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "An avatar is not a service bound to a place and states no area where it applies.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.extension",
+      "level": "native",
+      "note": "VRM 1.0 is explicitly written against glTF 2.0 and declares its VRMC_vrm extension in extensionsUsed; the containing asset retains glTF required/optional extension rules.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html",
+          "title": "glTF 2.0 Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Names of glTF extensions required to properly load this asset."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Written against the glTF 2.0 spec."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.color",
+      "level": "partial",
+      "note": "The VRM dependency on glTF establishes material-slot texture transfer functions; neither that inherited rule nor the avatar metadata establishes a display-output range contract.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html",
+          "title": "glTF 2.0 Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Effective transfer function (encoding) is defined by a glTF object that refers to the image"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Written against the glTF 2.0 spec."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.metadata",
+      "level": "native",
+      "note": "VRMC_vrm.meta defines structured model-level names, authors, references and usage properties; this is an avatar metadata schema rather than arbitrary domain ontology.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_vrm-1.0/meta.md",
+          "title": "VRMC_vrm.meta 1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "In the `meta` field of VRM, you can describe meta information about the model."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: VRM 1.0 specifies a humanoid avatar asset and companion glTF extensions. This row requires evidence and assurance information accompanying a claim, enabling the relying party to assess how the claim was established. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Written against the glTF 2.0 spec."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: VRM 1.0 specifies a humanoid avatar asset and companion glTF extensions. This row requires declaring the vocabulary, types, and validation schemas needed to interpret and check the structure of a claim. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Written against the glTF 2.0 spec."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: VRM 1.0 specifies a humanoid avatar asset and companion glTF extensions. This row requires pairwise identifiers and presentation mechanisms that reduce correlation across relationships, with their remaining correlation risks stated. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Written against the glTF 2.0 spec."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.thumbnail",
+      "level": "native",
+      "note": "The VRM 1.0 metadata thumbnailImage indexes the packaged glTF image independently of drawing the avatar.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_vrm-1.0/meta.md",
+          "title": "VRMC_vrm.meta 1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The index to access the thumbnail image of the model"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.encryption",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: VRM 1.0 specifies a humanoid avatar asset and companion glTF extensions. This row requires identifying recipient key material and algorithms that permit confidential communication or encrypted content for an intended subject. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Written against the glTF 2.0 spec."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.key-lifecycle",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: VRM 1.0 specifies a humanoid avatar asset and companion glTF extensions. This row requires rules for changing, revoking, or recovering identity-control keys and for discovering the applicable verification material. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Written against the glTF 2.0 spec."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: VRM 1.0 specifies a humanoid avatar asset and companion glTF extensions. This row requires a defined mechanism to discover the suspension, revocation, or other status of a credential after issuance. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Written against the glTF 2.0 spec."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: VRM 1.0 specifies a humanoid avatar asset and companion glTF extensions. This row requires runtime estimates of environmental illumination made available to content for lighting or reflections. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Written against the glTF 2.0 spec."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: VRM 1.0 specifies a humanoid avatar asset and companion glTF extensions. This row requires detecting recognized physical markers or images and reporting their tracked pose relative to a runtime reference space. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Written against the glTF 2.0 spec."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "via-extension",
+      "note": "The VRMC_vrm_animation companion exchanges timestamped humanoid motion through glTF animation samplers in a separate file; the base VRM avatar's unused animations array does not negate this named extension.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_vrm_animation-1.0/README.md",
+          "title": "VRM Animation",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The actual animation data uses the animation part of the glTF core definition."
+        },
+        {
+          "url": "https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html",
+          "title": "glTF 2.0 Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "a set of floating-point scalar values representing linear time in seconds"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.text",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: VRM 1.0 specifies a humanoid avatar asset and companion glTF extensions. This row requires receiving character or string entry through a defined input interface, separate from interpreting physical controller actions. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Written against the glTF 2.0 spec."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: VRM 1.0 specifies a humanoid avatar asset and companion glTF extensions. This row requires submitting distinct shaped image layers to a display compositor with their placement and composition properties. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Written against the glTF 2.0 spec."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.bounds",
+      "level": "partial",
+      "note": "The glTF mesh data underlying VRM carries position-accessor bounds, but that does not provide the full hierarchical pre-load spatial index required by this definition.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html",
+          "title": "glTF 2.0 Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "POSITION accessor MUST have its min and max properties defined."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Written against the glTF 2.0 spec."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "via-extension",
+      "note": "The companion VRMC_node_constraint extension specifies roll, aim and rotation constraints, including source nodes, weighting and evaluation order.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_node_constraint-1.0/README.md",
+          "title": "VRMC_node_constraint 1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This extension defines Roll Constraint, Aim Constraint, and Rotation Constraint."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: VRM 1.0 specifies a humanoid avatar asset and companion glTF extensions. This row requires runtime-reported physical play-area bounds and floor-relative reference information available to an application. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Written against the glTF 2.0 spec."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "native",
+      "note": "VRM humanoid bones are assigned to glTF nodes, whose exchanged hierarchy and transform-composition rules reconstruct linked frames; the claim concerns the avatar's transform tree.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html",
+          "title": "glTF 2.0 Specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The node hierarchy is defined using a node’s children property"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Assign a `part of the human body` (humanoid bone) to glTF.Node to define a humanoid model."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: VRM 1.0 specifies a humanoid avatar asset and companion glTF extensions. This row requires interchanging identified spatial zones, typed events scoped to them, and summaries with defined spatial and temporal meaning. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Written against the glTF 2.0 spec."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.consent",
+      "level": "partial",
+      "note": "Avatar usage permissions and licensing conditions travel in VRM metadata, but no per-use consent validity and withdrawal mechanism is defined by those fields.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_vrm-1.0/meta.md",
+          "title": "VRMC_vrm.meta 1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "license information will be specified in the `meta` field."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: VRM 1.0 specifies a humanoid avatar asset and companion glTF extensions. This row requires a machine-readable account of a recipient's evaluation and action, with any signature or integrity proof explicitly identified. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Written against the glTF 2.0 spec."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: VRM 1.0 specifies a humanoid avatar asset and companion glTF extensions. This row requires a destination's pre-arrival approval or refusal response, including any validity limit and optional explanatory information. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Written against the glTF 2.0 spec."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: VRM 1.0 specifies a humanoid avatar asset and companion glTF extensions. This row requires dispatching programmable non-raster GPU workloads against resources available through the graphics-compute API. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Written against the glTF 2.0 spec."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.frame-timing",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: VRM 1.0 specifies a humanoid avatar asset and companion glTF extensions. This row requires coordinating frame submission with predicted display timing and the view poses associated with that time. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Written against the glTF 2.0 spec."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: VRM 1.0 specifies a humanoid avatar asset and companion glTF extensions. This row requires asking a sensing runtime for ray intersections with its estimate of physical surroundings and receiving hit poses. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Written against the glTF 2.0 spec."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.privacy",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: VRM 1.0 specifies a humanoid avatar asset and companion glTF extensions. This row requires sensed-data disclosure controls such as spatial coarsening, payload use/retention declarations, and restricted or pseudonymous pose publication. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Written against the glTF 2.0 spec."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: VRM 1.0 specifies a humanoid avatar asset and companion glTF extensions. This row requires receiving typed musical instrument events with channel, note or control identifiers and values through a documented device or recorded-event input interface. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Written against the glTF 2.0 spec."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: VRM 1.0 specifies a humanoid avatar asset and companion glTF extensions. This row requires reconstructing a radiance field or Gaussian representation from observed images and camera information, including optimization controls and a trained scene usable for subsequent view synthesis. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Written against the glTF 2.0 spec."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.objectgen",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: VRM 1.0 specifies a humanoid avatar asset and companion glTF extensions. This row requires producing an individual three-dimensional object from a text or image prompt, with geometry or another renderable representation available for placement in a separately authored scene. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/vrm-c/vrm-specification/master/specification/VRMC_vrm-1.0/README.md",
+          "title": "VRMC_vrm 1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Written against the glTF 2.0 spec."
+        }
+      ]
+    }
+  ]
+}

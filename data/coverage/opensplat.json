@@ -1,0 +1,2137 @@
+{
+  "subject_id": "opensplat",
+  "summary": "OpenSplat is a free C++ implementation of three-dimensional Gaussian splat training, licensed under the GNU Affero General Public Licence version 3, now developed inside the WebODM drone-mapping ecosystem. It is the plainest tool in this group: a command that takes a reconstruction someone else solved, in ODX, OpenSfM, COLMAP, OpenMVG or Nerfstudio project form, and trains a splat from it on an NVIDIA, AMD or Apple graphics card, or on the processor alone at roughly a hundredth of the speed. Two things make it matter to a standards group. First, it writes four different splat containers from one training run — plain PLY, the compact .splat, Niantic's SPZ and Spark's .RAD level-of-detail format — which makes it a useful witness to how unsettled that layer is, and its .RAD writer is a port of another project's Rust tool rather than an implementation of a published specification. Second, it is the only tool scored here that carries a real coordinate reference system through training: because its inputs come from mapping pipelines, it keeps the input translation and scale by default and offers a switch to centre the result for viewers that cannot cope. What it does not do is run on a phone, solve its own camera poses, produce a mesh, or write a single field about licence, authorship or units into any of its four outputs.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "partial",
+      "note": "OpenSplat carries its own splat rasteriser three times over — a CUDA path, a HIP path for AMD and a Metal path for Apple, with a processor-only fallback — so the projection, sorting and blending are all its own. There is no render graph and no pass structure, because a training run draws one thing.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, hardware",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Graphics card recommended, but not required! OpenSplat runs the fastest on NVIDIA, AMD and Apple (Metal) GPUs, but can also run entirely on the CPU (~100x slower)."
+        },
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, credits",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The methods used in OpenSplat are originally based on splatfacto, but have been modified substantially."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "native",
+      "note": "Four backends are bound in the build: CUDA, HIP for ROCm, Metal on macOS and a plain processor path. Which one you get is a compile-time choice, and the processor path means the tool still runs where there is no usable graphics interface at all.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, hardware",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Graphics card recommended, but not required! OpenSplat runs the fastest on NVIDIA, AMD and Apple (Metal) GPUs, but can also run entirely on the CPU (~100x slower)."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "out-of-scope",
+      "note": "No surface material. Appearance is a set of spherical-harmonic coefficients and an opacity per Gaussian, written straight into every output file.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.hpp",
+          "title": "OpenSplat source, splat attribute layout",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "// Input splats, laid out exactly as Model::savePly writes them (post keepCrs):"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "out-of-scope",
+      "note": "Lighting is whatever the photographs contained. No lights are modelled, read or written.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.post",
+      "level": "out-of-scope",
+      "note": "There is no post-processing stage; the tool has no interactive viewer to apply one in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, viewing the result",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The program will generate an output `splat.ply` file which can then be dragged and dropped in one of the many viewers such as  https://playcanvas.com/viewer."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "partial",
+      "note": "The .RAD writer builds a real level-of-detail tree and reorders the splats into chunks so that a viewer can draw a coarse version first. It is one output format's private arrangement, ported from another project's tool, not an agreed streaming order that a receiver could rely on across formats.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.cpp",
+          "title": "OpenSplat source, .RAD writer header comment",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "// Writer for Spark's .RAD LoD gaussian splat format."
+        },
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.cpp",
+          "title": "OpenSplat source, .RAD writer provenance",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "// C++ port of the Rust build-lod tool (https://github.com/sparkjsdev/spark/tree/main/rust/build-lod)"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "native",
+      "note": "Training and rendering Gaussian splats is the whole of it, and unusually the rendering path works on a processor with no graphics card present.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        },
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, hardware",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Graphics card recommended, but not required! OpenSplat runs the fastest on NVIDIA, AMD and Apple (Metal) GPUs, but can also run entirely on the CPU (~100x slower)."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "out-of-scope",
+      "note": "No point clouds, voxels or volumetric video are drawn. Points are consumed as an initialisation and never drawn as points.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, run section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The project must have sparse points included (random initialization is not supported, see https://github.com/pierotofy/OpenSplat/issues/7)."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "out-of-scope",
+      "note": "No text rendering anywhere in the tool.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "partial",
+      "note": "Camera poses are read from the input project and can be written back out as a cameras JSON beside the splat, which is more than most of this group does. It is a side file with no stated schema, not a viewpoint model carried inside the scene.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, cameras output",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The program can also output a cameras JSON via `--output-cameras cameras.json`."
+        },
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, inputs and outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "OpenSplat takes camera poses + sparse points in ODX, OpenSfM, COLMAP, OpenMVG or nerfstudio project format and computes a scene file (.ply, .splat, .spz, or .rad) that can be later imported for viewing, editing and rendering in other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "out-of-scope",
+      "note": "The output is one flat set of Gaussians with no hierarchy of any kind.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.hpp",
+          "title": "OpenSplat source, splat attribute layout",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "// Input splats, laid out exactly as Model::savePly writes them (post keepCrs):"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "partial",
+      "note": "Handedness and axis order are inherited from the input project and passed through; the code restores the input translation and scale on the way out for every one of the four writers. Nothing in the written file states the convention, so a receiver still has to be told.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/model.cpp",
+          "title": "OpenSplat source, coordinate restoration in the PLY writer",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "torch::Tensor meansCpu = keepCrs ? (means.cpu() / scale) + translation : means.cpu();"
+        },
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, Coordinate Reference System",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "By default OpenSplat preserves the input coordinate reference system of the model. If you want to automatically center the result so that it displays nicely in most viewers, use --center."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "partial",
+      "note": "Four splat containers are written and only PLY is read back, for resuming a run. No general asset container — no glTF, no USD — is produced or consumed.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, inputs and outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "OpenSplat takes camera poses + sparse points in ODX, OpenSfM, COLMAP, OpenMVG or nerfstudio project format and computes a scene file (.ply, .splat, .spz, or .rad) that can be later imported for viewing, editing and rendering in other software."
+        },
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, resume",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can resume training of a .PLY file by using the `--resume` option:"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "out-of-scope",
+      "note": "No meshes are produced or consumed. Triangles are outside the tool entirely.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, inputs and outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "OpenSplat takes camera poses + sparse points in ODX, OpenSfM, COLMAP, OpenMVG or nerfstudio project format and computes a scene file (.ply, .splat, .spz, or .rad) that can be later imported for viewing, editing and rendering in other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "out-of-scope",
+      "note": "No texture images are written; colour lives in per-Gaussian coefficients.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.hpp",
+          "title": "OpenSplat source, splat attribute layout",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "// Input splats, laid out exactly as Model::savePly writes them (post keepCrs):"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "out-of-scope",
+      "note": "There is no material description to carry between renderers.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.hpp",
+          "title": "OpenSplat source, splat attribute layout",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "// Input splats, laid out exactly as Model::savePly writes them (post keepCrs):"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "out-of-scope",
+      "note": "Nothing time-varying is read or written. A run produces one still scene.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, inputs and outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "OpenSplat takes camera poses + sparse points in ODX, OpenSfM, COLMAP, OpenMVG or nerfstudio project format and computes a scene file (.ply, .splat, .spz, or .rad) that can be later imported for viewing, editing and rendering in other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "out-of-scope",
+      "note": "No bones and no binding; reconstruction produces an unstructured cloud.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.hpp",
+          "title": "OpenSplat source, splat attribute layout",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "// Input splats, laid out exactly as Model::savePly writes them (post keepCrs):"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "out-of-scope",
+      "note": "No blend shapes or morph targets exist in the representation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.hpp",
+          "title": "OpenSplat source, splat attribute layout",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "// Input splats, laid out exactly as Model::savePly writes them (post keepCrs):"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "out-of-scope",
+      "note": "Every Gaussian is stored individually; there is no repetition to exploit.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.hpp",
+          "title": "OpenSplat source, splat attribute layout",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "// Input splats, laid out exactly as Model::savePly writes them (post keepCrs):"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "out-of-scope",
+      "note": "One project trains into one scene file. No referencing, layering or overriding.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, inputs and outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "OpenSplat takes camera poses + sparse points in ODX, OpenSfM, COLMAP, OpenMVG or nerfstudio project format and computes a scene file (.ply, .splat, .spz, or .rad) that can be later imported for viewing, editing and rendering in other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "partial",
+      "note": "This is the one tool in the group where units can survive, and only by inheritance: mapping inputs carry a real-world scale, and the code divides out its internal scale and adds the translation back so the written positions are in the input's own metric frame. Neither the PLY nor the .RAD metadata says what that frame or unit is, so the knowledge lives outside the file.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, Coordinate Reference System",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "By default OpenSplat preserves the input coordinate reference system of the model. If you want to automatically center the result so that it displays nicely in most viewers, use --center."
+        },
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/model.cpp",
+          "title": "OpenSplat source, coordinate restoration in the PLY writer",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "torch::Tensor meansCpu = keepCrs ? (means.cpu() / scale) + translation : means.cpu();"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "none",
+      "note": "No licence field is written into any of the four formats. The .RAD metadata block carries version, type, count, chunk size and encoding, and no statement of rights.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.cpp",
+          "title": "OpenSplat source, .RAD file metadata keys",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "meta[\"type\"] = \"gsplat\";"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "none",
+      "note": "No authorship, no signature, no capture record. The only free-text field in the .RAD metadata is a comment.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.cpp",
+          "title": "OpenSplat source, .RAD file metadata keys",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "meta[\"type\"] = \"gsplat\";"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "out-of-scope",
+      "note": "There is no avatar concept. OpenSplat reconstructs places and objects from mapping data.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, inputs and outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "OpenSplat takes camera poses + sparse points in ODX, OpenSfM, COLMAP, OpenMVG or nerfstudio project format and computes a scene file (.ply, .splat, .spz, or .rad) that can be later imported for viewing, editing and rendering in other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "out-of-scope",
+      "note": "No bone naming or structure, so animation transfer never arises.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.hpp",
+          "title": "OpenSplat source, splat attribute layout",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "// Input splats, laid out exactly as Model::savePly writes them (post keepCrs):"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "out-of-scope",
+      "note": "No expressions or visemes are modelled.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.hpp",
+          "title": "OpenSplat source, splat attribute layout",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "// Input splats, laid out exactly as Model::savePly writes them (post keepCrs):"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "out-of-scope",
+      "note": "No rigs exist on either side, so there is nothing to retarget.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.hpp",
+          "title": "OpenSplat source, splat attribute layout",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "// Input splats, laid out exactly as Model::savePly writes them (post keepCrs):"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "out-of-scope",
+      "note": "No attachment points and no worn items.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.hpp",
+          "title": "OpenSplat source, splat attribute layout",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "// Input splats, laid out exactly as Model::savePly writes them (post keepCrs):"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "out-of-scope",
+      "note": "The level-of-detail work is scene-wide, and there is no avatar to reduce.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.cpp",
+          "title": "OpenSplat source, .RAD writer header comment",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "// Writer for Spark's .RAD LoD gaussian splat format."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "out-of-scope",
+      "note": "No identity is bound to anything the tool produces.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.cpp",
+          "title": "OpenSplat source, .RAD file metadata keys",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "meta[\"type\"] = \"gsplat\";"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "out-of-scope",
+      "note": "Nothing is simulated; the output is a static cloud.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "out-of-scope",
+      "note": "No collision geometry is derived, and no mesh exists to derive it from.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, inputs and outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "OpenSplat takes camera poses + sparse points in ODX, OpenSfM, COLMAP, OpenMVG or nerfstudio project format and computes a scene file (.ply, .splat, .spz, or .rad) that can be later imported for viewing, editing and rendering in other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "out-of-scope",
+      "note": "No bodies, therefore no joints.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.material",
+      "level": "out-of-scope",
+      "note": "No friction or surface response is represented.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.determinism",
+      "level": "out-of-scope",
+      "note": "There is no simulation to reproduce between machines.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "out-of-scope",
+      "note": "Nothing deformable is modelled.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "out-of-scope",
+      "note": "No regions and no events.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "out-of-scope",
+      "note": "A photogrammetric capture carries no sound.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, inputs and outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "OpenSplat takes camera poses + sparse points in ODX, OpenSfM, COLMAP, OpenMVG or nerfstudio project format and computes a scene file (.ply, .splat, .spz, or .rad) that can be later imported for viewing, editing and rendering in other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "out-of-scope",
+      "note": "No spatialisation, because there is no audio.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, inputs and outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "OpenSplat takes camera poses + sparse points in ODX, OpenSfM, COLMAP, OpenMVG or nerfstudio project format and computes a scene file (.ply, .splat, .spz, or .rad) that can be later imported for viewing, editing and rendering in other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "out-of-scope",
+      "note": "The tool reconstructs how a place looks and nothing about how it sounds.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, inputs and outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "OpenSplat takes camera poses + sparse points in ODX, OpenSfM, COLMAP, OpenMVG or nerfstudio project format and computes a scene file (.ply, .splat, .spz, or .rad) that can be later imported for viewing, editing and rendering in other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "out-of-scope",
+      "note": "No acoustic model exists to occlude.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, inputs and outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "OpenSplat takes camera poses + sparse points in ODX, OpenSfM, COLMAP, OpenMVG or nerfstudio project format and computes a scene file (.ply, .splat, .spz, or .rad) that can be later imported for viewing, editing and rendering in other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "out-of-scope",
+      "note": "No audio is delivered by any part of the project.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, inputs and outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "OpenSplat takes camera poses + sparse points in ODX, OpenSfM, COLMAP, OpenMVG or nerfstudio project format and computes a scene file (.ply, .splat, .spz, or .rad) that can be later imported for viewing, editing and rendering in other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "out-of-scope",
+      "note": "No session and no participants, so no voice.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "out-of-scope",
+      "note": "Nothing is shared live; the tool is a batch command.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "out-of-scope",
+      "note": "No shared state and therefore no authority model.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "out-of-scope",
+      "note": "No clients exist to filter content for.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.prediction",
+      "level": "out-of-scope",
+      "note": "No live traffic and no latency to hide.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "out-of-scope",
+      "note": "The tool reads and writes local files; distributed training across machines is listed as a wish, not a protocol.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.media",
+      "level": "out-of-scope",
+      "note": "No live media is carried in either direction.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "out-of-scope",
+      "note": "There is no world to join and no authentication.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "out-of-scope",
+      "note": "No portals and no state to carry through one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "out-of-scope",
+      "note": "Nothing knows who is where.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "out-of-scope",
+      "note": "Scenes are file paths on disk. No naming or resolution scheme exists.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, viewing the result",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The program will generate an output `splat.ply` file which can then be dragged and dropped in one of the many viewers such as  https://playcanvas.com/viewer."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "out-of-scope",
+      "note": "Nothing is discovered; the operator supplies the project directory.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, inputs and outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "OpenSplat takes camera poses + sparse points in ODX, OpenSfM, COLMAP, OpenMVG or nerfstudio project format and computes a scene file (.ply, .splat, .spz, or .rad) that can be later imported for viewing, editing and rendering in other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "out-of-scope",
+      "note": "No shared clock and no ordering problem to solve.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "out-of-scope",
+      "note": "No identifiers for people, agents or things appear anywhere.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.cpp",
+          "title": "OpenSplat source, .RAD file metadata keys",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "meta[\"type\"] = \"gsplat\";"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "out-of-scope",
+      "note": "No verifiable claims are expressed or read.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.cpp",
+          "title": "OpenSplat source, .RAD file metadata keys",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "meta[\"type\"] = \"gsplat\";"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "out-of-scope",
+      "note": "No credential presentation protocol exists.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.cpp",
+          "title": "OpenSplat source, .RAD file metadata keys",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "meta[\"type\"] = \"gsplat\";"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "out-of-scope",
+      "note": "No permission model; the tool runs locally on files the operator already holds.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "out-of-scope",
+      "note": "No claims travel with a capture, so nothing can be selectively disclosed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.cpp",
+          "title": "OpenSplat source, .RAD file metadata keys",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "meta[\"type\"] = \"gsplat\";"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.social",
+      "level": "out-of-scope",
+      "note": "No relationships or standing are represented.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.cpp",
+          "title": "OpenSplat source, .RAD file metadata keys",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "meta[\"type\"] = \"gsplat\";"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "out-of-scope",
+      "note": "No licence terms are carried, so none can be acted on downstream.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.cpp",
+          "title": "OpenSplat source, .RAD file metadata keys",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "meta[\"type\"] = \"gsplat\";"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "partial",
+      "note": "Because the inputs come from mapping pipelines, a georeferenced project produces splats whose positions are in that Earth frame, and the code deliberately restores the input translation and scale to keep them there. Orientation against the Earth is not stated and no pose record is written, so the file is georeferenced only in the sense that its numbers happen to be.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, Coordinate Reference System",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "By default OpenSplat preserves the input coordinate reference system of the model. If you want to automatically center the result so that it displays nicely in most viewers, use --center."
+        },
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/model.cpp",
+          "title": "OpenSplat source, coordinate restoration in the PLY writer",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "torch::Tensor meansCpu = keepCrs ? (means.cpu() / scale) + translation : means.cpu();"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "partial",
+      "note": "The tool is the only one in this group that knows the phrase: it preserves the input coordinate reference system by default and offers a switch to centre the model instead. It never names the system in the output, so a recipient who did not see the input project cannot tell which frame the numbers are in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, Coordinate Reference System",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "By default OpenSplat preserves the input coordinate reference system of the model. If you want to automatically center the result so that it displays nicely in most viewers, use --center."
+        },
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/model.cpp",
+          "title": "OpenSplat source, coordinate restoration in the PLY writer",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "torch::Tensor meansCpu = keepCrs ? (means.cpu() / scale) + translation : means.cpu();"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "out-of-scope",
+      "note": "There is no device and no live session in which to anchor anything.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "out-of-scope",
+      "note": "No shared or persistent anchors are defined.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.vps",
+      "level": "out-of-scope",
+      "note": "No localisation from imagery. Camera poses arrive already solved.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, run section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The project must have sparse points included (random initialization is not supported, see https://github.com/pierotofy/OpenSplat/issues/7)."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "partial",
+      "note": "The .RAD writer chunks a scene at a fixed chunk size with a level-of-detail tree, which is tiling in the streaming sense. It is not geographic tiling: no tile scheme, no geographic extent and no relationship to any map exists.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.cpp",
+          "title": "OpenSplat source, .RAD writer header comment",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "// Writer for Spark's .RAD LoD gaussian splat format."
+        },
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.cpp",
+          "title": "OpenSplat source, .RAD file metadata keys",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "meta[\"type\"] = \"gsplat\";"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.indoor",
+      "level": "out-of-scope",
+      "note": "Interiors are reconstructed as appearance only; no structured description of rooms or floors is produced.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, inputs and outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "OpenSplat takes camera poses + sparse points in ODX, OpenSfM, COLMAP, OpenMVG or nerfstudio project format and computes a scene file (.ply, .splat, .spz, or .rad) that can be later imported for viewing, editing and rendering in other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "out-of-scope",
+      "note": "No immersive session; the tool is a command line program.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "out-of-scope",
+      "note": "No controller input is consumed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "out-of-scope",
+      "note": "No hand tracking of any kind.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.eye",
+      "level": "out-of-scope",
+      "note": "No gaze input, and no eye data ever reaches the tool.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "out-of-scope",
+      "note": "No haptic output; the program writes files.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "partial",
+      "note": "The build discovers what the machine can do at compile time and falls back: on macOS the Metal path reverts to processor-only if the Metal compiler is missing, and a processor-only build can be forced. Nothing describes those capabilities to any other party.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, hardware",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Graphics card recommended, but not required! OpenSplat runs the fastest on NVIDIA, AMD and Apple (Metal) GPUs, but can also run entirely on the CPU (~100x slower)."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "out-of-scope",
+      "note": "No scripting runtime; behaviour is command-line flags.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "out-of-scope",
+      "note": "No interactivity travels with a splat file.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, inputs and outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "OpenSplat takes camera poses + sparse points in ODX, OpenSfM, COLMAP, OpenMVG or nerfstudio project format and computes a scene file (.ply, .splat, .spz, or .rad) that can be later imported for viewing, editing and rendering in other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "out-of-scope",
+      "note": "There is no guest content and no isolation problem.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "out-of-scope",
+      "note": "No agents act inside the produced scenes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "partial",
+      "note": "The documentation states a real budget rule — about two kilobytes of memory per Gaussian, so roughly two gigabytes per million — and training flags bound the work. This bounds the tool's own run, not any guest content.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, GPU memory notes",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A single gaussian takes ~2000 bytes of memory, so currenly you need ~2GB of GPU memory for each million gaussians."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "out-of-scope",
+      "note": "Nothing runs, so nothing survives a restart. Training can be resumed from a written PLY, which is a checkpoint rather than world state.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, resume",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can resume training of a .PLY file by using the `--resume` option:"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "out-of-scope",
+      "note": "No items and nobody to hold them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "out-of-scope",
+      "note": "No user preferences are stored or carried.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "out-of-scope",
+      "note": "Files are named, never hashed. No content addressing is offered.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, viewing the result",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The program will generate an output `splat.ply` file which can then be dragged and dropped in one of the many viewers such as  https://playcanvas.com/viewer."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "out-of-scope",
+      "note": "The output is an asset file, not a runnable experience.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, inputs and outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "OpenSplat takes camera poses + sparse points in ODX, OpenSfM, COLMAP, OpenMVG or nerfstudio project format and computes a scene file (.ply, .splat, .spz, or .rad) that can be later imported for viewing, editing and rendering in other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "out-of-scope",
+      "note": "Delivery is left entirely to whatever hosts the file afterwards.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, viewing the result",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The program will generate an output `splat.ply` file which can then be dragged and dropped in one of the many viewers such as  https://playcanvas.com/viewer."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "partial",
+      "note": "The written .RAD carries a format version number in its metadata, which is more than the PLY output does. There is no versioning of the content itself and no update path for a scene already delivered.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.cpp",
+          "title": "OpenSplat source, .RAD file metadata keys",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "meta[\"type\"] = \"gsplat\";"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "none",
+      "note": "No conformance suite, and the .RAD case shows why it would matter: the writer is a hand port of another project's Rust tool, so agreement with that project is a matter of the port being right rather than of either side passing a shared test.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.cpp",
+          "title": "OpenSplat source, .RAD writer provenance",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "// C++ port of the Rust build-lod tool (https://github.com/sparkjsdev/spark/tree/main/rust/build-lod)"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "Nothing is generated. Every Gaussian is fitted to photographs that were actually taken.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "No learned model continues a world; training produces a fixed scene.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "partial",
+      "note": "It turns ordinary photographs into a three-dimensional scene, and will do it on a laptop with no graphics card. Two parts of the definition are missing: camera poses and sparse points must come from another program, with random initialisation explicitly unsupported, and the result is splats rather than a textured mesh.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, inputs and outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "OpenSplat takes camera poses + sparse points in ODX, OpenSfM, COLMAP, OpenMVG or nerfstudio project format and computes a scene file (.ply, .splat, .spz, or .rad) that can be later imported for viewing, editing and rendering in other software."
+        },
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, run section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The project must have sparse points included (random initialization is not supported, see https://github.com/pierotofy/OpenSplat/issues/7)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "native",
+      "note": "Four named containers come out of one run: plain PLY, .splat, Niantic's SPZ and Spark's .RAD. Reading is narrower — a PLY can be read back to resume training — so the tool is a producer of interchange files rather than a consumer of them.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, inputs and outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "OpenSplat takes camera poses + sparse points in ODX, OpenSfM, COLMAP, OpenMVG or nerfstudio project format and computes a scene file (.ply, .splat, .spz, or .rad) that can be later imported for viewing, editing and rendering in other software."
+        },
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, resume",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can resume training of a .PLY file by using the `--resume` option:"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "partial",
+      "note": "The .RAD output is built for progressive delivery: a level-of-detail tree, splats reordered into chunks of sixty-five thousand, and per-chunk metadata. It is one format's arrangement with no agreed protocol around it, and the other three outputs stream not at all.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.cpp",
+          "title": "OpenSplat source, .RAD writer header comment",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "// Writer for Spark's .RAD LoD gaussian splat format."
+        },
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.cpp",
+          "title": "OpenSplat source, .RAD file metadata keys",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "meta[\"type\"] = \"gsplat\";"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "Nothing time-varying is captured or replayed; a run produces one still scene.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, inputs and outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "OpenSplat takes camera poses + sparse points in ODX, OpenSfM, COLMAP, OpenMVG or nerfstudio project format and computes a scene file (.ply, .splat, .spz, or .rad) that can be later imported for viewing, editing and rendering in other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "partial",
+      "note": "Sparse points are required on the way in and are read from the input project; nothing is written as a point cloud. The tool is a point-cloud consumer and a splat producer.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, run section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The project must have sparse points included (random initialization is not supported, see https://github.com/pierotofy/OpenSplat/issues/7)."
+        },
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, inputs and outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "OpenSplat takes camera poses + sparse points in ODX, OpenSfM, COLMAP, OpenMVG or nerfstudio project format and computes a scene file (.ply, .splat, .spz, or .rad) that can be later imported for viewing, editing and rendering in other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "none",
+      "note": "Calibrated views arrive with poses and without depth. Nothing in the tool reads or writes per-pixel depth alongside its cameras.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, inputs and outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "OpenSplat takes camera poses + sparse points in ODX, OpenSfM, COLMAP, OpenMVG or nerfstudio project format and computes a scene file (.ply, .splat, .spz, or .rad) that can be later imported for viewing, editing and rendering in other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "native",
+      "note": "The trained model renders the scene from viewpoints no camera occupied; that is what the optimisation is fitting for, and the processor path can do it without a graphics card.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        },
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, hardware",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Graphics card recommended, but not required! OpenSplat runs the fastest on NVIDIA, AMD and Apple (Metal) GPUs, but can also run entirely on the CPU (~100x slower)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "none",
+      "note": "There is no time axis anywhere: no dynamic input, no per-frame output, no sequence support. For a tool whose peers all at least play sequences back, that is an absence rather than a category error.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, inputs and outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "OpenSplat takes camera poses + sparse points in ODX, OpenSfM, COLMAP, OpenMVG or nerfstudio project format and computes a scene file (.ply, .splat, .spz, or .rad) that can be later imported for viewing, editing and rendering in other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "none",
+      "note": "A capture keeps the light it was taken in. No lighting terms are separated and no relighting path exists.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "partial",
+      "note": "Editing is at the input: grayscale masks exclude parts of each photograph, white kept and black ignored, and training can resume from an edited PLY, so an edit made in another tool can be carried forward. There is no way to crop, delete or recolour a trained scene inside OpenSplat.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, image masks",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Masks are grayscale images matching the input dimensions: white marks pixels to keep, black pixels to ignore."
+        },
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, resume",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can resume training of a .PLY file by using the `--resume` option:"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "Nothing is generated, so nothing can be changed by description.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "There is no generating system to specify a world to.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "none",
+      "note": "No mesh, no point cloud and no conventional asset is derived from a trained scene. The .RAD level tree produces coarser splats, which are still splats.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.cpp",
+          "title": "OpenSplat source, .RAD writer header comment",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "// Writer for Spark's .RAD LoD gaussian splat format."
+        },
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, inputs and outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "OpenSplat takes camera poses + sparse points in ODX, OpenSfM, COLMAP, OpenMVG or nerfstudio project format and computes a scene file (.ply, .splat, .spz, or .rad) that can be later imported for viewing, editing and rendering in other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "No agent actions or control signals pass in or out.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "none",
+      "note": "No panoramic input or output. Inputs are perspective images with poses, undistorted by the tool before training.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/releases/tag/v1.2.0",
+          "title": "OpenSplat release v1.2.0, 2026-08-20",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Feat: masks, zip files, leaner, faster, OPENCV_FULL undistortion"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "out-of-scope",
+      "note": "Nothing is sensed. The tool consumes a finished reconstruction project.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, inputs and outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "OpenSplat takes camera poses + sparse points in ODX, OpenSfM, COLMAP, OpenMVG or nerfstudio project format and computes a scene file (.ply, .splat, .spz, or .rad) that can be later imported for viewing, editing and rendering in other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "Nothing is labelled or classified at any stage.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, inputs and outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "OpenSplat takes camera poses + sparse points in ODX, OpenSfM, COLMAP, OpenMVG or nerfstudio project format and computes a scene file (.ply, .splat, .spz, or .rad) that can be later imported for viewing, editing and rendering in other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "out-of-scope",
+      "note": "No depth sensor is read and no depth map is produced.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, inputs and outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "OpenSplat takes camera poses + sparse points in ODX, OpenSfM, COLMAP, OpenMVG or nerfstudio project format and computes a scene file (.ply, .splat, .spz, or .rad) that can be later imported for viewing, editing and rendering in other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "There is no live camera view to occlude against.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "out-of-scope",
+      "note": "No passthrough or environment blending; the program has no live view at all.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.face",
+      "level": "out-of-scope",
+      "note": "No face or body tracking is consumed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "out-of-scope",
+      "note": "Nothing states where a body may stand in a captured place.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, inputs and outputs",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "OpenSplat takes camera poses + sparse points in ODX, OpenSfM, COLMAP, OpenMVG or nerfstudio project format and computes a scene file (.ply, .splat, .spz, or .rad) that can be later imported for viewing, editing and rendering in other software."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "out-of-scope",
+      "note": "No published unit of logic, so no naming question.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, opening",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A free and open source implementation of 3D gaussian splatting written in C++, focused on being portable, lean and fast."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "out-of-scope",
+      "note": "Nothing stands between a capture and its viewer; the whole run is local, and the notebook path runs in the operator's own cloud session.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, Google Colab",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "To run OpenSplat in Google Colab follow this example notebook."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "No map is declared, versioned or aligned; the tool passes a frame through without describing it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/README.md",
+          "title": "OpenSplat README, Coordinate Reference System",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "By default OpenSplat preserves the input coordinate reference system of the model. If you want to automatically center the result so that it displays nicely in most viewers, use --center."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "No geographic extent is declared for an output, even when the input was georeferenced.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebODM/OpenSplat/blob/main/rad.cpp",
+          "title": "OpenSplat source, .RAD file metadata keys",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "meta[\"type\"] = \"gsplat\";"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "out-of-scope",
+      "note": "OpenSplat is assessed here as a Gaussian training implementation that consumes camera poses and sparse points and writes scene files. The subject does not issue or exchange trust claims whose establishment a relying party evaluates; reconstruction confidence is a different quantity.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "out-of-scope",
+      "note": "OpenSplat is assessed here as a Gaussian training implementation that consumes camera poses and sparse points and writes scene files. The subject's scene or model data types are not a vocabulary for identity claims exchanged with a relying party.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "out-of-scope",
+      "note": "OpenSplat is assessed here as a Gaussian training implementation that consumes camera poses and sparse points and writes scene files. The subject is not an identity-presentation system with pairwise relationship identifiers and correlation guarantees.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.encryption",
+      "level": "out-of-scope",
+      "note": "OpenSplat is assessed here as a Gaussian training implementation that consumes camera poses and sparse points and writes scene files. Image, geometry and device processing do not define recipient identity keys or confidential identity delivery.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.key-lifecycle",
+      "level": "out-of-scope",
+      "note": "OpenSplat is assessed here as a Gaussian training implementation that consumes camera poses and sparse points and writes scene files. The subject does not govern identity-control key rotation, revocation or recovery; account administration belongs to its host.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "out-of-scope",
+      "note": "OpenSplat is assessed here as a Gaussian training implementation that consumes camera poses and sparse points and writes scene files. The subject does not issue portable credentials with a post-issuance status-discovery mechanism.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "out-of-scope",
+      "note": "OpenSplat is assessed here as a Gaussian training implementation that consumes camera poses and sparse points and writes scene files. An authoring application's own menus do not define reusable layout and presentation of interface surfaces for content consumers.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "out-of-scope",
+      "note": "OpenSplat is assessed here as a Gaussian training implementation that consumes camera poses and sparse points and writes scene files. Captured appearance and inferred training exposure are not runtime environmental illumination estimates supplied to content.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "out-of-scope",
+      "note": "OpenSplat is assessed here as a Gaussian training implementation that consumes camera poses and sparse points and writes scene files. Offline calibration targets or reference photos do not expose runtime physical-marker detection with tracked poses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "out-of-scope",
+      "note": "OpenSplat is assessed here as a Gaussian training implementation that consumes camera poses and sparse points and writes scene files. Editor selection or image masking is not an exposed runtime picking interface that returns the intersected scene object or geometry.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.text",
+      "level": "out-of-scope",
+      "note": "OpenSplat is assessed here as a Gaussian training implementation that consumes camera poses and sparse points and writes scene files. Prompt strings or command-line parameters are authoring inputs, not a defined runtime character-entry interface for scene applications.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "out-of-scope",
+      "note": "OpenSplat is assessed here as a Gaussian training implementation that consumes camera poses and sparse points and writes scene files. The selected interface is not a display compositor accepting independently shaped image layers and composition properties.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "out-of-scope",
+      "note": "OpenSplat is assessed here as a Gaussian training implementation that consumes camera poses and sparse points and writes scene files. Fitted motion and ordinary parenting are not authored node-to-node transform constraints with runtime evaluation rules.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "out-of-scope",
+      "note": "OpenSplat is assessed here as a Gaussian training implementation that consumes camera poses and sparse points and writes scene files. Image sequences used as reconstruction observations do not reference synchronized audiovisual media as content within a separately authored scene.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "out-of-scope",
+      "note": "OpenSplat is assessed here as a Gaussian training implementation that consumes camera poses and sparse points and writes scene files. Capture extents or a training region do not report the user's usable physical play area and floor-relative reference.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "out-of-scope",
+      "note": "OpenSplat is assessed here as a Gaussian training implementation that consumes camera poses and sparse points and writes scene files. The selected reconstruction or sensing interface does not exchange a sound-synthesis model for evaluation during playback.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "out-of-scope",
+      "note": "OpenSplat is assessed here as a Gaussian training implementation that consumes camera poses and sparse points and writes scene files. The subject does not publish an exchange of identified spatial zones and typed, temporally scoped events; scene bounds or capture locations are not that protocol.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.consent",
+      "level": "out-of-scope",
+      "note": "OpenSplat is assessed here as a Gaussian training implementation that consumes camera poses and sparse points and writes scene files. An application permission dialog or dataset licence does not carry a subject-bound grant with scope, purpose, validity and withdrawal information.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "out-of-scope",
+      "note": "OpenSplat is assessed here as a Gaussian training implementation that consumes camera poses and sparse points and writes scene files. Training metrics and processing status are not machine-readable accounts of a recipient evaluating and acting on an arriving subject or claim.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "OpenSplat is assessed here as a Gaussian training implementation that consumes camera poses and sparse points and writes scene files. The selected subject does not define arrival between independent destinations; local API setup and asset loading are not pre-arrival admission responses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.frame-timing",
+      "level": "out-of-scope",
+      "note": "OpenSplat is assessed here as a Gaussian training implementation that consumes camera poses and sparse points and writes scene files. Offline fitting or ordinary preview playback does not coordinate application frame submission with a predicted headset display time and matching view poses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "out-of-scope",
+      "note": "OpenSplat is assessed here as a Gaussian training implementation that consumes camera poses and sparse points and writes scene files. Implementation shaders or learned weights do not make the subject a specified shader language with common execution semantics.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.parametric",
+      "level": "out-of-scope",
+      "note": "OpenSplat is assessed here as a Gaussian training implementation that consumes camera poses and sparse points and writes scene files. The selected representation is sampled imagery, points, splats or meshes; it does not carry exact parametric curves and surfaces for another system to evaluate.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "out-of-scope",
+      "note": "OpenSplat is assessed here as a Gaussian training implementation that consumes camera poses and sparse points and writes scene files. Gaussian primitives and optimized point samples are a representation, not exchanged emitters with runtime particle simulation parameters.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.style",
+      "level": "out-of-scope",
+      "note": "OpenSplat is assessed here as a Gaussian training implementation that consumes camera poses and sparse points and writes scene files. Capture edits and model appearance are not separate metadata-driven rules for selecting scene-feature visibility or color.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "out-of-scope",
+      "note": "OpenSplat is assessed here as a Gaussian training implementation that consumes camera poses and sparse points and writes scene files. Offline reconstructed geometry is not a sensing runtime that answers physical-environment ray queries with hit poses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "out-of-scope",
+      "note": "OpenSplat is assessed here as a Gaussian training implementation that consumes camera poses and sparse points and writes scene files. The subject does not expose a musical-instrument device or recorded-event input interface with channels, notes and controllers.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "native",
+      "note": "OpenSplat consumes posed sparse reconstructions, exposes training/resume/mask controls and writes PLY, splat, SPZ or RAD scene files for later rendering; no runtime test was performed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/WebODM/OpenSplat/687cc91bbe665cff928998536b6e8bd5bbeb942e/README.md",
+          "title": "OpenSplat README",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "You can resume training of a .PLY file by using the `--resume` option:"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.objectgen",
+      "level": "out-of-scope",
+      "note": "OpenSplat is assessed here as a Gaussian training implementation that consumes camera poses and sparse points and writes scene files. This observation-fitting or device-sensing boundary does not synthesize a separate placeable object from a text or single-image prompt.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "native",
+      "note": "OpenSplat reads image-associated Nerfstudio transform_matrix records and COLMAP camera/image records. The COLMAP parser constructs camera-to-world transforms from the imported quaternion/translation convention. The image identity, local camera frame and shared reconstruction frame are linked, rather than supplied as unrelated position numbers.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/WebODM/OpenSplat/687cc91bbe665cff928998536b6e8bd5bbeb942e/nerfstudio.cpp",
+          "title": "opensplat nerfstudio.cpp",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "j.at(\"transform_matrix\").get_to(f.transformMatrix);"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/WebODM/OpenSplat/687cc91bbe665cff928998536b6e8bd5bbeb942e/colmap.cpp",
+          "title": "opensplat colmap.cpp",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "camToWorld"
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "native",
+      "note": "OpenSplat CUDA bindings explicitly dispatch fused loss forward, reduction and backward kernels over GPU tensor buffers. These loss and gradient computations are non-raster workloads, independently of its Gaussian rendering kernels.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/WebODM/OpenSplat/687cc91bbe665cff928998536b6e8bd5bbeb942e/rasterizer/gsplat/bindings.cu",
+          "title": "opensplat rasterizer gsplat bindings.cu",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "fused_loss_bwd_kernel<<<grid, block>>>"
+        }
+      ]
+    }
+  ]
+}

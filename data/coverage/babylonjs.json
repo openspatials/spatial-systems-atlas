@@ -1,0 +1,2342 @@
+{
+  "subject_id": "babylonjs",
+  "summary": "Babylon.js is an open-source web rendering engine and application framework from Microsoft and community contributors, shipping as one core package plus official sibling packages for asset loading, asset saving, user interface, add-ons and editors; the newest release when this was written is 9.22.1, published 2026-08-20. It is far more than a renderer: it covers the scene graph, animation, skinning, morph targets, instancing, glTF import and export with a very wide extension set, Gaussian splat rendering, a node-based material system, a node-based frame graph, and a full immersive session stack on the WebXR Device API with controller, hand, eye and body tracking. Physics is not in the engine at all. Every physics row below is delivered by a plug-in wrapping an outside engine: Havok is the only one on the current second-generation physics interface, and Ammo.js on the older interface is the only one that does soft bodies and cloth. It does no networking, no shared state, no identity and no persistence beyond writing a file on the client, so a multi-user world built on it must get all of that from somewhere else. Three traps for a standards audience: the scene is left-handed and Y-up by default, so right-handed glTF content is imported under a wrapper node carrying a negative Z scale unless the application opts into a right-handed scene; the WebGPU engine, which the project itself calls complete, still has no multiview, so immersive sessions in practice run on WebGL; and the loaders reach out to Babylon's own content network by default to fetch the Draco, meshopt, KTX2 and Basis decoders, which the project's own documentation warns against in production. Levels below read 'native' for anything shipped and maintained by the Babylon.js project itself, with the package named in the note, and 'via-extension' for anything that needs software from outside the project.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "native",
+      "note": "The core package rasterises the scene, and since version 9 a Frame Graph and its node-based editor let an application define the passes of a frame explicitly instead of using the fixed render loop.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/frameGraph",
+          "title": "Frame Graph",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "a powerful tool for creating and configuring the different rendering passes used over the course of a frame"
+        },
+        {
+          "url": "https://doc.babylonjs.com/whats-new",
+          "title": "What's New (9.0.0)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Frame Graph"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "native",
+      "note": "Targets WebGL 1, WebGL 2 and WebGPU from the same code, and the project calls the WebGPU port complete, but the listed exceptions include multiview, which is what immersive sessions need, so headsets in practice still run on WebGL.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/setup/support/webGPU",
+          "title": "WebGPU Support",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Support for WebGL and WebGPU is maintained side by side for the foreseeable future."
+        },
+        {
+          "url": "https://doc.babylonjs.com/setup/support/webGPU/webGPUStatus",
+          "title": "WebGPU Status",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The implementation in WebGPU is complete and, besides a few exceptions, all features are available both in WebGPU and WebGL"
+        },
+        {
+          "url": "https://doc.babylonjs.com/setup/support/webGPU/webGPUStatus",
+          "title": "WebGPU Status, multiview entry",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Not implemented yet, and neither Chrome nor the WebGPU specifications support it"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "native",
+      "note": "Core ships a simple material, a physically based material covering both glTF workflows plus clear coat, sheen, iridescence, anisotropy, transmission and sub-surface, and a node-based material with a visual editor; OpenPBR support was added in version 9 and the release notes label it alpha.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/materials/node_material/nodeMaterial",
+          "title": "Node Material",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The Node Material is a simple, highly customizable material that you can build yourself piece by piece."
+        },
+        {
+          "url": "https://doc.babylonjs.com/whats-new",
+          "title": "What's New (9.0.0)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "OpenPBR Support — Alpha"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "native",
+      "note": "Point, directional, spot, hemispheric and rectangular area lights, cascaded shadow maps for directional lights, image-based lighting through a packed environment file, reflection probes and lightmaps; two real-time indirect light systems exist and both carry official caveats.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/lights/rsmgi",
+          "title": "Global illumination from reflective shadow maps",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This algorithm can't compete with other GI algorithms"
+        },
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/postProcesses/IBLShadowsRenderingPipeline",
+          "title": "IBL Shadows Rendering Pipeline",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "this technique is only practical for static shadow-casting scenes"
+        },
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/lights/shadows_csm",
+          "title": "Cascaded shadow maps",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "but they are only available for **directional lights**"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.post",
+      "level": "native",
+      "note": "A default pipeline bundles anti-aliasing, bloom, depth of field, grain, sharpening and chromatic aberration, with separate pipelines for ambient occlusion, screen space reflections, temporal anti-aliasing and motion blur.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/postProcesses/SSAORenderPipeline",
+          "title": "Screen space ambient occlusion pipeline",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "is a rendering pipeline (chained post-processes) that computes the ambient occlusion of a given scene"
+        },
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/postProcesses/SSRRenderingPipeline",
+          "title": "Screen space reflections pipeline",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This rendering pipeline is new in Babylon.js 5.51.0 and replaces the Screen Space Reflections Post Process"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "native",
+      "note": "Detail levels can be chosen by distance or by how much of the screen a mesh covers, and meshes can be simplified in the browser; for streamed order it reads the Microsoft vendor extension for progressive glTF and its own incremental scene format, not a ratified Khronos mechanism.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/mesh/LOD",
+          "title": "Level of detail",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Babylon.js comes with integrated support for level of detail."
+        },
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/mesh/LOD",
+          "title": "Level of detail, screen coverage",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "You can alternatively add LOD levels by specifying screen coverage cutoff limits."
+        },
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/tree/master/packages/dev/loaders/src/glTF/2.0/Extensions",
+          "title": "glTF loader extensions directory (MSFT_lod)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "MSFT_lod.ts"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "native",
+      "note": "A splat mesh class in core plus a loader in the loaders package read .ply, .splat, compressed .ply, Niantic .spz and self-organising Gaussian sets, and there is a glTF Gaussian splatting extension; the streamed detail-level layer is officially experimental.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/importers/gaussianSplatting",
+          "title": "Loading Gaussian splatting files",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Babylon.js supports multiple Gaussian splatting file formats"
+        },
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/importers/gaussianSplatting",
+          "title": "Loading Gaussian splatting files, streaming caveat",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "LOD streaming is an experimental feature."
+        },
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/tree/master/packages/dev/loaders/src/glTF/2.0/Extensions",
+          "title": "glTF loader extensions directory",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "KHR_gaussian_splatting.ts"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "partial",
+      "note": "A point cloud system, volumetric light scattering and a physically based atmosphere add-on all exist, but there is no volumetric video support and no dedicated point cloud file format, and on WebGPU point size is stuck at one pixel.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/particles/point_cloud_system/pcs_intro",
+          "title": "Point cloud system",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A PCS is a single updatable mesh with the `PointsCloud` property of its material set to `true`."
+        },
+        {
+          "url": "https://doc.babylonjs.com/setup/support/webGPU/webGPUStatus",
+          "title": "WebGPU Status",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU does not support a point size different from 1"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "native",
+      "note": "Three separate routes, none of them in core alone: a user interface package for flat and three-dimensional panels, a signed distance field text renderer in the add-ons package, and an extruded text mesh builder in core that needs an outside triangulation library.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/addons/msdfText",
+          "title": "MSDF text add-on",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The TextRenderer class provides a powerful and efficient solution for rendering crisp, scalable text"
+        },
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/mesh/creation/set/text",
+          "title": "Create text mesh",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "MeshBuilder.CreateText uses our ExtrudePolygon feature, which requires the **Earcut library** to be available."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "native",
+      "note": "Many camera types in core including a universal camera, an orbit camera, an immersive session camera and, since version 9, a globe camera; cameras carried inside a glTF file are imported by the loaders package.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/cameras/camera_introduction",
+          "title": "Cameras introduction",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Of the many cameras available in Babylon.js, the three most used are probably the Universal Camera"
+        },
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/blob/master/packages/dev/loaders/src/glTF/2.0/glTFLoader.pure.ts",
+          "title": "glTF loader source, camera loading",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "loadCameraAsync"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "native",
+      "note": "A scene holds a tree rooted in a node type, with a transform node adding placement and a mesh type adding drawing; parenting composes the parent's transform onto the child.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/mesh/transforms/parent_pivot",
+          "title": "Parents and pivots",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "When the `parent` property is set on a mesh, transforming the parent applies the same transformations to the child."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "native",
+      "note": "Left-handed and Y-up by default, with a scene flag to switch to right-handed; the trap is that in the default mode the glTF loader wraps imported content in a root node with a 180 degree turn and a negative Z scale, which is a known source of trouble for normals, winding and re-export.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/mesh/transforms",
+          "title": "Transforms",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "there are two horizontal axes, x and z, and a vertical y axis in a left-handed system"
+        },
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/importers/glTF",
+          "title": "Loading glTF files",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This ensures that applications that save models using a right-handed system are loaded correctly into Babylon.js"
+        },
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/blob/master/packages/dev/loaders/src/glTF/2.0/glTFLoader.pure.ts",
+          "title": "glTF loader source, root node conversion",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "rootNode.scale = [1, 1, -1]"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "native",
+      "note": "Reads glTF and its binary form, its own scene format, Wavefront object, stereolithography, splat files, motion capture and filmbox; writes glTF and its binary form, Wavefront object, stereolithography, motion capture, 3D manufacturing format, its own scene format and a zipped universal scene description package. There is no reader for universal scene description of any kind.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/blob/master/.github/architecture/loaders.md",
+          "title": "Loaders package architecture",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The loaders package provides scene loader plugins for importing 3D assets in various file formats"
+        },
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/blob/master/.github/architecture/serializers.md",
+          "title": "Serializers package architecture",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "USDZ package exporter for Apple's AR ecosystem"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "native",
+      "note": "Reads Draco compressed meshes, meshopt compressed buffers and quantised meshes; the trap is that the decoders are fetched from Babylon's own content network at run time by default, which the documentation itself flags as a data protection and content policy problem.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/importers/glTF",
+          "title": "Loading glTF files, compression",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Download the required decoder files from the Babylon CDN."
+        },
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/importers/glTF",
+          "title": "Loading glTF files, self-hosting advice",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "so we recommend hosting these resources yourself"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "native",
+      "note": "Reads supertranscodable texture containers and Basis universal textures, DirectDraw surfaces, high dynamic range images, WebP and AVIF, and picks the right compressed form for the device at run time; the transcoders are also fetched from Babylon's content network by default.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/materials/using/ktx2Compression",
+          "title": "KTX2 compression",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Babylon.js would choose the right one depending on the capability of the target device"
+        },
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/materials/using/HDREnvironment",
+          "title": "HDR environment",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "an HDR-ready file (either DDS or ENV) containing a cube texture with prefiltered MipMaps"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "partial",
+      "note": "Carries material definitions through glTF very widely, with eighteen Khronos material extensions read and seventeen written, but reading and writing are not symmetric, material variants and specular-glossiness are read-only, and there is no MaterialX support at all, so a node material graph only moves between Babylon runtimes.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/tree/master/packages/dev/loaders/src/glTF/2.0/Extensions",
+          "title": "glTF loader extensions directory",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "KHR_materials_variants.ts"
+        },
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/Exporters/glTFExporter",
+          "title": "glTF exporter supported features",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "❌ Material Variants Extension"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "native",
+      "note": "Keyframe animations and animation groups with per-type interpolation including cubic spline tangents, easing, blending and additive blending; the glTF animation pointer extension is read but not written.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/animation/advanced_animations",
+          "title": "Advanced animation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "you can also define the functions used to interpolate (transition) between keys"
+        },
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/Exporters/glTFExporter",
+          "title": "glTF exporter supported features",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "❌ Animation Pointer Extension"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "native",
+      "note": "Skeleton and bone types with skinning on the graphics processor, four bone influences per vertex by default and eight at most, with bone matrices held in a texture so skeleton size is not capped by shader constants.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/mesh/bonesSkeletons",
+          "title": "Bones and skeletons",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Babylon.js supports up to **4 bone influences per vertex**."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "native",
+      "note": "A morph target manager reads glTF morph targets; on WebGL 2 and WebGPU the targets live in a texture so the only limit is memory, while the fallback path caps active targets at eight.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/mesh/morphTargets",
+          "title": "Morph targets",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "On WebGL2+, Babylon.js uses textures to store the targets, so the only limit is GPU memory."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "native",
+      "note": "Two hardware-instanced mechanisms: instanced meshes that keep a per-copy object you can move and pick, and thin instances that keep only matrices for very large counts; glTF instancing is read and written.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/mesh/copies/instances",
+          "title": "Instances",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Instances are an excellent way to use hardware-accelerated rendering to draw a huge number of identical meshes"
+        },
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/mesh/copies/thinInstances",
+          "title": "Thin instances",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Thin instances don't create new objects, so you don't incur any penalty on the JavaScript side"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "partial",
+      "note": "Asset containers pool loaded content, a smart asset registry names outside files by stable key, and a project file records property overrides that are re-applied after load; what is missing is layered composition, references and payloads, variant sets and strength-ordered opinions, and overrides match by object name and index so they break when names collide or change.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/importers/assetContainers",
+          "title": "Asset containers",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Consider asset containers as pools of entities."
+        },
+        {
+          "url": "https://doc.babylonjs.com/toolsAndResources/inspectorv2/overrideManager",
+          "title": "Override Manager",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The manager stores them, serializes them, and applies them on demand"
+        },
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/importers/smartAssets",
+          "title": "Smart Assets",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "a scene-level registry that maps stable keys to asset URLs"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "none",
+      "note": "The engine has no unit setting and no stated convention; glTF metres are not rescaled on import, so they arrive as raw engine units one to one, and meaning is assigned by the surrounding application. The 3D manufacturing exporter has to be told the unit because the scene does not carry one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/Exporters/3MFExporter",
+          "title": "Exporting to 3MF",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unit used for all coordinates in the exported file. Must match the scale of your scene."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "partial",
+      "note": "The glTF metadata extension is read, but only as opaque passthrough onto the root mesh's metadata; nothing parses, validates, enforces or writes it back, and the exporter marks it unsupported, so licence terms survive one import and are lost on the next save.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/blob/master/packages/dev/loaders/src/glTF/2.0/Extensions/KHR_xmp_json_ld.pure.ts",
+          "title": "XMP metadata extension source",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "this._loader.rootBabylonMesh.metadata.xmp = xmpGltf.packets[packet];"
+        },
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/Exporters/glTFExporter",
+          "title": "glTF exporter supported features",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "❌ XMP Metadata [KHR_xmp_json_ld]"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "none",
+      "note": "No signing, no manifest checking and no content credentials anywhere in the engine; a search of the whole repository for the content provenance standard returns nothing.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "via-extension",
+      "note": "Babylon defines no avatar format. Its own documentation points at a community-made glTF loader extension for the humanoid avatar format, which is maintained outside the project; a separate community package reads the Japanese dance model formats.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/communityExtensions/Babylon.js+ExternalLibraries/BabylonJS_and_VRM",
+          "title": "Babylon.js and VRM",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "which is a community-made Babylon.js glTF loader extension for `VRM`"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "none",
+      "note": "There is no humanoid rig and no agreed bone naming; the retargeting documentation treats differing naming as the normal case and matches purely by whatever names the two assets happen to carry.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/animation/animationRetargeting",
+          "title": "Animation retargeting",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "a different character (the target) that may have a different skeleton structure, bone proportions, or naming conventions"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "none",
+      "note": "Morph targets carry face shapes and can be driven by name, but there is no named expression or viseme set, so nothing survives a move between worlds on its own. The community humanoid avatar loader is the only route to a named set.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/mesh/morphTargets",
+          "title": "Morph targets",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "On WebGL2+, Babylon.js uses textures to store the targets, so the only limit is GPU memory."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "native",
+      "note": "Version 9 added an avatar type with a retargeting method that changes basis between reference poses, rescales root travel by body proportion and pins the ground reference bone, plus a retargeting tool; matching is still by name, since there is no agreed skeleton.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/animation/animationRetargeting",
+          "title": "Animation retargeting",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Available since Babylon.js v9.0, the `AnimatorAvatar` class provides the `retargetAnimationGroup` method"
+        },
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/animation/animationRetargeting",
+          "title": "Animation retargeting, matching rule",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Retargeting is name-based"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "none",
+      "note": "Anything can be parented to a bone, but there is no attachment point vocabulary and nothing that would survive transfer to another runtime.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "partial",
+      "note": "The general mesh detail-level and simplification systems apply to avatar meshes, but there is no avatar-aware reduction, no crowd representation and no agreed set of levels.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/mesh/simplifyingMeshes",
+          "title": "Simplifying meshes",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Babylon.js offers in-browser simplification functionality that works asynchronously while trying not to disturb the rendering process"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "out-of-scope",
+      "note": "A rendering runtime does not bind avatars to credentials; the surrounding application would.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "via-extension",
+      "note": "No physics in the engine itself. The current interface is served only by the Havok plug-in, which needs the separately installed Havok WebAssembly module; the older interface has plug-ins for Ammo.js, Cannon.js and Oimo.js and expects you to add each engine's script yourself.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/physics/usingPhysicsEngine",
+          "title": "Using a physics engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Babylon.js has a plugin system for physics engines that enables users to add physics interactions to scene objects."
+        },
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/physics/usingPhysicsEngine",
+          "title": "Using a physics engine, which engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "There is a plugin for the Havok Physics engine."
+        },
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/physics/havokPlugin",
+          "title": "Using Havok and the Havok plugin",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Havok is now available for the web, using a WebAssembly version of the engine."
+        },
+        {
+          "url": "https://doc.babylonjs.com/legacy/physics/usingPhysicsEngine",
+          "title": "Using a physics engine, first-generation interface",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "There are plugins for 4 physics engines:"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "via-extension",
+      "note": "Contact shapes come from the plug-in: sphere, cylinder, capsule, box, convex hull, mesh, height field and container. Separately, core ships a lightweight collision system with an ellipsoid and mesh checks that needs no plug-in but does no dynamics.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/physics/shapes",
+          "title": "Physics V2 shapes",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Physics Shapes represent the geometry that a body will have when interacting with the world."
+        },
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/physics/usingPhysicsEngine",
+          "title": "Using a physics engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Unlike the internal collision system, a physics engine calculates objects' body dynamics"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "via-extension",
+      "note": "Through the Havok plug-in: lock, ball and socket, distance, hinge, prismatic, slider and a general six degrees of freedom constraint with per-axis limits.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/physics/constraints",
+          "title": "Constraints",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Babylon supports several constraint types; the most generic of which is the \"6 DoF,\""
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.material",
+      "level": "via-extension",
+      "note": "Friction and restitution are set per physics shape through the plug-in; there is no engine-level surface material shared with the visual material.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/physics/shapes",
+          "title": "Physics V2 shapes",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Physics Shapes represent the geometry that a body will have when interacting with the world."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.determinism",
+      "level": "partial",
+      "note": "An engine option runs animation, physics and game logic on a fixed time step so a run can be replayed and clients drift less, but the documentation claims only to minimise differences; nothing guarantees the same result on different machines, and Babylon makes no cross-machine claim for any physics plug-in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/animation/advanced_animations",
+          "title": "Deterministic lockstep",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "or to minimize differences on multiple clients in a multi-user environment"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "via-extension",
+      "note": "Soft bodies, cloth and rope exist only on the older physics interface and only through the Ammo.js plug-in; the current Havok-based interface has no soft body support.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/legacy/physics/softBodies",
+          "title": "Soft bodies",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Of the three plugins available with Babylon.js, soft bodies are available only with Ammo.js."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "via-extension",
+      "note": "A physics shape can be marked as a trigger and the plug-in then raises entered and exited events; only a world-wide callback is offered, not a per-body one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/physics/collisionEvents",
+          "title": "Collision events",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Collisions can either cause a physical response (like pushing the player back), or not, in which case they are called trigger collisions."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "native",
+      "note": "The second-generation audio engine, new in version 8, places sounds in the scene, attaches them to meshes, and offers linear, inverse and exponential distance falloff plus directional cones. Emitters carried in a glTF file are read through a Microsoft vendor extension; the Khronos audio emitter extension is not supported.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/audio/playingSoundsMusic",
+          "title": "Playing sounds and music",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "\"Spatial audio\" refers to sounds placed in a three-dimensional space."
+        },
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/blob/master/packages/dev/core/src/AudioV2/abstractAudio/subProperties/abstractSpatialAudio.ts",
+          "title": "Spatial audio source",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "public abstract distanceModel: \"linear\" | \"inverse\" | \"exponential\";"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "partial",
+      "note": "Direction is rendered by the browser's own panner, which offers equal power or head-related transfer function, and the default is equal power, not the head-related one. There is no ambisonic support of any kind: a search of the whole repository returns nothing.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/blob/master/packages/dev/core/src/AudioV2/abstractAudio/subProperties/abstractSpatialAudio.ts",
+          "title": "Spatial audio source",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "public abstract panningModel: \"equalpower\" | \"HRTF\";"
+        },
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/blob/master/packages/dev/core/src/AudioV2/abstractAudio/subProperties/abstractSpatialAudio.ts",
+          "title": "Spatial audio defaults",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "panningModel: \"equalpower\" as PanningModelType,"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "none",
+      "note": "There is no room model and no reverb at all. A code search of the whole engine repository for reverb, for a convolution node and for ambisonics each returns zero results, and the audio documentation lists no such feature. This is the largest single gap in Babylon's audio.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/audio",
+          "title": "Audio",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "They feature ambient, spatialized, and directional sounds, as well as basic audio buses for signal routing and mixing."
+        },
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/tree/master/packages/dev/core/src/AudioV2",
+          "title": "Audio engine source tree",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "abstractAudio  audioParameter.ts  audioUtils.ts  soundState.ts  spatialAudioAttachmentType.ts  webAudio"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "none",
+      "note": "Nothing muffles sound behind geometry. The spatial audio settings expose position, orientation, cones, distance model and rolloff, and no occlusion or obstruction value; an application would have to compute it and change the volume itself.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/blob/master/packages/dev/core/src/AudioV2/abstractAudio/subProperties/abstractSpatialAudio.ts",
+          "title": "Spatial audio source, full property list",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "public abstract rolloffFactor: number;"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "partial",
+      "note": "A streaming sound type plays through the browser's media element so long files do not have to be held in memory, but this is client-side playback only; Babylon delivers no audio over a network and has no scale story.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/audio/playingSoundsMusic",
+          "title": "Streaming a sound",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Streaming sounds keep only a small chunk of the sound file in memory while playing"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "none",
+      "note": "Microphone capture exists as a sound source so a local voice can be heard and analysed, but there is no transport, no peer connection and no way to carry that voice to another participant.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/audio/playingSoundsMusic",
+          "title": "Microphone input",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Microphone input starts automatically and can be muted by setting its `volume` to 0"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "none",
+      "note": "Babylon shares no state. A code search of the whole repository for replication and for multiplayer returns zero results. The only related thing the documentation points at is an outside community package that smooths the transforms of objects whose updates arrive over a network.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/communityExtensions/bufferedInterpolation",
+          "title": "Babylon buffered interpolation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "interpolation of position, rotation, scale data of networked Babylon.js objects"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "none",
+      "note": "There are no owned objects and no notion of who decides the truth, because there is no shared state to decide about.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "none",
+      "note": "Culling by frustum, octree and occlusion query decides what to draw, not what to send; nothing filters network traffic because there is none.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.prediction",
+      "level": "none",
+      "note": "Nothing in the engine hides latency or reconciles corrections. The community package the documentation links smooths between received transforms only; it does not predict locally and does not reconcile against an authority.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/communityExtensions/bufferedInterpolation",
+          "title": "Babylon buffered interpolation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "aims to work well both in situations with continuous and sparse network updates"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "none",
+      "note": "Babylon opens no session socket and defines no wire protocol; the application picks and drives its own.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.media",
+      "level": "none",
+      "note": "A video texture can display a media stream the application has already obtained, but Babylon carries no live audio or video itself.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.session",
+      "level": "none",
+      "note": "There is no world to join and no authentication; the immersive session lifecycle Babylon does implement is a device session on one machine, not a shared one.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "none",
+      "note": "No portals and no state handover between worlds. Scenes can be swapped inside one page, which is not the same thing.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "none",
+      "note": "No roster and no notion of who is present.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.address",
+      "level": "none",
+      "note": "Assets are addressed by ordinary web address, and the smart asset registry adds stable local keys, but there is no naming of places and no resolution to a reachable destination.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "none",
+      "note": "No discovery of worlds, nodes or services.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.time",
+      "level": "none",
+      "note": "The engine has its own frame clock and an option for fixed time steps, but no shared or agreed time across machines.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "out-of-scope",
+      "note": "A rendering runtime holds no identifier for a person, agent or thing; the hosting application does.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "out-of-scope",
+      "note": "No credential handling of any kind; a repository search for verifiable credentials returns nothing.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "out-of-scope",
+      "note": "No request or presentation of claims.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "out-of-scope",
+      "note": "No permission model for what a subject may do.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "out-of-scope",
+      "note": "No selective disclosure. Note that eye tracking is exposed, so the privacy constraint on gaze falls entirely on the browser's consent model and on the application.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.social",
+      "level": "out-of-scope",
+      "note": "No relationships or standing are modelled.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "out-of-scope",
+      "note": "Licence terms are not acted on at the point of use; the one metadata block Babylon reads is passed through untouched.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "partial",
+      "note": "Core maths gained a reference ellipsoid and a conversion from latitude, longitude and altitude into an Earth-centred cartesian frame, so content can be placed against the Earth; what is missing is any pose type carrying orientation as well as position, and any binding to the geospatial pose standard.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/blob/master/packages/dev/core/src/Maths/math.geospatial.functions.ts",
+          "title": "Geospatial maths source",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The WGS84 reference ellipsoid used for Earth-related geospatial functions."
+        },
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/blob/master/packages/dev/core/src/Maths/math.geospatial.functions.ts",
+          "title": "Geospatial maths source, conversion",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Converts latitude, longitude, and altitude to an ECEF (Earth-Centered, Earth-Fixed) position"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "partial",
+      "note": "One frame and one ellipsoid constant, plus a globe camera that takes any planet radius. There are no reference system identifiers, no projections, no datum transforms and no way to say which frame a coordinate is expressed in, so agreement between tools has to happen outside Babylon.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/geospatial/geospatialCamera",
+          "title": "Geospatial camera",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The camera is not tied to Earth specifically; you can supply any planet radius to orbit any spherical body."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "native",
+      "note": "The immersive anchor feature in core creates anchors from a surface hit or at a given position and orientation, and keeps their transforms updated as the device keeps scanning.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/webXR/webXRARFeatures",
+          "title": "Augmented reality features, anchors",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Anchors are tracked points in space that the system will constantly update as you continue scanning your environment."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "none",
+      "note": "Anchors do not persist and cannot be shared. The documentation states plainly that they cannot be referenced between sessions, and the anchor source has no persistence calls at all; an option only keeps the local list alive after the session ends.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/webXR/webXRARFeatures",
+          "title": "Augmented reality features, anchors",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "as anchors cannot be referenced between sessions"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.vps",
+      "level": "none",
+      "note": "No pose recovery from camera imagery. Raw camera access and image tracking are exposed as immersive session features, so an application could build this itself, but Babylon does not.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/tree/master/packages/dev/core/src/XR/features",
+          "title": "Immersive session features directory",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebXRRawCameraAccess.ts"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "via-extension",
+      "note": "Tiled terrain and city streaming is done by an outside library from NASA and its applied physics laboratory, which recently added Babylon support; Babylon documents it as the recommended route and contributes the globe camera and large-world rendering. The documentation warns the Babylon path does not cover the whole tiles specification and does not work in the online playground.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/geospatial/loading3dTiles",
+          "title": "Loading 3D Tiles",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The Babylon.js implementation of 3DTilesRendererJS has some known limitations in supporting the full 3D Tiles spec."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.indoor",
+      "level": "partial",
+      "note": "Immersive session plane detection and mesh detection give the runtime geometry of the room the user is standing in, but there is no structured description of an interior, no rooms, doors or levels, and nothing that could be authored or exchanged.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/tree/master/packages/dev/core/src/XR/features",
+          "title": "Immersive session features directory",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebXRPlaneDetector.ts"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "native",
+      "note": "A session manager and a default experience helper in core start, run and end an immersive session on the WebXR Device API, choose the reference space and set up the render target. The catch is that this runs on WebGL; the WebGPU engine still has no multiview.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/webXR/webXRSessionManagers",
+          "title": "WebXR session manager",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The session manager, along with the XR camera, is the only requirement on Babylon's side for implementing an XR experience."
+        },
+        {
+          "url": "https://doc.babylonjs.com/setup/support/webGPU/webGPUStatus",
+          "title": "WebGPU Status, multiview entry",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Not implemented yet, and neither Chrome nor the WebGPU specifications support it"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "native",
+      "note": "Handheld devices arrive as input sources with pose and typed components for triggers, squeeze, thumbsticks, touchpads and buttons; Babylon loads models and layouts from the immersive web working group's public controller profile repository, with local fallback classes for older devices.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/webXR/webXRInputControllerSupport",
+          "title": "WebXR controller support",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Babylon.js natively supports this repository and currently uses it as the default model delivery method for XR controllers."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "native",
+      "note": "Articulated hands are a core feature: twenty-five tracked joints per hand each frame, default hand meshes you can replace, and near interaction built on top; it is switched on by default in the default experience helper from version 6.40.0.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/webXR/WebXRSelectedFeatures/WebXRHandTracking",
+          "title": "WebXR hand tracking",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Twenty-five points on each hand are tracked and delivered on each frame."
+        },
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/webXR/WebXRSelectedFeatures/WebXRHandTracking",
+          "title": "WebXR hand tracking, default",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Starting with version 6.40.0, hand support is enabled by default, if supported, when using the default experience helper."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.eye",
+      "level": "native",
+      "note": "Eye tracking is a named core feature giving a gaze ray. Babylon adds no privacy layer of its own: consent and the fact that the underlying platform may or may not expose gaze are handled by the browser and the application.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/blob/master/packages/dev/core/src/XR/webXRFeaturesManager.ts",
+          "title": "Immersive session feature names",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "public static readonly EYE_TRACKING = \"xr-eye-tracking\" as const;"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "partial",
+      "note": "A motion controller can be pulsed with a strength and a duration and reports back whether the device supported it, but the source marks the whole path experimental and there is no richer waveform or effect model.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/blob/master/packages/dev/core/src/XR/motionController/webXRAbstractMotionController.ts",
+          "title": "Abstract motion controller source",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "EXPERIMENTAL haptic support."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "native",
+      "note": "The session manager asks the browser whether a session mode is supported before starting, and a features manager lists which of the twenty-two named immersive features are available, at which version, and lets each be turned on or off.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/webXR/webXRSessionManagers",
+          "title": "WebXR session manager",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "you can check if XR is available and the session mode is supported by the browser"
+        },
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/webXR/webXRFeaturesManager",
+          "title": "WebXR features manager",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "`WebXRFeatureName` will always contain the list of possible features."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "partial",
+      "note": "Babylon defines no language or runtime of its own. World rules are written in JavaScript or TypeScript and run in whatever engine the host provides; Babylon adds an action manager and a flow graph on top of that, but the runtime itself is inherited, not specified.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/flowGraph/flowGraphBasicConcepts",
+          "title": "Flow graph basic concepts",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The flow graph system is controlled by a flow graph coordinator, which in turn controls one or more graphs."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "native",
+      "note": "This is one of Babylon's strongest standards positions. A flow graph runtime with its own visual editor sits in core, and the glTF interactivity extension is read by converting its graph into a flow graph, so declarative interactivity really does travel inside the asset; the repository runs the Khronos interactivity test assets in its own test setup.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/flowGraph",
+          "title": "Flow graph",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Under the hood, the flow graph is used when glTF with interactivity is loaded."
+        },
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/tree/master/packages/dev/loaders/src/glTF/2.0/Extensions",
+          "title": "glTF loader extensions directory",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "KHR_interactivity.ts"
+        },
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/blob/master/scripts/runKHRInteractivityAssetTests.mjs",
+          "title": "Interactivity asset test runner",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "runKHRInteractivityAssetTests.mjs"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "partial",
+      "note": "Interactivity carried inside a glTF file runs through a fixed set of flow graph blocks against the loaded asset rather than as arbitrary code, which limits it in practice. What is missing is any explicit isolation, permission model or enforced limit for untrusted content; everything else relies on the browser.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/blob/master/packages/dev/core/src/FlowGraph/flowGraphHostResolver.ts",
+          "title": "Flow graph host resolver source",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "so the graph engine itself stays agnostic of the host's object model"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "partial",
+      "note": "Babylon publishes model context protocol servers so an outside agent can create, edit, validate and export graphs in seven of its authoring tools, and a navigation plug-in drives crowd agents along a walkable mesh. What is missing is any runtime interface for an autonomous agent acting inside a running world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/toolsAndResources/mcpServers",
+          "title": "Babylon.js model context protocol servers",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "They can create, edit, validate, import, export, and live-sync editor graphs"
+        },
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/crowdNavigation",
+          "title": "Crowd navigation system",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This system allows you to create primitive AI crowd agents that follow a path along a specific mesh."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "partial",
+      "note": "A scene optimiser chases a target frame rate by degrading quality step by step, which is a performance budget for the whole scene. There is no bound on memory, time or calls for a particular piece of guest content, and nothing is enforced.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/scene/sceneOptimizer",
+          "title": "The scene optimizer",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "designed to help you reach a specific framerate by gracefully degrading rendering quality at runtime"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "partial",
+      "note": "A scene can be written back out to Babylon's own format, a recorder can capture changes made since a starting point and replay them as a delta file, and a project file bundles outside assets, overrides and local content. All of it is a file saved by the client; there is no served world state and nothing survives on its own.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/scene/deltaFiles",
+          "title": "Applying delta changes to a scene",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This means you can \"record\" all changes made to a scene and later reapply them."
+        },
+        {
+          "url": "https://doc.babylonjs.com/toolsAndResources/inspectorv2/projectFile",
+          "title": "Project files",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "It packages three layers in one zip:"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "out-of-scope",
+      "note": "A rendering runtime holds no items for a user and no notion of ownership that could travel.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "none",
+      "note": "Accessibility support exists as a parallel readable tree of the scene, but there is no settings model and nothing that would follow a user to another world.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "none",
+      "note": "The smart asset registry names outside files by a stable key that maps to a web address, not to a hash, so it gives a stable handle without giving content addressing. Nothing in the engine refers to content by digest.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/importers/smartAssets",
+          "title": "Smart Assets",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "a scene-level registry that maps stable keys to asset URLs"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "partial",
+      "note": "A project file zips an outside asset map, a set of property overrides and a companion scene file, and a viewer web component will display a model with no code; but this is an authoring project format and a display component, not a packaged runnable experience, and the library itself ships as ordinary packages.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/toolsAndResources/inspectorv2/projectFile",
+          "title": "Project files",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A `.babylonproj` file is a single-file project bundle for a Babylon scene."
+        },
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/babylonViewer",
+          "title": "Viewer (V2)",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The Babylon Viewer aims to simplify a specific but common Babylon.js use case: loading, viewing, and interacting with a 3D model."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "none",
+      "note": "Babylon provides no delivery system for an application's own assets. It does run a content network for its own libraries, and the loaders reach for it by default to fetch the Draco, meshopt, KTX2 and Basis decoders, while the documentation repeatedly warns that this network must not be used in production.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/physics/havokPlugin",
+          "title": "Using Havok, CDN warning",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The CDN should not be used in production environments."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "native",
+      "note": "Backward compatibility is treated as a rule: breaking changes are listed per version with flags that restore the old behaviour, the old audio engine and the first-generation physics interface are kept after being deprecated, and WebGL and WebGPU are maintained side by side.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/breaking-changes",
+          "title": "Babylon.js breaking changes",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Breaking changes and how to adapt for them"
+        },
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/audio/migrate",
+          "title": "Migrating from the old audio engine",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The old audio engine is not going away! It is turned off by default now"
+        },
+        {
+          "url": "https://doc.babylonjs.com/setup/support/webGPU",
+          "title": "WebGPU support",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Support for WebGL and WebGPU is maintained side by side for the foreseeable future."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "partial",
+      "note": "Babylon publishes no conformance suite of its own, but it takes part in one: a specially configured version of its online sandbox is certified under the Khronos commerce viewer programme, and the repository runs the Khronos interactivity test assets. The trap is that the certified configuration is not the default: two settings have to be changed, which the documentation says cannot be changed in the engine for backward compatibility.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/setup/support/3D_commerce_certif",
+          "title": "3D Commerce certified viewer",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "has been certified because some parameters have to be set differently than the default engine values"
+        },
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/blob/master/scripts/runKHRInteractivityAssetTests.mjs",
+          "title": "Interactivity asset test runner",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "runKHRInteractivityAssetTests.mjs"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "Babylon.js is a rendering engine with the loaders shipped alongside it in the same package set, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/importers/gaussianSplatting",
+          "title": "Babylon.js Gaussian splatting importer documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Babylon.js supports multiple Gaussian splatting file formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "Babylon.js is a rendering engine with the loaders shipped alongside it in the same package set, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/importers/gaussianSplatting",
+          "title": "Babylon.js Gaussian splatting importer documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Babylon.js supports multiple Gaussian splatting file formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "Babylon.js is a rendering engine with the loaders shipped alongside it in the same package set, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/importers/gaussianSplatting",
+          "title": "Babylon.js Gaussian splatting importer documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Babylon.js supports multiple Gaussian splatting file formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "native",
+      "note": "A splat mesh class in core plus a loader in the loaders package read the plain and compressed PLY forms, the .splat form, Niantic's SPZ and self-organising Gaussian sets, and the glTF extension is implemented as a named loader extension. Reading is the strong direction; there is no splat exporter.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/importers/gaussianSplatting",
+          "title": "Babylon.js Gaussian splatting importer documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Babylon.js supports multiple Gaussian splatting file formats"
+        },
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/tree/master/packages/dev/loaders/src/glTF/2.0/Extensions",
+          "title": "Babylon.js glTF loader extensions directory",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "KHR_gaussian_splatting.ts"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "partial",
+      "note": "The streamed detail-level layer for splats exists and the documentation marks it experimental, which is the honest answer for a row about whether a viewer can start before the whole capture has arrived.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/importers/gaussianSplatting",
+          "title": "Babylon.js Gaussian splatting importer documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "LOD streaming is an experimental feature."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "Babylon.js is a rendering engine with the loaders shipped alongside it in the same package set, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/importers/gaussianSplatting",
+          "title": "Babylon.js Gaussian splatting importer documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Babylon.js supports multiple Gaussian splatting file formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "none",
+      "note": "A point cloud system exists as a drawing primitive: one updatable mesh with the points property set on its material. There is no point cloud file format on either side of it and no compression, so points can be drawn and not exchanged.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/particles/point_cloud_system/pcs_intro",
+          "title": "Babylon.js Point Cloud System introduction",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A PCS is a single updatable mesh with the `PointsCloud` property of its material set to `true`."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "Babylon.js is a rendering engine with the loaders shipped alongside it in the same package set, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/importers/gaussianSplatting",
+          "title": "Babylon.js Gaussian splatting importer documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Babylon.js supports multiple Gaussian splatting file formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "native",
+      "note": "The splat path draws a captured radiance field from any camera position, which is this row, and it is in the engine rather than in a plug-in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/importers/gaussianSplatting",
+          "title": "Babylon.js Gaussian splatting importer documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Babylon.js supports multiple Gaussian splatting file formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "Babylon.js is a rendering engine with the loaders shipped alongside it in the same package set, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/importers/gaussianSplatting",
+          "title": "Babylon.js Gaussian splatting importer documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Babylon.js supports multiple Gaussian splatting file formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "Babylon.js is a rendering engine with the loaders shipped alongside it in the same package set, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/importers/gaussianSplatting",
+          "title": "Babylon.js Gaussian splatting importer documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Babylon.js supports multiple Gaussian splatting file formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "Babylon.js is a rendering engine with the loaders shipped alongside it in the same package set, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/importers/gaussianSplatting",
+          "title": "Babylon.js Gaussian splatting importer documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Babylon.js supports multiple Gaussian splatting file formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "Babylon.js is a rendering engine with the loaders shipped alongside it in the same package set, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/importers/gaussianSplatting",
+          "title": "Babylon.js Gaussian splatting importer documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Babylon.js supports multiple Gaussian splatting file formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "Babylon.js is a rendering engine with the loaders shipped alongside it in the same package set, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/importers/gaussianSplatting",
+          "title": "Babylon.js Gaussian splatting importer documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Babylon.js supports multiple Gaussian splatting file formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "Babylon.js is a rendering engine with the loaders shipped alongside it in the same package set, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/importers/gaussianSplatting",
+          "title": "Babylon.js Gaussian splatting importer documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Babylon.js supports multiple Gaussian splatting file formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "Babylon.js is a rendering engine with the loaders shipped alongside it in the same package set, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/importers/gaussianSplatting",
+          "title": "Babylon.js Gaussian splatting importer documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Babylon.js supports multiple Gaussian splatting file formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "partial",
+      "note": "The environment path takes a prepared cube texture with prefiltered mip levels in one of two container formats, so a 360-degree view is carried and used as a light source. The projection it wants is a cube, not the equirectangular image every capture and generation tool on this map produces, so a conversion step sits between them.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/materials/using/HDREnvironment",
+          "title": "Babylon.js HDR environment documentation",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "an HDR-ready file (either DDS or ENV) containing a cube texture with prefiltered MipMaps"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "native",
+      "note": "Both real-world geometry modules are first-class engine features. The mesh detector detects meshes in the real world when in augmented reality and turns them into engine meshes with vertex data, and a separate plane detector does the same for planes. Nothing has to be written by hand to receive a room.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/blob/master/packages/dev/core/src/XR/features/WebXRMeshDetector.pure.ts",
+          "title": "Babylon.js source, WebXRMeshDetector.pure.ts",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The mesh detector is used to detect meshes in the real world when in AR"
+        },
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/blob/master/packages/dev/core/src/XR/features/WebXRPlaneDetector.pure.ts",
+          "title": "Babylon.js source, WebXRPlaneDetector.pure.ts",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The plane detector is used to detect planes in the real world when in AR"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "native",
+      "note": "The mesh detector copies the semantic label straight from the WebXR mesh onto the engine mesh, so game code reads the label by name off the object it already has. The value is whatever the runtime chose, because the WebXR module fixes no vocabulary.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/blob/master/packages/dev/core/src/XR/features/WebXRMeshDetector.pure.ts",
+          "title": "Babylon.js source, WebXRMeshDetector.pure.ts",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "mesh.semanticLabel = xrMesh.semanticLabel;"
+        },
+        {
+          "url": "https://immersive-web.github.io/plane-detection/",
+          "title": "WebXR Plane Detection Module, Editor's Draft, 30 March 2026",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The semanticLabel attribute is a string that describes the semantic label of the polygon. This string MAY be either null or empty if there is no semantic information."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "native",
+      "note": "A depth sensing feature implements the WebXR depth sensing module, holding the width, height and the raw-value-to-metres scale factor, and offering both the processor and the texture variants along with a depth-in-metres query.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/blob/master/packages/dev/core/src/XR/features/WebXRDepthSensing.pure.ts",
+          "title": "Babylon.js source, WebXRDepthSensing.pure.ts",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "WebXR Feature for WebXR Depth Sensing Module"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "native",
+      "note": "Occlusion is on by default: with the texture variant enabled the engine injects depth sensing into every material, so real surfaces hide virtual content without the developer touching a shader. An option softens the cut by shading occluded pixels by an occlusion factor instead of discarding them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/blob/master/packages/dev/core/src/XR/features/WebXRDepthSensing.pure.ts",
+          "title": "Babylon.js source, WebXRDepthSensing.pure.ts",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Depth sensing will be enabled on all materials per default, if the GPU variant is enabled."
+        },
+        {
+          "url": "https://github.com/BabylonJS/Babylon.js/blob/master/packages/dev/core/src/XR/features/WebXRDepthSensing.pure.ts",
+          "title": "Babylon.js source, WebXRDepthSensing.pure.ts",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "If set to true the occluded pixels will not be discarded but the pixel color will be changed based on the occlusion factor"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "partial",
+      "note": "Babylon.js is the one web engine that acts on the blend rather than only reporting it. Its background remover feature takes the environment away when an augmented reality session starts — the whole background by default, or just the skybox or just the ground when flags are set, plus any further meshes the application names — which is how the real room is let through. It is removal of virtual content, not control of the camera image: nothing dials the blend amount or styles the passthrough.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/BabylonJS/Babylon.js/master/packages/dev/core/src/XR/features/WebXRBackgroundRemover.pure.ts",
+          "title": "Babylon.js WebXRBackgroundRemover source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Further background meshes to disable when entering AR"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/BabylonJS/Babylon.js/master/packages/dev/core/src/XR/features/WebXRBackgroundRemover.pure.ts",
+          "title": "Babylon.js WebXRBackgroundRemover source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "If not set, the entire background will be removed. If set, flags should be set as well."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.face",
+      "level": "none",
+      "note": "Babylon's WebXR feature set follows what the Device API exposes, and no face or body stream is among it. The engine can drive blend shapes on a mesh from data an application supplies, which is a stored-expression row, not a sensor.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/BabylonJS/Babylon.js/master/packages/dev/core/src/XR/features/WebXRBackgroundRemover.pure.ts",
+          "title": "Babylon.js WebXRBackgroundRemover source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Options interface for the background remover plugin"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "via-extension",
+      "note": "The Recast navigation plugin computes a navigation mesh from the scene's own geometry, and — the part that matters for this row — it can hand that mesh back as bytes and rebuild it from a saved state, so a walkable surface can be baked once and shipped with the scene instead of recomputed by whoever opens it. It is an optional plugin over a third-party library, and nothing in it declares bounds or spawn points.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/BabylonJS/Babylon.js/master/packages/dev/core/src/Navigation/Plugins/recastJSPlugin.ts",
+          "title": "Babylon.js RecastJSPlugin source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Creates a navigation mesh"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/BabylonJS/Babylon.js/master/packages/dev/core/src/Navigation/Plugins/recastJSPlugin.ts",
+          "title": "Babylon.js RecastJSPlugin source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "build the navmesh from a previously saved state using getNavmeshData"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "out-of-scope",
+      "note": "The engine runs the application's own code. Publishing a unit of logic under a permanent name happens in the package registry, which Babylon.js does not operate.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "out-of-scope",
+      "note": "Nothing reaches an audience through the engine itself, so there is no path in which a review could stand.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "No geographic frame and no map of a real place in the engine.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "The engine is not a service bound to a place and declares no area of application.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.extension",
+      "level": "partial",
+      "note": "Named scene-loader plugins implement a declared interface; the captured registration API does not establish a general unknown-extension recipient contract.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/importers/createImporters",
+          "title": "How to Create Your Own File Importer",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "A file importer should implement the"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "out-of-scope",
+      "note": "As a rendering/scene library, babylonjs provides host application facilities rather than the credential or destination authority responsible for assurance evidence accompanying an identity claim for relying-party evaluation. This scope judgment applies to the library itself; a host service or separately assessed integration may perform that role.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "out-of-scope",
+      "note": "As a rendering/scene library, babylonjs provides host application facilities rather than the credential or destination authority responsible for the vocabulary, types and validation schema for an identity claim. This scope judgment applies to the library itself; a host service or separately assessed integration may perform that role.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "out-of-scope",
+      "note": "As a rendering/scene library, babylonjs provides host application facilities rather than the credential or destination authority responsible for pairwise identifiers or presentations with stated residual correlation risks. This scope judgment applies to the library itself; a host service or separately assessed integration may perform that role.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.encryption",
+      "level": "out-of-scope",
+      "note": "As a rendering/scene library, babylonjs provides host application facilities rather than the credential or destination authority responsible for recipient key material and algorithms for confidential delivery to an intended subject. This scope judgment applies to the library itself; a host service or separately assessed integration may perform that role.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.key-lifecycle",
+      "level": "out-of-scope",
+      "note": "As a rendering/scene library, babylonjs provides host application facilities rather than the credential or destination authority responsible for identity-control key rotation, revocation or recovery and discovery of verification material. This scope judgment applies to the library itself; a host service or separately assessed integration may perform that role.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "out-of-scope",
+      "note": "As a rendering/scene library, babylonjs provides host application facilities rather than the credential or destination authority responsible for discovery of a credential status after issuance. This scope judgment applies to the library itself; a host service or separately assessed integration may perform that role.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "via-extension",
+      "note": "The separately loaded Babylon GUI module lays out controls in screen space and on surfaces in the scene.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/gui",
+          "title": "Graphical User Interface",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "place buttons and labels within 3D space"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "via-extension",
+      "note": "The WebXR Light Estimation feature supplies environmental light data through the features manager when supported.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/webXR/webXRARFeatures",
+          "title": "A bit about augmented reality",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "provide the developer with light estimation data"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.resolve",
+      "level": "native",
+      "note": "AssetManager combines a root URL with a scene filename when loading scene resources.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/importers/assetManager",
+          "title": "How To Load Files with Assets Manager",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "The mesh asset task is used to load a model externally (a .babylon, .obj, .gltf and so on). Constructor signature: ```javascript constructor(name: string, meshesNames: any, rootUrl: string, sceneFilename: string | File)"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "native",
+      "note": "Scene picking and raycast APIs return information about the mesh hit by pointing rays.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/mesh/interactions",
+          "title": "Interactions",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "picking a mesh in the scene"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.text",
+      "level": "via-extension",
+      "note": "The Babylon GUI InputText control receives a string of single-line user input.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/gui/gui",
+          "title": "Introduction",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "let users insert text in a single line"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "via-extension",
+      "note": "The WebXRLayers feature creates shaped graphics or media compositor layers; runtime support and the documented layer-type limits remain conditional.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/webXR/WebXRSelectedFeatures/WebXRLayers",
+          "title": "WebXR Layers",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "WebXR Layers lets the XR compositor present content separately from the application's projection layer."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.bounds",
+      "level": "partial",
+      "note": "Occlusion queries test mesh bounding boxes before drawing; this does not establish traversal or rejection before detailed geometry is loaded.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/occlusionQueries",
+          "title": "Introduction",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "draws a light, transparent bounding box"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.collection",
+      "level": "native",
+      "note": "Tags create queryable groups of objects with membership and matching operations.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/tags",
+          "title": "Concepts",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Tags can be used to categorize/group things."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "partial",
+      "note": "VideoDome references and presents equirectangular video; the captured documentation does not define a transferable scene-wide timing contract.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/environment/360VideoDome",
+          "title": "How To 360 Video",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "The source video itself should be"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.consent",
+      "level": "out-of-scope",
+      "note": "As a rendering/scene library, babylonjs provides host application facilities rather than the credential or destination authority responsible for a carried permission grant including scope, purpose, validity and withdrawal information. This scope judgment applies to the library itself; a host service or separately assessed integration may perform that role.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "out-of-scope",
+      "note": "As a rendering/scene library, babylonjs provides host application facilities rather than the credential or destination authority responsible for a machine-readable recipient evaluation/action account with integrity mechanisms identified. This scope judgment applies to the library itself; a host service or separately assessed integration may perform that role.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "As a rendering/scene library, babylonjs provides host application facilities rather than the credential or destination authority responsible for a destination pre-arrival approval or refusal response with its applicable validity. This scope judgment applies to the library itself; a host service or separately assessed integration may perform that role.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "native",
+      "note": "ComputeShader dispatch is implemented on WebGPU; the documented WebGL backend does not support compute shaders.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/materials/shaders/computeShader",
+          "title": "Here's what [Wikipedia](https://en.wikipedia.org/wiki/Compute_kernel) has to say about compute shaders:",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "WebGL does not support compute shaders."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "native",
+      "note": "ComputeShader consumes WGSL on the WebGPU backend; this is a shader-source contract rather than portable JavaScript application behavior.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/materials/shaders/computeShader",
+          "title": "Here's what [Wikipedia](https://en.wikipedia.org/wiki/Compute_kernel) has to say about compute shaders:",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "The compute shader must be written in"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "partial",
+      "note": "Particle systems expose emitter and simulation parameters; the captured feature description does not prove exchange of those parameters to a receiving runtime.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/particles",
+          "title": "Particles",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "parameters to control its behavior"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "via-extension",
+      "note": "The WebXR hit-test feature returns physical-world intersections through the features manager when the underlying runtime supports it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/webXR/webXRARFeatures",
+          "title": "A bit about augmented reality",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "send a ray into the real world"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.metadata",
+      "level": "via-extension",
+      "confidence": "verified",
+      "note": "The documented 3ds Max exporter carries custom attributes under metadata with declared source-type conversions; this establishes the named exporter path rather than arbitrary metadata interoperability.",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/Exporters",
+          "title": "Exporters",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Custom attributes are exported under _metadata_"
+        }
+      ],
+      "direction": "write"
+    },
+    {
+      "capability_id": "scene.variant",
+      "level": "via-extension",
+      "confidence": "verified",
+      "note": "The named Babylon Viewer recognizes material variants in loaded models and exposes active-variant selection. The scope is material alternatives through that viewer module.",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/babylonViewer",
+          "title": "The Babylon Viewer aims to simplify a specific but common Babylon.js use case: loading, viewing, and interacting with a 3D model.",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "controls will be displayed to allow selection of the active variant."
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "native",
+      "confidence": "verified",
+      "note": "Babylon Animation stores keyed values at declared frame rates and can target position or rotation, including quaternion values and interpolation. Those clips describe changing scene-local poses over time.",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/animation",
+          "title": "Animation",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "To find the frame number after t seconds, multiply the time by the frame rate"
+        },
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/animation",
+          "title": "Animation",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "the property to be changed, for example, position, intensity or rotation - the rate of change of the"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "native",
+      "confidence": "verified",
+      "note": "BoneLookController and the two-bone BoneIKController evaluate target-driven bone relationships in the runtime, with documented controller parameters and update calls.",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/BabylonJS/Documentation/master/content/features/featuresDeepDive/mesh/bonesSkeletons.md",
+          "title": "babylon bones — official documentation/source",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The BoneIKController class is modeled after Blender's IK Bone Constraint, but is currently limited to 2 bones."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.parametric",
+      "level": "partial",
+      "confidence": "verified",
+      "note": "Curve3 computes curves from control data, but its interface does not itself declare an exchanged mathematical curve/surface representation for another runtime.",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/BabylonJS/Babylon.js/master/packages/dev/core/src/Maths/math.path.ts",
+          "title": "babylon curve source — official documentation/source",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "A Curve3 object is a logical object, so not a mesh, to handle curves in the 3D geometric space."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.frame-timing",
+      "level": "native",
+      "confidence": "verified",
+      "note": "Babylon's core WebXRSessionManager drives rendering through XRSession.requestAnimationFrame, retains the frame and timestamp, and exposes viewer poses. WebXR specifies predicted presentation and pose timing for this bound frame loop.",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/BabylonJS/Babylon.js/master/packages/dev/core/src/XR/webXRSessionManager.ts",
+          "title": "babylon session source — official documentation/source",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Store the XR frame and timestamp in the session manager"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/BabylonJS/Babylon.js/master/packages/dev/core/src/XR/webXRSessionManager.ts",
+          "title": "babylon session source — official documentation/source",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "requestAnimationFrame: (callback: FrameRequestCallback) => this.session.requestAnimationFrame(callback)"
+        },
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "set frame’s predictedDisplayTime to the average timestamp the XR Compositor is expected to display this XR animation frame."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "via-extension",
+      "confidence": "verified",
+      "note": "WebXRImageTracking exposes recognized-image poses through the optional WebXR image-tracking feature, subject to browser/runtime support.",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/BabylonJS/Babylon.js/master/packages/dev/core/src/XR/features/WebXRImageTracking.pure.ts",
+          "title": "babylon image pure — official documentation/source",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "A transformation matrix of this current image in the current reference space."
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "via-extension",
+      "confidence": "verified",
+      "note": "Babylon's named glTF loader/serializers route imports and exports scene-node hierarchies and converts the root coordinate frame between glTF and the Babylon scene.",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/Exporters",
+          "title": "Exporters",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "uses JSON to describe the scene hierarchy."
+        },
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/Exporters",
+          "title": "Exporters",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "This node helps to quickly convert the asset's right-handed coordinate system (the glTF default) to the scene's left-handed one."
+        }
+      ],
+      "direction": "both"
+    }
+  ]
+}

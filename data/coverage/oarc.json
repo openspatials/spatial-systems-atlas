@@ -1,0 +1,2762 @@
+{
+  "subject_id": "oarc",
+  "summary": "Open AR Cloud is a volunteer-run association that publishes the Open Spatial Computing Platform: a set of protocols and reference services for finding out where you are, finding what services and content are near you, and addressing a place so another system can reach it. Its strongest work is the part almost nothing else on this map covers. It gives every anchor, service and content bundle a stable address under a domain name authority with a normative resolution order and a required web fallback, which is the resolution step the OGC geospatial pose standard explicitly leaves out; it defines a request and response for recovering a pose from camera imagery and ships an open implementation of it; and it treats durable, shared, world-locked anchors as a first-class thing to publish and update. It is not a runtime and does not pretend to be. There is no rendering, no material, no animation, no avatar, no physics and no sound anywhere in it; the word avatar and the word physics occur nowhere in the current specification, and the only occurrence of audio is a Python package name in a build file. It does not hold content either: its own documentation says the platform connects users to resources operated by content providers, so licence terms, rights enforcement and delivery guarantees all sit outside it. The map should know that the platform is really two generations of work under one name. The original services, spatial service discovery and spatial content discovery, are web interfaces at version 1.0 over a peer-to-peer log database, and the reference client that uses them still describes the platform as an early prototype. SpatialDDS, the 2026 protocol, is a much larger specification over the OMG data bus, at version 1.7 dated 2026-08-23, with a 1.8 draft in the same repository; its own versioning clause suspends backward compatibility for the whole 1.x series and 1.7 broke the wire in eight places. Its conformance appendix tests whether public datasets map onto the schema, and states plainly that it does not test interoperability between implementations. Two traps for anyone citing this subject. The association's public timeline claims a GeoPose 1.0 standard release in 2021 and a ratified spatial content discovery protocol in 2023, and neither claim is supported by a primary source: the OGC standard records approval in 2022 and publication in 2023, and the content discovery repository still calls its record format a base version expected to evolve. The same timeline claims an OSCP 3.0 released in 2024 with full edge computing support, and no specification, tag or repository for any such release exists in the association's public code. Take the repositories and the specification text over the website.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "out-of-scope",
+      "note": "Nothing in the platform turns geometry into pixels. The specifications cover positioning, discovery and data exchange; the reference client draws with an outside WebGL library. The marketing page still lists an edge cloud rendering service as a core component, and no specification or repository for it exists in the association's public code.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/docs/index.md",
+          "title": "Welcome to spARcl - documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The open spatial computing platform (abbreviated OSCP) defines the major components and most important interfaces required to deliver AR Cloud experiences."
+        },
+        {
+          "url": "https://openarcloud.org/platform",
+          "title": "OSCP Platform Architecture - Open AR Cloud",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Edge-optimized rendering"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/docs/index.md",
+          "title": "Welcome to spARcl - documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "a small, effective WebGL library with minimal layers of abstraction"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "out-of-scope",
+      "note": "No graphics interface is named or bound anywhere in the protocols. The reference client reaches WebGL through the ogl library, which is a choice of that client and not a platform rule.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/docs/index.md",
+          "title": "Welcome to spARcl - documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "a small, effective WebGL library with minimal layers of abstraction"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "out-of-scope",
+      "note": "There is no surface appearance model. The word material occurs twice in the whole SpatialDDS 1.7 text and both times it means reading material, not surfaces. Tile payloads are opaque to the protocol.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The design is deliberately lightweight and codec-agnostic: tiles reference payloads but do not dictate mesh formats, and anchors define stable points without tying clients to a specific localization method."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "out-of-scope",
+      "note": "No light, shadow or probe model appears in any protocol or reference implementation. Content brings its own lighting inside the frame the client hands it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/docs/architecture/externalcontent.md",
+          "title": "spARcl - loading 3D scenes",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The content experience is responsible for all 3D rendering (with the exception of the camera) and interactivity, resulting in a high level of flexibility."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.post",
+      "level": "out-of-scope",
+      "note": "No post-processing stage exists. The reference client architecture note says the client owns the camera image, so content cannot even apply effects to it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/docs/architecture/externalcontent.md",
+          "title": "spARcl - loading 3D scenes",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Since the client application is still responsible for rendering the camera, experiences that apply effects to the camera image itself are not possible."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "partial",
+      "note": "A tile key carries a detail level and a tileset manifest declares how many levels exist, so producer and consumer can agree which rung of a pyramid a tile belongs to. What is missing is any rule for choosing a level or ordering the send: no screen-space error, no distance policy, no priority. In 1.7 the separate detail field on tile metadata was deleted as redundant with the key.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/core.idl",
+          "title": "SpatialDDS Core IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "@key uint8  level; // LOD level"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| `tileset.lod_levels` | integer | OPTIONAL | Number of LOD levels. |"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/CHANGELOG.md",
+          "title": "SpatialDDS specification changelog",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "`TileMeta` uses a single `Aabb3 aabb` (removed `min_xyz`/`max_xyz`/`lod`)"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "out-of-scope",
+      "note": "Splats are described, never drawn. An informative appendix sketches how a neural field, including a Gaussian splat, could be advertised and queried, and the specification says plainly that this example is outside the normative text.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**This example is informative only and is not part of the SpatialDDS 1.7 normative specification.**"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "@value(1) GAUSSIAN_SPLAT,"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "out-of-scope",
+      "note": "The platform carries point clouds rather than rendering them: lidar frames have a typed profile, and tile metadata names point cloud compression and V3C as possible encodings. The reference client lists point clouds among the content it shows, but no rendering behaviour is specified anywhere.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/core.idl",
+          "title": "SpatialDDS Core IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "string encoding;               // \"glTF+Draco\",\"MPEG-PCC\",\"V3C\",\"PLY\",..."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/README.md",
+          "title": "spARcl - README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The AR content can be text, icons, GLTF 3D models, videos, point clouds, IoT sensor streams, OGC Points of interest, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "out-of-scope",
+      "note": "No font, glyph or layout handling appears in any protocol. The reference client's lightweight sign post and billboard placeholders were still unbuilt when the documentation was written.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/docs/content/placeholder.md",
+          "title": "spARcl placeholders",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This is not yet implemented, but will likely be one of the next features to be worked on."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "out-of-scope",
+      "note": "Cameras appear only as sensors, never as viewpoints. The localisation protocol carries a camera model and its parameters so a server can solve a pose from an image, and the sensing profiles carry calibration; nothing defines how a viewer's viewpoint is bound or moved.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/oscp-geopose-protocol/blob/master/README.md",
+          "title": "OSCP GeoPose Protocol - README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "model?: string; //UNKNOWN_CAMERA, SIMPLE_PINHOLE, SIMPLE_RADIAL, RADIAL, PINHOLE, OPENCV, FULL_OPENCV"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "partial",
+      "note": "Two graphs exist and neither is a scene graph. Coordinate frames form a directed acyclic graph joined by transforms, and pose graph nodes and edges carry keyframes and constraints. The one type that links messages about the same object refuses hierarchy on purpose and tells consumers to build their own.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Frames form a directed acyclic graph: a device has a body frame, sensors have frames relative to the body, and the body frame is related to a map frame by a transform."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "EntityBinding is intentionally flat — it does not express parent-child relationships, ownership, or transform inheritance. Consumers requiring hierarchical scene graph semantics SHOULD build their own entity hierarchy from the bindings received."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "native",
+      "note": "This is one of the platform's strongest rows. Quaternion component order is fixed to the OGC GeoPose order everywhere, a normative table maps six named axis conventions onto frames, and consumers are forbidden from chaining poses across frames with different conventions without an axis swap. The one thing it declines to settle is a single global handedness.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "All quaternion fields, manifests, and IDLs SHALL use the `(x, y, z, w)` order that aligns with OGC GeoPose."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Consumers MUST NOT chain poses (via `FrameTransform` or parent-child relationships) across `FrameRef` values with different `coord_convention` values without an intervening axis-swap transform."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "SpatialDDS does not prescribe a single global handedness."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "none",
+      "note": "The platform points at other people's files and defines none of its own. A spatial content record carries a media type and a link; the reference documentation for publishing says only one file type currently works.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/oscp-spatial-content-discovery/blob/master/README.md",
+          "title": "OSCP Spatial Content Discovery - README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "contentType: string; //ex. \"model/gltf+json\""
+        },
+        {
+          "url": "https://github.com/OpenArCloud/OSCP-Docs/blob/main/README.md",
+          "title": "Getting Started with Open Spatial Computing Platform",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "you must first upload your content (currently only GLB files are supported) to some publicly available hosting service"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "none",
+      "note": "Geometry encoding is deliberately somebody else's problem. Tile metadata names candidate encodings as free text and the specification says outright that tiles reference payloads without dictating mesh formats.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The design is deliberately lightweight and codec-agnostic: tiles reference payloads but do not dictate mesh formats, and anchors define stable points without tying clients to a specific localization method."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/core.idl",
+          "title": "SpatialDDS Core IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "string encoding;               // \"glTF+Draco\",\"MPEG-PCC\",\"V3C\",\"PLY\",..."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "out-of-scope",
+      "note": "No image or texture format is defined or constrained. The only codec list in the specification belongs to sensor frames, not to surface textures.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The design is deliberately lightweight and codec-agnostic: tiles reference payloads but do not dictate mesh formats, and anchors define stable points without tying clients to a specific localization method."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "out-of-scope",
+      "note": "Nothing carries material definitions between renderers. Appearance never enters the protocols; assets are referenced whole by link, media type and hash.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "`assets` | array | OPTIONAL | Array of `AssetRef` objects. Each entry MUST include `uri`, `media_type`, and `hash`."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "out-of-scope",
+      "note": "No keyframe or clip encoding exists. The word animation does not occur in the SpatialDDS 1.7 text at all; motion in this platform means a stream of measured or planned poses.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/core.idl",
+          "title": "SpatialDDS Core IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "sequence<PlannedWaypoint, 256> waypoints;"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "out-of-scope",
+      "note": "No bone hierarchy or rig binding anywhere. The word skeleton does not occur in the specification or in any of the service repository documentation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "out-of-scope",
+      "note": "No shape deformation of any kind. Neither morph nor blend shape occurs anywhere in the specification text.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "out-of-scope",
+      "note": "No repeat-cheaply mechanism. The word instancing does not occur; the word instance in this specification means a keyed sample on a topic, which is a different idea entirely.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/core.idl",
+          "title": "SpatialDDS Core IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "// Composite key: (blob_id, index) uniquely identifies a chunk instance."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "partial",
+      "note": "There is layering, but only over tiles and only as whole-part replacement: a patch adds, replaces or removes a named part of one tile and states the checksum the tile should have afterwards. A content manifest may also list other resources it needs first. There is no scene-level referencing, no override of a property set by another source, and no rule for merging two contributions to the same object.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/core.idl",
+          "title": "SpatialDDS Core IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "PatchOp op;                    // ADD/REPLACE/REMOVE"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/core.idl",
+          "title": "SpatialDDS Core IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "string target;                 // submesh/attr/\"all\""
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "`content.dependencies` | array of string | OPTIONAL | Array of `spatialdds://` URIs required before use."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "partial",
+      "note": "Units are pinned for everything the platform itself carries: height in metres, latitude and longitude in degrees, local bounds and radii in metres. Nothing is said about the size of the content placed at a pose, so an imported model can still arrive at the wrong scale.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/core.idl",
+          "title": "SpatialDDS Core IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "double alt_m;            // ellipsoidal meters"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/discovery.idl",
+          "title": "SpatialDDS Discovery IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "double  circle_radius_m;    // radius in meters, always"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**Local / ENU CRS:** `Aabb3` uses `{min_xyz, max_xyz}` where each is a `Vec3` in the local coordinate frame."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "none",
+      "note": "Nothing in a spatial content record, a service record or a manifest says what a recipient may do with the thing it points at. The manifest envelope has fields for identity, coverage, assets, timing and authentication, and none for terms.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Manifests describe what a SpatialDDS node or dataset provides: **capabilities**, **coverage**, and **assets**."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/oscp-spatial-content-discovery/blob/master/README.md",
+          "title": "OSCP Spatial Content Discovery - README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "export interface Content {"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "partial",
+      "note": "Integrity is covered and authorship is not. Every asset reference carries an algorithm-tagged hash, blob references carry a checksum, and records carry the publishing tenant or organisation, which the service fills in from the caller's credentials rather than from a signature. A signed manifest is mentioned once as an acceptable way to bind a service identity, and no signature format is defined.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "`assets[].hash` MUST use the format `<algorithm>:<hex>` (e.g., `sha256:3af2...`)."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/core.idl",
+          "title": "SpatialDDS Core IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "string checksum;  // SHA-256 (hex)"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/oscp-spatial-content-discovery/blob/master/README.md",
+          "title": "OSCP Spatial Content Discovery - README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "tenant: string; //tenant or content owner, populated by platform based on auth"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "authenticated retrieval and verification of an authority-controlled artifact (e.g., a manifest fetched over HTTPS/TLS, or a signed manifest) that binds the service identity to the advertised topics/URIs"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "out-of-scope",
+      "note": "The platform has no notion of a person's representation. The word avatar occurs nowhere in the SpatialDDS 1.7 specification, nor in the service, discovery or client repository documentation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "out-of-scope",
+      "note": "No bone naming or structure is agreed here. Bodies are outside the platform's subject matter, which is where things are and who serves them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "out-of-scope",
+      "note": "No named expressions or visemes. Faces do not appear in any profile.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "out-of-scope",
+      "note": "No animation transfer between bodies, because no body format exists to transfer between.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "out-of-scope",
+      "note": "No attachment points and no worn items.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "out-of-scope",
+      "note": "No reduced avatar forms. The platform's only detail ladder is over geometry tiles.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/core.idl",
+          "title": "SpatialDDS Core IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "@key uint8  level; // LOD level"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "out-of-scope",
+      "note": "Nothing ties a body to a credential, because the platform models publishers and services rather than embodied people.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/oscp-spatial-service-discovery/blob/master/README.md",
+          "title": "OSCP Spatial Service Discovery - README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "provider: string; //spatial services provider, populated by platform based on auth"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "out-of-scope",
+      "note": "There is no simulation of any kind. The word physics occurs nowhere in the specification or the service documentation; the platform observes and shares the world rather than computing it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "out-of-scope",
+      "note": "No contact shapes. Bounding volumes exist for coverage and tiles, and they are query and streaming aids, not collision proxies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/discovery.idl",
+          "title": "SpatialDDS Discovery IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Aabb3  aabb;              // axis-aligned bounds in the declared frame"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "out-of-scope",
+      "note": "No joints or constraints between bodies. Constraints here are pose graph edges between keyframes, which is a mapping idea, not a mechanical one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/core.idl",
+          "title": "SpatialDDS Core IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "PoseSE3 T_from_to;       // relative transform from->to"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.material",
+      "level": "out-of-scope",
+      "note": "No friction or restitution model.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.determinism",
+      "level": "out-of-scope",
+      "note": "No simulation to make deterministic. The reference client does converge shared state across devices, using a conflict-free document type over a peer network, but that is agreement about edits rather than repeatable simulation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/docs/guides/multiuser.md",
+          "title": "spARcl multiuser setup",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The application implements data synchronisation using automerge over p2p network"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "out-of-scope",
+      "note": "No deformable simulation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "partial",
+      "note": "The nearest thing the platform has is a typed zone with events that fire against it, published for smart infrastructure and safety monitoring: zones are named and latched, events are spatially scoped, and a periodic summary reports occupancy. It is an observation mechanism over the real world, not a trigger volume in a simulated scene, and nothing fires locally on a client.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**Spatial Events Profile**: Typed zone definitions (`SpatialZone`), spatially-scoped events (`SpatialEvent`), and periodic zone state summaries (`ZoneState`) for smart infrastructure and safety monitoring."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| `spatial_event` | Spatially-scoped event | Typed alerts and anomalies — `events::SpatialEvent`; QoS `EVENT_RT` |"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "out-of-scope",
+      "note": "Sound is absent from the whole platform. A full text search of the SpatialDDS 1.7 specification finds the string audio only inside a Python package name in a build file, and it appears in none of the service or client documentation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "out-of-scope",
+      "note": "No spatialisation model; neither ambisonics nor head-related transfer is mentioned anywhere.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "out-of-scope",
+      "note": "No room acoustics. Rooms exist here as coordinate frames and zones, never as acoustic spaces.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "out-of-scope",
+      "note": "No sound occlusion. The two occurrences of occlusion in the specification are about visual occlusion from semantic detections.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**Semantics Profile**: 2D and 3D detections for AR occlusion, robotics perception, and analytics."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "out-of-scope",
+      "note": "No audio streaming. The media profiles carry video, lidar, radar and radio, and no sound.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| `video_frame` | Encoded video/image | Real-time camera streams — `sensing::vision::VisionFrame`; QoS `VIDEO_LIVE` |"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "out-of-scope",
+      "note": "No voice transport. The word voice occurs nowhere in the specification.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "native",
+      "note": "SpatialDDS is a state bus and says exactly which state travels, in what form and how often: a registry fixes the typed payload behind each topic, and a normative quality table fixes reliability, ordering, durability, history and deadline per profile. What it replicates is a world model, poses, tiles, anchors and detections, not the state of application objects, and there is no scene state to reconcile.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "SpatialDDS is a shared data bus. Devices, services, and AI agents publish and subscribe to typed messages describing the physical world — poses, geometry, anchors, detections, sensor streams."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**Normative QoS surface.** For each profile, Reliability, Durability, History, and Deadline (as specified in the table columns) are normative: writers and readers SHALL set exactly these policies."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| `GEOM_TILE` | Reliable | Ordered | Transient-local | KeepLast(1) | — | 3D geometry, large tile data |"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "partial",
+      "note": "Identity of a writer is settled and authority over a thing is not. Every sample is identified by its writer and a per-writer counter, and duplicates must be treated as one sample. When two publishers describe the same object the specification declines to pick a winner and hands the merge to each consumer, suggesting the newest timestamp as one option. Coverage claims may likewise be self-asserted.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The canonical identity of a sample is the tuple (`source_id`, `seq`)."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Multiple publishers MAY publish bindings for the same `entity_id`; consumers MUST merge component lists and resolve conflicts (e.g., by preferring the binding with the most recent `stamp` or the highest-confidence source)."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/discovery.idl",
+          "title": "SpatialDDS Discovery IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "sequence<string, 16> coverage_source_ids;  // empty = self-asserted coverage"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "native",
+      "note": "Interest is spatial and first class. A client asks for regions and gets back only services whose coverage intersects them, with structured filters on type, quality profile and module, and paged results. The older discovery services do the same with a hexagonal index, deliberately coarsened so the client's own position is not revealed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/discovery.idl",
+          "title": "SpatialDDS Discovery IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "sequence<CoverageElement,4> coverage;  // requested regions of interest"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "* `CoverageQuery.filter` provides structured matching for `type`, `qos_profile`, and `module_id`."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/oscp-spatial-service-discovery/blob/master/README.md",
+          "title": "OSCP Spatial Service Discovery - README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The query API expects a client to provide a hexagonal coverage area by using an [H3 index](https://eng.uber.com/h3/) ex. precision level 8. This avoids exposing the client's specific location."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.prediction",
+      "level": "none",
+      "note": "Nothing hides latency locally and corrects afterwards. The one forward-looking type is an agent's own intended path, published for others to avoid, and consumers are told to treat its timestamps as estimates. The word reconciliation occurs once in the specification and refers to axis conventions, not to client state.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**Planned Trajectory (Normative):** `PlannedTrajectory` represents an agent's intended future path."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Waypoint timestamps represent planned arrival times in the future. Consumers SHOULD treat these as estimates subject to replanning."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "native",
+      "note": "The wire is the OMG Data Distribution Service, chosen for peer-to-peer publish and subscribe with no central broker, and a manifest hands a client the domain, the partitions and the initial peer addresses it needs to join. An HTTP binding covers clients that cannot join the bus, and the older discovery services run over plain HTTP with a vendor media type for versioning.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "SpatialDDS builds directly on the OMG Data Distribution Service (DDS), a proven standard for real-time distributed systems."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "\"initial_peers\": [\"udpv4://10.0.1.50:7400\"]"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/oscp-spatial-service-discovery/blob/master/README.md",
+          "title": "OSCP Spatial Service Discovery - README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "application/vnd.oscp+json; version=1.0;"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.media",
+      "level": "partial",
+      "note": "Live video is carried as a registered topic type with its own real-time quality profile and stream metadata, and heavy payloads move as checksummed chunks or are fetched out of band. There is no audio at all, and no negotiation of codecs beyond a descriptor, so this covers one half of live media.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| `video_frame` | Encoded video/image | Real-time camera streams — `sensing::vision::VisionFrame`; QoS `VIDEO_LIVE` |"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Heavy content — meshes, point clouds, video frames, neural network weights — is never inlined in messages."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "partial",
+      "note": "Joining is defined for a bus, not for a world. A bootstrap manifest hands a device a domain identifier and peers, reached by local name service, a well-known web path, a printed code or a beacon, and authentication on the bus is the DDS security contract while the older discovery services use OpenID Connect tokens. What is missing is any notion of entering a place: there is no session state, no participant admission and no world to be admitted to.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A device arriving at a venue, connecting to a network, or scanning a QR code obtains a small bootstrap manifest containing a domain ID and initial peer addresses."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "SpatialDDS deployments that require authentication, authorization, integrity, or confidentiality over DDS **MUST** use **OMG DDS Security** as the minimum on-bus security contract."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/oscp-spatial-service-discovery/blob/master/README.md",
+          "title": "OSCP Spatial Service Discovery - README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Authentication/authorization is based on JSON Web Tokens (JWTs) via the [OpenID Connect](https://openid.net/connect/) standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "none",
+      "note": "Leaving one experience for another loses everything. The word portal does not occur in the specification. The reference client's simplest content type is a link out of the application, and its own architecture note records the cost: the user has to find their way back and the immersive session may be gone.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/docs/architecture/externalcontent.md",
+          "title": "spARcl - loading 3D scenes",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Users leave the client application when they launch the content and must find their own way back should they wish to return."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/docs/architecture/externalcontent.md",
+          "title": "spARcl - loading 3D scenes",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Once a user has left the client application any AR session within it may be lost."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "partial",
+      "note": "Services and content have presence; people do not. A node announces itself with coverage and a lifetime, must dispose that announcement when it leaves gracefully, and service records are synchronised peer to peer across country-level providers, so a client can learn what is live in an area across operators. There is no roster of participants: the word roster does not occur, and the reference client shares participant poses over message queue topics named in a deployment's own configuration rather than by any specified protocol.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**Departure:** A node leaving the bus gracefully MUST dispose its `Announce` instance (DDS instance state `NOT_ALIVE_DISPOSED`) so that durable readers and late joiners observe the removal"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/oscp-spatial-service-discovery/blob/master/README.md",
+          "title": "OSCP Spatial Service Discovery - README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Spatial service records are synchronized in real-time across multiple top-level (ex. country) providers in a peer-to-peer manner"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/README.md",
+          "title": "spARcl - README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "## RabbitMQ topics for sharing agent poses (replace ngi_search with your own)"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "native",
+      "note": "This is the platform's clearest contribution and the thing the geospatial pose standard explicitly refuses to do. Every anchor, service, content bundle and tileset gets a stable address under a domain name authority, with a formal grammar, and resolution is normative and ordered: validate, cache, advertised resolver, then a required web fallback at a well-known path that every authority must serve. Authorities are even told to keep redirects alive for a year after a handover.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "spatialdds://museum.example.org/hall1/anchor/01J8QDFQX3W9X4CEX39M9ZP6TQ"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "All SpatialDDS authorities **MUST** support HTTPS-based resolution."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "https://{authority}/.well-known/spatialdds/resolver"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When authority transfer occurs (e.g., organization merger, domain sale), the new authority SHOULD maintain HTTP redirects from the old authority for at least 12 months."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "native",
+      "note": "Finding things without knowing them in advance is the platform's founding purpose, and it is answered twice over. The original services keep a spatial registry of service providers and of content, described by their own authors as a name service with spatial context. SpatialDDS adds a two-layer model: a bootstrap that finds the bus by local name service, a geographic name service binding, a printed code or a beacon, and a spatial search that returns service manifests over the web without joining the bus. One caution: the association's own public timeline calls the content discovery protocol ratified in 2023, and no primary source supports that word. The repository still calls its record format a base version expected to evolve and its interface version 1.0.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/docs/index.md",
+          "title": "Welcome to spARcl - documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The mobile client first queries the SSD for spatial services in the vicinity, similar to a domain name service with spatial context."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "For Internet-scale discovery, a geospatial DNS-SD binding allows clients with only a GPS fix to locate services by encoding their position as a geohash subdomain."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "POST https://{authority}/.well-known/spatialdds/search"
+        },
+        {
+          "url": "https://openarcloud.org/about",
+          "title": "About OARC - Open AR Cloud",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Spatial Content Discovery protocol ratified, enabling decentralized content networks"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "partial",
+      "note": "There is a time model but no shared clock. All timestamps must be coordinated universal time on the POSIX count, producers should declare their clock source and accuracy, and consumers must estimate and remove offsets before associating events across devices. The default when nothing is declared is the plain system clock with no accuracy guarantee, so ordering across operators rests on assumptions the platform cannot check.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "All `Time` values in SpatialDDS MUST represent UTC seconds since the Unix epoch (1970-01-01T00:00:00Z), excluding leap seconds"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When clock domains differ, consumers MUST estimate and compensate clock offsets before temporal association."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**Default assumption:** If no `time` metadata is present, consumers MUST assume `clock_source = \"system\"` with no accuracy guarantee."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "partial",
+      "note": "Publishers have identity; people and objects do not. The discovery services fill in the provider or tenant on a record from the caller's authenticated token, so every record has an owner, and on the bus a writer is named by an identifier that the specification scopes to one deployment. No identifier is defined for a person, and none is global.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/oscp-spatial-service-discovery/blob/master/README.md",
+          "title": "OSCP Spatial Service Discovery - README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "provider: string; //spatial services provider, populated by platform based on auth"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/oscp-spatial-content-discovery/blob/master/README.md",
+          "title": "OSCP Spatial Content Discovery - README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "tenant: string; //tenant or content owner, populated by platform based on auth"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "- `source_id` — Stable writer identity within a deployment."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "none",
+      "note": "The platform expresses no claims of its own. Authentication is handed to OpenID Connect tokens in the discovery services and to the DDS security public key infrastructure on the bus. The word credential occurs nowhere in the specification.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/oscp-spatial-content-discovery/blob/master/README.md",
+          "title": "OSCP Spatial Content Discovery - README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Authentication/authorization is based on JSON Web Tokens (JWTs) via the [OpenID Connect](https://openid.net/connect/) standard."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**Authentication:** PKI-based authentication as defined by DDS Security."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "partial",
+      "note": "A service can advertise how to authenticate to it, in a normative comma-separated list of authentication addresses with a required scheme for the bus security profile, and a client is told to present a bearer token in the standard header. That is the presentation half. There is no request or challenge protocol, no proof format and no way to ask for a particular claim.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "`auth_hint := auth-uri (\",\" auth-uri)*`"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "If OAuth2 is used, clients **SHOULD** present bearer tokens using the standard `Authorization: Bearer <token>` header."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "partial",
+      "note": "Permissions exist but are borrowed whole. Where authorisation is required on the bus, deployments must use the DDS security governance and permissions documents, and the specification states that it does not redefine them. Cloud style grants may be layered through the authentication hint. Nothing in the platform expresses what a subject may do in a form a third party could read.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**Access control:** governance and permissions documents configured per DDS Security."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This specification does not redefine DDS Security."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Cloud and enterprise authorization mechanisms (OAuth 2.0/OIDC, SPIFFE/SPIRE, mutual TLS) MAY be layered via the `auth_hint` field."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "partial",
+      "note": "Location privacy is taken seriously and is the one form of selective disclosure the platform has. Spatial queries are made over a coarse hexagon rather than a point, on purpose; the localisation protocol makes a client state acceptable retention and use policies and the sanitisation it applied or wants; and the newer specification asks deployments to quantise poses, truncate trajectories and rotate writer identifiers. All of this is guidance rather than requirement, and none of it lets a holder disclose one attribute and withhold another.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/oscp-spatial-service-discovery/blob/master/README.md",
+          "title": "OSCP Spatial Service Discovery - README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This avoids exposing the client's specific location."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/oscp-geopose-protocol/blob/master/README.md",
+          "title": "OSCP GeoPose Protocol - README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "dataSanitizationRequested: string[]; //server-side data sanitization requested"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**Pseudonymization.** Use rotating `source_id` values that cannot be linked across sessions without a key held by the data controller."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "These mitigations are normative guidance (SHOULD), not normative requirements (MUST)"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.social",
+      "level": "out-of-scope",
+      "note": "No relationships and no standing. Neither reputation nor social graph occurs anywhere in the platform's specifications or service documentation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "none",
+      "note": "Nothing acts on terms at the point of use, and nothing carries terms to act on. The platform explicitly does not hold content, so the point of use lies with whoever hosts the asset.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/docs/index.md",
+          "title": "Welcome to spARcl - documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "It is important to note that the OSCP does not store content, it merely connects users to resources operated by content providers."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "native",
+      "note": "This is the platform's centre of gravity. A geospatial pose carries latitude, longitude and ellipsoidal height with an orientation fixed to the local east-north-up tangent frame at that position, matching the OGC standard the association helped write; the localisation protocol returns one with an accuracy estimate; and every content record is placed by one.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/core.idl",
+          "title": "SpatialDDS Core IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "// orientation (x,y,z,w) in the local ENU tangent frame at (lat,lon,alt)"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/oscp-geopose-protocol/blob/master/README.md",
+          "title": "OSCP GeoPose Protocol - README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The OGC GeoPose encoding has been standardized with contributions from OARC members"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/oscp-spatial-content-discovery/blob/master/README.md",
+          "title": "OSCP Spatial Content Discovery - README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "geopose: GeoPose;"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "partial",
+      "note": "The earth frame is settled and everything else is named rather than defined. Geospatial poses are world geodetic system coordinates by construction, coverage boxes are written in the geographic ordering when they declare that reference system, and local frames are identified by an authoritative identifier with an optional axis convention. The reference system identifier itself is an optional free string, so two systems can exchange a valid box and read it differently.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**Geographic CRS (WGS84):** `bbox` arrays MUST use GeoJSON ordering: `[lon_min, lat_min, lon_max, lat_max]`"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/discovery.idl",
+          "title": "SpatialDDS Discovery IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "string  crs;              // optional CRS identifier for earth-fixed frames (e.g., EPSG code)"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The UUID is authoritative; the fully qualified name is a human-readable alias; the optional `coord_convention` selects the axis convention for poses in this frame"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "partial",
+      "note": "Local frames are expressible and local anchoring is not specified. A device can publish poses in its own map frame and relate that frame to the earth by a transform, and the flow the platform describes is that a visual fix aligns the device's own tracking to the global frame. Creating, persisting and re-finding an anchor on one device is left to the device's own platform.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/core.idl",
+          "title": "SpatialDDS Core IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "FrameRef parent_ref;      // global frame (ENU@..., ECEF, ...)"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/docs/index.md",
+          "title": "Welcome to spARcl - documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This allows to align the client’s own pose tracking algorithm with the common global coordinate system."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "native",
+      "note": "Durable world-locked anchors are a first-class profile: an anchor set publishes a venue's pack, deltas keep clients in step, and a snapshot can be requested. Each anchor carries the method that produced it, a confidence and a checksum, and each can be addressed and resolved by its own stable address and manifest.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The Anchors profile provides a structured way to share and update collections of durable, world-locked anchors."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/core.idl",
+          "title": "SpatialDDS Core IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "string  method;          // \"GNSS\",\"VisualFix\",\"Surveyed\",\"Fusion\""
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "spatialdds://museum.example.org/hall1/anchor/main-entrance"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.vps",
+      "level": "native",
+      "note": "The platform defines the request and response for recovering a pose from imagery and ships a working implementation. The older protocol posts camera, satellite, radio and inertial readings and returns a geospatial pose with position and orientation accuracy; the newer one adds a typed query and reply pair with quality requirements and a three-way outcome, sending imagery by reference rather than inline. The reference service builds a map from a phone recording, aligns it to street footprints by hand, and answers queries in OGC geospatial pose form.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/oscp-geopose-protocol/blob/master/README.md",
+          "title": "OSCP GeoPose Protocol - README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Early version of a standard GeoPoseProtocol API i.e. a request/response protocol for visual localization."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/argeo.idl",
+          "title": "SpatialDDS AR+Geo IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "@value(1) VPS_DEGRADED,   // fix computed but below requested quality"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/openvps/blob/main/README.md",
+          "title": "OpenVPS - README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This is a web service that takes an HLOC map and localizes a query image in it. The response is OGC [GeoPose](https://www.ogc.org/standards/geopose/) format."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "native",
+      "note": "Tiled streaming of large geospatial data is in the core profile: a tile is keyed by grid position and detail level, carries its bounds, a monotonic version, a named encoding and a checksum, and is composed of blobs. Patches update parts of a tile, snapshots let a late joiner catch up, and the transport profile for tiles is reliable and latched.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/core.idl",
+          "title": "SpatialDDS Core IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "@key TileKey key;              // unique tile key"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/core.idl",
+          "title": "SpatialDDS Core IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "sequence<string, 32> blob_ids; // blobs composing this tile"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/core.idl",
+          "title": "SpatialDDS Core IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "uint64 up_to_revision;   // 0 = latest"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.indoor",
+      "level": "partial",
+      "note": "Interiors are addressable but not described. A geo-referenced node may carry poses in building, floor and room frames, a geospatial pose is simply absent for indoor-only maps, and typed zones can name a room and report its occupancy. There is no structured interior model: no doors, no boundaries, no connectivity, and the OGC indoor markup work the association once hosted has not been touched since 2019.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/argeo.idl",
+          "title": "SpatialDDS AR+Geo IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "//   - Building / floor / room frames in hierarchical spaces"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/argeo.idl",
+          "title": "SpatialDDS AR+Geo IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "// Geographic anchor (optional — absent for indoor-only maps)"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| `spatial_zone` | Named zone definition | Latched; TRANSIENT_LOCAL — `events::SpatialZone`; QoS `ZONE_META` |"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "out-of-scope",
+      "note": "The platform never starts or ends an immersive session. Its reference client does, using the augmented reality part of the immersive web interface, which at the time of writing still needed an experimental browser flag; that is the client's business, not the platform's.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/docs/index.md",
+          "title": "Welcome to spARcl - documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Several features of the AR-module of WebXR. These are currently avalaible in pre-release form behind the flag 'WebXR incubations' in Google Chrome."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/docs/index.md",
+          "title": "Welcome to spARcl - documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The open spatial computing platform (abbreviated OSCP) defines the major components and most important interfaces required to deliver AR Cloud experiences."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "out-of-scope",
+      "note": "No buttons, sticks or handheld poses anywhere. Poses in this platform come from sensors and localisation, not from held devices.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/docs/index.md",
+          "title": "Welcome to spARcl - documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The open spatial computing platform (abbreviated OSCP) defines the major components and most important interfaces required to deliver AR Cloud experiences."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "out-of-scope",
+      "note": "No articulated hand pose. Hands do not appear in any profile.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/docs/index.md",
+          "title": "Welcome to spARcl - documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The open spatial computing platform (abbreviated OSCP) defines the major components and most important interfaces required to deliver AR Cloud experiences."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.eye",
+      "level": "out-of-scope",
+      "note": "No gaze input and no gaze privacy rules. The platform's privacy work is about location, not attention.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/docs/index.md",
+          "title": "Welcome to spARcl - documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The open spatial computing platform (abbreviated OSCP) defines the major components and most important interfaces required to deliver AR Cloud experiences."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "out-of-scope",
+      "note": "No touch feedback. Nothing in the platform reaches back to the user.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/docs/index.md",
+          "title": "Welcome to spARcl - documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The open spatial computing platform (abbreviated OSCP) defines the major components and most important interfaces required to deliver AR Cloud experiences."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "partial",
+      "note": "Participants say what they support and consumers can select on it: an announcement carries supported profiles as version ranges within a major, preferred profiles and namespaced feature flags, and every advertised topic states its type, version and quality profile so a client can choose without opening payloads. Devices announce like anything else. What is never described is what the client can display, render or accept as input.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/discovery.idl",
+          "title": "SpatialDDS Discovery IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "sequence<ProfileSupport, 64> supported_profiles;"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/discovery.idl",
+          "title": "SpatialDDS Discovery IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "sequence<string, 64>         features;           // namespaced feature flags, e.g., \"blob.crc32\", \"provisional.rf_beam\"; unknown flags MUST be ignored"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Consumers use these three keys to match and filter streams without inspecting payload bytes."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "out-of-scope",
+      "note": "The platform defines no language and no runtime. Its answer to interactive content is to point at a web page and let the browser be the runtime, which the reference client's own architecture note argues for on the grounds that defining a code execution environment is hard to do safely.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/docs/architecture/externalcontent.md",
+          "title": "spARcl - loading 3D scenes",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This proposal therefore defines a communication channel (to message data into and out of content experiences) rather than a new runtime environment itself."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/docs/architecture/externalcontent.md",
+          "title": "spARcl - loading 3D scenes",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "To support scripted or stateful/interactive content, the platform must define and provide a code execution environment, and must implement a sandbox to isolate content experiences from each other and the client application."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "none",
+      "note": "Nothing declarative travels with a record. A spatial content record carries a title, keywords, links, a pose and loose key-value definitions, and the interaction properties the reference client planned for its lightweight placeholders were still unimplemented when the documentation was written.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/oscp-spatial-content-discovery/blob/master/README.md",
+          "title": "OSCP Spatial Content Discovery - README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "definitions?: Def[];"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/docs/content/placeholder.md",
+          "title": "spARcl placeholders",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "- interaction: click, ..."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/docs/content/placeholder.md",
+          "title": "spARcl placeholders",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This is not yet implemented, but will likely be one of the next features to be worked on."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "partial",
+      "note": "Isolation is real but borrowed from the browser and specified nowhere. The reference client loads an experience as a web page inside a transparent frame and relies on the operating system and browser to keep experiences apart, feeding them camera projection and pose by message passing. The client documentation frames the limit plainly: an imported scene can do whatever a sandboxed frame allows. No sandbox rules, limits or interface are written into any OSCP specification.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/docs/architecture/externalcontent.md",
+          "title": "spARcl - loading 3D scenes",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Operating systems and browsers provide strong process isolation mechanisms for frames such that content experiences are fully isolated from each other and the client application."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/docs/content/index.md",
+          "title": "spARcl content types",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Imported **3D scenes** can have any functionality possible with the 3D framework they're created, as long as it is possible within a sandboxed iframe element."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "partial",
+      "note": "Agents are addressed as first-class publishers rather than as guests: the design is stated to be agent-ready and domain-neutral, an agent's intended path has a normative type in the core profile, and an informative appendix explains the platform as a grounding layer for learned world models. The task and status messages that would let agents coordinate are an informative example only and outside the normative specification.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Agents, foundation models, and AI services can publish and subscribe alongside devices without special treatment."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/core.idl",
+          "title": "SpatialDDS Core IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "@key string agent_id;             // who is planning"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "* **Agent Profile**: Generic task and status messages for AI agents and planners."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "none",
+      "note": "Nothing bounds what guest content may consume, because the platform hosts no guest content. Bounds do exist on the wire, a chunk is capped at 65535 bytes and sequences are bounded, but those protect the bus, not a host from its guests.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/core.idl",
+          "title": "SpatialDDS Core IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "sequence<uint8, 65535> data; // <=65535 bytes per chunk (binding-compatible bound; see §3.2)"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "partial",
+      "note": "What survives is the reference layer, not the world. Anchors are durable and persist across sessions, map descriptors, zones and announcements are latched so a late joiner receives the current set, and content and service records live in append-only logs replicated between providers. Content itself is never held: the platform states that it connects users to resources operated by content providers, so whether the thing at an address still exists is somebody else's guarantee.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Anchors are special frames that are durable and globally positioned"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/core.idl",
+          "title": "SpatialDDS Core IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "// Topic: spatialdds/<scene>/entity/binding/v1\n    // QoS:   RELIABLE + TRANSIENT_LOCAL (late joiners receive current bindings)"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/docs/index.md",
+          "title": "Welcome to spARcl - documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "It is important to note that the OSCP does not store content, it merely connects users to resources operated by content providers."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "out-of-scope",
+      "note": "No held items and nothing that travels with a user. The word inventory occurs nowhere in the platform's specifications or documentation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "out-of-scope",
+      "note": "No user settings and no accessibility choices are carried. The only per-user state the platform touches is an authentication token.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/oscp-spatial-content-discovery/blob/master/README.md",
+          "title": "OSCP Spatial Content Discovery - README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Authentication/authorization is based on JSON Web Tokens (JWTs) via the [OpenID Connect](https://openid.net/connect/) standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "partial",
+      "note": "Content addressing is present as a fallback rather than as the primary way to name things. A blob identifier may be a content address and always carries a hash, asset references carry an algorithm-tagged hash, and when an address fails to resolve a client may fetch by checksum from any content-addressed store, valid only when the checksum matches. Primary addressing remains a domain name authority, so a dead authority is survivable only for content already seen.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/core.idl",
+          "title": "SpatialDDS Core IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "string blob_id;   // UUID or content-address"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "the client MAY resolve the content by checksum from any available content-addressed store (e.g., a peer cache or IPFS gateway). Content-addressed resolution is valid only when the checksum matches."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "partial",
+      "note": "There is a package description but no package. A manifest declares what a resource is, its capabilities, its coverage and its assets, each asset with an address, a media type and a hash, and content may declare other resources it needs first. Nothing defines a container, a layout or an install; the bytes stay wherever their owner put them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "`rtype` | string | REQUIRED | Resource type: `anchor`, `anchor_set`, `content`, `tileset`, `service`, or `stream`."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "`assets` | array | OPTIONAL | Array of `AssetRef` objects. Each entry MUST include `uri`, `media_type`, and `hash`."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/docs/index.md",
+          "title": "Welcome to spARcl - documentation index",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "It is important to note that the OSCP does not store content, it merely connects users to resources operated by content providers."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "partial",
+      "note": "Delivery at scale is half-answered and half-delegated. On the bus, large payloads move as bounded checksummed chunks with reliability and timeout rules; off the bus, manifests carry a cache lifetime, resolvers publish a default, and the specification suggests cache headers and edge caching for coarse queries. The association's whole architecture argues for running services at the edge rather than in a central cloud, but the platform hosts nothing itself and prescribes no distribution network.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Consumers SHOULD apply a per-blob timeout of at least `2 × (total_chunks / expected_rate)` seconds when an expected rate is known."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Responses to geohash queries at precision 5 (city-district scale) MAY be cached for 60–300 seconds."
+        },
+        {
+          "url": "https://openarcloud.org/",
+          "title": "Open Spatial Computing Platform - Open AR Cloud",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "All OSCP services are designed to run on edge infrastructure rather than centralized cloud services, ensuring low latency and data sovereignty."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "partial",
+      "note": "The machinery is thorough and the promise is suspended. Profiles are versioned as major and minor, participants advertise supported ranges, consumers take the highest compatible minor, types are appendable, and topic names change only on a major bump so subscribers survive minor updates. Against that, the specification suspends the compatibility contract for the whole of the current series, and version 1.7 duly broke the wire in eight places, including widening a time field and changing instance keys.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Profile MINOR bumps (`@extensibility(APPENDABLE)` additions) MUST NOT change topic names."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Throughout the 1.x pre-adoption series, MINOR revisions MAY include breaking schema or wire changes."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/CHANGELOG.md",
+          "title": "SpatialDDS specification changelog",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Backward compatibility with 1.6 is **not** preserved."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "partial",
+      "note": "There is a conformance appendix and it tests the schema, not the wire. Five public datasets were mapped field by field to check that nothing needs a workaround, and the appendix states in its own words that it does not test interoperability between implementations, delivery, quality enforcement or round-trip fidelity. The older discovery and localisation services have an interface description and no conformance suite at all.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The conformance tests in this appendix validate **schema expressiveness** — whether every field in a reference dataset has a lossless mapping to a SpatialDDS type."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "- **Wire-level interoperability** between DDS implementations (e.g., CycloneDDS ↔ Fast DDS ↔ RTI Connext)."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Wire-level interop tests across at least two DDS vendors are planned for a future revision"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "Open AR Cloud's SpatialDDS is a publish-and-subscribe fabric for spatial data between devices and services, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "Open AR Cloud's SpatialDDS is a publish-and-subscribe fabric for spatial data between devices and services, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "Open AR Cloud's SpatialDDS is a publish-and-subscribe fabric for spatial data between devices and services, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "none",
+      "note": "A Gaussian splat is a named value in an enumeration and appears in an appendix showing how a neural field could be advertised and queried. The specification says in its own words that the example is informative and outside the normative text, so nothing here carries splat data.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "@value(1) GAUSSIAN_SPLAT,"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**This example is informative only and is not part of the SpatialDDS 1.7 normative specification.**"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "partial",
+      "note": "Tiles are keyed by grid position and detail level, carry their bounds, a version and a named encoding, and are composed of blobs, so a large captured scene can be handed over piece by piece. What is missing is the half that makes it progressive: no screen-space error, no distance policy and no priority, so producer and consumer can agree which rung of the pyramid a tile belongs to and not which one to fetch first.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/core.idl",
+          "title": "SpatialDDS Core IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "@key uint8  level; // LOD level"
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "none",
+      "note": "V3C is named as a possible tile encoding and nothing more: no calibration, no mask metadata, no timeline for a captured scene. The envelope would carry it; the specification does not say what is inside.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/core.idl",
+          "title": "SpatialDDS Core IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "string encoding;               // \"glTF+Draco\",\"MPEG-PCC\",\"V3C\",\"PLY\",..."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "partial",
+      "note": "Points are carried, not coded. A tile's encoding field names point-cloud compression, V3C and PLY as strings a producer may write, and lidar frames have a typed profile with calibration and frame metadata; the specification defines none of those encodings itself, so two implementations agree on the envelope and look elsewhere for the bytes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/idl/v1.7/core.idl",
+          "title": "SpatialDDS Core IDL 1.7",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "string encoding;               // \"glTF+Draco\",\"MPEG-PCC\",\"V3C\",\"PLY\",..."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "`sensing.common` defines shared frame metadata, calibration, QoS hints, and codec descriptors. Radar, lidar, and vision profiles inherit those types and layer on their minimal deltas"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "Open AR Cloud's SpatialDDS is a publish-and-subscribe fabric for spatial data between devices and services, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "out-of-scope",
+      "note": "Open AR Cloud's SpatialDDS is a publish-and-subscribe fabric for spatial data between devices and services, and it produces no image from a viewing position that no capture camera occupied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "Open AR Cloud's SpatialDDS is a publish-and-subscribe fabric for spatial data between devices and services, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "Open AR Cloud's SpatialDDS is a publish-and-subscribe fabric for spatial data between devices and services, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "Open AR Cloud's SpatialDDS is a publish-and-subscribe fabric for spatial data between devices and services, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "Open AR Cloud's SpatialDDS is a publish-and-subscribe fabric for spatial data between devices and services, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "Open AR Cloud's SpatialDDS is a publish-and-subscribe fabric for spatial data between devices and services, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "Open AR Cloud's SpatialDDS is a publish-and-subscribe fabric for spatial data between devices and services, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "Open AR Cloud's SpatialDDS is a publish-and-subscribe fabric for spatial data between devices and services, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "out-of-scope",
+      "note": "Open AR Cloud's SpatialDDS is a publish-and-subscribe fabric for spatial data between devices and services, and it carries no full 360-degree view of a place as an image with its projection stated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core, Discovery, and Anchors form the foundation of SpatialDDS, providing the minimal set required for interoperability."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "partial",
+      "note": "SpatialDDS is the carriage, not the camera. Its core profile publishes geometry tiles of 3D tile data, and heavy content such as meshes and point clouds travels as referenced blobs rather than inline messages, so a reconstruction made on one device can reach every other subscriber on the bus. What it does not do is make the reconstruction: the sensing is somebody else's, and the specification is deliberately codec-agnostic about the mesh format.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "SpatialDDS is a lightweight, standards-based protocol, built on OMG DDS, for real-time exchange of spatial world models."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Heavy content — meshes, point clouds, video frames, neural network weights — is never inlined in messages."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "partial",
+      "note": "The semantics profile carries 2D and 3D detections named for augmented reality occlusion, robotics perception and analytics, with live segmentation masks on their own quality of service class. The gap is the vocabulary: the class identifier on a detection is a free string with no registry, so two publishers can name the same floor differently and both conform.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**Semantics Profile**: 2D and 3D detections for AR occlusion, robotics perception, and analytics."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification, semantics profile IDL",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "string class_id;           // semantic label"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "partial",
+      "note": "The vision profile defines a 16-bit depth pixel format whose default unit is millimetres, with a rule that a publisher using another unit must say so and that consumers must otherwise assume millimetres, and it links the depth stream to its colour stream and intrinsic calibration. Again this is transport: the bus moves a depth frame, it does not measure one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification, sensing vision profile IDL",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "DEPTH16 frames carry per-pixel unsigned 16-bit depth values. The default unit is millimeters (range 0-65535 mm ~= 0-65.5 m), consistent with OpenNI, RealSense SDK, and ARKit conventions."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "SpatialDDS is a lightweight, standards-based protocol, built on OMG DDS, for real-time exchange of spatial world models."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "Occlusion appears in the specification only as a use the detections serve. Whether a real surface hides a virtual object is drawn by whichever client is rendering, and a data bus has no renderer, so this row is not the kind of thing SpatialDDS decides.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**Semantics Profile**: 2D and 3D detections for AR occlusion, robotics perception, and analytics."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 specification (full text)",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "SpatialDDS is a lightweight, standards-based protocol, built on OMG DDS, for real-time exchange of spatial world models."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "out-of-scope",
+      "note": "Open AR Cloud's work is a data bus and a discovery layer for real-world spatial data. Nothing in it presents a picture, so blending with a camera view is not its business.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.face",
+      "level": "out-of-scope",
+      "note": "The sensing profiles carry readings of the world — radar, lidar, vision, mapping — from a device to whoever subscribes. The user's own face and body are not among the streams and no privacy terms for such a stream are defined.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "out-of-scope",
+      "note": "The specification moves geometry tiles, anchors and semantics between systems rather than describing an authored place, so declaring walkable surface and arrival points sits outside it.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "partial",
+      "note": "Every significant resource — an anchor, a service, a content bundle, a tileset — has a stable URI that resolves through a defined chain to a manifest, so naming that keeps resolving is a designed property of this system. It names resources rather than units of logic: no module, behaviour or program is published under one of these addresses, and nothing versions code behind a name.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification, Open AR Cloud",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Every significant resource — an anchor, a service, a content bundle, a tileset — has a stable SpatialDDS URI (e.g., `spatialdds://museum.example.org/hall1/anchor/main-entrance`)."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "out-of-scope",
+      "note": "The bus carries live spatial data between participants that have already found each other. There is no publishing path from finished content to an audience in which a review could stand, and no review record in the manifests.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "native",
+      "note": "The only subject on this map that does the whole row. The mapping profile carries map lifecycle descriptors, lifecycle events for multi-agent map exchange, and an explicit inter-map alignment transform published as its own latched topic, so one participant can tell another that its map and their map are the same place and how to get between them.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification, Open AR Cloud",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "**Mapping Profile**: Map lifecycle descriptors (`MapMeta`), extended multi-source edge types, inter-map alignment transforms (`MapAlignment`), and lifecycle events for multi-agent map exchange."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification, Open AR Cloud",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "| `map_alignment` | Inter-map transform | Latched; TRANSIENT_LOCAL — `mapping::MapAlignment`; QoS `MAP_META` |"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "native",
+      "note": "Coverage is normative here, not an afterthought: a manifest describes what a node or dataset provides as capabilities, coverage and assets, the coverage model has its own normative clause, and a bounding box is stated in a named coordinate reference system with the ordering pinned down. A client can ask what is available near it over the bus or over an HTTP search endpoint and test relevance before joining anything.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification, Open AR Cloud",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Manifests describe what a SpatialDDS node or dataset provides: **capabilities**, **coverage**, and **assets**."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification, Open AR Cloud",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "**Geographic CRS (WGS84):** `bbox` arrays MUST use GeoJSON ordering: `[lon_min, lat_min, lon_max, lat_max]` (2D)"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.extension",
+      "level": "native",
+      "note": "SpatialDDS 1.7 defines extensible types, namespaced feature flags and receiver rules for unknown appended fields; its pre-adoption compatibility limits remain explicit.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/OpenArCloud/SpatialDDS-spec/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Consumers MUST ignore unknown appended fields in APPENDABLE types."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.profile",
+      "level": "native",
+      "note": "SpatialDDS 1.7 names Core, Discovery, Anchors and extension profiles with versioned module identifiers and advertised requirements; stamped 1.7 remains a pre-adoption specification.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/OpenArCloud/SpatialDDS-spec/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Profile negotiation happens automatically — participants advertise what they support"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.metadata",
+      "level": "native",
+      "note": "Discovery AssetRef attaches namespaced typed MetaKV bags to referenced assets; consumers must accept the typed and JSON forms, without implying a universal ontology.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/OpenArCloud/SpatialDDS-spec/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "AssetRef and MetaKV are normative types for asset referencing in the Discovery profile."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "partial",
+      "note": "SpatialDDS privacy guidance recommends pseudonymous rotating source identifiers; it does not define cryptographically unlinkable presentations or guarantee correlation resistance across all payload data.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/OpenArCloud/SpatialDDS-spec/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Use rotating `source_id` values that cannot be linked across sessions"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Open AR Cloud's SpatialDDS 1.7 specifies spatial-data interchange, discovery and sensing profiles. This row requires layout and presentation of two-dimensional interface regions, including their size, alignment, and relationship to a display or scene. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/OpenArCloud/SpatialDDS-spec/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "SpatialDDS provides a lightweight, standards-based framework for exchanging real-world spatial data over DDS."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.resolve",
+      "level": "native",
+      "note": "SpatialDDS URIs resolve to manifests for resources including content bundles and tilesets, using a defined context and resolver chain before asset access.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/OpenArCloud/SpatialDDS-spec/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Resolution follows a defined chain: check cache, try an advertised resolver, fall back to HTTPS."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "native",
+      "note": "SpatialDDS 1.7 exchanges timed pose streams and PlannedTrajectory waypoints; consumers use the latest plan revision, keeping future intent separate from observed pose history.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/OpenArCloud/SpatialDDS-spec/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Consumers MUST use the most recent `plan_revision`"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Open AR Cloud's SpatialDDS 1.7 specifies spatial-data interchange, discovery and sensing profiles. This row requires picking scene content from pointing input and reporting the intersected object or geometry to the application. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/OpenArCloud/SpatialDDS-spec/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "SpatialDDS provides a lightweight, standards-based framework for exchanging real-world spatial data over DDS."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.text",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Open AR Cloud's SpatialDDS 1.7 specifies spatial-data interchange, discovery and sensing profiles. This row requires receiving character or string entry through a defined input interface, separate from interpreting physical controller actions. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/OpenArCloud/SpatialDDS-spec/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "SpatialDDS provides a lightweight, standards-based framework for exchanging real-world spatial data over DDS."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Open AR Cloud's SpatialDDS 1.7 specifies spatial-data interchange, discovery and sensing profiles. This row requires submitting distinct shaped image layers to a display compositor with their placement and composition properties. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/OpenArCloud/SpatialDDS-spec/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "SpatialDDS provides a lightweight, standards-based framework for exchanging real-world spatial data over DDS."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.bounds",
+      "level": "native",
+      "note": "SpatialDDS 1.7 advertises content and tile coverage using shared Aabb3/bbox structures, enabling spatial discovery and selection before fetching the detailed content.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/OpenArCloud/SpatialDDS-spec/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Servers MUST respect the Coverage Model (§3.3.4) when evaluating spatial overlap"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/OpenArCloud/SpatialDDS-spec/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Aabb3 aabb; // AABB in the local frame"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Open AR Cloud's SpatialDDS 1.7 specifies spatial-data interchange, discovery and sensing profiles. This row requires generating audio during playback from an exchanged synthesis model, supporting data, and changing control parameters. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/OpenArCloud/SpatialDDS-spec/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "SpatialDDS provides a lightweight, standards-based framework for exchanging real-world spatial data over DDS."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "native",
+      "note": "The normative Core node/edge and framed-transform types interchange linked poses; Mapping adds inter-map constraints without replacing the foundational graph representation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/OpenArCloud/SpatialDDS-spec/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Each Transform expresses a pose that maps coordinates from the `from` frame into the `to` frame (parent → child)."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "via-extension",
+      "note": "The Spatial Events profile exchanges named SpatialZone definitions, typed zone-scoped events and periodic state summaries with shared spatial and temporal fields.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/OpenArCloud/SpatialDDS-spec/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "**`ZoneState`** — periodic zone occupancy and status snapshot"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.consent",
+      "level": "partial",
+      "note": "The protocol requires consent and purpose limitation for shared ego-pose data, but that operator obligation does not itself carry a portable grant with validity and withdrawal fields.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/OpenArCloud/SpatialDDS-spec/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "participants have consented to the spatial data sharing arrangement"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Open AR Cloud's SpatialDDS 1.7 specifies spatial-data interchange, discovery and sensing profiles. This row requires dispatching programmable non-raster GPU workloads against resources available through the graphics-compute API. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/OpenArCloud/SpatialDDS-spec/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "SpatialDDS provides a lightweight, standards-based framework for exchanging real-world spatial data over DDS."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.frame-timing",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Open AR Cloud's SpatialDDS 1.7 specifies spatial-data interchange, discovery and sensing profiles. This row requires coordinating frame submission with predicted display timing and the view poses associated with that time. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/OpenArCloud/SpatialDDS-spec/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "SpatialDDS provides a lightweight, standards-based framework for exchanging real-world spatial data over DDS."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Open AR Cloud's SpatialDDS 1.7 specifies spatial-data interchange, discovery and sensing profiles. This row requires a specified shader source language and execution semantics enabling implementations to consume the same shader program. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/OpenArCloud/SpatialDDS-spec/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "SpatialDDS provides a lightweight, standards-based framework for exchanging real-world spatial data over DDS."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.voxel",
+      "level": "partial",
+      "note": "Mapping signals voxel representations through TileMeta.encoding and transports their data, but leaves the actual spatial-cell format to external representation-specific encodings.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/OpenArCloud/SpatialDDS-spec/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This profile does not add occupancy grid, TSDF, or voxel map types."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.privacy",
+      "level": "native",
+      "note": "SpatialDDS 1.7 gives spatial coarsening, history truncation, pseudonymization and purpose/consent controls; some protections are SHOULD guidance rather than mandatory guarantees.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/OpenArCloud/SpatialDDS-spec/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Use rotating `source_id` values that cannot be linked across sessions"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Open AR Cloud's SpatialDDS 1.7 specifies spatial-data interchange, discovery and sensing profiles. This row requires receiving typed musical instrument events with channel, note or control identifiers and values through a documented device or recorded-event input interface. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/OpenArCloud/SpatialDDS-spec/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "SpatialDDS provides a lightweight, standards-based framework for exchanging real-world spatial data over DDS."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Open AR Cloud's SpatialDDS 1.7 specifies spatial-data interchange, discovery and sensing profiles. This row requires reconstructing a radiance field or Gaussian representation from observed images and camera information, including optimization controls and a trained scene usable for subsequent view synthesis. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/OpenArCloud/SpatialDDS-spec/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "SpatialDDS provides a lightweight, standards-based framework for exchanging real-world spatial data over DDS."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.objectgen",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: Open AR Cloud's SpatialDDS 1.7 specifies spatial-data interchange, discovery and sensing profiles. This row requires producing an individual three-dimensional object from a text or image prompt, with geometry or another renderable representation available for placement in a separately authored scene. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/OpenArCloud/SpatialDDS-spec/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "SpatialDDS provides a lightweight, standards-based framework for exchanging real-world spatial data over DDS."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.color",
+      "level": "partial",
+      "note": "The SpatialDDS 1.7 Vision extension declares the source color space of image frames. Display output-range conversion is not specified by this sensing-data protocol, and the pre-adoption status remains.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/OpenArCloud/SpatialDDS-spec/main/SpatialDDS-1.7-full.md",
+          "title": "SpatialDDS 1.7 full specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "enum ColorSpace { @value(0) SRGB, @value(1) REC709, @value(2) REC2020, @value(10) LINEAR };"
+        }
+      ]
+    }
+  ]
+}

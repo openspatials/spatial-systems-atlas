@@ -1,0 +1,1642 @@
+{
+  "subject_id": "x3d",
+  "summary": "The oldest thing on this map and by far the widest. A published international standard, fourth edition, whose forty-two clauses already contain most of what newer formats are still drafting: rigid body physics with six joint types, spatialized sound with room acoustics, a human skeleton standard, text with fonts, volume rendering, shader bindings, a geospatial component with real coordinate reference frames, an event model for interactivity, a scripting component, and a networked component that shares entity state over a long-established simulation protocol. It also carries a proper conformance clause, which almost nothing else here does. Levels below say native for anything defined in a clause of this standard, since components are how this standard is built; where support depends on which profile a reader implements, the note says so. Three warnings for a standards audience. Its coverage is wide but its adoption is thin, so a cell being filled here does not mean two shipping products interoperate. Its unit of length can be changed by the file, unlike the common asset format, which fixes metres. And its addressing points at a file, not at a shared place, so two people opening the same address get two private copies.",
+  "coverage": [
+    {
+      "capability_id": "scene.graph",
+      "level": "native",
+      "note": "Clause 4 defines the scene graph, the transformation hierarchy and the rules for ancestors and descendants, including that a node may not be its own ancestor.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/concepts.html",
+          "title": "X3D 4.0 clause 4 Concepts",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "X3D includes the notion of local coordinate systems , defined in terms of transformations from ancestor coordinate systems. The coordinate system in which the root nodes are displayed is called the world coordinate system ."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "native",
+      "note": "One fixed convention, right-handed with the vertical axis up, stated in the concepts clause. It matches the common asset format, which makes exchange between them straightforward.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/concepts.html",
+          "title": "X3D 4.0 clause 4.3.6 Standard units and coordinate system",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "ISO/IEC 19775 uses a Cartesian, right-handed, three-dimensional coordinate system. By default, the viewer is on the Z-axis looking down the -Z-axis toward the origin with +X to the right and +Y straight up."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "native",
+      "note": "Metres by default, with base units for angle, force, mass and time each tied to an international units standard. Unlike the common asset format, a file may declare a different length unit, so a reader must honour the declaration rather than assume metres.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/concepts.html",
+          "title": "X3D 4.0 clause 4.3.6 Standard units and coordinate system",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "ISO/IEC 19775 defines the initial base unit of measure of the world coordinate system to be metres. However, the world coordinate units may be modified by specifying a different length unit using the UNIT statement."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "native",
+      "note": "The architecture part defines the scene contents; the byte-level encodings that carry them sit in a companion part of the same standard, not in this document. Cite the encodings separately if the question is about file bytes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/Architecture.html",
+          "title": "X3D 4.0 Architecture, contents",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This document is Edition 4 of ISO/IEC 19775-1, Extensible 3D (X3D)."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "native",
+      "note": "Three separate clauses cover rendering primitives, three-dimensional geometry and two-dimensional geometry, with a further clause for engineering geometry.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/Architecture.html",
+          "title": "X3D 4.0 Architecture, contents",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Geometry3D component provides a detailed specification of the Geometry3D component of X3D."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "native",
+      "note": "A texturing clause plus separate clauses for three-dimensional textures, cube maps and texture projection.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/Architecture.html",
+          "title": "X3D 4.0 Architecture, contents",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Texturing component provides a detailed specification of the Texturing component of X3D including advanced material characteristics."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "native",
+      "note": "The physically based material node was deliberately aligned with the common asset format's material, and the standard says so in a note. This is the clearest worked example on the whole map of two standards bodies making an exchange lossless on purpose.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/shape.html",
+          "title": "X3D 4.0 clause 12.4.6 PhysicalMaterial",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The physical material properties of X3D are also deliberately consistent with the glTF 2.0 material definition. Effectively, converting (in either direction) between X3D PhysicalMaterial and glTF 2.0 material definitions is equivalent."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "native",
+      "note": "Animation is expressed as interpolator nodes driven by a time sensor and wired to targets by routes, rather than as a clip. That makes it flexible inside the file and awkward to lift out as a portable clip.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/Architecture.html",
+          "title": "X3D 4.0 Architecture, contents",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Interpolation component provides a detailed specification of the Interpolation component of X3D."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "native",
+      "note": "The humanoid animation clause defines a joint, a segment and an attachment site, giving a bone hierarchy with defined semantics rather than an anonymous tree.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/hanim.html",
+          "title": "X3D 4.0 clause 26 Humanoid Animation component",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "26.3.1 HAnimDisplacer 26.3.2 HAnimHumanoid 26.3.3 HAnimJoint 26.3.4 HAnimMotion 26.3.5 HAnimSegment 26.3.6 HAnimSite"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "native",
+      "note": "The displacer node moves a named set of vertices by a list of offsets, which is a blend shape by another name, and is how facial detail is carried.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/hanim.html",
+          "title": "X3D 4.0 clause 26.3.1 HAnimDisplacer",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "HAnimDisplacer : X3DGeometricPropertyNode { MFInt32 [in,out] coordIndex [] [0,∞) SFString [in,out] description \"\" MFVec3f [in,out] displacements []"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "native",
+      "note": "The humanoid clause binds a separate international standard for humanoid animation into this one, so bone names and structure are agreed rather than left to convention. This is the answer that the common asset format still lacks.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/hanim.html",
+          "title": "X3D 4.0 clause 26.1.2 Overview",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The HAnim component of X3D defines the node bindings and other specifics for implementing ISO/IEC 19774 (see [I19774] ) within X3D."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "native",
+      "note": "A humanoid node gathers the joints, segments and sites into one figure, which is the portable description of a body. It does not specify clothing, wearables or expression sets.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/hanim.html",
+          "title": "X3D 4.0 clause 26.2 Concepts",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This component maps the functionality defined in ISO/IEC 19774 to a set of X3D nodes. The semantics for these nodes are as specified therein."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "native",
+      "note": "Clause 37 defines rigid bodies and rigid body collections. It is in the fullest profile, so a reader may conform to the standard without implementing it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/rigidBodyPhysics.html",
+          "title": "X3D 4.0 clause 37 Rigid body physics component",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Only the subset of the laws of physics known as rigid body physics is supported."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "native",
+      "note": "Collidable shapes and offsets, collision spaces, collision collections, a collision sensor and a contact node, kept separate from the visible geometry.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/rigidBodyPhysics.html",
+          "title": "X3D 4.0 clause 37.4 Node reference",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "37.4.2 CollidableOffset 37.4.3 CollidableShape 37.4.4 CollisionCollection 37.4.5 CollisionSensor 37.4.6 CollisionSpace 37.4.7 Contact"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "native",
+      "note": "Six joint types: ball, single-axis hinge, double-axis hinge, motor, slider and universal, with range-of-motion limits and a defined breaking behaviour.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/rigidBodyPhysics.html",
+          "title": "X3D 4.0 clause 37.2.3 Joints",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A joint is used to connect two bodies together in a way that imposes a set of constraints on the movement of the two bodies relative to one another. Many different joint types are provided"
+        },
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/rigidBodyPhysics.html",
+          "title": "X3D 4.0 clause 37.4 Node reference",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "37.4.1 BallJoint 37.4.2 CollidableOffset 37.4.3 CollidableShape 37.4.4 CollisionCollection 37.4.5 CollisionSensor 37.4.6 CollisionSpace 37.4.7 Contact 37.4.8 DoubleAxisHingeJoint 37.4.9 MotorJoint 37.4.10 RigidBody 37.4.11 RigidBodyCollection 37.4.12 SingleAxisHingeJoint 37.4.13 SliderJoint 37.4.14 UniversalJoint"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.material",
+      "level": "native",
+      "note": "Bounce, friction coefficients, slip factors, surface speed and two softness terms, with a list naming which of them apply. They attach to the collision collection and to contacts rather than to a surface, which is a different shape of answer from a per-material approach and will not map across one for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/rigidBodyPhysics.html",
+          "title": "X3D 4.0 clause 37.4.4 CollisionCollection",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "MFString [in,out] appliedParameters \"BOUNCE\" [\"BOUNCE\",\"USER_FRICTION\",\"FRICTION_COEFFICIENT_2\",\"ERROR_REDUCTION\", \"CONSTANT_FORCE\",\"SPEED_1\",\"SPEED_2\",\"SLIP_1\",\"SLIP_2\"]"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "native",
+      "note": "A proximity sensor fires on entering and leaving a box, with the entry timestamped exactly. It watches the viewer; a separate sensor watches objects. There is no general trigger volume attached to an arbitrary rigid body.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/environmentalSensor.html",
+          "title": "X3D 4.0 clause 22.4.1 ProximitySensor",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The ProximitySensor node generates events when the viewer enters, exits, and moves within a region in space (defined by a box)."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "native",
+      "note": "Sound sources include recorded clips, buffers, microphones, oscillators and network streams, each placed in the scene with a location and a direction.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/sound.html",
+          "title": "X3D 4.0 clause 16.2.1 Audio and sound spatial architecture",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Sound and SpatialSound nodes define location, direction, and characteristics of expected sound production in virtual 3D space."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "native",
+      "note": "Clause 16 covers spatialized sound and acoustic rendering, with listening points that can sit anywhere and face any direction.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/sound.html",
+          "title": "X3D 4.0 clause 16.2.1 Audio and sound spatial architecture",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Sound component provides a rich set of spatialized audio capabilities in a comprehensive architecture suitable for 3D models and virtual environments."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "native",
+      "note": "Acoustic properties attach to geometry and colour the sound, and a set of processing nodes including convolution, filtering, delay and compression let a space be given a character.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/sound.html",
+          "title": "X3D 4.0 clause 16.2.1 and 16.4 Node reference",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Attenuation characteristics may be further modified by AcousticProperties in the Shape component describing reflection, refraction and absorption that affect sound-propagation interactions with surrounding geometry."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "partial",
+      "note": "The propagation model covers reflection, refraction and absorption against surrounding geometry, which is most of the physical picture. What is missing is the words themselves: occlusion and obstruction never appear in the clause, and no algorithm is specified for a sound blocked by a wall, so two readers may treat that case differently.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/sound.html",
+          "title": "X3D 4.0 clause 16.2.1 Audio and sound spatial architecture",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Attenuation characteristics may be further modified by AcousticProperties in the Shape component describing reflection, refraction and absorption that affect sound-propagation interactions with surrounding geometry."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "partial",
+      "note": "There are nodes for a streamed audio source and a streamed audio destination, so the scene can say where live audio enters and leaves. What is missing is the wire: no transport, no codec negotiation and no scale behaviour are specified.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/sound.html",
+          "title": "X3D 4.0 clause 16.4 Node reference",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "16.4.19 StreamAudioDestination 16.4.20 StreamAudioSource"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "native",
+      "note": "A text node with a font style node covering family, style, direction, justification and language. Text is turned into geometry, so it is legible in three dimensions rather than pasted on as an image.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/text.html",
+          "title": "X3D 4.0 clause 15 Text component",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Text component specifies how text strings are rendered in an X3D scene."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "native",
+      "note": "Named viewpoints in perspective or orthographic form, only one bound at a time, plus a navigation information node that says how the user may move. Viewpoints are addressable, which is what makes deep links into a scene possible.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/navigation.html",
+          "title": "X3D 4.0 clause 23 Navigation component",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This document specifies two node types derived from X3DViewpointNode . The Viewpoint node specifies a perspective viewpoint while the OrthoViewpoint node specifies an orth"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "native",
+      "note": "A level-of-detail node switches representations by distance, and the geospatial clause adds a terrain form of it that also loads and unloads children.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/geospatial.html",
+          "title": "X3D 4.0 clause 23.4.3 LOD and clause 25.3.4 GeoLOD",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The GeoLOD node provides a terrain-specialized form of the LOD node."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "native",
+      "note": "A dedicated clause gives the lighting equations and the shadow requirements, so the standard says how a lit surface should look rather than leaving it to each reader.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/Architecture.html",
+          "title": "X3D 4.0 Architecture, contents",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Lighting component defines lighting and shadow requirements for visually rendering X3D models."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "native",
+      "note": "Clause 41 covers rendering volumetric data sets inside a scene, which no other subject on the asset side of this map has in a ratified form.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/Architecture.html",
+          "title": "X3D 4.0 Architecture, contents",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Volume rendering component provides a detailed specification for the rendering of volumetric data sets as part of X3D worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "native",
+      "note": "A programmable shaders clause with three named shading language bindings in the annexes. This is the opposite choice from the common asset format, which stays deliberately neutral. Shader source in a file is by nature not portable across graphics interfaces.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/Architecture.html",
+          "title": "X3D 4.0 Architecture, contents",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "31 Programmable shaders component"
+        },
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/Architecture.html",
+          "title": "X3D 4.0 Architecture, annexes",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "I OpenGL shading language (GLSL) binding"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "native",
+      "note": "Every node that carries geographic coordinates has a field naming its spatial reference frame, with geodetic, transverse mercator and geocentric forms, a table of ellipsoids and a geoid for mean sea level.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/geospatial.html",
+          "title": "X3D 4.0 clause 25.2.3 Specifying a spatial reference frame",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "All the X3D nodes that allow inclusion of geographic coordinates support a field called geoSystem . This field is used to specify the particular spatial reference frame that will be used for the geospatial coordinates in that node."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "native",
+      "note": "A geographic location node places content at a point on the Earth and orients it to the local frame, with the vertical axis up and one horizontal axis pointing north. Note it defines its own way of saying this rather than referencing the separate pose standard from the geospatial consortium.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/geospatial.html",
+          "title": "X3D 4.0 clause 25.3.3 GeoLocation",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "axis is the up direction for that local area (the normal to the tangent plane on the ellipsoid), −Z points towards the north pole, and +X is east."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "native",
+      "note": "A terrain level-of-detail node holds up to four child addresses in a quadtree and manages loading and unloading, which is tiled terrain streaming written into an international standard long before the tiled formats in current use.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/geospatial.html",
+          "title": "X3D 4.0 clause 25.3.4 GeoLOD",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The GeoLOD node provides a terrain-specialized form of the LOD node. It is a grouping node that specifies two different levels of detail for an object using a tree structure, where 0 to 4 children can be specified"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "native",
+      "note": "Interactivity travels inside the file as a graph of one-way connections between fields, changeable while running, with a defined propagation order. This is a ratified answer to the same question the common asset format is still trying to ratify.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/concepts.html",
+          "title": "X3D 4.0 clause 4.3.7 Behaviour graph",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The event model of X3D allows the declaration of unidirectional ROUTE connections between fields and a model for the propagation of events along those connections."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "native",
+      "note": "Clause 29 defines a script node with an initialize and shutdown lifecycle, event handling and field access. The language bindings themselves live in a companion part of the standard.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/scripting.html",
+          "title": "X3D 4.0 clause 29 Scripting component",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This includes how Script nodes are used to effect changes in X3D worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "partial",
+      "note": "Some real precautions are written into the text: a model may not include itself, directly or indirectly, and readers are told not to honour such loops; automatic reloading carries an explicit warning. What is missing is everything general. There is no isolation model for scripts, no permission model and no resource budget, so a scene that runs a script is trusting it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/networking.html",
+          "title": "X3D 4.0 clause 9.4.2 Inline",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "X3D browsers shall not honor self-referential loading of Inline model loops in order to avoid security vulnerabilities."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "native",
+      "note": "Clause 28 binds a long-standing distributed simulation protocol into the scene, with entity state, transmitter, receiver and signal messages. Two cautions: it shares platform-level simulation entities, not general world state, and it lives in the fullest profile only. It is nonetheless a ratified international standard for sharing state between running instances, which the rest of this map does not have.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/dis.html",
+          "title": "X3D 4.0 clause 28 Distributed interactive simulation component",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The Distributed Interactive Simulation (DIS) component provides networked interoperability with the IEEE DIS protocol (see [IEEE1278] and [SISO] ) for sharing state and conducting real-time platform-level simulations across multiple host computers."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "partial",
+      "note": "A scene can pull in another file, and named values can be imported and exported across that boundary; prototypes let a definition live in a separate file. What is missing is override: there is no way for one source to change a value inside another, and no layering with a strength order. That is the gap the scene description standard was built to fill.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/networking.html",
+          "title": "X3D 4.0 clause 9.4.2 Inline",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "it is an error for a model to Inline itself, directly or indirectly, in order to avoid nonterminating recursion loops"
+        },
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/concepts.html",
+          "title": "X3D 4.0 clause 4.4.5 External prototype semantics",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "4.4.5 External prototype semantics 4.4.5.1 Introduction 4.4.5.2 EXTERNPROTO interface semantics 4.4.5.3 EXTERNPROTO URL semantics 4.4.6 Import/Export semantics"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "partial",
+      "note": "An anchor node replaces the current world with another one fetched from an address, so plain traversal between worlds is ratified and has been for years. What is missing is everything that should travel with you: no identity, no appearance and no possessions cross the jump.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/networking.html",
+          "title": "X3D 4.0 clause 9.4.1 Anchor",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "If the URL points to a valid X3D file, that world replaces the world of which the Anchor node is a part"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "none",
+      "note": "Addresses name a file on a server, not a live shared place. Two people opening the same address get two independent copies with no connection between them. Nothing resolves a place name into a joinable destination.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/networking.html",
+          "title": "X3D 4.0 clause 9.2.1 URLs, URNs and URIs",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A URL (Uniform Resource Locator) is a form of Universal Resource Identifier (URI) described in [URI] [RFC8089] that specifies a file located on a particular server and accessed through a specified protocol"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "native",
+      "note": "A whole clause on conformance, separately for files, generators and readers, with a base profile that sets minimum requirements and stated aims of eliminating arbitrary subsets and promoting uniform tests. Very little else on this map has this.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/conformance.html",
+          "title": "X3D 4.0 clause 6 Conformance",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "to promote interoperability by eliminating arbitrary subsets of, or extensions to, ISO/IEC 19775; to promote uniformity in the development of conformance tests"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "none",
+      "note": "Nothing survives a restart because nothing is ever written back. The standard's own list of what an X3D application does covers the world coordinate space, the objects in it, hyperlinks, behaviours and connection to external code, and stops there; there is no store, no save, and no notion of a world that is resumed. The two places the word persistent appears both mean the state of a node's fields while the scene is running, not across a restart. Clause 28 shares live entity state between hosts and keeps none of it. Checked clauses 4 Concepts, 7 Core, 8 Time, 9 Networking, 28 Distributed interactive simulation and 29 Scripting.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/concepts.html",
+          "title": "X3D 4.0 clause 4.1.2 Overview",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Each X3D application: implicitly establishes a world coordinate space for all objects defined, as well as all objects included by the application; explicitly defines and composes a set of 2D, 3D and multimedia objects; can specify hyperlinks to other files and applications; can define object behaviours; can connect to external modules or applications via programming and scripting languages."
+        },
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/scripting.html",
+          "title": "X3D 4.0 clause 29.2.10 Accessing fields and events",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The field values can be read or written and are persistent across method call, and changes to a field can notify the node through its update method."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "none",
+      "note": "There is one settings vocabulary in the standard and it does not belong to the user. Clause 9.2.4 names nine browser options, among them antialiasing, shading mode, render quality while moving and texture quality, passed in at start-up and held either as parameters on the embedding tag or, in the standard's own words, in an application-specific configuration file or registry entry. Support for them is recommended rather than required, none of them is an accessibility choice, nothing ties a setting to a person, and nothing carries one to another world or another reader. Navigation type, viewpoint and headlight settings in clause 23 belong to the scene, and the reader's own interface for them is explicitly left implementation-dependent. Checked clauses 4 Concepts, 7 Core, 9 Networking, 23 Navigation and 24 Environmental effects.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/networking.html",
+          "title": "X3D 4.0 clause 9.2.4 X3D browser options",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Browser options may be set as HTML PARAM values within an EMBED or OBJECT tag if the X3D browser is running as an embedded control within a World Wide Web browser, or through an application-specific mechanism such as a configuration file or system registry entry if the X3D browser is running within some other containing application. Support for X3D browser options is not required but is strongly recommended."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "partial",
+      "note": "Half of this is answered, and answered by name. An HAnimSite is a grouping node whose stated second purpose is an attachment point for accessories such as jewelry and clothing; it takes children, so a hat or a strap hangs beneath it, and the humanoid node keeps a list of its sites. The names come from the humanoid animation standard that this clause binds in, so the same point means the same thing in two files from two authors, which is more than the common asset format offers. What is missing is the item. Nothing defines a wearable as a separate thing that can move from one avatar to another, there are no fitting or scaling rules for bodies of different shape, there is no ownership, and there is no way to put something on or take it off. A garment travels only inside the humanoid that already carries it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/hanim.html",
+          "title": "X3D 4.0 clause 26.3.6 HAnimSite",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "An HAnimSite node serves three purposes. The first is to define an \"end effecter\" location that can be used by an inverse kinematics system. The second is to define an attachment point for accessories such as jewelry and clothing."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "none",
+      "note": "Nothing in the forty-two clauses asks for or presents a credential. The words credential, authentication, certificate, password and authorization do not occur anywhere in this part; permission and privacy occur once each, in a single security sentence on the microphone node that hands the question to the host application. The only identifiers the standard itself defines are simulation numbers in clause 28, a site, an application and an entity, and those are allocation conventions inside one exercise rather than proof of who anyone is. Checked clauses 6 Conformance, 7 Core, 9 Networking including the browser options table, 16 Sound, 28 Distributed interactive simulation and 29 Scripting.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/sound.html",
+          "title": "X3D 4.0 clause 16.4.14 MicrophoneSource",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Security consideration: enabling a MicrophoneSource node has privacy and permission prerequisites."
+        },
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/dis.html",
+          "title": "X3D 4.0 clause 28.2.3 Common DIS fields",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The intent for each simulation exercise is for each DIS site to be assigned a unique identifier, and each simulation application at a DIS site assigned an application identifier unique within that site."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "partial",
+      "note": "The time half is specified better here than in most of this map. Zero is midnight Greenwich time on 1 January 1970, absolute times are seconds in double precision, a whole clause defines the reader's clock and the nodes that follow it, processing an event at a given time may only produce events at that time or later, and everything in one event cascade carries the same timestamp and is treated as simultaneous. Ordering inside one reader is therefore exact and written down. The shared half is absent. The clock is that reader's own, the one networked clause stamps an arriving message with the moment it reached the local machine, and nothing in the standard agrees a clock between two hosts, estimates the offset between them or orders events across them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/time.html",
+          "title": "X3D 4.0 clause 8.2.2 Time origin",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Time (0.0) is equivalent to 00:00:00 GMT January 1, 1970. Absolute times are specified in SFTime or MFTime fields as double-precision floating point numbers representing seconds."
+        },
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/concepts.html",
+          "title": "X3D 4.0 clause 4.4.8.3 Execution model",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "All events generated during a given event cascade are assigned the same timestamp as the initial event, since all are considered to happen instantaneously."
+        },
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/dis.html",
+          "title": "X3D 4.0 clause 28.2.3 Common DIS fields",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The timestamp field provides the time (SFTime) at which the DIS message arrived, referenced to local system time."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "X3D 4.0 is a published international standard for a scene, whose forty-two clauses each define a component, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/Architecture.html",
+          "title": "X3D 4.0 Architecture, contents",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This document is Edition 4 of ISO/IEC 19775-1, Extensible 3D (X3D)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "X3D 4.0 is a published international standard for a scene, whose forty-two clauses each define a component, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/Architecture.html",
+          "title": "X3D 4.0 Architecture, contents",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This document is Edition 4 of ISO/IEC 19775-1, Extensible 3D (X3D)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "X3D 4.0 is a published international standard for a scene, whose forty-two clauses each define a component, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/Architecture.html",
+          "title": "X3D 4.0 Architecture, contents",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This document is Edition 4 of ISO/IEC 19775-1, Extensible 3D (X3D)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "out-of-scope",
+      "note": "X3D 4.0 is a published international standard for a scene, whose forty-two clauses each define a component, and it names no Gaussian splat interchange format and carries no splat data.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/Architecture.html",
+          "title": "X3D 4.0 Architecture, contents",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This document is Edition 4 of ISO/IEC 19775-1, Extensible 3D (X3D)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "out-of-scope",
+      "note": "X3D 4.0 is a published international standard for a scene, whose forty-two clauses each define a component, and it delivers no captured scene, progressively by region and detail or otherwise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/Architecture.html",
+          "title": "X3D 4.0 Architecture, contents",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This document is Edition 4 of ISO/IEC 19775-1, Extensible 3D (X3D)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "none",
+      "note": "The standard has a volume rendering component, which is the closest any ratified format on this map comes, and it draws a volumetric data set that is already in the scene. It is not a captured, time-varying scene carried as media, and no calibration or mask metadata is defined for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/Architecture.html",
+          "title": "X3D 4.0 Architecture, contents",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Volume rendering component provides a detailed specification for the rendering of volumetric data sets as part of X3D worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "partial",
+      "note": "The Rendering component defines a point set as a first-class primitive: a set of three-dimensional points in the local coordinate system with a colour at each point. That is the representation and nothing more. There is no compression, no per-point attribute beyond colour, and no import path for the formats a scanner writes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/rendering.html",
+          "title": "X3D 4.0 Rendering component",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The PointSet node specifies a set of 3D points, in the local coordinate system, with associated colours at each point."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "X3D 4.0 is a published international standard for a scene, whose forty-two clauses each define a component, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/Architecture.html",
+          "title": "X3D 4.0 Architecture, contents",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This document is Edition 4 of ISO/IEC 19775-1, Extensible 3D (X3D)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "out-of-scope",
+      "note": "X3D 4.0 is a published international standard for a scene, whose forty-two clauses each define a component, and it produces no image from a viewing position that no capture camera occupied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/Architecture.html",
+          "title": "X3D 4.0 Architecture, contents",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This document is Edition 4 of ISO/IEC 19775-1, Extensible 3D (X3D)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "X3D 4.0 is a published international standard for a scene, whose forty-two clauses each define a component, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/Architecture.html",
+          "title": "X3D 4.0 Architecture, contents",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This document is Edition 4 of ISO/IEC 19775-1, Extensible 3D (X3D)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "X3D 4.0 is a published international standard for a scene, whose forty-two clauses each define a component, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/Architecture.html",
+          "title": "X3D 4.0 Architecture, contents",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This document is Edition 4 of ISO/IEC 19775-1, Extensible 3D (X3D)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "X3D 4.0 is a published international standard for a scene, whose forty-two clauses each define a component, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/Architecture.html",
+          "title": "X3D 4.0 Architecture, contents",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This document is Edition 4 of ISO/IEC 19775-1, Extensible 3D (X3D)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "X3D 4.0 is a published international standard for a scene, whose forty-two clauses each define a component, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/Architecture.html",
+          "title": "X3D 4.0 Architecture, contents",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This document is Edition 4 of ISO/IEC 19775-1, Extensible 3D (X3D)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "X3D 4.0 is a published international standard for a scene, whose forty-two clauses each define a component, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/Architecture.html",
+          "title": "X3D 4.0 Architecture, contents",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This document is Edition 4 of ISO/IEC 19775-1, Extensible 3D (X3D)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "X3D 4.0 is a published international standard for a scene, whose forty-two clauses each define a component, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/Architecture.html",
+          "title": "X3D 4.0 Architecture, contents",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This document is Edition 4 of ISO/IEC 19775-1, Extensible 3D (X3D)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "X3D 4.0 is a published international standard for a scene, whose forty-two clauses each define a component, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/Architecture.html",
+          "title": "X3D 4.0 Architecture, contents",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This document is Edition 4 of ISO/IEC 19775-1, Extensible 3D (X3D)."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "partial",
+      "note": "A 360-degree view of a place is carried, and its projection is stated, but as six images rather than one. The background nodes take back, bottom, front, left, right and top fields, which the standard itself calls a background panorama; a texture background composes the same six sides from texture nodes. Nothing takes a single equirectangular image, which is the form every capture and generation tool on this map produces.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/environmentalEffects.html",
+          "title": "X3D 4.0 Environmental effects component",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "specify a set of images that define a background panorama between the ground/sky backdrop and the scene's geometry."
+        },
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/components/environmentalEffects.html",
+          "title": "X3D 4.0 Environmental effects component",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The TextureBackground node uses six individual texture nodes to compose the backdrop."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "out-of-scope",
+      "note": "A declarative scene graph standard with its own world coordinate system measured in metres. Its nodes describe authored geometry; nothing reads a device's sensors.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/concepts.html",
+          "title": "X3D 4.0 clause 4.3.6 Standard units and coordinate system",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "ISO/IEC 19775 defines the initial base unit of measure of the world coordinate system to be metres."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "The names in an X3D file belong to authored nodes. There is no channel for classes assigned to real surfaces.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/concepts.html",
+          "title": "X3D 4.0 clause 4.3.6 Standard units and coordinate system",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "ISO/IEC 19775 defines the initial base unit of measure of the world coordinate system to be metres."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "out-of-scope",
+      "note": "No real-world depth image is defined. Depth in X3D belongs to rendering its own scene.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/concepts.html",
+          "title": "X3D 4.0 clause 4.3.6 Standard units and coordinate system",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "ISO/IEC 19775 defines the initial base unit of measure of the world coordinate system to be metres."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "The standard composes its own scene; hiding that scene behind real surfaces seen through a camera is outside its architecture.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/documents/specifications/19775-1/V4.0/Part01/concepts.html",
+          "title": "X3D 4.0 clause 4.3.6 Standard units and coordinate system",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "ISO/IEC 19775 defines the initial base unit of measure of the world coordinate system to be metres."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "none",
+      "note": "X3D 4.0 is a runtime standard with a defined presentation model, so this row is in scope for it, and the model is entirely virtual. The browser draws the scene against a Background node; no node introduces a live camera view of the room and no field controls a blend with one. Checked in the navigation and concepts clauses of the ratified text.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/components/navigation.html",
+          "title": "X3D 4.0 (ISO/IEC 19775-1) Part 1, Navigation component",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The NavigationInfo node contains information describing the physical characteristics of the viewer's avatar and viewing model."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.face",
+      "level": "none",
+      "note": "X3D's sensors read pointing devices, keys, time, proximity and collision. The viewer is described to the browser as a size and a speed, not read as a face or a body pose, and there is no live sensor stream of the person to hand to the scene.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/components/navigation.html",
+          "title": "X3D 4.0 (ISO/IEC 19775-1) Part 1, Navigation component",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The NavigationInfo node contains information describing the physical characteristics of the viewer's avatar and viewing model."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "partial",
+      "note": "The strongest declaration of navigable space in any file format on this map, and still only half the row. NavigationInfo carries the avatar's size and the navigation paradigm the browser must present, WALK among them, and Viewpoint nodes give named places a visitor can be put down at, all of it inside the file. What is missing is the walkable surface itself: X3D has no navigation mesh, and the ground a body may stand on is worked out by the browser from Collision and geometry.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/components/navigation.html",
+          "title": "X3D 4.0 (ISO/IEC 19775-1) Part 1, Navigation component",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "MFFloat [in,out] avatarSize [0.25 1.6 0.75] [0,∞)"
+        },
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/components/navigation.html",
+          "title": "X3D 4.0 (ISO/IEC 19775-1) Part 1, Navigation component",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "if the currently bound NavigationInfo node's type is \" WALK \", the X3D browser shall present a \" WALK \" navigation user interface paradigm"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "partial",
+      "note": "EXTERNPROTO names a unit of behaviour that lives somewhere else and pulls it in by URL, so an X3D scene really does depend on code published under a name. The name is a web address, not a permanent identity: whoever controls the URL controls what resolves there, and nothing stops a second author reusing a node type name in their own file.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/concepts.html",
+          "title": "X3D 4.0 (ISO/IEC 19775-1) Part 1, Concepts",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The EXTERNPROTO statement defines a new node type."
+        },
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/concepts.html",
+          "title": "X3D 4.0 (ISO/IEC 19775-1) Part 1, Concepts",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The semantics of the EXTERNPROTO are exactly the same as for a PROTO statement,"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "out-of-scope",
+      "note": "X3D describes a scene and how a browser runs it. It has no publishing service, so there is no path between finished content and an audience for a review to stand in.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "X3D's geospatial component places scene content in a geographic frame. It never declares that a map of a place exists, gives it a version, or publishes a transform to a second map of the same place.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "An X3D scene is content, not a service that answers for an area. Its geospatial nodes fix where content sits, not which region a service or dataset applies to.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.extension",
+      "level": "native",
+      "note": "PROTO and EXTERNPROTO define named node interfaces and implementation references, with initial-value and event behavior before a required external implementation becomes available.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/concepts.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 4 Concepts",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "events sent to an instance of an externally prototyped node may be ignored until the implementation of the node is found."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.profile",
+      "level": "native",
+      "note": "X3D 4 defines named profiles, component levels, content declarations and conformance requirements; additional component declarations form an explicit union with the profile.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/concepts.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 4 Concepts",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "A system that conforms to a given profile supports the full set of objects and capabilities defined for that profile."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.metadata",
+      "level": "native",
+      "note": "The Core component defines typed metadata nodes, names and references, with MetadataSet grouping them for attachment to scene nodes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/components/core.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 7 Core component",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "MetadataSet"
+        },
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/components/core.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 7 Core component",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "metadata nodes that specify metadata values in various"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: X3D 4 specifies interactive multimedia scenes and abstract browser behavior, with physical device implementation excluded. This row requires evidence and assurance information accompanying a claim, enabling the relying party to assess how the claim was established. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/concepts.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 4 Concepts",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The semantics of X3D describe an abstract functional behaviour of time-based, interactive 3D, multimedia information."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: X3D 4 specifies interactive multimedia scenes and abstract browser behavior, with physical device implementation excluded. This row requires declaring the vocabulary, types, and validation schemas needed to interpret and check the structure of a claim. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/concepts.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 4 Concepts",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The semantics of X3D describe an abstract functional behaviour of time-based, interactive 3D, multimedia information."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: X3D 4 specifies interactive multimedia scenes and abstract browser behavior, with physical device implementation excluded. This row requires pairwise identifiers and presentation mechanisms that reduce correlation across relationships, with their remaining correlation risks stated. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/concepts.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 4 Concepts",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The semantics of X3D describe an abstract functional behaviour of time-based, interactive 3D, multimedia information."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.encryption",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: X3D 4 specifies interactive multimedia scenes and abstract browser behavior, with physical device implementation excluded. This row requires identifying recipient key material and algorithms that permit confidential communication or encrypted content for an intended subject. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/concepts.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 4 Concepts",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The semantics of X3D describe an abstract functional behaviour of time-based, interactive 3D, multimedia information."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.key-lifecycle",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: X3D 4 specifies interactive multimedia scenes and abstract browser behavior, with physical device implementation excluded. This row requires rules for changing, revoking, or recovering identity-control keys and for discovering the applicable verification material. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/concepts.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 4 Concepts",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The semantics of X3D describe an abstract functional behaviour of time-based, interactive 3D, multimedia information."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: X3D 4 specifies interactive multimedia scenes and abstract browser behavior, with physical device implementation excluded. This row requires a defined mechanism to discover the suspension, revocation, or other status of a credential after issuance. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/concepts.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 4 Concepts",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The semantics of X3D describe an abstract functional behaviour of time-based, interactive 3D, multimedia information."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "via-extension",
+      "note": "The standard Layout component supplies LayoutGroup/LayoutLayer, dimensions, alignment and world/fraction/pixel units; support depends on the declared component level.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/components/layout.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 36 Layout component",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "required to define the size and location of a 2D rectangular region"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: X3D 4 specifies interactive multimedia scenes and abstract browser behavior, with physical device implementation excluded. This row requires runtime estimates of environmental illumination made available to content for lighting or reflections. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/concepts.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 4 Concepts",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The semantics of X3D describe an abstract functional behaviour of time-based, interactive 3D, multimedia information."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: X3D 4 specifies interactive multimedia scenes and abstract browser behavior, with physical device implementation excluded. This row requires detecting recognized physical markers or images and reporting their tracked pose relative to a runtime reference space. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/concepts.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 4 Concepts",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The semantics of X3D describe an abstract functional behaviour of time-based, interactive 3D, multimedia information."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.resolve",
+      "level": "native",
+      "note": "EXTERNPROTO resolves ordered resource URLs and fragment-named prototype definitions into the required external scene implementation; this is a specified resource-resolution operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/concepts.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 4 Concepts",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "the X3D browser searches in the order of preference."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "via-extension",
+      "note": "PointingDeviceSensor nodes expose intersection point, normal and texture-coordinate events for pointed scene geometry; the browser supplies the pointing device.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/components/pointingDeviceSensor.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 20 Pointing device sensor component",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "hitPoint_changed events contain the 3D point on the surface"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.text",
+      "level": "via-extension",
+      "note": "The KeyDeviceSensor component defines StringSensor character/string entry events independently of controller action interpretation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/components/keyDeviceSensor.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 21 Key device sensor component",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "The UTF-8 characters preceding the termination string are returned by the event."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.bounds",
+      "level": "native",
+      "note": "Grouping nodes carry hierarchical bounding boxes for traversal and rejection; unspecified bounds are treated as unbounded, so pruning depends on correctly authored bounds.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/components/grouping.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 10 Grouping component",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The bounding box shall be large enough at all times to enclose the union of the group's children's bounding boxes"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.collection",
+      "level": "native",
+      "note": "DEF-named Group nodes define sets of child objects with addChildren/removeChildren operations and group-level targets; rule-based membership expressions are not required for this named-set support.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/components/grouping.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 10 Grouping component",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "A Group node contains children nodes without introducing a new transformation."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "native",
+      "note": "AudioClip and Sound reference audiovisual-scene audio with start/stop/loop timing; the Time and Texturing components separately define timed MovieTexture presentation in the same event model.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/components/sound.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 16 Sound component",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The Sound node specifies the spatial presentation of a"
+        },
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/components/time.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 8 Time component",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "A time-dependent node is inactive until its startTime is reached."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: X3D 4 specifies interactive multimedia scenes and abstract browser behavior, with physical device implementation excluded. This row requires runtime-reported physical play-area bounds and floor-relative reference information available to an application. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/concepts.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 4 Concepts",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The semantics of X3D describe an abstract functional behaviour of time-based, interactive 3D, multimedia information."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "via-extension",
+      "note": "The Sound component exchanges OscillatorSource and PeriodicWave nodes with waveform coefficients and changing frequency/gain controls, producing audio at playback time.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/components/sound.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 16 Sound component",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "PeriodicWave defines a periodic waveform that can be used to shape the output of an Oscillator."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "native",
+      "note": "The grouping and Transform hierarchy exchanges related coordinate frames with a defined parent/child transform model; this covers transform trees, without claiming arbitrary constraint-graph solvers.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/components/grouping.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 10 Grouping component",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This coordinate space is relative to the coordinate space of the node of which the group node is a child."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: X3D 4 specifies interactive multimedia scenes and abstract browser behavior, with physical device implementation excluded. This row requires a machine-readable account of a recipient's evaluation and action, with any signature or integrity proof explicitly identified. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/concepts.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 4 Concepts",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The semantics of X3D describe an abstract functional behaviour of time-based, interactive 3D, multimedia information."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: X3D 4 specifies interactive multimedia scenes and abstract browser behavior, with physical device implementation excluded. This row requires a destination's pre-arrival approval or refusal response, including any validity limit and optional explanatory information. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/concepts.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 4 Concepts",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The semantics of X3D describe an abstract functional behaviour of time-based, interactive 3D, multimedia information."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.parametric",
+      "level": "via-extension",
+      "note": "The NURBS component exchanges mathematical curve/surface control data, knot vectors, weights and trimming curves for receiver evaluation and tessellation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/components/nurbs.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 27 NURBS Component",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "generate curved lines and surfaces which can be smooth at any viewing distance."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "via-extension",
+      "note": "The ParticleSystems component defines exchanged emitters, particle lifetime, geometry type and simulation parameters for receiving browsers to evaluate.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/components/particleSystems.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 40 Particle systems component",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The ParticleSystem node specifies a complete particle system."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.variant",
+      "level": "partial",
+      "note": "Switch carries authored alternatives and a defined selector, but selects children by index rather than defining a dedicated portable named-variant contract.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/components/grouping.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 10 Grouping component",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The whichChoice field specifies the index of the child to traverse"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.voxel",
+      "level": "via-extension",
+      "note": "The VolumeRendering component carries spatial voxel textures with volume dimensions and rendering nodes, allowing receivers to replace or update the referenced voxel data.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/components/volume.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 41 Volume rendering component",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "an additional volume of data where each voxel represents a segment ID value"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: X3D 4 specifies interactive multimedia scenes and abstract browser behavior, with physical device implementation excluded. This row requires asking a sensing runtime for ray intersections with its estimate of physical surroundings and receiving hit poses. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/concepts.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 4 Concepts",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The semantics of X3D describe an abstract functional behaviour of time-based, interactive 3D, multimedia information."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.privacy",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: X3D 4 specifies interactive multimedia scenes and abstract browser behavior, with physical device implementation excluded. This row requires sensed-data disclosure controls such as spatial coarsening, payload use/retention declarations, and restricted or pseudonymous pose publication. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/concepts.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 4 Concepts",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The semantics of X3D describe an abstract functional behaviour of time-based, interactive 3D, multimedia information."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: X3D 4 specifies interactive multimedia scenes and abstract browser behavior, with physical device implementation excluded. This row requires reconstructing a radiance field or Gaussian representation from observed images and camera information, including optimization controls and a trained scene usable for subsequent view synthesis. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/concepts.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 4 Concepts",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The semantics of X3D describe an abstract functional behaviour of time-based, interactive 3D, multimedia information."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.objectgen",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: X3D 4 specifies interactive multimedia scenes and abstract browser behavior, with physical device implementation excluded. This row requires producing an individual three-dimensional object from a text or image prompt, with geometry or another renderable representation available for placement in a separately authored scene. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/concepts.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 4 Concepts",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The semantics of X3D describe an abstract functional behaviour of time-based, interactive 3D, multimedia information."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "via-extension",
+      "note": "X3D's EnvironmentalSensor component reports timestamped position and orientation changes through ProximitySensor events. These are pose streams in the scene's local coordinate context.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/components/environmentalSensor.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 22 Environmental sensor component",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "SFRotation [out] orientation_changed"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "via-extension",
+      "note": "The programmable Shaders component defines shader language bindings, including GLSL, and loading or inline shader programs. Support follows the declared component and language binding rather than every X3D profile.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.web3d.org/specifications/X3Dv4/ISO-IEC19775-1v4-IS/Part01/components/shaders.html",
+          "title": "Extensible 3D (X3D), ISO/IEC 19775-1:2023, 31 Programmable shaders component",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Annex I OpenGL shading language (GLSL) binding"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1357 @@
+<meta charset="utf-8">
+<title>Territory map &middot; C4 model</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&display=swap">
+
+<style>
+:root{
+  --paper:#ECEBE4; --paper-raised:#F7F6F1; --paper-sunk:#E2E1D8;
+  --ink:#1B1D1A; --ink-soft:#55584E; --ink-faint:#7E8177;
+  --rule:#C7C5B8; --rule-strong:#A9A79A;
+  --chart:#2C5F6B; --chart-fill:#CFE0E1;
+  --contour:#8A6634; --contour-fill:#EBDCC2;
+  --survey:#A33328; --survey-fill:#F0D6D0;
+  --spine:#8A6634;
+  --c4-shadow:0 1px 0 rgba(27,29,26,.06), 0 2px 10px rgba(27,29,26,.06);
+  --c4-band-r:3px;
+  --f-label:"IBM Plex Sans Condensed",ui-sans-serif,system-ui,sans-serif;
+  --f-body:"IBM Plex Serif",Georgia,serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#15171A; --paper-raised:#1D2024; --paper-sunk:#101215;
+  --ink:#E9E7DE; --ink-soft:#9C9E94; --ink-faint:#75786F;
+  --rule:#32363A; --rule-strong:#474C51;
+  --chart:#74B6C2; --chart-fill:#1B3238;
+  --contour:#CBA469; --contour-fill:#312819;
+  --survey:#E37365; --survey-fill:#35201D; --spine:#CBA469;
+  --c4-shadow:0 1px 0 rgba(0,0,0,.3), 0 2px 12px rgba(0,0,0,.35);
+}}
+:root[data-theme="dark"]{
+  --paper:#15171A; --paper-raised:#1D2024; --paper-sunk:#101215;
+  --ink:#E9E7DE; --ink-soft:#9C9E94; --ink-faint:#75786F;
+  --rule:#32363A; --rule-strong:#474C51;
+  --chart:#74B6C2; --chart-fill:#1B3238;
+  --contour:#CBA469; --contour-fill:#312819;
+  --survey:#E37365; --survey-fill:#35201D; --spine:#CBA469;
+  --c4-shadow:0 1px 0 rgba(0,0,0,.3), 0 2px 12px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+h1{margin:0;font-family:var(--f-label);font-weight:700;font-size:clamp(22px,3vw,32px);letter-spacing:-.01em}
+.wrap{padding:20px max(16px,3vw) 60px;display:flex;flex-direction:column;gap:14px}
+.eyebrow{font-family:var(--f-label);font-weight:600;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft)}
+.lede{font-size:15px;color:var(--ink-soft);max-width:78ch;font-style:italic}
+.bar{position:static;background:var(--paper);border-bottom:1px solid var(--rule);
+     padding:10px 0 8px;display:flex;flex-direction:column;gap:8px}
+.setlabel{font-family:var(--f-label);font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-faint)}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+button{font:inherit;color:inherit;cursor:pointer}
+.chip{font-family:var(--f-label);font-weight:600;font-size:12px;background:var(--paper-raised);
+      border:1px solid var(--rule);border-radius:2px;padding:5px 9px}
+.chip:hover{border-color:var(--rule-strong)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip.off{opacity:.42}
+.chip:focus-visible{outline:2px solid var(--survey);outline-offset:2px}
+.sgroups{display:flex;flex-direction:column;gap:6px}
+.sgroup{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.ghead{font-family:var(--f-label);font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+       color:var(--ink-soft);background:none;border:1px solid transparent;border-radius:2px;padding:4px 7px;min-width:14ch;text-align:left}
+.ghead:hover{border-color:var(--rule-strong)}
+.ghead[data-state="all"]{color:var(--ink)}
+.ghead[data-state="none"]{opacity:.5}
+.ghead::before{content:"\25A0";display:inline-block;width:1.2em;color:var(--ink-faint)}
+.ghead[data-state="all"]::before{color:var(--chart)}
+.ghead[data-state="some"]::before{content:"\25A3"}
+.ghead[data-state="none"]::before{content:"\25A1"}
+.ghead:focus-visible{outline:2px solid var(--survey);outline-offset:2px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-family:var(--f-label);font-size:12px;color:var(--ink-soft);align-items:center}
+.key{display:inline-flex;align-items:center;gap:6px}
+.sw{width:20px;height:12px;border:1px solid var(--rule-strong);display:inline-block;border-radius:2px}
+.sw.n{background:var(--chart-fill);border-color:var(--chart)}
+.sw.x{background:repeating-linear-gradient(135deg,var(--chart-fill) 0 5px,transparent 5px 10px);border-color:var(--chart)}
+.sw.p{background:repeating-linear-gradient(135deg,var(--contour-fill) 0 5px,transparent 5px 10px);border-color:var(--contour)}
+.sw.z{background:var(--survey-fill);border:1px dashed var(--survey)}
+.sw.c{background:var(--survey-fill);border-color:var(--survey);border-width:2px}
+.rows{display:flex;flex-direction:column;gap:3px}
+.row{display:grid;grid-template-columns:minmax(190px,22%) 62px 1fr;gap:10px;align-items:start;
+     padding:5px 6px;border:1px solid transparent;border-radius:2px}
+.row:hover{background:var(--paper-raised);border-color:var(--rule)}
+.cname{font-family:var(--f-label);font-weight:600;font-size:13px;line-height:1.25}
+.cdef{font-size:11.5px;color:var(--ink-faint);line-height:1.35;margin-top:1px}
+.cscore{font-family:var(--f-mono);font-size:10px;letter-spacing:.04em;color:var(--ink-faint);margin-top:3px}
+.bind{font-family:var(--f-mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);padding-top:2px}
+.bind.connect{color:var(--survey)}
+.cells{display:flex;flex-wrap:wrap;gap:3px}
+.cell{font-family:var(--f-mono);font-size:10px;padding:2px 6px;border:1px solid var(--rule-strong);
+      border-radius:2px;background:var(--paper-raised);white-space:nowrap;margin:0;text-align:left;
+      line-height:1.5;-webkit-appearance:none;appearance:none}
+.cell:hover{border-color:var(--ink-soft)}
+.cell:focus-visible{outline:2px solid var(--survey);outline-offset:2px}
+.cell[aria-expanded="true"]{box-shadow:0 0 0 2px var(--spine)}
+.cell.native{background:var(--chart-fill);border-color:var(--chart)}
+.cell.viaextension{background:repeating-linear-gradient(135deg,var(--chart-fill) 0 5px,transparent 5px 10px);border-color:var(--chart)}
+.cell.partial{background:repeating-linear-gradient(135deg,var(--contour-fill) 0 5px,transparent 5px 10px);border-color:var(--contour)}
+.cell.none{background:var(--survey-fill);border:1px dashed var(--survey);color:var(--survey)}
+.cell.conflicts{background:var(--survey-fill);border:2px solid var(--survey);font-weight:600}
+.cell.outofscope{display:none}
+.empty{font-family:var(--f-mono);font-size:10px;color:var(--survey);letter-spacing:.06em}
+.stat{font-family:var(--f-mono);font-size:11.5px;color:var(--ink-faint)}
+.note{font-size:12px;color:var(--ink-soft);grid-column:3;margin-top:2px;max-width:96ch}
+.hidden{display:none}
+
+/* Claim detail: opens under the row when a cell is clicked. */
+.detail{grid-column:1/-1;margin:7px 0 3px;padding:10px 12px;background:var(--paper-sunk);
+        border:1px solid var(--rule);border-left:3px solid var(--spine);border-radius:2px}
+.dhead{font-family:var(--f-label);font-weight:700;font-size:13.5px;line-height:1.3}
+.dmeta{font-family:var(--f-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+       color:var(--ink-faint);margin-top:3px}
+.dnote{font-size:13px;color:var(--ink-soft);margin-top:7px;max-width:92ch}
+.dsub{font-family:var(--f-label);font-weight:700;font-size:10.5px;letter-spacing:.14em;
+      text-transform:uppercase;color:var(--ink-faint);margin-top:10px}
+.slist{list-style:none;margin:5px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.slist li{font-size:12.5px;line-height:1.4;max-width:92ch}
+.slist a{color:var(--chart)}
+.slist a:hover{color:var(--survey)}
+.skind{font-family:var(--f-mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;
+       color:var(--ink-faint);margin-left:7px;white-space:nowrap}
+.sprivate{color:var(--ink-faint);font-style:italic}
+.squote{font-family:var(--f-body);font-style:italic;color:var(--ink-soft);
+        border-left:2px solid var(--rule);padding-left:9px;margin-top:4px}
+.dfoot{font-family:var(--f-label);font-size:10.5px;color:var(--ink-faint);margin-top:9px}
+
+/* Written explanation of one item on the page. One box, moved and refilled; no library. */
+.tip{position:fixed;z-index:60;max-width:46ch;background:var(--paper-raised);color:var(--ink);
+     border:1px solid var(--rule-strong);border-left:3px solid var(--spine);border-radius:2px;
+     padding:9px 11px;font-family:var(--f-body);font-size:12.5px;line-height:1.45;
+     box-shadow:0 6px 18px rgba(0,0,0,.18);pointer-events:none}
+.tip[hidden]{display:none}
+[data-tip]{cursor:help}
+[data-tip]:focus-visible{outline:2px solid var(--survey);outline-offset:2px}
+.chip[data-tip],.ghead[data-tip],.cell[data-tip]{cursor:pointer}
+.toggle{margin-left:10px;border-left:1px solid var(--rule);padding-left:12px}
+.statpart{cursor:help}
+.statpart:focus-visible{outline:2px solid var(--survey);outline-offset:2px}
+
+/* Mode switch: one segmented control, two options, at the top of the bar. Here the matrix
+   half is a link to the other page and this half is the page you are on. */
+.modes{display:flex;width:fit-content;border:1px solid var(--rule-strong);border-radius:2px;
+       overflow:hidden}
+.mode{font-family:var(--f-label);font-weight:600;font-size:12px;background:var(--paper-raised);
+      border:0;border-right:1px solid var(--rule-strong);border-radius:0;padding:6px 14px;
+      margin:0;-webkit-appearance:none;appearance:none;color:inherit;text-decoration:none;
+      display:inline-block;line-height:1.5}
+.mode:last-child{border-right:0}
+.mode:hover{background:var(--paper-sunk)}
+.mode[aria-current="page"]{background:var(--ink);color:var(--paper)}
+.mode:focus-visible{outline:2px solid var(--survey);outline-offset:-2px}
+
+/* The line under the comment button, saying when a comment is acted on. */
+.commentnote{font-family:var(--f-label);font-size:11px;line-height:1.35;color:var(--ink-faint);
+             margin-top:5px;max-width:46ch}
+
+/* The drawing: the narrative board's own band, card, eyebrow and connectors, copied from
+   board/index.html and prefixed c4- so nothing here can reach the claim rows. */
+#c4panel{display:flex;flex-direction:column;gap:10px}
+#stage{background:var(--paper-sunk);border-top:1px solid var(--rule-strong);
+       border-bottom:1px solid var(--rule-strong);padding:16px 12px;overflow-x:auto;
+       min-height:140px}
+.c4-fallback{margin:0;color:var(--survey);max-width:80ch}
+
+.c4-board{position:relative;display:flex;flex-direction:column;gap:44px;min-width:320px}
+.c4-wires{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+.c4-wire{fill:none;stroke:var(--rule-strong);stroke-width:1.6}
+.c4-wire.native{stroke:var(--ink)}
+.c4-wire.viaextension{stroke:var(--chart)}
+.c4-wire.conflicts{stroke:var(--survey);stroke-width:2.2}
+.c4-dot{stroke:none;fill:var(--rule-strong)}
+.c4-dot.native{fill:var(--ink)}
+.c4-dot.viaextension{fill:var(--chart)}
+.c4-dot.conflicts{fill:var(--survey)}
+
+.c4-plane{position:relative;z-index:1;border:1px solid var(--rule-strong);
+          background:var(--paper-raised);border-radius:var(--c4-band-r);
+          padding:14px 16px 16px;box-shadow:var(--c4-shadow)}
+.c4-plane-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;
+               border-bottom:1px solid var(--rule);padding-bottom:7px;margin-bottom:12px}
+.c4-plane-no{font-family:var(--f-mono);font-size:11px;color:var(--survey);letter-spacing:.04em}
+.c4-plane-title{margin:0;font-family:var(--f-label);font-weight:700;font-size:16px;
+                letter-spacing:.06em;text-transform:uppercase}
+.c4-plane-sub{font-family:var(--f-body);font-style:italic;font-size:13px;color:var(--ink-soft);
+              margin-left:auto;text-align:right}
+.c4-cards{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(186px,1fr))}
+
+.c4-card{position:relative;margin:0;text-align:left;font:inherit;color:inherit;
+         border:1px solid var(--rule-strong);border-radius:2px;background:var(--paper);
+         padding:9px 10px;display:flex;flex-direction:column;gap:4px;min-height:78px;
+         -webkit-appearance:none;appearance:none;transition:opacity .15s,border-color .15s}
+button.c4-card{cursor:pointer}
+.c4-card:hover{border-color:var(--ink-soft)}
+.c4-card:focus-visible{outline:2px solid var(--survey);outline-offset:2px}
+.c4-card.c4-cap{border-top:3px solid var(--chart)}
+.c4-card.c4-subject{border-top:3px solid var(--contour)}
+.c4-card.c4-group{border-top:3px solid var(--spine)}
+.c4-card.c4-stack{border-top:5px double var(--ink)}
+.c4-card-over{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.09em;
+              text-transform:uppercase;color:var(--ink-faint)}
+.c4-card-name{font-family:var(--f-label);font-weight:600;font-size:13.5px;line-height:1.25}
+.c4-card-meta{font-family:var(--f-mono);font-size:10px;color:var(--ink-soft);line-height:1.4}
+.c4-card-note{font-size:11.5px;color:var(--ink-soft);line-height:1.35;margin-top:auto;
+              padding-top:3px}
+.c4-card-foot{display:flex;flex-wrap:wrap;gap:4px;margin-top:auto;padding-top:6px}
+.c4-t{font-family:var(--f-mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;
+      border:1px solid var(--rule-strong);border-radius:2px;padding:1px 4px;
+      color:var(--ink-faint);white-space:nowrap}
+.c4-t.n{background:var(--chart-fill);border-color:var(--chart);color:var(--chart)}
+.c4-t.x{background:repeating-linear-gradient(135deg,var(--chart-fill) 0 5px,transparent 5px 10px);
+        border-color:var(--chart);color:var(--chart)}
+.c4-t.p{background:repeating-linear-gradient(135deg,var(--contour-fill) 0 5px,transparent 5px 10px);
+        border-color:var(--contour);color:var(--contour)}
+.c4-t.c{background:var(--survey-fill);border-color:var(--survey);color:var(--survey)}
+.c4-t.z{background:var(--survey-fill);border:1px dashed var(--survey);color:var(--survey)}
+
+/* Hovering or focusing one card brings its claims forward and fades the rest. */
+.c4-board.c4-focus .c4-card{opacity:.28}
+.c4-board.c4-focus .c4-card.c4-on{opacity:1;border-color:var(--spine);
+                                  box-shadow:0 0 0 2px var(--spine)}
+.c4-board.c4-focus .c4-wire,.c4-board.c4-focus .c4-dot{opacity:.07}
+.c4-board.c4-focus .c4-wire.c4-on{opacity:1;stroke-width:2.6}
+.c4-board.c4-focus .c4-dot.c4-on{opacity:1}
+
+/* The claim panel: the same row the matrix draws, for the capability card just clicked. */
+.c4-claim{background:var(--paper-sunk);border:1px solid var(--rule);
+          border-left:3px solid var(--spine);border-radius:2px;padding:9px 12px 11px}
+.c4-claim.hidden{display:none}
+.c4-claim-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.c4-close{font-family:var(--f-label);font-weight:600;font-size:10.5px;letter-spacing:.12em;
+          text-transform:uppercase;background:var(--paper-raised);border:1px solid var(--rule);
+          border-radius:2px;padding:3px 9px;margin-left:auto}
+.c4-close:hover{border-color:var(--rule-strong)}
+.c4-close:focus-visible{outline:2px solid var(--survey);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.c4-card{transition:none}}
+</style>
+
+<div class="wrap">
+  <div class="eyebrow">Metaverse Standards Forum &middot; Infrastructure Working Group</div>
+  <h1>Territory map &mdash; C4 model</h1>
+
+  <div class="bar">
+    <div style="display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start">
+      <div>
+        <span class="setlabel" id="modelabel">Mode</span>
+        <div class="modes" aria-labelledby="modelabel" id="modes">
+          <a class="mode" id="tomatrix" href="/msf/map/" data-tip="mode.matrix">Matrix</a>
+          <span class="mode" aria-current="page" tabindex="0" data-tip="mode.c4">C4 model</span>
+        </div>
+      </div>
+      <div>
+        <span class="setlabel" id="morelabel">More</span>
+        <div class="modes" aria-labelledby="morelabel">
+          <a class="mode" id="tolayers"
+             href="https://openspatials.com/msf/map/atlas/#level=territory&amp;layers=1"
+             data-tip="c4.layers">Layers</a>
+          <button type="button" class="mode" id="tocomment"
+                  data-tip="c4.comment">Comment on this map</button>
+        </div>
+        <div class="commentnote">Comments are folded in every two weeks; the change list
+          appears here.</div>
+      </div>
+      <div>
+        <span class="setlabel">This page</span>
+        <div class="pagechips">
+          <button type="button" class="chip" id="explchip" aria-pressed="true"
+                  data-tip="toggle.explanations">Explanations</button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <span class="setlabel">Subjects &mdash; click a name to switch it on or off, a group title to switch the whole group</span>
+      <div class="sgroups" id="subs"></div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center">
+      <div>
+        <span class="setlabel">Show only</span>
+        <div class="chips" id="filters">
+          <button class="chip" data-f="all" aria-pressed="true" data-tip="filter.all">Everything</button>
+          <button class="chip" data-f="overlap" aria-pressed="false" data-tip="filter.overlap">Contested &mdash; 2 or more systems have it</button>
+          <button class="chip" data-f="thin" aria-pressed="false" data-tip="filter.thin">Only one system has it</button>
+          <button class="chip" data-f="gap" aria-pressed="false" data-tip="filter.gap">Gaps &mdash; no system has it</button>
+          <button class="chip" data-f="conflict" aria-pressed="false" data-tip="filter.conflict">Recorded conflicts</button>
+          <button class="chip" data-f="connect" aria-pressed="false" data-tip="filter.connect">Protocol rows</button>
+          <button class="chip toggle" id="hasentry" data-toggle="hasentry" aria-pressed="false"
+                  data-tip="filter.hasentry">Only rows with an entry</button>
+        </div>
+      </div>
+      <span class="stat" id="stat"></span>
+    </div>
+    <div class="legend">
+      <span class="key" tabindex="0" data-tip="level.native"><span class="sw n"></span>Built in</span>
+      <span class="key" tabindex="0" data-tip="level.via-extension"><span class="sw x"></span>Through an extension</span>
+      <span class="key" tabindex="0" data-tip="level.partial"><span class="sw p"></span>Partial</span>
+      <span class="key" tabindex="0" data-tip="level.none"><span class="sw z"></span>Absent</span>
+      <span class="key" tabindex="0" data-tip="level.conflicts"><span class="sw c"></span>Conflicts &mdash; will not interoperate</span>
+      <span class="key" tabindex="0" data-tip="binding.protocol">FORMAT rows are fixed when the content is made. <span style="color:var(--survey)">PROTOCOL</span> rows are agreed between two systems when they connect.</span>
+      <span class="key"><span id="explhint">Hover or tab to any name, chip or number for a written explanation.</span> Click a capability card to read the claims and their sources.</span>
+    </div>
+  </div>
+
+  <div id="c4panel">
+    <div>
+      <span class="setlabel">View</span>
+      <div class="chips" id="c4views"></div>
+    </div>
+    <div id="c4claim" class="c4-claim hidden"></div>
+    <div id="stage"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* The territory map drawn as planes of cards, on its own page and in one file.
+   *
+   * The same claims the matrix shows, in the three C4 levels, drawn in the language of the
+   * narrative board: planes stacked top to bottom, each a titled band of cards under an
+   * eyebrow label, and curves measured between the cards after the browser has laid them out,
+   * painted into one absolutely positioned SVG behind the bands so the lines show in the gaps.
+   *
+   * No library, no script from anywhere else. The only work done on a resize is measuring the
+   * cards again and repainting the curves. */
+
+  var D = null, on = {}, filter = "all", hasEntry = false, view = "landscape";
+  var subjById = {}, capById = {}, openCell = null;
+  var subsEl = document.getElementById("subs"),
+      statEl = document.getElementById("stat"),
+      viewsEl = document.getElementById("c4views"),
+      claimEl = document.getElementById("c4claim"),
+      stageEl = document.getElementById("stage"),
+      linkEl = document.getElementById("tomatrix"),
+      layersEl = document.getElementById("tolayers"),
+      commentEl = document.getElementById("tocomment"),
+      explChip = document.getElementById("explchip"),
+      explHint = document.getElementById("explhint");
+
+  // ---- the explanations switch -------------------------------------------
+  // Off means no explanation box opens anywhere, on hover or on keyboard focus, and no item
+  // carries aria-describedby, so a screen reader is not pointed at one either. The chip that
+  // does the switching keeps its own explanation in both states, so the way back is explained.
+  // Remembered in this browser alone, under the same key the matrix page uses, so one choice
+  // holds across both pages; on whenever storage cannot be read.
+  var explOn = true;
+  var EXPL_KEY = "msf-map-explanations";
+  var EXPL_HINT = "Hover or tab to any name, chip or number for a written explanation.";
+
+  function readExpl(){
+    try{ return window.localStorage.getItem(EXPL_KEY) !== "off"; }catch(e){ return true; }
+  }
+  function saveExpl(value){
+    try{ window.localStorage.setItem(EXPL_KEY, value ? "on" : "off"); }catch(e){}
+  }
+  function syncExpl(){
+    if(explChip) explChip.setAttribute("aria-pressed", String(explOn));
+    if(explHint) explHint.textContent = explOn ? EXPL_HINT : "Explanations are off.";
+    if(!explOn) hideTip();
+  }
+  function setExplanations(next){
+    explOn = !!next;
+    saveExpl(explOn);
+    syncExpl();
+  }
+  function wireExplanations(){
+    if(!explChip) return;
+    explChip.addEventListener("click", function(){ setExplanations(!explOn); });
+  }
+
+  var LEVEL_WORDS = {"native":"built in", "via-extension":"through an extension",
+                     "partial":"partial", "none":"absent",
+                     "conflicts":"conflicts \u2014 will not interoperate",
+                     "out-of-scope":"out of scope"};
+
+  /* Only these three become a curve. Partial is counted on the capability card instead: with
+   * every subject on, drawing partial would put more than four hundred curves into a single
+   * group and nothing could be read. Ink, blue and red, the legend's own colours; the stroke
+   * comes from the stylesheet so the drawing follows the page between light and dark. */
+  var LINE_LEVEL = {"native":1, "via-extension":1, "conflicts":1};
+
+  var DOT = " \u00B7 ";
+
+  function cls(level){ return String(level).replace(/[^a-z]/g, ""); }
+
+  function esc(t){
+    return String(t == null ? "" : t)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  function plural(n, word){ return n + " " + word + (n === 1 ? "" : "s"); }
+
+  function claim(subjectId, capId){
+    var row = D.coverage && D.coverage[subjectId];
+    return row ? row[capId] : null;
+  }
+
+  function shownSubjects(){
+    return D.subjects.filter(function(s){ return on[s.id]; });
+  }
+
+  /* The row predicates, copied from the matrix, so this page hides exactly the rows the
+   * matrix hides. A row is judged only against the subjects that are switched on. Returns
+   * null when the row is hidden, otherwise the split of its claims. */
+  function rowHits(cap, shown, filterName, entryOnly){
+    var hits = [];
+    shown.forEach(function(s){
+      var v = claim(s.id, cap.id);
+      if(v) hits.push({s:s, level:v[0], conf:v[1], note:v[2], sources:v[3] || []});
+    });
+    var reach = hits.filter(function(h){
+      return h.level === "native" || h.level === "via-extension";
+    });
+    var conflicts = hits.filter(function(h){ return h.level === "conflicts"; });
+    var partial = hits.filter(function(h){ return h.level === "partial"; });
+    var absent = hits.filter(function(h){ return h.level === "none"; });
+    var scored = hits.filter(function(h){ return h.level !== "out-of-scope"; });
+    var sole = hits.filter(function(h){ return h.level === "native"; });
+
+    if(filterName === "overlap" && reach.length < 2) return null;
+    if(filterName === "thin" && sole.length !== 1) return null;
+    if(filterName === "gap" && (reach.length > 0 || scored.length === 0)) return null;
+    if(filterName === "conflict" && conflicts.length === 0) return null;
+    if(filterName === "connect" && cap.binding !== "connect") return null;
+    if(entryOnly && scored.length === 0) return null;
+
+    return {hits:hits, reach:reach, conflicts:conflicts, partial:partial,
+            absent:absent, scored:scored, sole:sole};
+  }
+
+  function capsOfGroup(groupId){
+    return D.capabilities.filter(function(c){ return c.group_id === groupId; });
+  }
+
+  function displayGroups(){
+    if(D.display_groups && D.display_groups.length) return D.display_groups;
+    var byKind = {}, order = [];
+    D.subjects.forEach(function(s){
+      if(!byKind[s.kind]){ byKind[s.kind] = []; order.push(s.kind); }
+      byKind[s.kind].push(s.id);
+    });
+    return order.map(function(k){ return {id:k, name:k, subjects:byKind[k]}; });
+  }
+
+  /* The display group a subject is drawn in, by id, so a subject card can carry it as a label
+   * without walking the list again. */
+  function groupLabels(){
+    var out = {};
+    displayGroups().forEach(function(dg){
+      (dg.subjects || []).forEach(function(id){ out[id] = dg.name; });
+    });
+    return out;
+  }
+
+  // ---- the address hash ---------------------------------------------------
+  // The state both pages can read: the subjects switched off, the filter, the toggle, and the
+  // view this page is on. Written on every change, read once on load.
+
+  function hashState(){
+    var offIds = [], onIds = [], parts = [];
+    D.subjects.forEach(function(s){
+      var def = s.scored > 0;
+      if(def && !on[s.id]) offIds.push(s.id);
+      else if(!def && on[s.id]) onIds.push(s.id);
+    });
+    if(view !== "landscape") parts.push("view=" + encodeURIComponent(view));
+    if(offIds.length) parts.push("off=" + offIds.map(encodeURIComponent).join(","));
+    if(onIds.length) parts.push("on=" + onIds.map(encodeURIComponent).join(","));
+    if(filter !== "all") parts.push("filter=" + encodeURIComponent(filter));
+    if(hasEntry) parts.push("entry=1");
+    return parts.join("&");
+  }
+
+  function readHash(){
+    var h = String(window.location.hash || "").replace(/^#/, "");
+    if(!h) return null;
+    var out = {}, any = false;
+    h.split("&").forEach(function(p){
+      var i = p.indexOf("=");
+      if(i < 0) return;
+      try{
+        out[decodeURIComponent(p.slice(0, i))] = decodeURIComponent(p.slice(i + 1));
+      }catch(e){ return; }
+      any = true;
+    });
+    return any ? out : null;
+  }
+
+  // Writing the hash must never throw the page over: a page opened straight from disk can
+  // refuse replaceState, and then the plain assignment is used instead.
+  var writingHash = false;
+  function writeHash(){
+    var q = hashState(), next = q ? "#" + q : "#";
+    if(String(window.location.hash || "") === next){ syncLinks(); return; }
+    writingHash = true;
+    try{
+      window.history.replaceState(null, "", next);
+    }catch(e){
+      window.location.hash = q;
+    }
+    setTimeout(function(){ writingHash = false; }, 0);
+    syncLinks();
+  }
+
+  function applyHash(h){
+    if(!h) return;
+    var offSet = {}, onSet = {};
+    if(h.off) h.off.split(",").forEach(function(id){ if(id) offSet[id] = 1; });
+    if(h.on) h.on.split(",").forEach(function(id){ if(id) onSet[id] = 1; });
+    if(h.off !== undefined || h.on !== undefined){
+      D.subjects.forEach(function(s){
+        on[s.id] = onSet[s.id] ? true : (offSet[s.id] ? false : s.scored > 0);
+      });
+    }
+    if(h.filter && document.querySelector('#filters [data-f="' + h.filter.replace(/["\\]/g, "") + '"]'))
+      filter = h.filter;
+    hasEntry = h.entry === "1";
+    if(h.view) view = h.view;
+  }
+
+  // ---- the two ways out: comment, and the atlas's layers ------------------
+  // Both carry the lens the member is looking at right now. The comment opens the member's
+  // own mail program with the page and the exact address already written in; nothing is
+  // stored here and nothing is sent to any other service. Layers opens the atlas at its top
+  // level with the same subjects switched on.
+
+  var ATLAS_LAYERS = "https://openspatials.com/msf/map/atlas/#level=territory&layers=1";
+  var COMMENT_TO = "grig@sumset.tech";
+  var PAGE_NAME = "C4 model";
+
+  function whereNow(){
+    var h = String(window.location.hash || "");
+    return h && h !== "#" ? h : "#";
+  }
+
+  function commentHref(){
+    var subject = "Map comment: " + PAGE_NAME + " " + whereNow();
+    var body = "I was looking at this address: " + window.location.href + "\n\n" +
+               "My comment:\n";
+    return "mailto:" + COMMENT_TO + "?subject=" + encodeURIComponent(subject) +
+           "&body=" + encodeURIComponent(body);
+  }
+
+  function layersHref(){
+    var q = D ? hashState() : "";
+    return ATLAS_LAYERS + (q ? "&" + q : "");
+  }
+
+  function syncLinks(){
+    var q = D ? hashState() : "";
+    if(linkEl) linkEl.setAttribute("href", "/msf/map/" + (q ? "#" + q : ""));
+    if(layersEl) layersEl.setAttribute("href", layersHref());
+    if(commentEl) commentEl.setAttribute("data-mailto", commentHref());
+  }
+
+  if(commentEl) commentEl.addEventListener("click", function(){
+    window.location.href = commentEl.getAttribute("data-mailto") || commentHref();
+  });
+
+  /* The explanations for the two entries above. They are kept here, on the page that carries
+   * the controls, rather than in the shared tooltip file; a shared entry of the same name,
+   * if one is ever written, is left alone and wins. */
+  var LOCAL_TIPS = {
+    "c4.comment": "This button opens your own mail program with a message already started: " +
+      "the page you are on and the exact address you were looking at, so a reply can find " +
+      "the same screen you did. Nothing is typed into this page, nothing is stored here, " +
+      "and nothing is sent to any other service. Comments are read and folded in every two " +
+      "weeks, and the change list appears on this page.",
+    "c4.layers": "Layers opens the atlas at its top level: the twelve regions of the map on " +
+      "one screen, with the subjects you have switched on carried across in the address, so " +
+      "you see the same selection drawn a step back. Use it when the cards are too close in, " +
+      "then click into a region to come back down to this level of detail."
+  };
+
+  function addLocalTips(){
+    if(!D) return;
+    if(!D.tooltips) D.tooltips = {};
+    for(var k in LOCAL_TIPS){
+      if(Object.prototype.hasOwnProperty.call(LOCAL_TIPS, k) && !D.tooltips[k])
+        D.tooltips[k] = LOCAL_TIPS[k];
+    }
+  }
+
+  // ---- the header line ----------------------------------------------------
+  // It counts only what is on screen. Claims and conflicts add up per subject; sources are
+  // unioned by source id, so a source two subjects share is counted once.
+  function selectionCounts(shown){
+    var first = D.subjects[0];
+    if(!first || first.source_ids === undefined)
+      return {claims:D.counts.claims, sources:D.counts.sources, conflicts:D.counts.conflicts};
+    var claims = 0, conflicts = 0, sources = 0, seen = Object.create(null);
+    shown.forEach(function(s){
+      claims    += s.scored || 0;
+      conflicts += s.conflicts || 0;
+      (s.source_ids || []).forEach(function(id){
+        if(!seen[id]){ seen[id] = 1; sources++; }
+      });
+    });
+    return {claims:claims, sources:sources, conflicts:conflicts};
+  }
+
+  function updateStat(shown){
+    var sel = selectionCounts(shown);
+    function part(id, text){
+      return '<span class="statpart" tabindex="0" data-tip="' + id + '">' + text + '</span>';
+    }
+    statEl.innerHTML = part("count.claims", sel.claims + " claims") + " / " +
+                       part("count.sources", sel.sources + " sources") + " / " +
+                       part("count.conflicts", sel.conflicts + " conflicts") + " / " +
+                       part("count.subjects", shown.length + " of " + D.subjects.length +
+                            " subjects shown");
+  }
+
+  // ---- written explanation of one item ------------------------------------
+  // One box for the whole page, refilled and moved. Shown on hover and on keyboard focus,
+  // dismissed when the pointer or the focus leaves, on Escape, and on scroll.
+  var tipEl = null, tipFor = null;
+
+  function hideTip(){
+    if(tipEl) tipEl.hidden = true;
+    if(tipFor){ tipFor.removeAttribute("aria-describedby"); tipFor = null; }
+  }
+
+  function showTip(el){
+    // With the switch off, only the switch itself explains itself.
+    if(!explOn && el !== explChip){ hideTip(); return; }
+    if(el === tipFor) return;
+    var text = D && D.tooltips ? D.tooltips[el.getAttribute("data-tip")] : null;
+    if(!text){ hideTip(); return; }
+    if(!tipEl){
+      tipEl = document.createElement("div");
+      tipEl.className = "tip";
+      tipEl.id = "item-tip";
+      tipEl.setAttribute("role", "tooltip");
+      document.body.appendChild(tipEl);
+    }
+    if(tipFor) tipFor.removeAttribute("aria-describedby");
+    tipEl.textContent = text;
+    tipEl.hidden = false;
+    tipFor = el;
+    el.setAttribute("aria-describedby", "item-tip");
+    var r = el.getBoundingClientRect();
+    var w = tipEl.offsetWidth, h = tipEl.offsetHeight;
+    var left = Math.max(8, Math.min(r.left, window.innerWidth - w - 8));
+    var top = r.bottom + 8;
+    if(top + h > window.innerHeight - 8) top = Math.max(8, r.top - h - 8);
+    tipEl.style.left = left + "px";
+    tipEl.style.top = top + "px";
+  }
+
+  function tipTarget(node){
+    return node && node.closest ? node.closest("[data-tip]") : null;
+  }
+
+  document.addEventListener("mouseover", function(e){
+    var t = tipTarget(e.target);
+    if(t) showTip(t);
+    else if(tipFor && !tipFor.contains(e.target)) hideTip();
+  });
+  document.addEventListener("mouseout", function(e){
+    if(!tipFor) return;
+    var t = tipTarget(e.target);
+    if(t === tipFor && !(e.relatedTarget && tipFor.contains(e.relatedTarget))) hideTip();
+  });
+  document.addEventListener("focusin", function(e){
+    var t = tipTarget(e.target);
+    if(t) showTip(t); else hideTip();
+  });
+  document.addEventListener("focusout", function(e){
+    if(tipFor && tipTarget(e.target) === tipFor) hideTip();
+  });
+  window.addEventListener("scroll", hideTip, true);
+  window.addEventListener("resize", hideTip);
+
+  // ---- the parts a plane is made of ---------------------------------------
+
+  function planeHTML(no, title, sub, cards, tip){
+    return '<section class="c4-plane">' +
+             '<div class="c4-plane-head">' +
+               '<span class="c4-plane-no">' + esc(no) + '</span>' +
+               '<h3 class="c4-plane-title"' +
+                 (tip ? ' tabindex="0" data-tip="' + esc(tip) + '"' : '') + '>' +
+                 esc(title) + '</h3>' +
+               (sub ? '<span class="c4-plane-sub">' + esc(sub) + '</span>' : '') +
+             '</div>' +
+             '<div class="c4-cards">' + cards + '</div>' +
+           '</section>';
+  }
+
+  /* One card. `tag` is button for the two clickable kinds and div for the rest; a div card is
+   * still reachable by keyboard, because hovering is not the only way to follow a curve. */
+  function cardHTML(o){
+    var tag = o.click ? "button" : "div";
+    var attrs = ' class="c4-card' + (o.kind ? " c4-" + o.kind : "") + '"';
+    if(o.click) attrs += ' type="button"'; else attrs += ' tabindex="0"';
+    if(o.node) attrs += ' data-node="' + esc(o.node) + '"';
+    if(o.click) attrs += ' data-click="' + esc(o.click) + '" data-id="' + esc(o.id) + '"';
+    if(o.tip) attrs += ' data-tip="' + esc(o.tip) + '"';
+    if(o.label) attrs += ' aria-label="' + esc(o.label) + '"';
+    return "<" + tag + attrs + ">" +
+             (o.over ? '<span class="c4-card-over">' + esc(o.over) + "</span>" : "") +
+             '<span class="c4-card-name">' + esc(o.name) + "</span>" +
+             (o.meta ? '<span class="c4-card-meta">' + esc(o.meta) + "</span>" : "") +
+             (o.note ? '<span class="c4-card-note">' + esc(o.note) + "</span>" : "") +
+             (o.foot ? '<span class="c4-card-foot">' + o.foot + "</span>" : "") +
+           "</" + tag + ">";
+  }
+
+  // ---- level one: the landscape -------------------------------------------
+
+  /* Every subject switched on, in the page's own chip groups, one plane each, and below them
+   * the single stack they are all measured against. No curves: this view is about who is on
+   * the map, not about which row they reach. */
+  function landscape(){
+    var shown = shownSubjects(), onIds = {};
+    shown.forEach(function(s){ onIds[s.id] = true; });
+
+    var html = "", planes = 0, cards = 0;
+    displayGroups().forEach(function(dg){
+      var members = (dg.subjects || []).filter(function(id){ return onIds[id]; });
+      if(!members.length) return;
+      var inner = members.map(function(id){
+        var s = subjById[id];
+        var row = D.coverage[s.id] || {}, n = 0;
+        for(var capId in row){
+          if(!Object.prototype.hasOwnProperty.call(row, capId)) continue;
+          var lvl = row[capId][0];
+          if(lvl === "native" || lvl === "via-extension" || lvl === "partial") n++;
+        }
+        cards++;
+        return cardHTML({kind:"subject", node:"s:" + s.id, tip:s.id, name:s.name,
+                         meta:[s.kind, s.status].filter(Boolean).join(DOT),
+                         note:"has " + n + " capabilit" + (n === 1 ? "y" : "ies")});
+      }).join("");
+      planes++;
+      html += planeHTML("PLANE " + planes, dg.name,
+                        plural(members.length, "subject") + " on", inner);
+    });
+
+    planes++;
+    cards++;
+    html += planeHTML("PLANE " + planes, "Measured against",
+                      "one stack, the same for every subject",
+                      cardHTML({kind:"stack", node:"stack", name:"Open metaverse stack",
+                                meta:"the whole map",
+                                note:D.capabilities.length + " capabilities in " +
+                                     D.groups.length + " groups"}));
+
+    return {html:html, lines:[], planes:planes, cards:cards,
+            subjects:shown.map(function(s){ return s.id; }), capabilities:[]};
+  }
+
+  // ---- level two: the groups ----------------------------------------------
+
+  /* The twelve capability groups on one plane, and no subject cards: thirty-five subjects
+   * against twelve groups is a wall of curves nobody can read. Each card says how big the
+   * group is, how many of the subjects on reach any of it, and how it splits between rows
+   * fixed when the content is made and rows agreed when two systems connect. */
+  function groupsView(){
+    var shown = shownSubjects(), cards = 0;
+    var inner = D.groups.map(function(g){
+      var caps = capsOfGroup(g.id);
+      var reached = shown.filter(function(s){
+        return caps.some(function(c){
+          var v = claim(s.id, c.id);
+          return v && (v[0] === "native" || v[0] === "via-extension");
+        });
+      }).length;
+      var protocol = caps.filter(function(c){ return c.binding === "connect"; }).length;
+      cards++;
+      return cardHTML({kind:"group", node:"g:" + g.id, tip:g.id, click:"view", id:g.id,
+                       over:g.plane ? g.plane + " plane" : "",
+                       name:g.name,
+                       meta:caps.length + " capabilities" + DOT +
+                            (caps.length - protocol) + " format" + DOT +
+                            protocol + " protocol",
+                       note:reached + " of the " + shown.length +
+                            " subjects on have some of it",
+                       label:g.name + ", " + caps.length + " capabilities, " +
+                             reached + " of the " + shown.length +
+                             " subjects on have some of it. Open this group."});
+    }).join("");
+
+    return {html:planeHTML("PLANE 1", "Capability groups",
+                           "click a group to open it", inner),
+            lines:[], planes:1, cards:cards,
+            subjects:shown.map(function(s){ return s.id; }),
+            capabilities:D.capabilities.map(function(c){ return c.id; })};
+  }
+
+  // ---- level three: one group ---------------------------------------------
+
+  /* Two planes. The capabilities of the group that pass the filter on top, the subjects that
+   * have a curve below, and one curve per claim at built in, through an extension or
+   * conflicts. Partial is counted on the capability card and said in the plane's own line. */
+  function groupView(groupId){
+    var g = D.groups.filter(function(x){ return x.id === groupId; })[0];
+    if(!g) return null;
+    var shown = shownSubjects();
+
+    var caps = [], bundle = {};
+    capsOfGroup(g.id).forEach(function(c){
+      var b = rowHits(c, shown, filter, hasEntry);
+      if(b){ caps.push(c); bundle[c.id] = b; }
+    });
+    if(!caps.length) return {empty:true, why:"Nothing in " + g.name +
+                             " matches the subjects and the filter chosen."};
+
+    // A subject earns a card only if it will have a curve.
+    var lines = [], keep = {};
+    caps.forEach(function(c){
+      bundle[c.id].hits.forEach(function(h){
+        if(!LINE_LEVEL[h.level]) return;
+        keep[h.s.id] = true;
+        lines.push({a:"s:" + h.s.id, b:"c:" + c.id, level:h.level});
+      });
+    });
+
+    var order = {}, labels = groupLabels(), i = 0;
+    displayGroups().forEach(function(dg){
+      (dg.subjects || []).forEach(function(id){ order[id] = i++; });
+    });
+    var actors = shown.filter(function(s){ return keep[s.id]; }).sort(function(a, b){
+      var x = order[a.id], y = order[b.id];
+      if(x === undefined) x = 1e6;
+      if(y === undefined) y = 1e6;
+      return x - y;
+    });
+
+    var capCards = caps.map(function(c){
+      var b = bundle[c.id];
+      var word = c.binding === "connect" ? "protocol" : "format";
+      var foot = '<span class="c4-t n">built in ' + b.reach.filter(function(h){
+                   return h.level === "native"; }).length + "</span>" +
+                 '<span class="c4-t x">extension ' + b.reach.filter(function(h){
+                   return h.level === "via-extension"; }).length + "</span>" +
+                 '<span class="c4-t p">partial ' + b.partial.length + "</span>" +
+                 '<span class="c4-t c">conflicts ' + b.conflicts.length + "</span>" +
+                 '<span class="c4-t z">absent ' + b.absent.length + "</span>";
+      return cardHTML({kind:"cap", node:"c:" + c.id, tip:c.id, click:"capability",
+                       id:c.id, over:word, name:c.name, foot:foot,
+                       label:c.name + ", " + word + " row. Open the claims on this row."});
+    }).join("");
+
+    var subCards = actors.map(function(s){
+      return cardHTML({kind:"subject", node:"s:" + s.id, tip:s.id, name:s.name,
+                       over:labels[s.id] || s.kind,
+                       meta:[s.kind, s.status].filter(Boolean).join(DOT)});
+    }).join("");
+
+    var html = planeHTML("PLANE 1", "Capabilities \u00B7 " + g.name,
+                         "Partial claims are counted, not drawn.", capCards, g.id) +
+               planeHTML("PLANE 2", "Subjects",
+                         plural(lines.length, "curve") + " from " +
+                         plural(actors.length, "subject"), subCards);
+
+    return {html:html, lines:lines, planes:2, cards:caps.length + actors.length,
+            subjects:actors.map(function(s){ return s.id; }),
+            capabilities:caps.map(function(c){ return c.id; })};
+  }
+
+  function build(v){
+    if(!D || !D.groups) return null;
+    if(v === "landscape") return landscape();
+    if(v === "groups") return groupsView();
+    return groupView(v);
+  }
+
+  // ---- the curves ---------------------------------------------------------
+
+  /* One drawing is on screen at a time. Its element, its board and its curve list are kept
+   * here so a resize can measure the cards again without rebuilding anything. */
+  var live = null, lastW = 0, lastH = 0, frame = 0;
+
+  function rectIn(board, el){
+    var a = board.getBoundingClientRect(), b = el.getBoundingClientRect();
+    return {x:b.left - a.left, y:b.top - a.top, w:b.width, h:b.height};
+  }
+
+  /* Measure the cards where the browser actually put them and paint one curve per claim, from
+   * the top edge of the subjects plane to the bottom edge of the capabilities plane, so every
+   * curve lives in the gap between the two bands. The same shape the narrative board draws. */
+  function wires(){
+    if(!live || !live.board || !live.board.isConnected) return;
+    var board = live.board, svg = live.svg;
+    if(!svg) return;
+    var bw = board.offsetWidth, bh = board.offsetHeight;
+    svg.setAttribute("width", bw);
+    svg.setAttribute("height", bh);
+    svg.setAttribute("viewBox", "0 0 " + bw + " " + bh);
+    lastW = bw; lastH = bh;
+
+    var out = "";
+    live.lines.forEach(function(l){
+      var a = live.node[l.a], b = live.node[l.b];
+      if(!a || !b) return;
+      var pa = a.closest(".c4-plane"), pb = b.closest(".c4-plane");
+      if(!pa || !pb) return;
+      var A = rectIn(board, a), B = rectIn(board, b);
+      var PA = rectIn(board, pa), PB = rectIn(board, pb);
+      var ax = A.x + A.w / 2, ay = PA.y;                 // top edge of the subjects plane
+      var bx = B.x + B.w / 2, by = PB.y + PB.h;          // bottom edge of the capabilities plane
+      var mid = by + (ay - by) / 2;
+      out += '<path class="c4-wire ' + cls(l.level) + '" data-a="' + esc(l.a) +
+             '" data-b="' + esc(l.b) + '" d="M' + ax.toFixed(1) + " " + ay.toFixed(1) +
+             " C " + ax.toFixed(1) + " " + mid.toFixed(1) + ", " + bx.toFixed(1) + " " +
+             mid.toFixed(1) + ", " + bx.toFixed(1) + " " + by.toFixed(1) + '"/>';
+      out += '<circle class="c4-dot ' + cls(l.level) + '" data-a="' + esc(l.a) +
+             '" data-b="' + esc(l.b) + '" cx="' + bx.toFixed(1) + '" cy="' + by.toFixed(1) +
+             '" r="2.6"/>';
+    });
+    svg.innerHTML = out;
+    live.paths = Array.prototype.slice.call(svg.childNodes);
+    if(live.focused) focusOn(live.focused);
+  }
+
+  function schedule(){
+    if(frame) return;
+    frame = (window.requestAnimationFrame || function(f){ return setTimeout(f, 16); })(
+      function(){ frame = 0; wires(); });
+  }
+
+  window.addEventListener("resize", function(){
+    if(!live || !live.board || !live.board.isConnected) return;
+    schedule();
+  });
+
+  var ro = null;
+  if(window.ResizeObserver){
+    // The SVG is absolutely positioned, so painting it never changes the board's own size;
+    // the guard below is belt and braces against an observer feeding itself.
+    ro = new ResizeObserver(function(){
+      if(!live || !live.board) return;
+      if(live.board.offsetWidth === lastW && live.board.offsetHeight === lastH) return;
+      schedule();
+    });
+  }
+  if(document.fonts && document.fonts.ready && document.fonts.ready.then){
+    document.fonts.ready.then(function(){ if(live) wires(); });
+  }
+
+  // ---- highlighting -------------------------------------------------------
+
+  /* Hover or focus a card and the claims it is part of come forward: its curves, and the cards
+   * at the other end of them. Everything else fades. It reads the same way from either plane. */
+  function focusOn(key){
+    if(!live) return;
+    var board = live.board;
+    if(!key){
+      board.classList.remove("c4-focus");
+      live.cards.forEach(function(c){ c.classList.remove("c4-on"); });
+      (live.paths || []).forEach(function(p){ p.classList.remove("c4-on"); });
+      live.focused = null;
+      return;
+    }
+    var near = {};
+    near[key] = 1;
+    live.lines.forEach(function(l){
+      if(l.a === key) near[l.b] = 1;
+      else if(l.b === key) near[l.a] = 1;
+    });
+    board.classList.add("c4-focus");
+    live.cards.forEach(function(c){
+      c.classList.toggle("c4-on", !!near[c.getAttribute("data-node")]);
+    });
+    (live.paths || []).forEach(function(p){
+      var a = p.getAttribute("data-a"), b = p.getAttribute("data-b");
+      p.classList.toggle("c4-on", a === key || b === key);
+    });
+    live.focused = key;
+  }
+
+  function nodeOf(target){
+    return target && target.closest ? target.closest("[data-node]") : null;
+  }
+
+  function wire(el){
+    el.addEventListener("mouseover", function(e){
+      var n = nodeOf(e.target);
+      if(n) focusOn(n.getAttribute("data-node"));
+    });
+    el.addEventListener("mouseout", function(e){
+      var n = nodeOf(e.target);
+      if(!n) return;
+      if(e.relatedTarget && n.contains(e.relatedTarget)) return;
+      if(document.activeElement && nodeOf(document.activeElement)) return;
+      focusOn(null);
+    });
+    el.addEventListener("focusin", function(e){
+      var n = nodeOf(e.target);
+      focusOn(n ? n.getAttribute("data-node") : null);
+    });
+    el.addEventListener("focusout", function(e){
+      var n = nodeOf(e.target);
+      if(n && n.getAttribute("data-node") === (live && live.focused)) focusOn(null);
+    });
+    el.addEventListener("click", function(e){
+      var b = e.target.closest ? e.target.closest("[data-click]") : null;
+      if(!b) return;
+      var what = b.getAttribute("data-click"), id = b.getAttribute("data-id");
+      if(what === "view") setView(id);
+      else if(what === "capability") openClaim(id);
+    });
+  }
+
+  // ---- drawing ------------------------------------------------------------
+
+  function draw(){
+    closeClaim();
+    var built;
+    try{
+      built = build(view);
+    }catch(err){
+      live = null;
+      stageEl.innerHTML = '<p class="c4-fallback">The drawing could not be built: ' +
+                          esc(err && err.message ? err.message : String(err)) + "</p>";
+      window.__c4 = {ok:false, view:view, error:String(err && err.message ? err.message : err)};
+      return;
+    }
+    if(!built){
+      live = null;
+      stageEl.innerHTML = '<p class="c4-fallback">There is no view called ' + esc(view) + ".</p>";
+      window.__c4 = {ok:false, view:view, error:"unknown view"};
+      return;
+    }
+    if(built.empty){
+      live = null;
+      stageEl.innerHTML = '<p class="c4-fallback">' + esc(built.why) +
+                          " Turn on more subjects, or choose Everything.</p>";
+      window.__c4 = {ok:true, view:view, empty:true, planes:0, cards:0, wires:0,
+                     subjects:[], capabilities:[]};
+      return;
+    }
+
+    stageEl.innerHTML = '<div class="c4-board"><svg class="c4-wires" aria-hidden="true" ' +
+                        'xmlns="http://www.w3.org/2000/svg"></svg>' + built.html + "</div>";
+    var board = stageEl.querySelector(".c4-board");
+    var node = {};
+    var cards = Array.prototype.slice.call(board.querySelectorAll("[data-node]"));
+    cards.forEach(function(c){ node[c.getAttribute("data-node")] = c; });
+
+    live = {board:board, svg:board.querySelector(".c4-wires"), lines:built.lines,
+            node:node, cards:cards, paths:[], focused:null};
+    if(ro){ try{ ro.disconnect(); ro.observe(board); }catch(e){} }
+    wire(board);
+    wires();
+
+    window.__c4 = {ok:true, view:view, planes:built.planes, cards:built.cards,
+                   wires:built.lines.length, subjects:built.subjects,
+                   capabilities:built.capabilities};
+  }
+
+  // ---- the claim panel ----------------------------------------------------
+  // The capability card just clicked, written out as the row the matrix draws, limited to the
+  // subjects switched on. Every cell in it opens the same claim detail.
+
+  function rowHTML(c, b, shownCount){
+    var hits = b.hits, reach = b.reach, conf = b.conflicts, scored = b.scored;
+
+    var cells = hits.map(function(h){
+      var n = (h.sources || []).length;
+      return '<button type="button" class="cell ' + cls(h.level) + '" data-s="' + esc(h.s.id) +
+             '" data-c="' + esc(c.id) + '" aria-expanded="false" title="' +
+             esc(h.note || "no note recorded") + '" aria-label="' + esc(h.s.name) + ", " +
+             esc(LEVEL_WORDS[h.level] || h.level) + ", " + n + ' source' + (n === 1 ? "" : "s") +
+             '. Open the claim detail.">' + esc(h.s.name) + '</button>';
+    }).join("");
+    if(!cells) cells = '<span class="empty">nothing scored here yet</span>';
+    else if(reach.length === 0 && scored.length > 0)
+      cells += ' <span class="empty">&larr; no system has this</span>';
+
+    var notes = conf.map(function(h){
+      return '<div class="note"><b>' + esc(h.s.name) + ' conflicts:</b> ' + esc(h.note) + '</div>';
+    }).join("");
+
+    var bindWord = c.binding === "connect" ? "protocol" : "format";
+    return '<div class="row"><div>' +
+           '<div class="cname" tabindex="0" data-tip="' + esc(c.id) + '">' + esc(c.name) + '</div>' +
+           '<div class="cdef">' + esc(c.definition) + '</div>' +
+           '<div class="cscore" tabindex="0" data-tip="row.scored">' +
+           scored.length + ' of ' + shownCount + ' subjects scored here</div></div>' +
+           '<div class="bind ' + esc(c.binding) + '" tabindex="0" data-tip="binding.' + bindWord + '">' +
+           bindWord + '</div>' +
+           '<div class="cells">' + cells + '</div>' + notes + '</div>';
+  }
+
+  function closeClaim(){
+    closeDetail();
+    if(!claimEl) return;
+    claimEl.className = "c4-claim hidden";
+    claimEl.innerHTML = "";
+  }
+
+  function openClaim(capId){
+    var c = capById[capId];
+    if(!c || !claimEl) return;
+    var shown = shownSubjects();
+    var b = rowHits(c, shown, filter, hasEntry);
+    if(!b){ closeClaim(); return; }
+    closeDetail();
+    hideTip();
+    claimEl.innerHTML = '<div class="c4-claim-head"><span class="setlabel">Claims on this ' +
+      'row &mdash; ' + esc(c.name) + '</span>' +
+      '<button type="button" class="c4-close" id="c4close">Close</button></div>' +
+      '<div class="rows">' + rowHTML(c, b, shown.length) + '</div>';
+    claimEl.className = "c4-claim";
+    document.getElementById("c4close").addEventListener("click", function(){
+      closeClaim();
+      var card = stageEl.querySelector('[data-node="c:' +
+                 String(capId).replace(/["\\]/g, "\\$&") + '"]');
+      if(card) card.focus();
+    });
+    claimEl.scrollIntoView({block:"nearest"});
+  }
+
+  // ---- claim detail -------------------------------------------------------
+  function sourceItem(x){
+    var url = x[0], title = x[1] || "untitled source", kind = x[2] || "", quote = x[3] || "";
+    var head;
+    if(url && /^https?:\/\//i.test(url))
+      head = '<a href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">' + esc(title) + '</a>';
+    else
+      head = '<span class="sprivate">' + esc(title) + ' \u2014 local evidence, not public</span>';
+    if(kind) head += '<span class="skind">' + esc(kind) + '</span>';
+    return '<li>' + head +
+           (quote ? '<div class="squote">\u201C' + esc(quote) + '\u201D</div>' : '') + '</li>';
+  }
+
+  function detailHTML(s, c, v){
+    var srcs = v[3] || [];
+    var h = '<div class="detail" role="group" aria-label="Claim detail">' +
+            '<div class="dhead">' + esc(s.name) + ' \u2014 ' + esc(c.name) + '</div>' +
+            '<div class="dmeta"><span tabindex="0" data-tip="level.' + esc(v[0]) + '">' +
+            esc(LEVEL_WORDS[v[0]] || v[0]) + '</span> \u00B7 confidence: ' +
+            '<span tabindex="0" data-tip="confidence.' + esc(v[1]) + '">' + esc(v[1]) + '</span></div>';
+    h += '<div class="dnote">' + (v[2] ? esc(v[2]) : '<i>No note recorded for this claim.</i>') + '</div>';
+    h += '<div class="dsub">Sources (' + srcs.length + ')</div>';
+    h += srcs.length
+       ? '<ul class="slist">' + srcs.map(sourceItem).join("") + '</ul>'
+       : '<ul class="slist"><li class="sprivate">No source recorded for this claim yet.</li></ul>';
+    return h + '<div class="dfoot">Press Escape, or click the cell again, to close.</div></div>';
+  }
+
+  function closeDetail(){
+    if(!openCell) return;
+    var row = openCell.parentNode && openCell.parentNode.parentNode;
+    var d = row && row.querySelector(".detail");
+    if(d) d.parentNode.removeChild(d);
+    openCell.setAttribute("aria-expanded", "false");
+    openCell = null;
+  }
+
+  if(claimEl) claimEl.addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest(".cell") : null;
+    if(!b) return;
+    var again = (b === openCell);
+    closeDetail();
+    if(again) return;
+    var sid = b.getAttribute("data-s"), cid = b.getAttribute("data-c");
+    var subj = subjById[sid], cap = capById[cid];
+    var v = D.coverage[sid] && D.coverage[sid][cid];
+    if(!subj || !cap || !v) return;
+    var row = b.parentNode.parentNode;
+    row.insertAdjacentHTML("beforeend", detailHTML(subj, cap, v));
+    b.setAttribute("aria-expanded", "true");
+    openCell = b;
+  });
+
+  document.addEventListener("keydown", function(e){
+    if(e.key !== "Escape" && e.keyCode !== 27) return;
+    hideTip();
+    if(openCell){
+      var b = openCell;
+      closeDetail();
+      b.focus();
+      return;
+    }
+    if(claimEl && claimEl.className.indexOf("hidden") < 0) closeClaim();
+  });
+
+  // ---- the controls -------------------------------------------------------
+
+  function refresh(){
+    hideTip();
+    updateStat(shownSubjects());
+    draw();
+    writeHash();
+  }
+
+  function setView(id){
+    if(!id || id === view) return;
+    view = id;
+    syncViews();
+    hideTip();
+    refresh();
+  }
+
+  function syncViews(){
+    Array.prototype.forEach.call(viewsEl.querySelectorAll("[data-v]"), function(x){
+      x.setAttribute("aria-pressed", String(x.dataset.v === view));
+    });
+  }
+
+  function viewList(){
+    var out = [{id:"landscape", label:"Landscape", kind:"landscape"},
+               {id:"groups", label:"Groups", kind:"groups"}];
+    (D && D.groups ? D.groups : []).forEach(function(g){
+      out.push({id:g.id, label:g.name, kind:"group"});
+    });
+    return out;
+  }
+
+  function buildViews(){
+    var html = "";
+    viewList().forEach(function(v){
+      // A group chip explains what a group view is; the group's own definition is on the
+      // plane title inside it.
+      var tip = v.kind === "group" ? "c4.view.group" : "c4.view." + v.id;
+      html += '<button type="button" class="chip" data-v="' + esc(v.id) + '" aria-pressed="' +
+              (v.id === view) + '" data-tip="' + esc(tip) + '">' + esc(v.label) + '</button>';
+    });
+    viewsEl.innerHTML = html;
+    viewsEl.addEventListener("click", function(e){
+      var b = e.target.closest("[data-v]");
+      if(b) setView(b.dataset.v);
+    });
+  }
+
+  function groupsOf(){
+    return displayGroups();
+  }
+
+  function syncChips(){
+    Array.prototype.forEach.call(subsEl.querySelectorAll("[data-s]"), function(b){
+      b.setAttribute("aria-pressed", String(!!on[b.dataset.s]));
+    });
+    Array.prototype.forEach.call(subsEl.querySelectorAll("[data-g]"), function(h){
+      var ids = h.dataset.g === "*" ? D.subjects.map(function(s){ return s.id; })
+                                    : h.dataset.g.split(",");
+      var n = ids.filter(function(id){ return on[id]; }).length;
+      h.dataset.state = n === 0 ? "none" : (n === ids.length ? "all" : "some");
+    });
+  }
+
+  function buildPage(){
+    addLocalTips();
+    D.subjects.forEach(function(s){ subjById[s.id] = s; on[s.id] = s.scored > 0; });
+    D.capabilities.forEach(function(c){ capById[c.id] = c; });
+
+    var html = '<div class="sgroup"><button class="ghead" data-g="*" data-tip="chipgroup.all">' +
+               'All subjects</button></div>';
+    groupsOf().forEach(function(g){
+      html += '<div class="sgroup"><button class="ghead" data-g="' + g.subjects.join(",") +
+              '" data-tip="chipgroup.' + esc(g.id) + '">' + esc(g.name) + '</button>';
+      g.subjects.forEach(function(id){
+        var s = subjById[id];
+        if(!s) return;
+        var has = s.scored > 0;
+        html += '<button class="chip' + (has ? "" : " off") + '" data-s="' + esc(s.id) +
+                '" aria-pressed="' + has + '" data-tip="' + esc(s.id) + '"' +
+                (has ? "" : ' title="not scored yet"') + '>' + esc(s.name) + '</button>';
+      });
+      html += '</div>';
+    });
+    subsEl.innerHTML = html;
+    subsEl.addEventListener("click", function(e){
+      var h = e.target.closest("[data-g]");
+      if(h){
+        var ids = h.dataset.g === "*" ? D.subjects.map(function(s){ return s.id; })
+                                      : h.dataset.g.split(",");
+        var allOn = ids.every(function(id){ return on[id]; });
+        ids.forEach(function(id){ on[id] = !allOn; });
+        syncChips(); refresh(); return;
+      }
+      var b = e.target.closest("[data-s]");
+      if(!b) return;
+      on[b.dataset.s] = !on[b.dataset.s];
+      syncChips(); refresh();
+    });
+
+    document.getElementById("filters").addEventListener("click", function(e){
+      var b = e.target.closest("[data-f]");
+      if(!b) return;
+      filter = b.dataset.f;
+      Array.prototype.forEach.call(this.querySelectorAll("[data-f]"), function(x){
+        x.setAttribute("aria-pressed", String(x.dataset.f === filter));
+      });
+      refresh();
+    });
+    // The toggle is not one of the filter buttons: it carries no data-f, so the handler above
+    // ignores it, and it stays on while any of them is chosen.
+    var he = document.getElementById("hasentry");
+    he.addEventListener("click", function(){
+      hasEntry = !hasEntry;
+      he.setAttribute("aria-pressed", String(hasEntry));
+      refresh();
+    });
+
+    wireExplanations();
+    explOn = readExpl();
+    syncExpl();
+
+    applyHash(readHash());
+    buildViews();
+    syncChips();
+    syncViews();
+    Array.prototype.forEach.call(document.querySelectorAll("#filters [data-f]"), function(x){
+      x.setAttribute("aria-pressed", String(x.dataset.f === filter));
+    });
+    he.setAttribute("aria-pressed", String(hasEntry));
+    refresh();
+
+    // A hash typed or pasted into the address bar, or an arrival by back button, is read the
+    // same way as the one this page wrote.
+    window.addEventListener("hashchange", function(){
+      if(writingHash) return;
+      applyHash(readHash());
+      syncChips();
+      syncViews();
+      Array.prototype.forEach.call(document.querySelectorAll("#filters [data-f]"), function(x){
+        x.setAttribute("aria-pressed", String(x.dataset.f === filter));
+      });
+      document.getElementById("hasentry").setAttribute("aria-pressed", String(hasEntry));
+      hideTip();
+      updateStat(shownSubjects());
+      draw();
+      syncLinks();
+    });
+  }
+
+  // A check can read the state this page is in without touching its private variables.
+  window.__c4state = function(){
+    return {view:view, filter:filter, entryOnly:hasEntry,
+            on:D ? D.subjects.filter(function(s){ return on[s.id]; })
+                    .map(function(s){ return s.id; }) : [],
+            hash:String(window.location.hash || "")};
+  };
+
+  var inlineData = document.getElementById("territory-data");
+  if(inlineData){
+    D = JSON.parse(inlineData.textContent);
+    buildPage();
+  } else {
+    fetch("territory.json")
+      .then(function(r){ if(!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function(d){ D = d; buildPage(); })
+      .catch(function(err){
+        stageEl.innerHTML = '<p class="c4-fallback">Could not load the data file next to this ' +
+          'page (' + esc(err.message) + '). This copy reads <code>territory.json</code> from ' +
+          'the same folder, so it needs a web address rather than being opened straight from ' +
+          'disk. The standalone copy carries its data inside it and works either way.</p>';
+      });
+  }
+})();
+</script>

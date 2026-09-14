@@ -1,0 +1,2687 @@
+{
+  "subject_id": "fortnite",
+  "summary": "Fortnite is one product with two editors and one server. Fortnite Creative places devices from an in-game inventory; Unreal Editor for Fortnite is a cut-down Unreal Engine 5 that imports FBX, OBJ and glTF, lights with Lumen and Virtual Shadow Maps, and compiles Verse. Everything a creator makes is cooked, validated twice — once locally, once on Epic's servers — and published as a release under an island code. Nothing runs anywhere else and nothing leaves, and that single fact decides most of this map. Three answers here are stronger than any comparable subject's. Scene Graph is a real entity-component scene with prefabs, per-instance overrides and Verse-native components, and it now carries an item and inventory system. The resource budget is a gate rather than advice: memory is computed from cooked data against a bar of 100,000 units and an island over it cannot be published. And agents are shipping — a persona component puts a large language model, named as Google's Gemini 3.1 Flash-Lite with ElevenLabs voices, into a character players talk to over voice chat. Four traps for a standards reader. First, two coordinate systems run at once: /Verse.org modules are right-handed Left-Up-Forward, /UnrealEngine.com and /Fortnite.com modules are still left-handed XYZ. Second, the network model is invisible — Verse runs on Epic's dedicated server, and no replication, interest or prediction machinery is published or reachable, so four network rows read empty for a platform that plainly does all four. Third, the player's own body is not a creator artefact: creators author MetaHumans and skeletal meshes for characters in the world, while the avatar stays an account entitlement swapped from the Locker. Fourth, several of the most interesting parts — Scene Graph cameras, Scene Graph animation, custom items — are experimental and cannot be published today. Every geospatial row is out of scope: nothing in Fortnite refers to the Earth.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "partial",
+      "note": "UEFN draws with Unreal Engine 5's renderer, and the only account of the pipeline given to creators is a performance story: the CPU assembles a manifest, the GPU rasterises and shades it. There is no render graph, no pass order and no shader code; the one authoring surface is the material graph, which does include a post-process material domain. Nanite is on or off per session rather than per creator decision.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/reducing-draw-calls-in-fortnite",
+          "title": "Epic Developer Community: Reducing Draw Calls",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A draw call is the process of gathering and sending data to the GPU (Graphics Processing Unit) to render part of a frame."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/reducing-draw-calls-in-fortnite",
+          "title": "Epic Developer Community: Reducing Draw Calls",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Rasterization. It flattens the 3D coordinates to the 2D screen grid."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/reducing-draw-calls-in-fortnite",
+          "title": "Epic Developer Community: Reducing Draw Calls",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Draw call counts differ vastly between Nanite-enabled sessions and sessions where Nanite is disabled."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "none",
+      "note": "No low-level graphics interface is named anywhere in the Fortnite creator documentation, and a creator cannot choose or query one. What is published instead is a quality ladder that stands in for hardware: Low is mobile and performance mode, Medium is Nintendo Switch, High is PC, PS4 and Xbox One, Epic is high-end PC, PS5 and Xbox Series X, with features disabled or scaled down at the lower rungs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/level-of-detail-lod-best-practices-in-fortnite",
+          "title": "Epic Developer Community: Level of Detail (LOD) Best Practices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The Quality Level Min LOD setting determines the minimum LOD your asset uses at each quality setting. Each of these levels corresponds to a different set of target platforms."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/mobile-optimization-in-fortnite",
+          "title": "Epic Developer Community: Mobile Optimization",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "UEFN is designed to handle platform scalability. Due to hardware limitations, some features are disabled or scaled down at lower-quality levels."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "native",
+      "note": "Creators author their own materials in a node graph, make instances of them, and can put a material into the post-process domain to filter the whole frame. Material function wrappers let one material carry different behaviour per platform tier. What a material means is Unreal Engine's model, not a published exchange model.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/materials-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Materials",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Creating your own materials and textures in Unreal Editor for Fortnite (UEFN) gives the meshes you use on your island a unique look and feel."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/intro-to-postprocessing-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Intro to Post-Processing",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Change the Material Domain setting to Post Processing."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/mobile-optimization-in-fortnite",
+          "title": "Epic Developer Community: Mobile Optimization",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Navigate to Fortnite > Materials > Functions, where you will find MF_QualitySwitch_MaterialAttributes, MF_QualitySwitch_Scalar, and MF_QualitySwitch_Vector."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "native",
+      "note": "Lighting is dynamic, and that is a platform decision rather than a creator one: Lumen provides global illumination and Virtual Shadow Maps the shadows, and the validation page states plainly that baked lighting cannot coexist with the way Fortnite lights the world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/lighting-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Lighting",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Unreal Editor for Fortnite (UEFN) uses the power of Lumen and Virtual Shadow Maps to create softer shadows, realistic global illumination, and better overall visual experiences."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/validation-and-fixup-tool-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Validation and Fix-Up Tool",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A great example is that Fortnite uses dynamic lighting, and baked lighting would not work in combination."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.post",
+      "level": "native",
+      "note": "Post-processing is a placed volume with priority and an unbounded option, carrying colour grading, exposure, chromatic aberration and vignette, and it accepts a creator-authored material in the post-process domain. Epic warns creators that not every device supports every effect.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/intro-to-postprocessing-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Intro to Post-Processing",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Post processing is a non-destructive way of defining the overall look of the whole or part of an island by using placed volumes in Unreal Editor for Fortnite (UEFN)."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/intro-to-postprocessing-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Intro to Post-Processing",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "PPVs have an impact on the number of variables you have to keep track of for a consistent look throughout the gamut of low-end and high-end devices, as not all devices support all features and post effects."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "native",
+      "note": "Detail selection and send order are the same machinery here. World Partition divides an island into grid cells and streams the ones near a player; hierarchical LOD collapses distant groups into one mesh built from the lowest LOD of its parts; per-asset LODs have screen-size thresholds and per-quality-level minimums, and a validator flags a large mesh that has only one LOD.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/streaming-and-hlods-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Streaming and HLODs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "World Partition uses Streaming to load grid cells around a player, or streaming source, in and out of memory."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/streaming-and-hlods-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Streaming and HLODs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Hierarchical Level of Detail or HLOD is an optimized grouping of nearby actors where the group is simplified into one static mesh once it is far enough away from the streaming source."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/level-of-detail-lod-best-practices-in-fortnite",
+          "title": "Epic Developer Community: Level of Detail (LOD) Best Practices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The Screen Size value determines how much space on the screen your asset can occupy before the asset drops to a lower level of detail."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "none",
+      "note": "Nothing renders Gaussian splats or radiance fields. A title search of the whole 5,525-entry Fortnite documentation table of contents and a full-text search of the documentation return no hit for splat, Gaussian splatting or radiance field, and the closed list of importable 3D formats is FBX, OBJ, glTF and GLB.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/importing-assets-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Importing Assets",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "UEFN allows you to import many different file types for different types of assets. While UEFN and Fortnite Creative do not yet support all file formats, this will change over time."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "none",
+      "note": "No point clouds, no voxels, no volumetric video. The volumetric-looking tool is Niagara particles, added to a Scene Graph entity as a particle system component, and the importable formats carry meshes and textures only.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/particle-system-component-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Particle System Component",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Use the particle_system_component to add Niagara effects to your level."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/importing-assets-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Importing Assets",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "UEFN allows you to import many different file types for different types of assets. While UEFN and Fortnite Creative do not yet support all file formats, this will change over time."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "partial",
+      "note": "Text reaches the world through Unreal Motion Graphics: a UEFN Text Block laid out on a widget canvas, and widgets placed in the world as Scene Graph entities that react to events. Two limits keep this short of native. In-world widgets cannot be interacted with, and a search of the documentation set finds no way to import a font, so typography is whatever Fortnite ships.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/ui-widget-editor-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: UI Widget Editor",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "UEFN Text Block: Craft a custom UI message."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/inworld-user-widgets-using-scene-graph-in-fortnite",
+          "title": "Epic Developer Community: In-World User Widgets Using Scene Graph",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "You can use User Widget Scene Graph Entities to create UI elements that are reactive to in-game events."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/inworld-user-widgets-using-scene-graph-in-fortnite",
+          "title": "Epic Developer Community: In-World User Widgets Using Scene Graph",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Scene Graph Entities are not compatible with standard devices. To add device functionality, you must use Verse devices."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "native",
+      "note": "Viewpoints are bound and blended two ways. Camera devices — first person, fixed angle, fixed point, orbit — are shipping and publishable. The richer model, Scene Graph camera components with a camera director and perspective, orthographic and physically-based projections, is experimental and an island using it cannot be published. The same page carries the platform's clearest statement about where logic lives.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/cameras-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Cameras",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Adding a camera to the player's camera_director_component automatically activates the Scene Graph Camera System for that player."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/camera-types-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Camera Types",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This feature is in an Experimental state so you can try it out, provide feedback, and see what we are planning. You cannot publish a project that uses Scene Graph camera components at this time."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/camera-types-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Camera Types",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Because Verse logic runs on the server, the FieldOfViewDegrees field is specified as a horizontal field of view assuming a 16:9 aspect ratio."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "native",
+      "note": "Scene Graph is a genuine entity-component scene, not a prop list: entities are containers for components or other entities, one simulation entity is the root, and the whole thing is Verse-native so code reaches every part of it. It is in beta and enabled by default in new projects.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/getting-started-in-scene-graph-in-fortnite",
+          "title": "Epic Developer Community: Getting Started in Scene Graph",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Entities are containers for components or other entities. An empty entity will have no visible effects or functionality. Components are what provide data and behavior to an entity."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/getting-started-in-scene-graph-in-fortnite",
+          "title": "Epic Developer Community: Getting Started in Scene Graph",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "One entity (the simulation entity) sits at the root of your project to represent the simulation."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/scene-graph-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Scene Graph",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Scene Graph is a unified structure that connects all the objects in the world."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "conflicts",
+      "note": "The platform runs two coordinate conventions at once and says so. Since release 36.00 the editor and every /Verse.org module transform use Left-Up-Forward, which is right-handed; /UnrealEngine.com and /Fortnite.com module transforms are still the older left-handed XYZ. A creator therefore converts between two handednesses inside one language, and anyone reading a transform out of Fortnite has to ask which module produced it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/leftupforward-coordinate-system-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Left-Up-Forward Coordinate System",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "As of 36.00, UEFN uses the LUF coordinate system for the editor and all /Verse.org module transforms. /UnrealEngine.com and /Fortnite.com module transforms use the XYZ coordinate system."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/leftupforward-coordinate-system-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Left-Up-Forward Coordinate System",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The change from the previous XYZ and FRU to LUF therefore corresponds to a handedness change in the axes from a left-handed coordinate system (XYZ and FRU) to a right-handed coordinate system (LUF)."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/transforms-in-scene-graph-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Transforms in Scene Graph",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Scene Graph uses /Verse.org/SpatialMath module transforms. Verse module transforms use the right-handed LUF coordinate system."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "partial",
+      "note": "Content comes in and does not go out. The import side is broad — FBX, OBJ, glTF and GLB for models, eleven image formats, four audio formats, and Epic's own .island and .upack — and a migration tool moves Unreal assets between projects, with the documented directions running Unreal Engine to UEFN and UEFN to UEFN, never the reverse, and brand folders blocked outright. There is no neutral file a second runtime could open.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/importing-assets-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Importing Assets",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "There are also two different import options depending on the type of file you’re importing. Importing an FBX file uses the FBX Import Options, all other file types open the Interchange Asset Import options."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/migrating-assets-from-unreal-engine-to-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Migrating Assets in UEFN and Unreal Engine",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Some types of assets can only be migrated one way or not at all depending on the type of content it is. For example, content located in brand intellectual property (IP) folders cannot be migrated at all."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/migrating-assets-from-unreal-engine-to-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Migrating Assets in UEFN and Unreal Engine",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The Migration Tool is a means to move content but does not verify its compatibility with the engine you're migrating to."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "native",
+      "note": "Meshes arrive through Unreal's Interchange framework, which parses the file and then runs pipelines over it, with translator settings that convert scene units to centimetres and fix the asset's axis convention on the way in. Triangle budgets are published per asset class, and a Nanite fallback setting decides which triangles count against memory.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/interchange-import-system-in-fortnite",
+          "title": "Epic Developer Community: Interchange Import System",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Convert Scene Unit: Determines whether to convert the scene from FBX units into UE units (centimeters)."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/interchange-import-system-in-fortnite",
+          "title": "Epic Developer Community: Interchange Import System",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Coordinate System Policy: Determines the direction of the asset’s coordinates."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/configuring-collision-for-a-static-mesh-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Configuring Collision for a Static Mesh",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Use the Nanite Fallback setting to reduce the number of triangles that count toward memory."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "native",
+      "note": "Eleven image formats import, and the platform's constraint is unusually explicit: compressed GPU formats must be powers of two on every console, PC and mobile device, and a texture that is not will not stream and may destabilise weaker hardware. Texture groups and mip mapping do the runtime scaling, and mobile guidance caps practical resolution at 512 by 512.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/textures-best-practices-in-fortnite",
+          "title": "Epic Developer Community: Textures Best Practices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Compressed file formats for graphics processing units (GPUs) must use power of two textures across all consoles, PCs, and mobile."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/mobile-optimization-in-fortnite",
+          "title": "Epic Developer Community: Mobile Optimization",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Texture Groups and Mip Mapping: Enable runtime material scaling via MIP mapping. Ensure textures are in the correct group and created in powers of two for smooth scaling and visual quality. Textures that do not comply with the power of two will not stream."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "partial",
+      "note": "One sentence in the whole documentation set says MaterialX arrives: the Interchange plugin is described as being used primarily to import textures, MaterialX and glTF, and creators are told not to disable it. Nothing else mentions MaterialX, no page describes what survives the import, and there is no export, so this is an inherited Unreal capability rather than a Fortnite feature.",
+      "confidence": "reported",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/interchange-import-system-in-fortnite",
+          "title": "Epic Developer Community: Interchange Import System",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "It is NOT recommended to deactivate the full Interchange plugin as it is primarily used to import textures, MaterialX, and glTF."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "native",
+      "note": "Animation imports as FBX and becomes an animation sequence the editor and Sequencer replay. The Verse-facing half is newer and gated: with the Scene Graph Animation flag on, every animation asset in a project is exposed as a concrete Verse class that PlaySkeletalAnimation accepts, with ease-in and ease-out windows — and an island using it cannot yet be published.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/metahuman-overview-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: MetaHuman Overview",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Import an FBX animation of your choice to use with your MetaHuman."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/skeletal-animation-in-scene-graph-in-fortnite",
+          "title": "Epic Developer Community: Skeletal Animation in Scene Graph",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "With the flag on, every animation asset in your project is exposed to Verse as a concrete subclass of skeletal_animation, which is what makes PlaySkeletalAnimation work."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/skeletal-animation-in-scene-graph-in-fortnite",
+          "title": "Epic Developer Community: Skeletal Animation in Scene Graph",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The Verse APIs described here are subject to change while the feature is experimental, and you currently cannot publish islands that use this feature."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "native",
+      "note": "Skeletons are first-class assets with their own editors: a static mesh can be converted into a skeletal mesh with a chosen root bone placement, bone chains are built by hand, and FBX skeletal imports now align the up and forward axes so every imported skeleton faces the same way. The bone naming itself is Unreal's and Fortnite's, published as tutorials rather than as a standard.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/convert-a-static-mesh-into-a-skeletal-mesh-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Convert a Static Mesh into a Skeletal Mesh",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A character's Skeleton Asset consists of a series of bone, or joint chains in a hierarchy."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/leftupforward-coordinate-system-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Left-Up-Forward Coordinate System",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Fourth, default imports of skeletal meshes from FBX now use the option to align Up and Forward axes so all imported skeletal meshes face the forward axis."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "none",
+      "note": "Nothing in the Fortnite documentation describes importing, storing or driving morph targets or blend shapes, and a full-text search returns no page about them. Facial performance for a MetaHuman is handled the other way round: the animation is baked onto a control rig in Unreal Engine and exported as FBX, and the guide has creators switch the morph export off.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/importing-metahuman-animations-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Importing MetaHuman Animations",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Right-click on the Face track and select Bake to Control Rig > Face_ControlBoard_CtrlRig. This bakes the MetaHuman animation to the UE Control Rig."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "native",
+      "note": "Repetition is cheap and partly automatic: identical meshes with identical materials are merged into fewer draw calls without the creator asking, and instanced and hierarchical instanced static meshes are the recommended way to place many copies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/reducing-draw-calls-in-fortnite",
+          "title": "Epic Developer Community: Reducing Draw Calls",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "UEFN uses auto-instancing to merge identical meshes with identical materials into fewer draw calls."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/mobile-optimization-in-fortnite",
+          "title": "Epic Developer Community: Mobile Optimization",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Reduce Draw Calls: Avoid rendering too many unique objects and textures simultaneously. Use Instances and Hierarchical Instanced Static Meshes (HISM), and group smaller objects into larger props where feasible."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "native",
+      "note": "Prefabs give real layering: a hierarchy of entities saved as a class, nested inside other prefabs, with edits in the prefab editor propagating to every instance and per-instance component overrides marked in the outliner. The older Creative equivalent, the level instance device, behaves the same way for props and structures.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/prefabs-and-prefab-instances-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Prefabs and Prefab Instances",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Making changes with the Prefab Editor causes all instances to automatically adopt all saved changes."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/prefabs-and-prefab-instances-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Prefabs and Prefab Instances",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "You can override components in a prefab instance to make changes unique to that single instance."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/using-level-instance-devices-in-fortnite-creative",
+          "title": "Epic Developer Community: Level Instance Devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "If you edit a copy of the Level Instance device (such as adding or removing props), the change is made to the original and all other copies."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "native",
+      "note": "Scale is stated and enforced. One unit is one centimetre, the world grid is 512 centimetres, the up axis is Z, a player character is 192 centimetres tall, and the importer will convert an FBX file's scene units to centimetres for you. This is the clearest units answer of any platform on the map.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/fortniteready-assets-best-practices-in-fortnite",
+          "title": "Epic Developer Community: Fortnite-Ready Assets Best Practices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "In UEFN, the world grid uses centimeters (1 cm = 1 Unreal Unit). When you are creating assets in modeling software or UEFN, make sure the grid size you use is 512 cm (512 units). This is the standard used for Fortnite."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/fortniteready-assets-best-practices-in-fortnite",
+          "title": "Epic Developer Community: Fortnite-Ready Assets Best Practices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Player characters in Fortnite are 192 cm tall. Keep this in mind when you create architecture or furniture, so that the scale of players fits with the environment you are creating."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/interchange-import-system-in-fortnite",
+          "title": "Epic Developer Community: Interchange Import System",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Convert Scene Unit: Determines whether to convert the scene from FBX units into UE units (centimeters)."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "partial",
+      "note": "Licence terms are collected at publishing time, not carried with the asset. The attribution form has a licence type and licence holder field for each third-party asset, and uploading is a warranty that the creator holds the rights — but Epic explicitly declines to guarantee that the form satisfies any licence, and nothing about permitted use travels with the content, which never leaves Fortnite anyway.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/attribution-screen-in-fortnite-creative",
+          "title": "Epic Developer Community: Attribution Screen",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Keep in mind that the Attribution screen is provided for developer convenience only. You are responsible for complying with the requirements of any licenses you are a party to, and Epic does not guarantee that the Attribution screen will meet those requirements."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/importing-custom-audio-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Importing Custom Audio",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "By uploading content, you confirm that it does not infringe or violate someone else's rights, including their intellectual property rights (such as by infringing another’s copyright or trademark), and that you own or have obtained the necessary rights to share the content."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "partial",
+      "note": "There is an authorship record and a person types it. Up to fifty attributions, each with content title, source URL, author, licence holder and licence type, are entered by hand and published on the island's details page; beyond fifty, creators link to a web page of their own. Nothing is signed, nothing is machine-readable, and nothing is attached to the asset.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/attribution-screen-in-fortnite-creative",
+          "title": "Epic Developer Community: Attribution Screen",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "You can list up to 50 total attributions."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/attribution-screen-in-fortnite-creative",
+          "title": "Epic Developer Community: Attribution Screen",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The information and links you provided are added to your project’s island details page on Fortnite.com."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "partial",
+      "note": "Two different things share the word avatar here, and only one is a creator artefact. Creators can author high-fidelity humans — MetaHuman is free inside UEFN and exports straight into it — but those are non-player characters and props. The player's own body is an account entitlement: an outfit from their Locker, which they swap in game through a Changing Booth device. Nothing about either is portable.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/metahuman-overview-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: MetaHuman Overview",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "MetaHuman, the state-of-the-art system allowing you to create high-fidelity digital humans, is now available and free to use in Unreal Editor for Fortnite!"
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/outfit",
+          "title": "Epic Developer Community: outfit (Fortnite Glossary)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A character's overall appearance is called an outfit in Creative."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/using-changing-booth-devices-in-fortnite-creative",
+          "title": "Epic Developer Community: Changing Booth Devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The Changing Booth device lets players access their Locker while a game is in progress."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "partial",
+      "note": "There are two agreed skeletons and both are Epic's: FN_Mannequin for Fortnite characters and metahuman_base_skel for MetaHumans, and a creator binds imported animation to one of them by name. Neither is published as a bone-naming specification anyone outside could implement, so animation transfers inside Epic's estate and nowhere else.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/transfer-character-animations-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Transfer Character Animations",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "As you go through this tutorial, you will practice the retargeting workflows with a Fortnite character using the FN_Mannequin asset inside the Animation Starter template in Unreal Editor for Fortnite (UEFN)."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/metahuman-overview-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: MetaHuman Overview",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "On the FBX Import Options popup, select the metahuman_base_skel from the Skeleton dropdown menu, then click Import All."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "none",
+      "note": "No named expression or viseme set appears anywhere in the documentation. Emotes are whole-body actions the player triggers from their own account, and the facial half of a MetaHuman performance is carried as animation baked onto a control rig rather than as named poses a second system could read.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/emote",
+          "title": "Epic Developer Community: emote (Fortnite Glossary)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A way of expressing yourself in-game, often as a dance or other movement."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/importing-metahuman-animations-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Importing MetaHuman Animations",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Right-click on the Face track and select Bake to Control Rig > Face_ControlBoard_CtrlRig. This bakes the MetaHuman animation to the UE Control Rig."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "native",
+      "note": "Retargeting is a documented workflow with two assets: an IK Rig characterises a skeletal mesh into limbs and contact points, an IK Retargeter maps one onto another, and the result is new animation assets on the target. Epic is explicit that there is no shortcut — you cannot use a source character's animation on a target without going through it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/transfer-character-animations-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Transfer Character Animations",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The IK Rig defines the character, while the IK Retargeter defines the mapping for the animation."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/transfer-character-animations-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Transfer Character Animations",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This process creates new animation assets for your target character from the source. You cannot assign animations that are on your source character to your target character without following this process."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "partial",
+      "note": "Worn things exist in two unconnected places. Simulated clothing is real: Chaos Cloth assets are authored in Unreal Engine 5, imported, and worn by a skeletal mesh in the island. Carried things are item components inside inventories. Neither attaches to the player's own Fortnite outfit, and no attachment-point vocabulary is published for anything to survive a move.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/creating-clothing-assets-for-unreal-editor-for-fortnite-using-unreal-engine",
+          "title": "Epic Developer Community: Creating Clothing Assets for UEFN using Unreal Engine",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The Unreal Editor for Fortnite supports Unreal Engine's Chaos Cloth Simulation. This system provides accurate and performant cloth simulation for any real-time experience."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/creating-clothing-assets-for-unreal-editor-for-fortnite-using-unreal-engine",
+          "title": "Epic Developer Community: Creating Clothing Assets for UEFN using Unreal Engine",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "You can then import these assets into UEFN and use them in-game with the Chaos Cloth component."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/custom-items-and-inventory-overview-in-fortnite",
+          "title": "Epic Developer Community: Custom Items and Inventory Overview",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Items are created in Scene Graph by placing an item_component on an entity."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "none",
+      "note": "No reduced avatar representation is offered to a creator. Every level-of-detail control in the documentation is about static and skeletal mesh assets and hierarchical LOD groups of placed actors; a search finds no crowd, imposter or avatar-quality mechanism, and player counts are capped by island settings instead.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/level-of-detail-lod-best-practices-in-fortnite",
+          "title": "Epic Developer Community: Level of Detail (LOD) Best Practices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Level of Detail (LOD) is important for rendering your asset across different platforms."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/streaming-and-hlods-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Streaming and HLODs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "HLODs are generated from the asset's lowest fidelity Level of Detail (LOD)."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "partial",
+      "note": "The avatar is firmly tied to an Epic account, and the account carries state that gates behaviour — a player who declares an age below their country's threshold gets a Cabined Account, and parental controls decide whether they may talk to an AI character at all. What a creator gets is the consequence, not the claim: no account identifier or attribute is published for an island to read.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/cabined-account",
+          "title": "Epic Developer Community: cabined account (Fortnite Glossary)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "If a player indicates they are under 13 or their country’s age of digital consent, whichever is higher, their account will be a Cabined Account."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/llm-conversations-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: LLM Conversations",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "We have a parental control to allow voice and written communication with AI Features across Epic Games products."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "partial",
+      "note": "Rigid bodies work and can be shipped, with the caveat stated in the first paragraph: physics is in beta. Props opt in individually and carry mass, gravity, linear and angular damping and an impulse multiplier. The boundary is sharp and published — Sequencer runs on the server's game thread and cannot interact with the physics thread at all.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/getting-started-with-physics",
+          "title": "Epic Developer Community: Getting Started with Physics",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Physics in UEFN is now in Beta. You can now publish projects with physics, but be advised that the tools are still undergoing frequent updates which may affect your UEFN islands."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/getting-started-with-physics",
+          "title": "Epic Developer Community: Getting Started with Physics",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Mass lets you determine how heavy the prop is. The heavier the prop, the less impact a force will have on it."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/getting-started-with-physics",
+          "title": "Epic Developer Community: Getting Started with Physics",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Sequenced objects run on the server's game thread, which has different properties from the physics thread and does not enact the changes required for physical interaction."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "native",
+      "note": "Collision is authored separately from visible geometry and documented in detail: simple against complex, three K-DOP bounding generators, automatic convex decomposition with hull count and vertex limits, combinations of simple shapes, and a collision LOD that only becomes available once the Nanite fallback is on.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/configuring-collision-for-a-static-mesh-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Configuring Collision for a Static Mesh",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "There are two basic types of collision you can set in Unreal Editor for Fortnite (UEFN), simple and complex."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/configuring-collision-for-a-static-mesh-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Configuring Collision for a Static Mesh",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "These options are called the K-DOP simple collision generators. K-DOP is a type of bounding volume where K is the number of axis-aligned planes and DOP stands for discrete oriented polytope."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "partial",
+      "note": "What is published is not a joint between two bodies but a lock on one. A prop takes rotation and translation constraints that stop it moving along chosen axes, and the page then sends the reader to Unreal Engine's own physical constraint reference rather than documenting hinges or sliders for Fortnite.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/getting-started-with-physics",
+          "title": "Epic Developer Community: Getting Started with Physics",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "You can add Rotation and Translation constraints to your props to prevent them from moving along certain axes. To learn more about constraints, check out the Physical Constraint Reference in the Unreal Engine documentation."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.material",
+      "level": "none",
+      "note": "No surface response model reaches a creator. The physics documentation has no friction, restitution or physical material setting; bounce lives inside named devices — bouncer, pinball bumper, crash pad — and the only tunable is a per-prop impulse multiplier between minus five and five.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/getting-started-with-physics",
+          "title": "Epic Developer Community: Getting Started with Physics",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Impulse on Hit Multiplier lets you multiply the force applied to an object when hit. The default is 1, but it can be set to any value between -5 and 5."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.determinism",
+      "level": "none",
+      "note": "The platform never asks two machines to agree, because only one machine simulates: Verse logic runs on Epic's dedicated server and clients are shown the result. The word deterministic appears in the documentation set only as a glossary definition, with no claim that Fortnite is.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/deterministic",
+          "title": "Epic Developer Community: deterministic (Fortnite Glossary)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A deterministic system is one where the same initial state or input will always produce the same results."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/camera-types-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Camera Types",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Because Verse logic runs on the server, the FieldOfViewDegrees field is specified as a horizontal field of view assuming a 16:9 aspect ratio."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "partial",
+      "note": "Cloth simulates and nothing else does, and the authoring happens outside the platform: the meshes are made in a package such as Marvelous Designer, converted into a Chaos cloth asset in Unreal Engine 5 with two plugins enabled, then imported and driven by a Chaos Cloth component in UEFN.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/creating-clothing-assets-for-unreal-editor-for-fortnite-using-unreal-engine",
+          "title": "Epic Developer Community: Creating Clothing Assets for UEFN using Unreal Engine",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The Unreal Editor for Fortnite supports Unreal Engine's Chaos Cloth Simulation. This system provides accurate and performant cloth simulation for any real-time experience."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/create-your-clothing-asset-in-unreal-engine-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Create your Clothing Asset in Unreal Engine",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Search for then enable the Chaos Cloth Asset and Chaos Cloth Asset Editor plugins."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "native",
+      "note": "Regions that fire events are the oldest idea in Fortnite Creative and the best specified: a trigger device relays a signal, and separate switches decide whether players, damage, items, vehicles, creatures, sequencers, water or carried objects set it off, filtered by team and class.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/using-trigger-devices-in-fortnite-creative",
+          "title": "Epic Developer Community: Trigger Devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When a Trigger device is triggered by a player, vehicle or sequencer, it can send a signal to another device that will initiate a specific action."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/using-trigger-devices-in-fortnite-creative",
+          "title": "Epic Developer Community: Trigger Devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Determines whether to trigger this channel when the player gets within the proximity of the device."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "native",
+      "note": "Sounds are placed and heard by distance. The Audio Player device plays a sound wave or sound cue with attenuation minimum and falloff distances, a linear or logarithmic falloff curve, and a choice of who hears it and from where; sound cues add distance crossfades and a Doppler node; Scene Graph entities take a sound component.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/using-audio-player-devices-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Audio Player Device",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Use the Audio Player device to play audio in your project with your own custom sound waves and sound cues."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/adding-audio-to-your-project-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Adding Audio to Your Project",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A sound cue is an audio asset that runs complex sound design tasks set up inside a node graph."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/attenuation",
+          "title": "Epic Developer Community: attenuation (Fortnite Glossary)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A change in the strength or volume of a sound. Attenuation is usually tied in to proximity of the listener to the source of the sound, or how close the listener is."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "partial",
+      "note": "There is spatialisation and there is no spatialisation model. The only control published is a boolean whose whole description is panning by position relative to the listener; the glossary defines spatialisation and 3D audio in general terms, and no page in the documentation set names head-related transfer functions, binaural rendering or ambisonics.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/using-audio-player-devices-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Audio Player Device",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Enables audio panning based on position relative to the listener."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/spatialization",
+          "title": "Epic Developer Community: spatialization (Fortnite Glossary)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "An audio effect that gives a listener the impression that a sound is coming from a specific direction or location."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/3d-audio",
+          "title": "Epic Developer Community: 3D audio (Fortnite Glossary)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Sounds that are spatialized, or located audibly in three-dimensional or virtual space."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "none",
+      "note": "No space colours a sound. There is no reverb zone, no room model and no submix a creator can reach; the mixer works on volume control buses only, and the one reverb-shaped tool is a Patchwork echo device that sits in a music signal chain before an output device.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/using-audio-mixer-devices-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: The Audio Mixer Device",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Use the Audio Mixer device to adjust the volume for groups of sounds with dynamic and automatic control of a game’s volume mix, much like a professional mixing console would."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/using-patchwork-echo-effect-devices-in-fortnite-creative",
+          "title": "Epic Developer Community: Echo Effect",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The Echo Effect (FX-ECHO) device repeats the incoming audio signal at a specified delay and feedback level. It is an optional part of the signal chain before the audio is sent to an Output device for players to actually hear it."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "none",
+      "note": "Nothing blocks or muffles sound with geometry. The complete list of sound cue nodes available to UEFN creators — concatenator, distance crossfade, delay, Doppler, enveloper, looping, mixer, modulator, oscillator, random and wave player — contains no occlusion or obstruction node, and no device or component option mentions one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/adding-audio-to-your-project-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Adding Audio to Your Project",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Sound cues provide freedom to dynamically change parts of a sound effect design by arranging and modifying sound nodes."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/using-audio-player-devices-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Audio Player Device",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This device plays a sound wave or sound cue asset when activated."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "none",
+      "note": "Audio is an imported asset that is cooked with the island, not a stream. Four formats come in by drag and drop and become sound waves; the documentation's own definition of streaming is a player broadcasting their gameplay to Twitch or YouTube, which is the opposite direction.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/importing-custom-audio-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Importing Custom Audio",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Import audio files into your projects in Unreal Editor for Fortnite (UEFN) by dragging your audio files directly from your computer into the Content Browser."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/streaming",
+          "title": "Epic Developer Community: streaming (Fortnite Glossary)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Broadcasting your gameplay in real time, most commonly via Twitch or YouTube."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "native",
+      "note": "Live voice is a first-class, addressable thing. Verse defines voice channels as groups of agents who can talk to each other, an agent can be in more than one, and a channel carries up to eighty members. Island settings add proximity chat with a volume range and a falloff distance, a compulsory speaker indicator, and the existing reporting, muting and blocking controls.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/chat/voice_channel",
+          "title": "Epic Developer Community: Verse API Reference: voice_channel function",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A voice_channel defines a group of agents who can communicate via voice chat."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/proximity-chat",
+          "title": "Epic Developer Community: Proximity Chat (Fortnite Glossary)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "With Proximity Chat, you can use the Proximity Chat option in Island Settings under Voice Chat to control volume range and the additional distance over which the volume gradually drops to zero."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/voice-chat",
+          "title": "Epic Developer Community: Voice Chat (Fortnite Glossary)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A feature that lets players talk to each other during a game. It can be toggled ON and OFF in the island settings."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "partial",
+      "note": "There is obviously replication and there is no replication model for a creator. The published facts are structural: UEFN runs on a dedicated server, the multiplayer game runs centrally and clients connect to it, and Verse logic runs on the server. Which state is shared, how often, and in what form is nowhere in the documentation set, and a creator has no way to declare it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/server",
+          "title": "Epic Developer Community: server (Fortnite Glossary)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "UEFN is accessed through a dedicated server that connects Fortnite clients for editing and playtesting."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/client",
+          "title": "Epic Developer Community: client (Fortnite Glossary)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A client program, or client, is a software program on a desktop or other device that can access programs and information on a central server."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/camera-types-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Camera Types",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Because Verse logic runs on the server, the FieldOfViewDegrees field is specified as a horizontal field of view assuming a 16:9 aspect ratio."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "native",
+      "note": "Authority is unambiguous and stated: the server decides. Verse runs there, the client renders the answer, and the consequence is visible in odd places — a field of view is authored server-side against a 16:9 assumption and rescaled per client. Failure is server-side too: a Verse runtime error halts all further execution for that device.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/camera-types-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Camera Types",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Because Verse logic runs on the server, the FieldOfViewDegrees field is specified as a horizontal field of view assuming a 16:9 aspect ratio."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/technical-performance-in-fortnite",
+          "title": "Epic Developer Community: Technical Performance",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When a runtime error occurs, all further Verse execution for the current device is halted."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/server",
+          "title": "Epic Developer Community: server (Fortnite Glossary)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "UEFN is accessed through a dedicated server that connects Fortnite clients for editing and playtesting."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "none",
+      "note": "Nothing published lets a creator send one client less than another, and nothing describes the platform doing it. The only radius-shaped control is World Partition streaming, and the documentation is careful that it governs what counts against a player's memory, not what the server transmits.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/streaming-and-hlods-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Streaming and HLODs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Checking Enable Streaming makes only the cells surrounding the player's current position count toward the Current Memory Usage, with a few exceptions."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.prediction",
+      "level": "none",
+      "note": "No prediction, reconciliation or rollback appears anywhere in the creator documentation. Latency is present only as a symptom in the glossary, and the structural reason is the same one that decides the other network rows: creators cannot run logic on the client at all.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/rubberbanding",
+          "title": "Epic Developer Community: rubberbanding (Fortnite Glossary)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The effect of a latency in online gaming where a moving object appears to leap from on place to another instantly."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/camera-types-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Camera Types",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Because Verse logic runs on the server, the FieldOfViewDegrees field is specified as a horizontal field of view assuming a 16:9 aspect ratio."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "none",
+      "note": "The wire protocol carrying session traffic is not published and not reachable. The single network surface a creator touches is outbound and unrelated: a Verse WebAPI client, available to licensed users only, makes an HTTP GET to a backend the licensee has configured, with the derived client identifier acting as the private key to that backend.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/unrealenginedotcom/webapi",
+          "title": "Epic Developer Community: Verse API Reference: WebAPI module",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Licensed users create a derived version of client_id in their module."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/unrealenginedotcom/webapi/client/get",
+          "title": "Epic Developer Community: Verse API Reference: Get function",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Get<public><native>(Path:[]char)<transacts><suspends><no_rollback>:response"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.media",
+      "level": "partial",
+      "note": "Video exists as a fixed menu rather than a pipe. The Video Player device plays one of a handful of Epic-supplied Fortnite music videos, chosen from a dropdown, with a stream priority setting, and only one video stream can play at a time on an island. No creator-supplied video and no live media transport is documented.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/using-video-player-devices-in-fortnite-creative",
+          "title": "Epic Developer Community: Video Player Devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "You can add media to your gameplay with the Video Player device that incorporates Fortnite-themed music videos."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/using-video-player-devices-in-fortnite-creative",
+          "title": "Epic Developer Community: Video Player Devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Though multiple instances of the same video can be shown, only one video stream can play at a time."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "native",
+      "note": "Joining is a configured queue, not a connection. Island settings set maximum players up to a hundred, team count and size, matchmaking privacy as public, private or the party's choice, a minimum player count, an overtime target and the durations of the main and overtime queue phases — with the queue cancelled if the minimum is never reached.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/island-settings-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Island Settings in UEFN",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Island Settings provides a way to control factors as varied as how many players can play at the same time to the time of day on your island."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/island-settings-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Island Settings in UEFN",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Public games can be joined by anyone. Private games are restricted to groups of players in the same party. Party Choice gives the player the option of choosing either public or private."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "partial",
+      "note": "Leaving one world for another is a shipped device and carrying state across is not. A matchmaking portal warps players to another island by island code, and creators may let players type a different code, with a cooldown and a choice of whether the new code sticks. What arrives on the other side is a fresh session; nothing in the documentation carries state through the portal.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/using-matchmaking-portal-devices-in-fortnite-creative",
+          "title": "Epic Developer Community: Matchmaking Portal Devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "You can use the Matchmaking Portal to create a portal that warps players from one island to another."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/using-matchmaking-portal-devices-in-fortnite-creative",
+          "title": "Epic Developer Community: Matchmaking Portal Devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This is the island code the portal will point to. The text field is limited to 50 characters."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "partial",
+      "note": "The one presence signal is the Epic party, and it is deliberately narrow. GetLocalParty returns the group a player formed across Fortnite, the launcher and Epic's mobile apps — not a team and not a matchmaking group — but it holds only the members present in the current session, and the rest of a player's party is invisible. There is no presence across operators.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/partybased-gameplay-using-the-social-synergy-api-in-fortnite",
+          "title": "Epic Developer Community: Party-Based Gameplay Using the Social Synergy API",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A party is the group a player formed in the Epic ecosystem (Fortnite, Epic Games Launcher, and Epic Games mobile apps). It is not a team, and it is not a group produced by matchmaking."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/partybased-gameplay-using-the-social-synergy-api-in-fortnite",
+          "title": "Epic Developer Community: Party-Based Gameplay Using the Social Synergy API",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The group holds only the party members who are present in the current session. A player's party can extend beyond your island, and those members are outside the group."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "native",
+      "note": "The island code is the name and it resolves everywhere inside Fortnite, including for islands the recommendation system has stopped promoting: an unlisted release still has a code, and an underperforming island stays reachable by code, library, favourites and profile pages. The namespace is Epic's and resolution happens only in the Fortnite client.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/publishing-page-features-in-fortnite-creative",
+          "title": "Epic Developer Community: Project Publishing Page",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Unlisted: This means your project has successfully passed moderation, and it has an island code, but is not available in Discover."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/how-discover-works-in-fortnite",
+          "title": "Epic Developer Community: How Discover Works",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Islands that underperform receive reduced algorithmic distribution but remain fully searchable and accessible via direct island code, Library, Favorites, and Profile Pages — and continue to be re-evaluated."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "native",
+      "note": "Discovery is a documented, measured system rather than a directory. New islands get a testing window of up to two weeks, engagement is the primary ranking signal, metadata too similar to an existing island is demoted, automated scoring is backed by human review, and a public metrics interface returns plays, minutes, peak concurrency and retention for any public island without authentication.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/how-discover-works-in-fortnite",
+          "title": "Epic Developer Community: How Discover Works",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When you publish a new island, Discover tests your content for up to 2 weeks."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/how-discover-works-in-fortnite",
+          "title": "Epic Developer Community: How Discover Works",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Engagement drives distribution. The way players engage with your island is the primary signal we use to decide where it appears."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/using-fortnite-data-api-in-fortnite",
+          "title": "Epic Developer Community: Fortnite Data API Overview",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The Data API is publicly accessible and doesn't require authentication."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "native",
+      "note": "Verse gives two clocks and defines both. A wall clock returns Unix time and is guaranteed stable within a transaction, which is what makes it usable in a language that can roll work back; a simulation clock returns seconds since the world began simulating. Both are server-side, so every participant reads the same value.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/getsecondssinceepoch",
+          "title": "Epic Developer Community: Verse API Reference: GetSecondsSinceEpoch function",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Returns the number of seconds since January 1, 1970 UTC, ignoring leap seconds. I.e, this function implements Unix time. This function always returns the same value within the same transaction."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/simulation/getsimulationelapsedtime",
+          "title": "Epic Developer Community: Verse API Reference: GetSimulationElapsedTime function",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Get the seconds that have elapsed since the world began simulating"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "partial",
+      "note": "The root identifier is the Epic account and the platform's own machinery hangs off it — team invitations go to an Epic account name, age state and parental consent are account properties. What a creator gets is thinner: a player value that lasts a session, and per-player persistent storage scoped to their island and module. No stable account identifier is published for an island to read.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/creating-teams-in-creator-portal-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Creating Teams in Creator Portal",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Add team members using their personal Epic Account name and assign a role."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/using-persistable-data-in-verse",
+          "title": "Epic Developer Community: Using Persistable Data in Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Use persistable data in your Verse scripts to store information that is saved on a per-player, per-module basis."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/cabined-account",
+          "title": "Epic Developer Community: cabined account (Fortnite Glossary)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "If a player indicates they are under 13 or their country’s age of digital consent, whichever is higher, their account will be a Cabined Account."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "none",
+      "note": "No verifiable claim format of any kind appears in the Fortnite documentation. The nearest thing is a fact Epic holds about an account and acts on itself — the cabined state of an under-age account — which is a policy flag inside one company's system, not a claim a second party could verify.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/cabined-account",
+          "title": "Epic Developer Community: cabined account (Fortnite Glossary)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "If a player indicates they are under 13 or their country’s age of digital consent, whichever is higher, their account will be a Cabined Account."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "none",
+      "note": "There is no protocol for requesting or presenting a claim. The only documented way an island reaches an outside party at all is a Verse WebAPI client making an HTTP GET to the licensee's own backend, keyed by a private client identifier — a private integration, not a credential exchange.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/unrealenginedotcom/webapi",
+          "title": "Epic Developer Community: Verse API Reference: WebAPI module",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Licensed users create a derived version of client_id in their module."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "partial",
+      "note": "Three permission systems, all readable only inside Epic. Creator Portal team roles decide who may publish, edit metadata and see monetisation; a per-island permission decides who may edit it in Create mode; and entitlements in Verse grant a player what they bought, with immutable name, description and icon. None is legible to a party that did not issue it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/creating-teams-in-creator-portal-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Creating Teams in Creator Portal",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Not all team members will be able to publish or edit islands. Only Owners, Administrators, and Publishers can publish and edit metadata for projects, Collaborators cannot."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/permissions-settings-in-fortnite-creative",
+          "title": "Epic Developer Community: Permissions Setting",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When set to Private (the default option), only you (the owner of the island) has permission to alter the island."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/in-island-transactions-overview-in-fortnite",
+          "title": "Epic Developer Community: In-Island Transactions Overview",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "An entitlement has statically defined and immutable attributes such as Name, description, and icon."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "none",
+      "note": "Selective disclosure does not arise, because the player discloses nothing to the island. Attributes stay with Epic and are enforced by Epic — parental controls decide whether a player may talk to an AI character, and a cabined account waits for consent before certain features unlock. The creator sees the outcome, never the attribute.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/llm-conversations-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: LLM Conversations",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "We have a parental control to allow voice and written communication with AI Features across Epic Games products."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/cabined-account",
+          "title": "Epic Developer Community: cabined account (Fortnite Glossary)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "If a player indicates they are under 13 or their country’s age of digital consent, whichever is higher, their account will be a Cabined Account."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.social",
+      "level": "partial",
+      "note": "One relationship is portable into gameplay and only one: two players in the same Epic party receive the same group object, so comparing them answers whether they came together. That is genuinely useful and genuinely bounded — it stops at the session, it says nothing about friendship or standing, and no other social graph is exposed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/partybased-gameplay-using-the-social-synergy-api-in-fortnite",
+          "title": "Epic Developer Community: Party-Based Gameplay Using the Social Synergy API",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Two players in the same party receive the same group object, so comparing two results tells you whether the players are in the same party."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/partybased-gameplay-using-the-social-synergy-api-in-fortnite",
+          "title": "Epic Developer Community: Party-Based Gameplay Using the Social Synergy API",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The group holds only the party members who are present in the current session. A player's party can extend beyond your island, and those members are outside the group."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "partial",
+      "note": "Rights are enforced, by Epic, before the content runs rather than at the point of use. Every release passes moderation; metadata too close to an existing island is shown less often, with first publication deciding who owns a title or thumbnail; and what a player buys cannot be resold or traded. Terms attached to a work by its author are not enforced anywhere.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/how-discover-works-in-fortnite",
+          "title": "Epic Developer Community: How Discover Works",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Islands, including their metadata, that are highly similar to an existing experience, whether published by you or by another developer, are shown less frequently in Discover."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/in-island-transactions-overview-in-fortnite",
+          "title": "Epic Developer Community: In-Island Transactions Overview",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Players redeem V-Bucks for digital content. Reselling and trading content purchased with V-Bucks is not supported."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/publishing-projects-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Publishing Projects",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Submit your project for moderation."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "out-of-scope",
+      "note": "Fortnite islands have no relationship to the Earth. There is one Cartesian frame per island, expressed in centimetres from the island's own origin, and a full-text search of the documentation set returns no page about latitude, longitude or altitude. The platform is also not an augmented-reality client: the whole published sensing surface is gamepad, keyboard, mouse and touch.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/leftupforward-coordinate-system-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Left-Up-Forward Coordinate System",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "All major 3D content creation tools use a Cartesian coordinate system (X, Y, and Z) to position and rotate objects."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/player-input-device-info-in-fortnite",
+          "title": "Epic Developer Community: Player Input Device Info",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The available_input_devices struct describes the hardware input capabilities available to a player. Each field is a logic value indicating whether that capability is present."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "out-of-scope",
+      "note": "There is no Earth reference frame to agree on. The only frame question Fortnite has is internal and it is documented: /Verse.org module transforms are right-handed Left-Up-Forward, /UnrealEngine.com and /Fortnite.com module transforms are left-handed XYZ, both anchored to the island's own origin.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/leftupforward-coordinate-system-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Left-Up-Forward Coordinate System",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "As of 36.00, UEFN uses the LUF coordinate system for the editor and all /Verse.org module transforms. /UnrealEngine.com and /Fortnite.com module transforms use the XYZ coordinate system."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "out-of-scope",
+      "note": "Fixing content to a real place is not something Fortnite does. The published input hardware a player can have is a gamepad, a keyboard, a mouse or a touch screen; no camera, depth sensor or tracking pose reaches a creator, and no page in the documentation set mentions anchors, planes or passthrough.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/player-input-device-info-in-fortnite",
+          "title": "Epic Developer Community: Player Input Device Info",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The available_input_devices struct describes the hardware input capabilities available to a player. Each field is a logic value indicating whether that capability is present."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "out-of-scope",
+      "note": "The same reason as local anchors, one step further out: with no world sensing and no real-world frame there is nothing to share or persist. Places in Fortnite are islands, addressed by island code, not by position on the Earth.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/player-input-device-info-in-fortnite",
+          "title": "Epic Developer Community: Player Input Device Info",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The available_input_devices struct describes the hardware input capabilities available to a player. Each field is a logic value indicating whether that capability is present."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/publishing-page-features-in-fortnite-creative",
+          "title": "Epic Developer Community: Project Publishing Page",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Unlisted: This means your project has successfully passed moderation, and it has an island code, but is not available in Discover."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.vps",
+      "level": "out-of-scope",
+      "note": "No visual positioning. Camera imagery never reaches a creator: the input capability struct a Verse program can read lists a gamepad, a keyboard, a mouse and touch, and nothing else.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/player-input-device-info-in-fortnite",
+          "title": "Epic Developer Community: Player Input Device Info",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The available_input_devices struct describes the hardware input capabilities available to a player. Each field is a logic value indicating whether that capability is present."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "out-of-scope",
+      "note": "Streaming exists and it is not geospatial. World Partition divides an island into a grid and loads cells around a streaming source; the grid is the island's own, indexed from its origin, with no terrain or city data referenced to ground position.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/streaming-and-hlods-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Streaming and HLODs",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "World Partition uses Streaming to load grid cells around a player, or streaming source, in and out of memory."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.indoor",
+      "level": "out-of-scope",
+      "note": "There is no structured description of an interior. A building on an island is meshes with simple or complex collision and navigation laid over the walkable parts for NPCs; no room, floor or opening is named as data.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/configuring-collision-for-a-static-mesh-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Configuring Collision for a Static Mesh",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Collision is what prevents objects in your world from intersecting. Without collision, the player would be able to walk through the mesh."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "out-of-scope",
+      "note": "There is no immersive session to start or end. Fortnite runs on PCs, consoles, mobile devices and cloud services as a flat-screen game, and the lifecycle a creator manages is a match — a queue, a round and a game phase — not a device session.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/player-input-device-info-in-fortnite",
+          "title": "Epic Developer Community: Player Input Device Info",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Many devices support multiple input types at the same time. For example, a Nintendo Switch supports both gamepad and touch simultaneously."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/island-settings-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Island Settings in UEFN",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Island Settings provides a way to control factors as varied as how many players can play at the same time to the time of day on your island."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "native",
+      "note": "Input is a proper API rather than a fixed set of events. A player_input class carries input actions, which produce logic values for buttons and float values for analog triggers, grouped into input mappings that must be added to a player before their actions fire — so a creator turns whole control contexts on and off as gameplay changes. A cross-platform virtual pointer adds pointing, swipes and pinches on touch, mouse and stick.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/player-input-in-verse-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Player Input",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The /Verse.org/Input module provides a player_input class that serves as the main interface between your Verse code and a player's physical inputs."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/player-input-in-verse-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Player Input",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Input mappings must be added to a player before their input actions will produce events. Without the mapping active, subscriptions to its actions will not fire."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/virtual-pointer-in-fortnite",
+          "title": "Epic Developer Community: Virtual Pointer",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The Virtual Pointer lets players interact with on-screen elements in a way that works on all supported input devices."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "none",
+      "note": "No articulated hand pose exists. The struct that reports what a player's hardware can do has exactly four fields — gamepad, keyboard, mouse and touch — and touch is finger contact driving a pointer, not a tracked hand.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/player-input-device-info-in-fortnite",
+          "title": "Epic Developer Community: Player Input Device Info",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The available_input_devices struct describes the hardware input capabilities available to a player. Each field is a logic value indicating whether that capability is present."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/virtual-pointer-in-fortnite",
+          "title": "Epic Developer Community: Virtual Pointer",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "On touch, this is driven by finger contact."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.eye",
+      "level": "none",
+      "note": "No gaze input, and no privacy question to answer because no eye data exists. The published hardware capability list is gamepad, keyboard, mouse and touch.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/player-input-device-info-in-fortnite",
+          "title": "Epic Developer Community: Player Input Device Info",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The available_input_devices struct describes the hardware input capabilities available to a player. Each field is a logic value indicating whether that capability is present."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "none",
+      "note": "Haptics is defined in the glossary as a thing games do, and nothing in the documentation lets a creator do it: no device option, no island setting and no Verse call sends touch feedback to a player. Touch-side output is visual instead — creators reposition, restyle or hide the on-screen touch controls through a HUD controller device.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/haptics",
+          "title": "Epic Developer Community: haptics (Fortnite Glossary)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Haptics is a technology used to enhance a game experience by adding a tactile sensation — usually vibrations — in sync with an event in the game."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/developer-customizable-touchscreen-controls-in-fortnite",
+          "title": "Epic Developer Community: Developer Customizable Touchscreen Controls",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The default touchscreen control set — actions such as Jump, Shoot, Reload, Aim, Crouch, and Sprint — can be repositioned anywhere on the HUD."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "native",
+      "note": "A creator can genuinely ask what the player is on, and the API separates the two questions that matter: what hardware is active, as four independent flags, and which of them the player is actually using, resolved to a single value so a branch can pick a touch, gamepad or keyboard interface. Epic's own example is a Switch, which reports gamepad and touch at once.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/player-input-device-info-in-fortnite",
+          "title": "Epic Developer Community: Player Input Device Info",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Reports the full set of active input hardware through AvailableInputDevices."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/player-input-device-info-in-fortnite",
+          "title": "Epic Developer Community: Player Input Device Info",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Identifies a player's preferred input category through PreferredInputMethod."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/player-input-device-info-in-fortnite",
+          "title": "Epic Developer Community: Player Input Device Info",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The available_input_devices struct describes the hardware input capabilities available to a player. Each field is a logic value indicating whether that capability is present."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "native",
+      "note": "Verse is the rules language and it is unusually well specified for a platform language: statically checked, with effects such as transacts and suspends written into every signature, a language reference kept as a public GitHub repository that accepts pull requests, an editor-integrated toolchain, and a runtime error dashboard in the Creator Portal for what static checking cannot catch.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse",
+          "title": "Epic Developer Community: Verse (Fortnite Glossary)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Verse is a statically-checked programming language with an emphasis on gameplay programming."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-language-book-of-verse-reference",
+          "title": "Epic Developer Community: Verse Language Reference: Book of Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The reference is hosted as a public GitHub repository available for all to read and request changes or updates from in the form of pull requests."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/technical-performance-in-fortnite",
+          "title": "Epic Developer Community: Technical Performance",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The Verse compiler currently cannot detect conditions in Verse code that would produce errors at runtime, such as integer overflows or infinite recursion."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "native",
+      "note": "Interactivity travels with content twice over. A Verse component saved into a prefab is part of that prefab, so every instance placed anywhere in the project — or in another project — carries the behaviour. Verse tags are the loose-coupling half: a class-derived tag marks devices and entities, and code finds all of them at run time without wiring references by hand. None of this leaves Fortnite.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/prefabs-and-prefab-instances-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Prefabs and Prefab Instances",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "From the Prefab Editor, add a new component or create a Verse component to add functionality like movement or intractability to the prefab."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-tags-in-fortnite",
+          "title": "Epic Developer Community: Verse Tags",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "With Verse tags, you can find objects (both Creative devices and entities) marked with a specific tag while the game is running."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/scene-graph-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Scene Graph",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "You can even turn the objects you create into reusable prefabs, and use them across different projects."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "partial",
+      "note": "Two boundaries, and only the runtime one is a sandbox. At run time creator code is confined to the server and a runtime error stops that device's execution rather than the island's. At author time there is no sandbox at all, and Epic says so bluntly: a downloaded UEFN project can run scripts that reach your computer's data, and the advice is to open only projects from people you trust.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/technical-performance-in-fortnite",
+          "title": "Epic Developer Community: Technical Performance",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When a runtime error occurs, all further Verse execution for the current device is halted."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/project-and-asset-security-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Project and Asset Security",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "UEFN projects can contain scripts that execute code and access data on your computer in ways that you may not be aware of and may not be comfortable with."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "native",
+      "note": "This is the strongest agent story on the map and it is shipping. Rule-based NPCs have published state machines, perception and hire-and-patrol behaviours, and creators can write their own behaviour in Verse. Above them sit personas: a Scene Graph persona component puts a large language model into a character that players talk to by voice, with Epic naming the models it uses and stating that player audio is not stored or used for training.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/developing-personas-overview-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Developing Personas",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The Scene Graph persona_component and the Persona Modifier in UEFN together provides an LLM that players can interface with in your island through a voice chat."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/llm-conversations-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: LLM Conversations",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "We use Google’s Gemini 3.1 Flash-Lite models to process audio inputs and generate text responses. ElevenLabs’ Eleven v3 is used to convert these into voiced outputs."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/understanding-npc-behavior-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Understanding NPC Behaviors",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A common way to visualize states is through a Finite-State Machine (FSM)."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "native",
+      "note": "The budget is a gate, not advice. Memory is computed from cooked data against a bar of 100,000 units per streaming cell, and an island that exceeds it anywhere cannot be published; a creator may keep working over the limit but cannot ship. A separate validator bounds asset types, texture sizes and property edits, and runs again on Epic's servers after upload.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/memory-management-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Memory Management",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Note that if any area in your level exceeds 100,000, you will not be able to publish your island."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/memory-management-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Memory Management",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The bar shows a maximum of 100,000 memory units to give you a picture of the memory usage on your island."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/validation-and-fixup-tool-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Validation and Fix-Up Tool",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When you have objects with properties that don't meet UEFN’s conditions, your project won't process properly."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "partial",
+      "note": "Nothing about the world survives; what survives is the player. Verse persistence is a module-scoped weak map keyed by player, saved per player and per module, loaded when they join, with a size limit and a hard rule that a failed load keeps the player out rather than risk overwriting their data. A second weak map keyed by session holds shared state that is deliberately thrown away between rounds.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/using-persistable-data-in-verse",
+          "title": "Epic Developer Community: Using Persistable Data in Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Use persistable data in your Verse scripts to store information that is saved on a per-player, per-module basis."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/using-persistable-data-in-verse",
+          "title": "Epic Developer Community: Using Persistable Data in Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "If the player has persistable data for an island and the data load fails, the player will not be able to join the island."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/using-persistable-data-in-verse",
+          "title": "Epic Developer Community: Using Persistable Data in Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Data is only stored during the current session and does not persist across subsequent rounds."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "native",
+      "note": "Inventories are a proper system, and closed. An inventory component knows every item inside it, governs what may enter or leave, decides merging, and owns the item entities it holds; inventories nest, so an item added to a player's root can find its way down to the right sub-inventory. Items are bought with V-Bucks as entitlements, and Epic states that purchased content cannot be resold or traded.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/custom-items-and-inventory-overview-in-fortnite",
+          "title": "Epic Developer Community: Custom Items and Inventory Overview",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Inventories are containers for items and control what happens to those items."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/custom-items-and-inventory-overview-in-fortnite",
+          "title": "Epic Developer Community: Custom Items and Inventory Overview",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Since an item may only exist inside one inventory at a time, inventories also determine the ownership of item entities."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/in-island-transactions-overview-in-fortnite",
+          "title": "Epic Developer Community: In-Island Transactions Overview",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Players redeem V-Bucks for digital content. Reselling and trading content purchased with V-Bucks is not supported."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "none",
+      "note": "No island can read a player's settings or accessibility choices; a search of the documentation set finds no interface for them. The one thing that genuinely follows a player between islands is their Locker, and even that is opened by the player through a device rather than read by the island.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/using-changing-booth-devices-in-fortnite-creative",
+          "title": "Epic Developer Community: Changing Booth Devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The Changing Booth device lets players access their Locker while a game is in progress."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "none",
+      "note": "Content is named, not hashed. Exposing an asset to Verse turns its file name into a compiler symbol and its folder into a module, so a mesh is Meshes.MySphere and a Fab purchase is reached through a Verse path in a global namespace. Nothing in the documentation refers to content by a digest of its bytes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/exposing-assets-with-asset-reflection-to-verse-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Exposing Assets with Asset Reflection to Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When you expose an asset to Verse, the name of the asset becomes the identifier, a compiler symbol, that you can then use in your Verse code, and you can access your asset from its Verse Path."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/exposing-assets-with-asset-reflection-to-verse-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Exposing Assets with Asset Reflection to Verse",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When you place your assets in subfolders in the project Content folder, the subfolder name becomes the name of the Verse module."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "partial",
+      "note": "There is a package and the creator never holds it. Launching a session cooks every asset in the project; a memory calculation produces a private version code that identifies that upload; the project is then processed, validated and run on Epic's servers. Two Epic container types do move — .island and .upack import into a project — but a runnable experience is not a file anyone can take away.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/publishing-projects-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Publishing Projects",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "From the Level Editor Toolbar, click Launch a Session. Once the game begins, select the editor window again and click End Game. This cooks all your project’s assets and provides a way to calculate your project’s total memory usage."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/validation-and-fixup-tool-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Validation and Fix-Up Tool",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "UEFN projects are processed, validated, and run on Epic’s servers."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "partial",
+      "note": "Delivery is entirely Epic's and the creator's only lever is size. The project size tool reports what was last uploaded, what the current session would upload, and a projected download size padded for the way different consoles render the island — so download cost is visible and controllable, while the mechanism that gets the island to a player is not described at all.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/project-size-tool-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Project Size Tool",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Download Size - The projected size of the island. This statistic is padded to account for the way different consoles render the island."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/project-size-tool-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Project Size Tool",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "To see a project’s size, the island first has to cook to calculate how the assets in your project contribute to memory usage."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "native",
+      "note": "Versioning is first-class and visible. A project's publishing page separates releases, playtests and private versions; a release is listed, unlisted or unpublished; an island code carries one published release at a time while earlier ones stay on record; and a UEFN project converted from a Creative island can be reverted to Creative at any point from the Creator Portal.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/publishing-page-features-in-fortnite-creative",
+          "title": "Epic Developer Community: Project Publishing Page",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The project's Publishing page has three tabs: Releases, Playtests, and Private Versions."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/publishing-page-features-in-fortnite-creative",
+          "title": "Epic Developer Community: Project Publishing Page",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When a release is created, it can be in one of three states: Listed, Unlisted, and Unpublished."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/importing-fortnite-islands-into-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Importing Fortnite Islands",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "You can revert your project back to a Fortnite island at any point through the Creator Portal."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "partial",
+      "note": "There is real, enforced testing and it proves conformance to Epic, not to a specification. Validation runs twice — in the editor before upload and again on Epic's servers — and blocks both playtesting and publishing when it fails, checking allowed asset types, texture budgets, property edits and references against the published, stable Fortnite API. The checks change as UEFN changes, and there is one implementation, so no second party has anything to match.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/validation-and-fixup-tool-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Validation and Fix-Up Tool",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A validation check is run on your project before it’s uploaded, and again once it's on Epic’s servers, to check that everything in your project is configured correctly before it is processed."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/validation-and-fixup-tool-in-unreal-editor-for-fortnite",
+          "title": "Epic Developer Community: Validation and Fix-Up Tool",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "These validation checks change over time as UEFN changes."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "Fortnite Creative and the editor above it are a hosted platform where content is imported, validated and published to islands, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/importing-assets-in-unreal-editor-for-fortnite",
+          "title": "Importing Assets in Unreal Editor for Fortnite, Epic Developer Community",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "UEFN allows you to import many different file types for different types of assets. While UEFN and Fortnite Creative do not yet support all file formats, this will change over time."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "Fortnite Creative and the editor above it are a hosted platform where content is imported, validated and published to islands, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/importing-assets-in-unreal-editor-for-fortnite",
+          "title": "Importing Assets in Unreal Editor for Fortnite, Epic Developer Community",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "UEFN allows you to import many different file types for different types of assets. While UEFN and Fortnite Creative do not yet support all file formats, this will change over time."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "Fortnite Creative and the editor above it are a hosted platform where content is imported, validated and published to islands, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/importing-assets-in-unreal-editor-for-fortnite",
+          "title": "Importing Assets in Unreal Editor for Fortnite, Epic Developer Community",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "UEFN allows you to import many different file types for different types of assets. While UEFN and Fortnite Creative do not yet support all file formats, this will change over time."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "none",
+      "note": "A title search of the whole documentation table of contents and a full-text search return no hit for splat, Gaussian splatting or radiance field, and the importable list is the ordinary mesh formats. Notable because the same company's engine is the one this platform is built on.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/importing-assets-in-unreal-editor-for-fortnite",
+          "title": "Importing Assets in Unreal Editor for Fortnite, Epic Developer Community",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "UEFN allows you to import many different file types for different types of assets. While UEFN and Fortnite Creative do not yet support all file formats, this will change over time."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "out-of-scope",
+      "note": "Streaming exists here and it is not this row. World Partition loads grid cells of an authored island around a player; there is no captured scene, so there is nothing to deliver by region and detail.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/streaming-and-hlods-in-unreal-editor-for-fortnite",
+          "title": "Streaming and HLODs in Unreal Editor for Fortnite, Epic Developer Community",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "World Partition uses Streaming to load grid cells around a player, or streaming source, in and out of memory."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "Fortnite Creative and the editor above it are a hosted platform where content is imported, validated and published to islands, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/importing-assets-in-unreal-editor-for-fortnite",
+          "title": "Importing Assets in Unreal Editor for Fortnite, Epic Developer Community",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "UEFN allows you to import many different file types for different types of assets. While UEFN and Fortnite Creative do not yet support all file formats, this will change over time."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "none",
+      "note": "No point clouds, no voxels and no volumetric video. The importable formats carry meshes and textures, and the volumetric-looking tool is a particle system.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/importing-assets-in-unreal-editor-for-fortnite",
+          "title": "Importing Assets in Unreal Editor for Fortnite, Epic Developer Community",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "UEFN allows you to import many different file types for different types of assets. While UEFN and Fortnite Creative do not yet support all file formats, this will change over time."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "Fortnite Creative and the editor above it are a hosted platform where content is imported, validated and published to islands, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/importing-assets-in-unreal-editor-for-fortnite",
+          "title": "Importing Assets in Unreal Editor for Fortnite, Epic Developer Community",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "UEFN allows you to import many different file types for different types of assets. While UEFN and Fortnite Creative do not yet support all file formats, this will change over time."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "out-of-scope",
+      "note": "Fortnite Creative and the editor above it are a hosted platform where content is imported, validated and published to islands, and it produces no image from a viewing position that no capture camera occupied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/importing-assets-in-unreal-editor-for-fortnite",
+          "title": "Importing Assets in Unreal Editor for Fortnite, Epic Developer Community",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "UEFN allows you to import many different file types for different types of assets. While UEFN and Fortnite Creative do not yet support all file formats, this will change over time."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "Fortnite Creative and the editor above it are a hosted platform where content is imported, validated and published to islands, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/importing-assets-in-unreal-editor-for-fortnite",
+          "title": "Importing Assets in Unreal Editor for Fortnite, Epic Developer Community",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "UEFN allows you to import many different file types for different types of assets. While UEFN and Fortnite Creative do not yet support all file formats, this will change over time."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "Fortnite Creative and the editor above it are a hosted platform where content is imported, validated and published to islands, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/importing-assets-in-unreal-editor-for-fortnite",
+          "title": "Importing Assets in Unreal Editor for Fortnite, Epic Developer Community",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "UEFN allows you to import many different file types for different types of assets. While UEFN and Fortnite Creative do not yet support all file formats, this will change over time."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "Fortnite Creative and the editor above it are a hosted platform where content is imported, validated and published to islands, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/importing-assets-in-unreal-editor-for-fortnite",
+          "title": "Importing Assets in Unreal Editor for Fortnite, Epic Developer Community",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "UEFN allows you to import many different file types for different types of assets. While UEFN and Fortnite Creative do not yet support all file formats, this will change over time."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "Fortnite Creative and the editor above it are a hosted platform where content is imported, validated and published to islands, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/importing-assets-in-unreal-editor-for-fortnite",
+          "title": "Importing Assets in Unreal Editor for Fortnite, Epic Developer Community",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "UEFN allows you to import many different file types for different types of assets. While UEFN and Fortnite Creative do not yet support all file formats, this will change over time."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "Fortnite Creative and the editor above it are a hosted platform where content is imported, validated and published to islands, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/importing-assets-in-unreal-editor-for-fortnite",
+          "title": "Importing Assets in Unreal Editor for Fortnite, Epic Developer Community",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "UEFN allows you to import many different file types for different types of assets. While UEFN and Fortnite Creative do not yet support all file formats, this will change over time."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "Fortnite Creative and the editor above it are a hosted platform where content is imported, validated and published to islands, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/importing-assets-in-unreal-editor-for-fortnite",
+          "title": "Importing Assets in Unreal Editor for Fortnite, Epic Developer Community",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "UEFN allows you to import many different file types for different types of assets. While UEFN and Fortnite Creative do not yet support all file formats, this will change over time."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "Fortnite Creative and the editor above it are a hosted platform where content is imported, validated and published to islands, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/importing-assets-in-unreal-editor-for-fortnite",
+          "title": "Importing Assets in Unreal Editor for Fortnite, Epic Developer Community",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "UEFN allows you to import many different file types for different types of assets. While UEFN and Fortnite Creative do not yet support all file formats, this will change over time."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "out-of-scope",
+      "note": "Fortnite Creative and the editor above it are a hosted platform where content is imported, validated and published to islands, and it carries no full 360-degree view of a place as an image with its projection stated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/importing-assets-in-unreal-editor-for-fortnite",
+          "title": "Importing Assets in Unreal Editor for Fortnite, Epic Developer Community",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "UEFN allows you to import many different file types for different types of assets. While UEFN and Fortnite Creative do not yet support all file formats, this will change over time."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "out-of-scope",
+      "note": "Islands are authored in the editor and run on Epic's servers. The player's device reports which input hardware it has, not what its cameras see, so no reconstruction of a real room exists in this model.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/player-input-device-info-in-fortnite",
+          "title": "Epic Developer Community: Player Input Device Info",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The available_input_devices struct describes the hardware input capabilities available to a player. Each field is a logic value indicating whether that capability is present."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "Nothing names a real surface for island logic. Classification here applies to devices, props and players the creator placed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/player-input-device-info-in-fortnite",
+          "title": "Epic Developer Community: Player Input Device Info",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The available_input_devices struct describes the hardware input capabilities available to a player. Each field is a logic value indicating whether that capability is present."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "out-of-scope",
+      "note": "There is no real-world depth input. The device capability struct an island can read enumerates controllers and touch, not cameras or depth sensors.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/player-input-device-info-in-fortnite",
+          "title": "Epic Developer Community: Player Input Device Info",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The available_input_devices struct describes the hardware input capabilities available to a player. Each field is a logic value indicating whether that capability is present."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "Islands draw as fully virtual scenes on every platform they ship to; there is no passthrough view for content to be occluded by.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/player-input-device-info-in-fortnite",
+          "title": "Epic Developer Community: Player Input Device Info",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The available_input_devices struct describes the hardware input capabilities available to a player. Each field is a logic value indicating whether that capability is present."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "out-of-scope",
+      "note": "Fortnite is played on a screen or in virtual reality against a wholly virtual island. No camera view of the player's room enters the picture, so there is no blend to control.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.face",
+      "level": "none",
+      "note": "Faces are animated from data prepared beforehand, not read live: MetaHuman animation is baked onto a control rig in the editor and imported as an asset. No stream of the player's own face or body reaches an island's code, and none is offered.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/importing-metahuman-animations-in-unreal-editor-for-fortnite",
+          "title": "Importing MetaHuman Animations in Unreal Editor for Fortnite",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Right-click on the Face track and select Bake to Control Rig > Face_ControlBoard_CtrlRig. This bakes the MetaHuman animation to the UE Control Rig."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "partial",
+      "note": "The walkable surface is carried with the island and used continuously: characters make their route choices from the world's navigation mesh and update them as the world changes around them, and arrival is a placed device — a spawner that puts a character into the world. It is built for the island's own characters inside Epic's format; nothing is declared for a visitor arriving from elsewhere and none of it travels.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/understanding-npc-behavior-in-unreal-editor-for-fortnite",
+          "title": "Understanding NPC Behavior in Unreal Editor for Fortnite",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "NPCs make these decisions based on the world's navigation mesh . NPCs use the navigation mesh to make pathfinding decisions and update their choices as the world updates around them."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/understanding-npc-behavior-in-unreal-editor-for-fortnite",
+          "title": "Understanding NPC Behavior in Unreal Editor for Fortnite",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The NPC Spawner Device facilitates a lot of NPC and AI interactions."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "native",
+      "note": "Islands are written in Verse, and Verse's permanent path system is what names their code: a creator defines classes and modules in the editor and they live under a path whose domain part says who owns it. The permanence and the no-second-claimant guarantee are the language's, operated by Epic for its own platform, so it is a real namespace with exactly one owner.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/programming-with-verse-in-unreal-editor-for-fortnite",
+          "title": "Programming with Verse in Unreal Editor for Fortnite",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Create an empty Verse file by selecting Create Empty in Verse Explorer and define your own classes, modules, anything you can think of!"
+        },
+        {
+          "url": "https://verselang.github.io/book/16_modules/",
+          "title": "Book of Verse: Modules and Paths",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Persistent and unique identification : Once a module is published at a particular path, that path belongs to it forever."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "native",
+      "note": "Nothing reaches players without passing Epic: publishing a project means submitting it for moderation, an island that passes gets a code, and what happens afterwards is shaped by Epic too — islands too similar to an existing experience are shown less often in Discover. The review is thorough and entirely Epic's; no record of it travels with content to another system.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/publishing-projects-in-unreal-editor-for-fortnite",
+          "title": "Publishing Projects in Unreal Editor for Fortnite",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Submit your project for moderation."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/how-discover-works-in-fortnite",
+          "title": "How Discover Works in Fortnite",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Islands, including their metadata, that are highly similar to an existing experience, whether published by you or by another developer, are shown less frequently in Discover."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "Islands are virtual places with no relation to a map of the real world.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "An island is not a service bound to a region of the Earth and declares no such area.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.color",
+      "level": "partial",
+      "note": "Verse colors declare linear ACES 2065-1 values and conversion to and from sRGB; this module does not establish every image and output surface's range.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/fortnite/verse-api/versedotorg/colors",
+          "title": "Colors module",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Represents colors as RGB triples in the ACES 2065-1 color space."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.metadata",
+      "level": "native",
+      "note": "The description_component carries named text fields that other systems can read for scene entities.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/description-component-in-fortnite",
+          "title": "Description Component",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "contains text data about the item"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "native",
+      "note": "Widget Blueprint authoring defines UI assets, layout and controls in UEFN.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/ui-widget-editor-in-unreal-editor-for-fortnite",
+          "title": "UI Widget Editor",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Contains the assets to create custom UI"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "partial",
+      "note": "Virtual Pointer supplies screen-space deprojection and cross-device pointing interaction. The read page does not specify the scene intersection query or returned hit object/geometry required for the full picking contract.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/virtual-pointer-in-fortnite",
+          "title": "Virtual Pointer",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "interacting with world objects with screen-space deprojection"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.collection",
+      "level": "native",
+      "note": "Verse tags define sets of devices or entities that can be found while the game runs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-tags-in-fortnite",
+          "title": "Verse Tags",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "you can find objects (both Creative devices and entities) marked with a specific tag"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "partial",
+      "note": "Video Player devices present triggered video streams in the scene; only one stream plays at a time and a wider audiovisual synchronization contract is not established.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/using-video-player-devices-in-fortnite-creative",
+          "title": "Video Player Devices",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "only one video stream can play at a time"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "partial",
+      "note": "UEFN exposes preset overrides for two MetaSound source templates; this is a bounded procedural playback route, not arbitrary exchanged synthesis graphs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/metasounds-in-uefn",
+          "title": "MetaSounds in UEFN",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "allows you to override settings, including adding your own sound waves"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "partial",
+      "note": "The particle_system_component binds authored Niagara effects to scene entities; cross-runtime emitter-description exchange is not established.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/particle-system-component-in-unreal-editor-for-fortnite",
+          "title": "Particle System Component",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Use the particle_system_component to add Niagara effects to your level."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "native",
+      "confidence": "verified",
+      "note": "UEFN Sequencer records position and rotation keyframes on a timeline and evaluates them during cinematic playback. This supplies time-associated scene poses.",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/sequencer-and-control-rig-in-unreal-editor-for-fortnite",
+          "title": "Sequencer and Control Rig in Unreal Editor for Fortnite | Fortnite Documentation | Epic Developer Community",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "keyframes are automatically created whenever a property or transform changes."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.parametric",
+      "level": "partial",
+      "confidence": "verified",
+      "note": "UEFN Landscape authoring retains editable splines. This authoring page does not establish a receiver-side mathematical spline interchange format.",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/landscape-mode-in-unreal-editor-for-fortnite",
+          "title": "Landscape Mode in Unreal Editor for Fortnite | Fortnite Documentation | Epic Developer Community",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "It also provides controls for managing additional splines"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "via-extension",
+      "confidence": "verified",
+      "note": "UEFN SceneGraph prefabs carry authored entity/component hierarchies in generated Verse classes; the transform_component parent/origin rules reconstruct their linked frames when instantiated.",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/scenegraph/entity",
+          "title": "Verse API reference page for the entity class | Fortnite Documentation | Epic Developer Community",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Primarily prefabs are authored through the editor, with their Verse classes generated as part of the build into the projects Assets.digest.verse file."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/scenegraph/transform_component",
+          "title": "Verse API reference page for the transform_component class | Fortnite Documentation | Epic Developer Community",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "alternate origin than the default parent entity"
+        }
+      ]
+    }
+  ]
+}

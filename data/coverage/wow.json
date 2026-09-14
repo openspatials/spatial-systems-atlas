@@ -1,0 +1,1246 @@
+{
+  "subject_id": "wow",
+  "summary": "Web of Worlds is a Metaverse Standards Forum direction for making virtual worlds addressable and linkable with ordinary web machinery, announced by the Forum's 3D Web Interoperability Working Group on 2 June 2026. Its whole normative surface is three small OpenAPI files at version 0.0.1 — a world API, an asset API and a user manifest API — plus a README table of five core requirements saying a world is joined, followed, previewed, saved and shared by its URL. It is strong on one idea, that a world is a URL and its parts hang off that URL, and it does that well. Almost everything else a working group would look for is absent rather than wrong: no units, no scale, no up axis, no bounds, no coordinate reference system, no signature, no destination on a portal, and no way for one world to contain another. The first trap is that none of the three files uses a single normative keyword and no schema requires a single property, so an empty object validates as a World, a User, a Node, a Portal, a View and a Spatial descriptor alike; a team that reads the whitepaper will expect decentralized identifiers, verifiable credentials, selective disclosure, glTF, USD and X3D, and will find none of them in the machine-readable text. The second trap is now demonstrated rather than predicted: the world README puts the scene graph under /wow/scene/, the machine-readable file puts it under /wow/spatial/{spatialID}, and the project's own reference implementation, simpleWorlds, publishes a third OpenAPI file that serves /wow/scene/node/{nodeId}. The specification and its reference implementation disagree about the normative graph path, so two good-faith servers cannot talk.",
+  "coverage": [
+    {
+      "capability_id": "net.address",
+      "level": "native",
+      "note": "The core of the subject: a world is a URL, joined, followed and previewed by URL fragment, and its parts hang off that same URL as URL/wow/world and URL/wow/user/4182. The whitepaper states the idea directly and the world README turns it into the five core requirements.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/README.md",
+          "title": "OpenSpatialWorld README.md (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Join world | URL, URL#join, URL#join=aspect.id | join the world as new or existing user on a given device and UA |"
+        },
+        {
+          "url": "https://webofworlds.github.io/initial_MSF_Whitepaper/",
+          "title": "Web of Worlds initial MSF whitepaper",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Worlds are addressable via URIs (like web pages)"
+        },
+        {
+          "url": "https://metaverse-standards.org/news/blog/announcing-the-web-of-worlds-whitepaper-a-concrete-path-to-the-open-metaverse/",
+          "title": "Metaverse Standards Forum blog, Announcing the Web of Worlds Whitepaper, 2 June 2026",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "By providing a single URI for every discrete virtual world, users can move through the metaverse with the same ease they browse the 2D web."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "conflicts",
+      "note": "The graph is described twice and the two descriptions disagree. Node.children is an array of embedded Node objects, so a subtree is carried inline, while Node.parent is a bare integer, so the same relationship is also expressible by reference; neither is required, no precedence is stated, and nothing says what a server should do when both are present. The project's own integration served a flat identifier-reference node instead, and before that divergence was declared a write with embedded children was answered 200 OK with its whole subtree silently deleted. That last observation is the project's own and has no public source.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "OpenSpatialWorld API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "        children:\n          type: array\n          items:\n            $ref: '#/components/schemas/Node'"
+        },
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "OpenSpatialWorld API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "        parent:\n          type: integer"
+        },
+        {
+          "url": "/Users/grig/work/spatial-computing-research-projects-msf/repo/open-spatial-lab/wow-spec/OSL-WOW-CONTRACT.md",
+          "title": "OSL to Web of Worlds contract, divergence D7",
+          "retrieved": "2026-08-22",
+          "kind": "local-evidence",
+          "quote": "200, subtree SILENTLY DELETED"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "partial",
+      "note": "A Spatial descriptor names a root node and the node tree nests, but the recursion is over nodes inside one world and never over worlds: there is no sub-world, no cross-world reference and no override or layering vocabulary anywhere in the three files.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "OpenSpatialWorld API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "        rootNodeID: \n          type: number"
+        },
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "OpenSpatialWorld API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "        children:\n          type: array\n          items:\n            $ref: '#/components/schemas/Node'"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "conflicts",
+      "note": "Node.localTransform is an array of number with no declared length and no declared major order, and no world declares an up axis or a handedness anywhere. When a real Z-up fabric was mounted into this Y-up graph the scene silently lay on its side, so the project's integration added a required up-axis field with no default and refuses the node when it is missing; that repair is local and has no public source.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "OpenSpatialWorld API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "        localTransform:\n          type: array \n          items:\n            type: number "
+        },
+        {
+          "url": "/Users/grig/work/spatial-computing-research-projects-msf/repo/open-spatial-lab/wow-spec/OSL-WOW-CONTRACT.md",
+          "title": "OSL to Web of Worlds contract, section 11",
+          "retrieved": "2026-08-22",
+          "kind": "local-evidence",
+          "quote": "The fabric corpus is Z-up; WoW/Three is Y-up. Guess wrong and the solar system lies on its side, silently."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "conflicts",
+      "note": "No world declares units, scale or extent. The World schema carries a label, an age restriction, a licence, a cost, a version and a duration and nothing dimensional, so metre scale is an assumption that is never stated and a renderer has nothing to compute a bound from. Composing an astronomical-unit fabric into a one-to-one metre world therefore read one astronomical unit as one metre; that repair, a required units-per-metre field with no default, is the project's own and has no public source.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "OpenSpatialWorld API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "            label:\n              type: string\n            age_restriction:\n              type: number\n            license:\n              type: string\n            cost: \n              type: string \n            version: \n              type: number \n            duration:\n              type: number        "
+        },
+        {
+          "url": "/Users/grig/work/spatial-computing-research-projects-msf/repo/open-spatial-lab/wow-spec/schema.yaml",
+          "title": "OSL wow-spec schema, SpatialFabricSubtree description",
+          "retrieved": "2026-08-22",
+          "kind": "local-evidence",
+          "quote": "auto silently means 1 AU = 1 METRE"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "partial",
+      "note": "The asset API standardises content negotiation over twenty-one registered model media types, including glTF, USD, X3D, COLLADA, OBJ, STL and STEP, but defines no container of its own and has no type for a signed or executable spatial document. Node.spatialAssetURI is a bare string with no format, no media type and no prose, so any URL is legal and nothing says what it resolves to.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialAsset/API.yaml",
+          "title": "OpenSpatialAsset API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "            model/gltf-binary:"
+        },
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialAsset/README.md",
+          "title": "OpenSpatialAsset README.md (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "There is a gowing number of [IANA Registration](https://www.iana.org/assignments/media-types/media-types.xhtml#model) for model types which enable the multi format support."
+        },
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "OpenSpatialWorld API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "        spatialAssetURI:\n          type: string"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "none",
+      "note": "The graph is live unsigned JSON. There is no signature, integrity or provenance vocabulary in any of the three files; the only integrity-adjacent header is an entity tag, described as revision control for caching. This is exactly where the RP1 fabric met it cleanly in the project's integration: the fabric arrives already signed and hash-pinned, so the address rides in the Web of Worlds field while the trust claim rides entirely in the fabric.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialAsset/API.yaml",
+          "title": "OpenSpatialAsset API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "              description: RFC2616 revision control. Used to determine if cached data is current."
+        },
+        {
+          "url": "/Users/grig/work/spatial-computing-research-projects-msf/repo/open-spatial-lab/docs/WORKING-GROUP-DOSSIER.md",
+          "title": "Working group dossier, section B",
+          "retrieved": "2026-08-22",
+          "kind": "local-evidence",
+          "quote": "The WoW graph is live, unsigned JSON — there is no signature, integrity, or provenance vocabulary anywhere in the spec."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "partial",
+      "note": "A world carries content.license, content.cost and content.age_restriction, all untyped strings or numbers with no vocabulary, and the asset resource repeats the same three fields. There is no licence identifier scheme and nothing a recipient can act on mechanically.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "OpenSpatialWorld API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "            license:\n              type: string"
+        },
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialAsset/API.yaml",
+          "title": "OpenSpatialAsset API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "            license:\n              type: string"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "conflicts",
+      "note": "Every schema carries a geoPose object shaped like an OGC GeoPose basic yaw-pitch-roll unit, but it is not one: there is no pose identifier, no frame specification, no valid time, and longitude is spelled lan. A reader built for OGC GeoPose 1.0 cannot consume it. The project's integration had to keep a separate OGC GeoPose builder and emit both, with a guard that fails if a payload ever spells longitude correctly; that workaround is local and has no public source.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "OpenSpatialWorld API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "                lan:\n                  type: number"
+        },
+        {
+          "url": "/Users/grig/work/spatial-computing-research-projects-msf/repo/open-spatial-lab/docs/WORKING-GROUP-DOSSIER.md",
+          "title": "Working group dossier, section B",
+          "retrieved": "2026-08-22",
+          "kind": "local-evidence",
+          "quote": "we emit lan, with a drift guard that fails if a payload ever says lon"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "none",
+      "note": "Latitude, longitude and height are bare numbers with no datum, no ellipsoid and no named reference system, so h has no reference surface. Nothing in the three files names a coordinate reference system, a datum or an Earth model.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "OpenSpatialWorld API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "                lat: \n                  type: number\n                lan:\n                  type: number\n                h:\n                  type: number"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "partial",
+      "note": "A View resource exists with its own path and a geoPose, and a URL fragment can preview a named aspect, so viewpoints are addressable. Nothing describes projection, field of view, near and far planes, or how a viewer moves between views.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "OpenSpatialWorld API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "      operationId: getViewById"
+        },
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/README.md",
+          "title": "OpenSpatialWorld README.md (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Preview world | URL#preview, #preview=aspect.id | experence world without |"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "partial",
+      "note": "Portals exist as addressable resources and the join fragment defines arrival as a new or existing user, but the canonical Portal carries only an identifier and a geoPose, so it cannot say where it leads; there is no crossing protocol and no state transfer. This is the exact complement of the OMA3 portaling specification, which specifies the crossing and has no object to hang it on. The proposal to type the missing destination as a portaling URI is the project's own and has no public source.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "OpenSpatialWorld API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "      operationId: getPortalById"
+        },
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "OpenSpatialWorld API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "    Portal: \n      type: object\n      properties:\n            \n        id: \n          type: number"
+        },
+        {
+          "url": "/Users/grig/work/spatial-computing-research-projects-msf/repo/open-spatial-lab/docs/UPSTREAM-REGISTER.md",
+          "title": "Upstream register, items C3 and D5",
+          "retrieved": "2026-08-22",
+          "kind": "local-evidence",
+          "quote": "object-without-destination meets destination-without-object"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "partial",
+      "note": "A world reports active and total user counts, view counts and portal counts, and a user resource carries a pose, so a crude roster can be derived. There is no cross-operator presence and no join or leave event in the contract. Note a naming trap: the field actually called presence is not about who is present at all, it holds three free strings for avatar, navigation and gravity.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "OpenSpatialWorld API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "        presence:\n          type: object\n          properties:\n            avatar:\n              type: string\n            navigation:\n              type: string\n            gravity:\n              type: string"
+        },
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "OpenSpatialWorld API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "            active_user_count:\n              type: integer"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "partial",
+      "note": "Joining is specified as visiting the URL, with fragments distinguishing join, follow and preview; the user manifest API uses a HEAD request to authorise a resource and returns 403 or 404. There is no authentication scheme, no session token and no session lifecycle. The asset README names end-to-end authorisation and modern single sign-on as a requirement, but no machine-readable file defines one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenUserManifest/API.yaml",
+          "title": "OpenUserManifest API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "      description: Used to authorize resources and simultaneously check whether ETag still matches cached ETag."
+        },
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialAsset/README.md",
+          "title": "OpenSpatialAsset README.md (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Data Security | E2E authorization for data provisioning and validation ( [HTTP 1.1 authentication](https://datatracker.ietf.org/doc/html/rfc2616) + Modern SSO implementation ) |"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "partial",
+      "note": "HTTP 1.1 carries the whole contract and is cited by reference. Nothing in the specification carries live session traffic. The reference implementation adds a WebSocket events route at /events, which is real and public but sits outside the machine-readable contract, so its messages bypass the validator.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialAsset/README.md",
+          "title": "OpenSpatialAsset README.md (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core requirements enabled with simple, proven and robust [HTTP 1.1](https://datatracker.ietf.org/doc/html/rfc2616) feature plus some modern extensions."
+        },
+        {
+          "url": "https://github.com/WebOfWorlds/simpleWorlds/blob/main/docs/API.md",
+          "title": "simpleWorlds API documentation (WebOfWorlds/simpleWorlds, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "- WebSocket events endpoint: `ws://<host>:3000/events`."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "none",
+      "note": "Nothing in the three specification files says which state is shared, how often, or in what form. The reference implementation's WebSocket event stream is a convention that implementation invented; it is not in the OpenAPI contract and no message shape for it is published.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/simpleWorlds/blob/main/docs/API.md",
+          "title": "simpleWorlds API documentation (WebOfWorlds/simpleWorlds, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This document describes the HTTP and WebSocket API exposed by the `wow-backend` service and how authors can interact with it (both server-side and from the browser client)."
+        },
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "OpenSpatialWorld API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "  version: '0.0.1'"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "none",
+      "note": "There is no registry, no index and no way to find a world you do not already have the URL for. The complete path list of the world API is a web app at the root, one world resource, one user, one view, one portal and the spatial graph; none of them lists or searches anything.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "OpenSpatialWorld API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "  /wow/world:"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "partial",
+      "note": "A user is an integer in a path with no issuer and no namespace, so two worlds cannot mean the same person. The whitepaper and the Forum's own announcement both name decentralized identifiers as the foundation of the portable identity layer, but no decentralized identifier appears anywhere in the machine-readable text.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "OpenSpatialWorld API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "        - name: userId\n          in: path\n          description: ID of user to return\n          required: true\n          schema:\n            type: integer"
+        },
+        {
+          "url": "https://webofworlds.github.io/initial_MSF_Whitepaper/",
+          "title": "Web of Worlds initial MSF whitepaper",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Decentralized Identifiers (DIDs)"
+        },
+        {
+          "url": "https://metaverse-standards.org/news/blog/announcing-the-web-of-worlds-whitepaper-a-concrete-path-to-the-open-metaverse/",
+          "title": "Metaverse Standards Forum blog, Announcing the Web of Worlds Whitepaper, 2 June 2026",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Utilizing JSON-LD, Decentralized Identifiers (DIDs), and Verifiable Credentials, users can carry their avatars, preferences, and assets across different virtual worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "none",
+      "note": "The user manifest carries a name, an age and an avatar address and nothing else; there is no signature, no issuer and no claim structure, although the whitepaper names verifiable credentials and digital wallets. This absence is where Universal Manifest met it cleanly in the project's integration: Universal Manifest signs exactly this content shape byte for byte and adds a signature block beside it, so nothing in the Web of Worlds payload had to change.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenUserManifest/API.yaml",
+          "title": "OpenUserManifest API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "            name:\n              type: string\n            age:\n              type: number\n            avatarAssetURI:"
+        },
+        {
+          "url": "https://metaverse-standards.org/news/blog/announcing-the-web-of-worlds-whitepaper-a-concrete-path-to-the-open-metaverse/",
+          "title": "Metaverse Standards Forum blog, Announcing the Web of Worlds Whitepaper, 2 June 2026",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Open User Manifest API (The “Digital YOU”): Powers a portable, user-controlled identity layer."
+        },
+        {
+          "url": "/Users/grig/work/spatial-computing-research-projects-msf/repo/open-spatial-lab/wow-spec/schema.yaml",
+          "title": "OSL wow-spec schema, OpenUserManifest stanza",
+          "retrieved": "2026-08-22",
+          "kind": "local-evidence",
+          "quote": "WoW's canonical User is silent on age and carries no identity signature"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "none",
+      "note": "The Forum's announcement puts selective disclosure at the centre of the design, saying only the data a given experience needs is shared. The machine-readable file offers no way to do that: one GET returns the whole UserManifest object behind one HEAD authorisation check, with no projection, no per-field scope and no consent record.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://metaverse-standards.org/news/blog/announcing-the-web-of-worlds-whitepaper-a-concrete-path-to-the-open-metaverse/",
+          "title": "Metaverse Standards Forum blog, Announcing the Web of Worlds Whitepaper, 2 June 2026",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The framework supports selective disclosure , ensuring only the data strictly required for a specific experience is shared, often with explicit consent prompts for the user."
+        },
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenUserManifest/API.yaml",
+          "title": "OpenUserManifest API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "      summary: Returns a user manifest as a single data state "
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "partial",
+      "note": "A user carries an avatar address and the user manifest repeats it, but nothing says what format it points at, how it is rigged, or what scale it is in. The address is the whole of the avatar model.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "OpenSpatialWorld API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "        AvatarURI:\n          type: string"
+        },
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenUserManifest/API.yaml",
+          "title": "OpenUserManifest API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "            avatarAssetURI:"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "none",
+      "note": "The whitepaper promises wearables, credentials and tokens travelling with the person; the user manifest schema carries three fields and no items list of any kind.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://webofworlds.github.io/initial_MSF_Whitepaper/",
+          "title": "Web of Worlds initial MSF whitepaper",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Assets (wearables, credentials, NFTs)"
+        },
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenUserManifest/API.yaml",
+          "title": "OpenUserManifest API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "            name:\n              type: string\n            age:\n              type: number\n            avatarAssetURI:"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "none",
+      "note": "The whitepaper lists preferences and settings inside the shared user manifest and the Forum's announcement repeats the promise; the user manifest API defines none.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://webofworlds.github.io/initial_MSF_Whitepaper/",
+          "title": "Web of Worlds initial MSF whitepaper",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Preferences & settings"
+        },
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenUserManifest/API.yaml",
+          "title": "OpenUserManifest API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "    UserManifest:\n      type: object"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "none",
+      "note": "Everything is referred to by location. There is no hash anywhere in the three files; the asset API's entity tag is described as a cache validator, not a content identifier a second party can recompute.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialAsset/API.yaml",
+          "title": "OpenSpatialAsset API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "              description: RFC2616 revision control. Used to determine if cached data is current."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "partial",
+      "note": "A world can advertise a WebXR session profile as a free string under technology, which is a real declaration point, but the vocabulary of that string is undefined and no session lifecycle is described.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "OpenSpatialWorld API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "            webXR-immersive:\n              type: string\n              description: \"WebXR session profile\""
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "none",
+      "note": "The nearest field, technology.runtime, describes which engine the world was built with, not what the visiting device can do. Nothing flows from client to world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "OpenSpatialWorld API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "                description: \"Web framework or gameengine used (e.g. Unreal or Unity3D)\""
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "none",
+      "note": "The whitepaper puts autonomous agents alongside people as first-class participants and the Forum's announcement says they follow the same standards and API methods; the machine-readable surface has no agent, no actor type and no way to tell a person from a program.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://webofworlds.github.io/initial_MSF_Whitepaper/",
+          "title": "Web of Worlds initial MSF whitepaper",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "AI agents operate alongside humans"
+        },
+        {
+          "url": "https://metaverse-standards.org/news/blog/announcing-the-web-of-worlds-whitepaper-a-concrete-path-to-the-open-metaverse/",
+          "title": "Metaverse Standards Forum blog, Announcing the Web of Worlds Whitepaper, 2 June 2026",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "In this ecosystem, AI agents operate alongside humans as collaborative partners, following the same standards and API methods."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "none",
+      "note": "Nothing executable is described. World rules live entirely behind the world's own server; the contract returns data and a web application and defines no behaviour that travels with content.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "OpenSpatialWorld API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "      summary: Provisions a web application to deliver the spatial experience on the given device "
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "partial",
+      "note": "Delivery is deliberately plain HTTP: entity tags, conditional requests and content negotiation over registered model types, with authorisation folded into the same HEAD request. There is no caching policy, no tiling and no scale story beyond ordinary web infrastructure.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialAsset/README.md",
+          "title": "OpenSpatialAsset README.md (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core requirements enabled with simple, proven and robust [HTTP 1.1](https://datatracker.ietf.org/doc/html/rfc2616) feature plus some modern extensions."
+        },
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialAsset/README.md",
+          "title": "OpenSpatialAsset README.md (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Multi-format | Single- und Multi-format requests with and without content negotiation  ( [HTTP 1.1: Content Negotiation](https://datatracker.ietf.org/doc/html/rfc2616#page-71) ) |"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "none",
+      "note": "All three files are stamped version 0.0.1 and there is no version negotiation, no deprecation rule and no statement of what a reader should do with a field it does not recognise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "OpenSpatialWorld API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "  version: '0.0.1'"
+        },
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialAsset/API.yaml",
+          "title": "OpenSpatialAsset API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "  version: '0.0.1'"
+        },
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenUserManifest/API.yaml",
+          "title": "OpenUserManifest API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "  version: '0.0.1'"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "conflicts",
+      "note": "There is no conformance vocabulary at all: no normative keyword appears in any of the three files, and no schema declares a single required property, so an empty object validates as a World, a User, a Node, a Portal, a View and a Spatial descriptor alike; the supplied world schema file is an empty-properties stub. The divergence is no longer hypothetical. The world README says the graph hangs off /wow/scene/, the machine-readable file implements /wow/spatial/{spatialID}/node/{nodeId}, and the project's own reference implementation, simpleWorlds, ships a third OpenAPI file that serves /wow/scene/node/{nodeId} and has no /wow/spatial path at all. The specification and its reference implementation do not agree on where the scene graph lives.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/schema/world.schema.json",
+          "title": "OpenSpatialWorld world.schema.json (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "    \"properties\": {"
+        },
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "OpenSpatialWorld API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "  /wow/spatial/{spatialID}/node/{nodeId}:"
+        },
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/README.md",
+          "title": "OpenSpatialWorld README.md (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "- Expose parts of scene to be linked in external world"
+        },
+        {
+          "url": "https://github.com/WebOfWorlds/simpleWorlds/blob/main/packages/wow-spec/src/schema.yaml",
+          "title": "simpleWorlds OpenAPI schema.yaml (WebOfWorlds/simpleWorlds, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "  /wow/scene/node/{nodeId}:"
+        },
+        {
+          "url": "https://github.com/WebOfWorlds/simpleWorlds/blob/main/docs/API.md",
+          "title": "simpleWorlds API documentation (WebOfWorlds/simpleWorlds, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "- `GET /wow/scene/node/{nodeId}`"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.raster",
+      "level": "out-of-scope",
+      "note": "Web of Worlds describes how a world is addressed and what it reports about itself. It draws nothing and names no renderer; the one field about rendering technology records which engine the world was built with, as free text.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "OpenSpatialWorld API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "                description: \"Web framework or gameengine used (e.g. Unreal or Unity3D)\""
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "out-of-scope",
+      "note": "No simulation model of any kind. The single related field is a free string named gravity inside the world's presence object.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "OpenSpatialWorld API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "            gravity:\n              type: string"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "out-of-scope",
+      "note": "Sound is not mentioned anywhere in the three files. The World schema's nearest neighbours are avatar, navigation and gravity, all free strings.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "OpenSpatialWorld API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "        presence:\n          type: object\n          properties:\n            avatar:\n              type: string\n            navigation:\n              type: string\n            gravity:\n              type: string"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "Web of Worlds is three small OpenAPI files that make a world, its assets and a user manifest addressable over ordinary web protocols, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialAsset/README.md",
+          "title": "OpenSpatialAsset README (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core requirements enabled with simple, proven and robust [HTTP 1.1](https://datatracker.ietf.org/doc/html/rfc2616) feature plus some modern extensions."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "Web of Worlds is three small OpenAPI files that make a world, its assets and a user manifest addressable over ordinary web protocols, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialAsset/README.md",
+          "title": "OpenSpatialAsset README (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core requirements enabled with simple, proven and robust [HTTP 1.1](https://datatracker.ietf.org/doc/html/rfc2616) feature plus some modern extensions."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "Web of Worlds is three small OpenAPI files that make a world, its assets and a user manifest addressable over ordinary web protocols, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialAsset/README.md",
+          "title": "OpenSpatialAsset README (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core requirements enabled with simple, proven and robust [HTTP 1.1](https://datatracker.ietf.org/doc/html/rfc2616) feature plus some modern extensions."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "none",
+      "note": "The asset interface negotiates content over twenty-one registered model media types, so the shape of the answer exists and no splat type is among them. There is no registered media type for a Gaussian splat set to negotiate, which is a finding about the registry as much as about this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialAsset/API.yaml",
+          "title": "OpenSpatialAsset API.yaml (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "            model/gltf-binary:"
+        },
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialAsset/README.md",
+          "title": "OpenSpatialAsset README (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core requirements enabled with simple, proven and robust [HTTP 1.1](https://datatracker.ietf.org/doc/html/rfc2616) feature plus some modern extensions."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "none",
+      "note": "Delivery is deliberately plain: entity tags, conditional requests and content negotiation. That is enough to fetch a whole asset and says nothing about starting a large capture before all of it has arrived.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialAsset/README.md",
+          "title": "OpenSpatialAsset README (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core requirements enabled with simple, proven and robust [HTTP 1.1](https://datatracker.ietf.org/doc/html/rfc2616) feature plus some modern extensions."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "Web of Worlds is three small OpenAPI files that make a world, its assets and a user manifest addressable over ordinary web protocols, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialAsset/README.md",
+          "title": "OpenSpatialAsset README (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core requirements enabled with simple, proven and robust [HTTP 1.1](https://datatracker.ietf.org/doc/html/rfc2616) feature plus some modern extensions."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "out-of-scope",
+      "note": "Web of Worlds is three small OpenAPI files that make a world, its assets and a user manifest addressable over ordinary web protocols, and it defines no encoding or compression for a set of points with attributes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialAsset/README.md",
+          "title": "OpenSpatialAsset README (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core requirements enabled with simple, proven and robust [HTTP 1.1](https://datatracker.ietf.org/doc/html/rfc2616) feature plus some modern extensions."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "Web of Worlds is three small OpenAPI files that make a world, its assets and a user manifest addressable over ordinary web protocols, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialAsset/README.md",
+          "title": "OpenSpatialAsset README (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core requirements enabled with simple, proven and robust [HTTP 1.1](https://datatracker.ietf.org/doc/html/rfc2616) feature plus some modern extensions."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "out-of-scope",
+      "note": "Web of Worlds is three small OpenAPI files that make a world, its assets and a user manifest addressable over ordinary web protocols, and it produces no image from a viewing position that no capture camera occupied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialAsset/README.md",
+          "title": "OpenSpatialAsset README (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core requirements enabled with simple, proven and robust [HTTP 1.1](https://datatracker.ietf.org/doc/html/rfc2616) feature plus some modern extensions."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "Web of Worlds is three small OpenAPI files that make a world, its assets and a user manifest addressable over ordinary web protocols, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialAsset/README.md",
+          "title": "OpenSpatialAsset README (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core requirements enabled with simple, proven and robust [HTTP 1.1](https://datatracker.ietf.org/doc/html/rfc2616) feature plus some modern extensions."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "Web of Worlds is three small OpenAPI files that make a world, its assets and a user manifest addressable over ordinary web protocols, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialAsset/README.md",
+          "title": "OpenSpatialAsset README (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core requirements enabled with simple, proven and robust [HTTP 1.1](https://datatracker.ietf.org/doc/html/rfc2616) feature plus some modern extensions."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "Web of Worlds is three small OpenAPI files that make a world, its assets and a user manifest addressable over ordinary web protocols, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialAsset/README.md",
+          "title": "OpenSpatialAsset README (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core requirements enabled with simple, proven and robust [HTTP 1.1](https://datatracker.ietf.org/doc/html/rfc2616) feature plus some modern extensions."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "Web of Worlds is three small OpenAPI files that make a world, its assets and a user manifest addressable over ordinary web protocols, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialAsset/README.md",
+          "title": "OpenSpatialAsset README (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core requirements enabled with simple, proven and robust [HTTP 1.1](https://datatracker.ietf.org/doc/html/rfc2616) feature plus some modern extensions."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "Web of Worlds is three small OpenAPI files that make a world, its assets and a user manifest addressable over ordinary web protocols, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialAsset/README.md",
+          "title": "OpenSpatialAsset README (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core requirements enabled with simple, proven and robust [HTTP 1.1](https://datatracker.ietf.org/doc/html/rfc2616) feature plus some modern extensions."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "Web of Worlds is three small OpenAPI files that make a world, its assets and a user manifest addressable over ordinary web protocols, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialAsset/README.md",
+          "title": "OpenSpatialAsset README (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core requirements enabled with simple, proven and robust [HTTP 1.1](https://datatracker.ietf.org/doc/html/rfc2616) feature plus some modern extensions."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "Web of Worlds is three small OpenAPI files that make a world, its assets and a user manifest addressable over ordinary web protocols, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialAsset/README.md",
+          "title": "OpenSpatialAsset README (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core requirements enabled with simple, proven and robust [HTTP 1.1](https://datatracker.ietf.org/doc/html/rfc2616) feature plus some modern extensions."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "out-of-scope",
+      "note": "Web of Worlds is three small OpenAPI files that make a world, its assets and a user manifest addressable over ordinary web protocols, and it carries no full 360-degree view of a place as an image with its projection stated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialAsset/README.md",
+          "title": "OpenSpatialAsset README (WebOfWorlds/WoWAPI, main)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Core requirements enabled with simple, proven and robust [HTTP 1.1](https://datatracker.ietf.org/doc/html/rfc2616) feature plus some modern extensions."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "out-of-scope",
+      "note": "A framework for addressing and moving between virtual worlds by URI, with the world's own description supplied over its API. Nothing in it comes from a device's sensors, so a live reconstruction of a real room is not something it carries.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://metaverse-standards.org/news/blog/announcing-the-web-of-worlds-whitepaper-a-concrete-path-to-the-open-metaverse/",
+          "title": "Metaverse Standards Forum blog, Announcing the Web of Worlds Whitepaper, 2 June 2026",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "By providing a single URI for every discrete virtual world, users can move through the metaverse with the same ease they browse the 2D web."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "Its schemas describe worlds, users, assets and presence. There is no field for naming a real floor, wall or object seen through a camera.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://metaverse-standards.org/news/blog/announcing-the-web-of-worlds-whitepaper-a-concrete-path-to-the-open-metaverse/",
+          "title": "Metaverse Standards Forum blog, Announcing the Web of Worlds Whitepaper, 2 June 2026",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "By providing a single URI for every discrete virtual world, users can move through the metaverse with the same ease they browse the 2D web."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "out-of-scope",
+      "note": "No depth of the physical world appears anywhere in the API. The framework moves world descriptions and user manifests, not sensor readings.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://metaverse-standards.org/news/blog/announcing-the-web-of-worlds-whitepaper-a-concrete-path-to-the-open-metaverse/",
+          "title": "Metaverse Standards Forum blog, Announcing the Web of Worlds Whitepaper, 2 June 2026",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "By providing a single URI for every discrete virtual world, users can move through the metaverse with the same ease they browse the 2D web."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "How a client draws a world, and whether real surfaces hide it, is left entirely to the client. The framework decides addressing and portability, not rendering.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://metaverse-standards.org/news/blog/announcing-the-web-of-worlds-whitepaper-a-concrete-path-to-the-open-metaverse/",
+          "title": "Metaverse Standards Forum blog, Announcing the Web of Worlds Whitepaper, 2 June 2026",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "By providing a single URI for every discrete virtual world, users can move through the metaverse with the same ease they browse the 2D web."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "out-of-scope",
+      "note": "Web of Worlds describes worlds and the ways in and out of them. How a client presents a world against a camera view of the room is the client's own affair and the API says nothing about it.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.face",
+      "level": "out-of-scope",
+      "note": "The API is about a world's description and a visitor's session, not about reading the visitor's face or body from a sensor.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "none",
+      "note": "A world advertises how it is moved through as one free-text string beside its avatar and gravity settings. That is a hint for a person choosing a world, not a declaration a client can act on: no walkable surface, no bounds, no spawn points, nothing that tells an arriving client where a body may stand.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "Web of Worlds OpenSpatialWorld API specification",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "presence: type: object properties: avatar: type: string navigation: type: string gravity: type: string"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "none",
+      "note": "Worlds are addressed by URL and described by a manifest of aspects. Nothing is published as a reusable unit of logic under a name that has to keep resolving, so there is no namespace here and no protection against a second author reusing a name.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "Web of Worlds OpenSpatialWorld API specification",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "presence: type: object properties: avatar: type: string navigation: type: string gravity: type: string"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "none",
+      "note": "The API is where a receiving client would learn what a world is before entering it, and the description it gets covers cost, version, duration, technology and presence. There is no content rating, no review record and no statement of who has checked the world or its contents.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "Web of Worlds OpenSpatialWorld API specification",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "technology: type: object properties: webXR-immersive: type: string description: \"WebXR session profile\""
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "A world may carry a GeoPose that puts it somewhere on Earth. That is a placement, not a declared map with a version, and the API publishes no transform between two maps of a place.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "none",
+      "note": "The geographic hook is a single GeoPose: one latitude, longitude and height with angles. A point is not an area, so a client cannot test whether a world applies where the client is; it can only be told where the world claims to be.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/WebOfWorlds/WoWAPI/blob/main/specification/OpenSpatialWorld/API.yaml",
+          "title": "Web of Worlds OpenSpatialWorld API specification",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "geoPose: type: object properties: position: type: object properties: lat: type: number lan: type: number h: type: number"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.metadata",
+      "level": "native",
+      "note": "The draft OpenSpatialWorld API declares structured fields such as labels, age restrictions and nested pose properties; this is draft specification coverage, not implemented conformance.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/WebOfWorlds/WoWAPI/d39a1a009aa4ef8fb6d14aa66d588cffb74c33de/specification/OpenSpatialWorld/API.yaml",
+          "title": "OpenSpatialWorld API",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "World: type: object properties: content: type: object properties: label: type: string age_restriction: type: number license: type: string"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.bounds",
+      "level": "partial",
+      "note": "The draft asset description names an optional 3D volume but does not define its representation or pre-load traversal rules.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/WebOfWorlds/WoWAPI/d39a1a009aa4ef8fb6d14aa66d588cffb74c33de/specification/OpenSpatialAsset/README.md",
+          "title": "Spatial Asset Provisioning",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Additional information provided in a separate data package - Generator - Copyright - etag - Formats - 3D volume - GeoPose"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.profile",
+      "level": "via-extension",
+      "confidence": "verified",
+      "note": "The pinned WoW whitepaper names an X3D WoW Profile and lists its selected components and nodes. This is a proposed X3D profile within WoW, with stated scene requirements; it is not a released X3D 4.1 standard.",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/WebOfWorlds/initial_MSF_Whitepaper/988f369b0af206de0a7b53e7903dd55e08be80a0/gen/MSF-3DWebInterop_WoWWhitepaper.pdf",
+          "title": "Web of Worlds MSF whitepaper",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Functional Profiles corresponding to X3D Components and Profiles"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/WebOfWorlds/initial_MSF_Whitepaper/988f369b0af206de0a7b53e7903dd55e08be80a0/gen/MSF-3DWebInterop_WoWWhitepaper.pdf",
+          "title": "wow whitepaper — official documentation/source",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "a base set of existing ISO-IEC X3D standard scene graph nodes that can meet the stated requirements."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "native",
+      "confidence": "verified",
+      "note": "The draft OpenUserManifest API declares a UserManifest schema with typed identity/profile properties. This supports machine-readable claim structure within the proposal, without asserting a credential verification service.",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/WebOfWorlds/WoWAPI/d39a1a009aa4ef8fb6d14aa66d588cffb74c33de/specification/OpenUserManifest/API.yaml",
+          "title": "OpenUserManifest API",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "UserManifest: type: object properties: content: type: object properties: name: type: string age: type: number avatarAssetURI: type: string"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.thumbnail",
+      "level": "native",
+      "confidence": "verified",
+      "note": "The WoW protocol proposal includes an age-appropriate thumbnail in its initial content summary, before the scene payload description.",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/WebOfWorlds/initial_MSF_Whitepaper/988f369b0af206de0a7b53e7903dd55e08be80a0/gen/MSF-3DWebInterop_WoWWhitepaper.pdf",
+          "title": "wow whitepaper — official documentation/source",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "age-appropriate thumbnail and content declaration including coordinate-system origin and units of measure"
+        }
+      ]
+    }
+  ]
+}

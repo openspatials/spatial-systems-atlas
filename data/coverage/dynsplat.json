@@ -1,0 +1,2222 @@
+{
+  "subject_id": "dynsplat",
+  "summary": "This record covers the dynamic and four-dimensional splat research beyond the base technique row: the reference implementations that reconstruct a moving scene, the 2026 work on compressing and streaming one, and the commercial service that sells the result as volumetric video. The methods disagree about where time lives. Shape of Motion reconstructs a moving scene from a single ordinary video by learning a small set of shared motion bases; 4D-Rotor Gaussians make the primitive itself four-dimensional with a rotor-based rotation; MoSca fits a deformable scaffold to casual video; and the newest work treats a moving scene as a bitstream to be pruned, quantised and layered. All of it is research code with a research licence or none at all, most of it needs CUDA, and none of it writes a format any other implementation reads. The 2026 streaming papers state the interoperability problem in the plainest words this map has found anywhere: a four-dimensional model is a monolithic bitstream that a client must download in full before a single frame can be drawn, with first-frame waits measured in tens to hundreds of seconds on a mobile link. The one production pipeline in the family, Gracia, sells processed volumetric video delivered through its own engine kits and ships either a proprietary container or a numbered sequence of PLY files — which is exactly the flipbook the base technique row already describes, five hundred papers later.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "partial",
+      "note": "Every member of the family carries its own rasteriser, usually a modified copy of one reference implementation with a time term added, and none describes a pass structure. The four-dimensional rotor work is unusual in making the primitive itself four-dimensional rather than deforming a three-dimensional one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/weify627/4D-Rotor-Gaussians/blob/main/README.md",
+          "title": "4D-Rotor Gaussian Splatting repository README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "4D-Rotor Gaussian Splatting: Towards Efficieant Novel View Synthesis for Dynamic Scenes"
+        },
+        {
+          "url": "https://arxiv.org/abs/2407.13764",
+          "title": "Shape of Motion: 4D Reconstruction from a Single Video, arXiv abstract page",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Shape of Motion: 4D Reconstruction from a Single Video"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "out-of-scope",
+      "note": "No graphics interface is specified by a research family. In practice the code is CUDA and states so as a prerequisite.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/weify627/4D-Rotor-Gaussians/blob/main/README.md",
+          "title": "4D-Rotor Gaussian Splatting README, prerequisites",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You must have an NVIDIA video card with CUDA installed on the system."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "out-of-scope",
+      "note": "Appearance stays spherical-harmonic colour per primitive; no material model is introduced by the dynamic work.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2510.03857",
+          "title": "Optimized Minimal 4D Gaussian Splatting, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "it faces a major challenge of storage overhead, as millions of Gaussians are required for high-fidelity reconstruction"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "out-of-scope",
+      "note": "Lighting is baked into the captured appearance, unchanged from the static case.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2510.03857",
+          "title": "Optimized Minimal 4D Gaussian Splatting, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "it faces a major challenge of storage overhead, as millions of Gaussians are required for high-fidelity reconstruction"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.post",
+      "level": "out-of-scope",
+      "note": "No post-processing stage is defined by these methods.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2510.03857",
+          "title": "Optimized Minimal 4D Gaussian Splatting, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "it faces a major challenge of storage overhead, as millions of Gaussians are required for high-fidelity reconstruction"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "partial",
+      "note": "The 2026 streaming work introduces a genuine level structure — a static scaffold, a global deformation and a local refinement, each independently transmittable, with any prefix renderable. It is one paper's decomposition, not an agreed order any two systems share.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2605.11427",
+          "title": "PD-4DGS, the three transmittable layers",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Hierarchical Deformation Decomposition (HDD) externalises the coarse-to-fine motion hierarchy already latent in 4DGS into three independently transmittable layers -- a static scaffold, a global deformation, and a local refinement -- so that any prefix of the bitstream is already renderable"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "native",
+      "note": "Drawing splats is what all of this is, extended so that the set of splats changes with time; the rotor formulation and the deformation formulations both end in a splat rasteriser.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/weify627/4D-Rotor-Gaussians/blob/main/README.md",
+          "title": "4D-Rotor Gaussian Splatting repository README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "4D-Rotor Gaussian Splatting: Towards Efficieant Novel View Synthesis for Dynamic Scenes"
+        },
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "native",
+      "note": "A time-varying captured scene drawn from any viewpoint is exactly the subject, and the commercial member of the family sells it as volumetric video delivered to headsets and the web.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, delivery targets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Delivered natively on Meta Quest 3/3S, Apple Vision Pro, and PCVR headsets."
+        },
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, web delivery",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "4DGS content now streams in WebXR: no app, no download, and no limits on splats and length"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "out-of-scope",
+      "note": "No text rendering is part of this work.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2510.03857",
+          "title": "Optimized Minimal 4D Gaussian Splatting, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "it faces a major challenge of storage overhead, as millions of Gaussians are required for high-fidelity reconstruction"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "partial",
+      "note": "Cameras are inputs, and the family splits on how many: monocular methods take one ordinary video and infer cameras and depth with a separate tool, while multi-view methods and the production pipeline demand hardware-synchronised, genlocked rigs. No camera description is carried out the other side.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://github.com/vye16/shape-of-motion/blob/main/README.md",
+          "title": "Shape of Motion repository README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We used MegaSaM to get cameras and depths for custom dataset."
+        },
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, frequently asked questions, capture requirements",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Required: shutter sync and genlock with hardware-synchronized cameras."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "out-of-scope",
+      "note": "A moving splat scene has no node structure. What structure exists is motion bases, deformation fields or clip boundaries, none of them a scene graph.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "out-of-scope",
+      "note": "No coordinate convention is defined by these methods; each inherits whatever its dataset and its base implementation used, which is the same unstated frame problem the static technique row already records.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vye16/shape-of-motion/blob/main/README.md",
+          "title": "Shape of Motion repository README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We used MegaSaM to get cameras and depths for custom dataset."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "conflicts",
+      "note": "There is no container, and the substitutes conflict. Research code writes checkpoints only its own repository reads; the production pipeline writes a proprietary format or a numbered PLY sequence; and the one open specification that adds time to a capture works on the reconstruction inputs rather than the splats. Two implementations of this family cannot exchange a scene.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, frequently asked questions, output formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": ".mint for proprietary temporal stability, or a .PLY sequence. SDKs include Unity, Unreal, and WebXR."
+        },
+        {
+          "url": "https://github.com/Kiri-Innovation/colmap4d/blob/main/README.md",
+          "title": "colmap4d README, the one specification in this family",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "**A standard COLMAP sparse model + one timestamp per image + one timestamp per point.**"
+        },
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, how a dynamic splat is actually carried between tools today",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Either loaded as a sequence of PLY files (in a folder or zip)"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "out-of-scope",
+      "note": "No meshes are produced. The mesh work in this space belongs to the avatar family, which binds splats to a mesh rather than deriving one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "out-of-scope",
+      "note": "No textures are produced or consumed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2510.03857",
+          "title": "Optimized Minimal 4D Gaussian Splatting, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "it faces a major challenge of storage overhead, as millions of Gaussians are required for high-fidelity reconstruction"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "out-of-scope",
+      "note": "No material definitions exist to exchange.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2510.03857",
+          "title": "Optimized Minimal 4D Gaussian Splatting, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "it faces a major challenge of storage overhead, as millions of Gaussians are required for high-fidelity reconstruction"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "conflicts",
+      "note": "Motion is modelled in at least four incompatible ways across the family — shared motion bases, four-dimensional primitives, deformation networks, and clip-level fields with inherited anchors — and none of them is expressible as keyframes or clips that another system could read. A receiver gets frames, not animation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2407.13764",
+          "title": "Shape of Motion: 4D Reconstruction from a Single Video, arXiv abstract page",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Shape of Motion: 4D Reconstruction from a Single Video"
+        },
+        {
+          "url": "https://github.com/weify627/4D-Rotor-Gaussians/blob/main/README.md",
+          "title": "4D-Rotor Gaussian Splatting repository README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "4D-Rotor Gaussian Splatting: Towards Efficieant Novel View Synthesis for Dynamic Scenes"
+        },
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        },
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, how a dynamic splat is actually carried between tools today",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Either loaded as a sequence of PLY files (in a folder or zip)"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "out-of-scope",
+      "note": "No skeletons; the moving thing is a whole scene, not an articulated body.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "out-of-scope",
+      "note": "No blend shapes are used or produced by this family.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "out-of-scope",
+      "note": "No instancing scheme is defined.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2510.03857",
+          "title": "Optimized Minimal 4D Gaussian Splatting, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "it faces a major challenge of storage overhead, as millions of Gaussians are required for high-fidelity reconstruction"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "partial",
+      "note": "The clip-stream approach composes a long sequence out of short clips with inherited anchors and decoders across clip boundaries, which is composition inside one method. Nothing composes two captures from different tools.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "none",
+      "note": "No scale is stated anywhere in the family, and monocular reconstruction from a phone video has no way to recover it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vye16/shape-of-motion/blob/main/README.md",
+          "title": "Shape of Motion repository README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We used MegaSaM to get cameras and depths for custom dataset."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "none",
+      "note": "No licence field exists in any representation this family writes, and the licences on the code itself are the sharper problem: research terms or none at all.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vye16/shape-of-motion/blob/main/README.md",
+          "title": "Shape of Motion repository README, publication",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "ICCV 2025 (Highlight)"
+        },
+        {
+          "url": "https://api.github.com/repos/JiahuiLei/MoSca",
+          "title": "MoSca repository metadata, read from the GitHub API",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "\"pushed_at\": \"2026-03-27T06:15:33Z\""
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "none",
+      "note": "No authorship or signature is carried in a dynamic capture, which is the same gap as the static case with an extra dimension of recorded people in it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, processing pipeline",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We reconstruct temporally consistent 4D Gaussian Splats, remove unwanted objects and floors, apply color LUTs"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "out-of-scope",
+      "note": "The scene is the subject here. Avatars from splats are a separate family, scored separately.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "out-of-scope",
+      "note": "No skeleton is produced or required by scene-level dynamic methods.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "out-of-scope",
+      "note": "No expression model exists at scene level.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "out-of-scope",
+      "note": "There is no rig, so nothing can be retargeted.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "out-of-scope",
+      "note": "No attachment points or wearables in a captured scene.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "out-of-scope",
+      "note": "No avatar exists to reduce.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "out-of-scope",
+      "note": "No identity is bound to a capture, though the capture may be of an identifiable performer.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, processing pipeline",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We reconstruct temporally consistent 4D Gaussian Splats, remove unwanted objects and floors, apply color LUTs"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "out-of-scope",
+      "note": "Motion is observed and replayed, never simulated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "out-of-scope",
+      "note": "No collision geometry is produced by any member of the family.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "out-of-scope",
+      "note": "No bodies and no joints.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.material",
+      "level": "out-of-scope",
+      "note": "No physical surface properties are estimated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.determinism",
+      "level": "out-of-scope",
+      "note": "There is no simulation to reproduce; playback is deterministic in the trivial sense that it is a recording.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "out-of-scope",
+      "note": "Deformation here is a fitting device for appearance, not a soft-body simulation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2605.11427",
+          "title": "PD-4DGS, the three transmittable layers",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Hierarchical Deformation Decomposition (HDD) externalises the coarse-to-fine motion hierarchy already latent in 4DGS into three independently transmittable layers -- a static scaffold, a global deformation, and a local refinement -- so that any prefix of the bitstream is already renderable"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "out-of-scope",
+      "note": "No event regions exist in a captured sequence.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "out-of-scope",
+      "note": "The methods reconstruct pictures. Audio is outside every paper in the family.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "out-of-scope",
+      "note": "No spatialisation model, because no audio is carried.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "out-of-scope",
+      "note": "No acoustic properties are recovered from a captured space.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "out-of-scope",
+      "note": "No acoustic model exists to occlude.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "partial",
+      "note": "The one production member of the family says audio is included in what it delivers, which puts sound alongside a volumetric capture in practice. No format or synchronisation scheme is published for it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, processing pipeline",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We reconstruct temporally consistent 4D Gaussian Splats, remove unwanted objects and floors, apply color LUTs"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "out-of-scope",
+      "note": "No live voice; a captured performance is a recording.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, delivery targets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Delivered natively on Meta Quest 3/3S, Apple Vision Pro, and PCVR headsets."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "out-of-scope",
+      "note": "Nothing is replicated between participants; this is media, not a session.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, delivery targets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Delivered natively on Meta Quest 3/3S, Apple Vision Pro, and PCVR headsets."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "out-of-scope",
+      "note": "No shared state and no authority model.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, delivery targets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Delivered natively on Meta Quest 3/3S, Apple Vision Pro, and PCVR headsets."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "partial",
+      "note": "The streaming work decides what to send by decomposition layer and by prefix, which is interest management over one asset rather than over a scene shared between clients.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2605.11427",
+          "title": "PD-4DGS, the three transmittable layers",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Hierarchical Deformation Decomposition (HDD) externalises the coarse-to-fine motion hierarchy already latent in 4DGS into three independently transmittable layers -- a static scaffold, a global deformation, and a local refinement -- so that any prefix of the bitstream is already renderable"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.prediction",
+      "level": "out-of-scope",
+      "note": "No interactive session, so no prediction or reconciliation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2605.11427",
+          "title": "PD-4DGS: Progressive Decomposition of 4D Gaussian Splatting for Bandwidth-Adaptive Dynamic Scene Streaming, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "current models remain monolithic bitstreams that clients must download in full before any frame can be rendered, causing black-screen waits of tens to hundreds of seconds on mobile bandwidth and leaving 4DGS incompatible with modern adaptive-bitrate delivery"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "partial",
+      "note": "The 2026 streaming work aims squarely at ordinary adaptive-bitrate delivery and says today's models are incompatible with it; the production pipeline delivers over the web to headsets and browsers. No transport is defined by the family itself.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2605.11427",
+          "title": "PD-4DGS: Progressive Decomposition of 4D Gaussian Splatting for Bandwidth-Adaptive Dynamic Scene Streaming, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "current models remain monolithic bitstreams that clients must download in full before any frame can be rendered, causing black-screen waits of tens to hundreds of seconds on mobile bandwidth and leaving 4DGS incompatible with modern adaptive-bitrate delivery"
+        },
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, web delivery",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "4DGS content now streams in WebXR: no app, no download, and no limits on splats and length"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.media",
+      "level": "partial",
+      "note": "This is media transport in substance — a recorded scene delivered to a viewer — carried over whatever the product uses, with the research aiming at the same delivery mechanisms video already uses.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2605.11427",
+          "title": "PD-4DGS: Progressive Decomposition of 4D Gaussian Splatting for Bandwidth-Adaptive Dynamic Scene Streaming, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "current models remain monolithic bitstreams that clients must download in full before any frame can be rendered, causing black-screen waits of tens to hundreds of seconds on mobile bandwidth and leaving 4DGS incompatible with modern adaptive-bitrate delivery"
+        },
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, web delivery",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "4DGS content now streams in WebXR: no app, no download, and no limits on splats and length"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "out-of-scope",
+      "note": "There is no world to join; a viewer opens a recording.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, delivery targets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Delivered natively on Meta Quest 3/3S, Apple Vision Pro, and PCVR headsets."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "out-of-scope",
+      "note": "No portals and no state to carry between places.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, delivery targets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Delivered natively on Meta Quest 3/3S, Apple Vision Pro, and PCVR headsets."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "out-of-scope",
+      "note": "Nothing tracks who is watching.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, delivery targets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Delivered natively on Meta Quest 3/3S, Apple Vision Pro, and PCVR headsets."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "out-of-scope",
+      "note": "No naming or resolution scheme is defined for a dynamic capture.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, web delivery",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "4DGS content now streams in WebXR: no app, no download, and no limits on splats and length"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "out-of-scope",
+      "note": "Nothing is discovered; a viewer is given a link or an application.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, web delivery",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "4DGS content now streams in WebXR: no app, no download, and no limits on splats and length"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "partial",
+      "note": "Time inside a capture is modelled carefully by every method, and no member of the family states a clock, a rate or a synchronisation rule that a receiver could use to play two captures together.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        },
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, how a dynamic splat is actually carried between tools today",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Either loaded as a sequence of PLY files (in a folder or zip)"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "out-of-scope",
+      "note": "No identifiers for people or things are defined.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, processing pipeline",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We reconstruct temporally consistent 4D Gaussian Splats, remove unwanted objects and floors, apply color LUTs"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "out-of-scope",
+      "note": "No verifiable claims are expressed or consumed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, processing pipeline",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We reconstruct temporally consistent 4D Gaussian Splats, remove unwanted objects and floors, apply color LUTs"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "out-of-scope",
+      "note": "No credential exchange protocol exists.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, processing pipeline",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We reconstruct temporally consistent 4D Gaussian Splats, remove unwanted objects and floors, apply color LUTs"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "out-of-scope",
+      "note": "No permission model travels with a capture.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, frequently asked questions, output formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": ".mint for proprietary temporal stability, or a .PLY sequence. SDKs include Unity, Unreal, and WebXR."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "out-of-scope",
+      "note": "Nothing is selectively disclosed, in a family whose captures are usually of people performing.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, processing pipeline",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We reconstruct temporally consistent 4D Gaussian Splats, remove unwanted objects and floors, apply color LUTs"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.social",
+      "level": "out-of-scope",
+      "note": "No relationships or standing are represented.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, processing pipeline",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We reconstruct temporally consistent 4D Gaussian Splats, remove unwanted objects and floors, apply color LUTs"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "none",
+      "note": "Nothing in the representation carries terms, and the code carries terms nobody can act on downstream: research licences on the reference implementations and, in one case, no licence file at all.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://api.github.com/repos/JiahuiLei/MoSca",
+          "title": "MoSca repository metadata, read from the GitHub API",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "\"pushed_at\": \"2026-03-27T06:15:33Z\""
+        },
+        {
+          "url": "https://github.com/vye16/shape-of-motion/blob/main/README.md",
+          "title": "Shape of Motion repository README, publication",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "ICCV 2025 (Highlight)"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "out-of-scope",
+      "note": "These captures are studio and hand-held scenes with no place on the Earth.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, frequently asked questions, capture requirements",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Required: shutter sync and genlock with hardware-synchronized cameras."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "out-of-scope",
+      "note": "No coordinate reference system is named by any member.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vye16/shape-of-motion/blob/main/README.md",
+          "title": "Shape of Motion repository README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We used MegaSaM to get cameras and depths for custom dataset."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "out-of-scope",
+      "note": "No anchoring mechanism is defined; placement is the receiving application's business.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, delivery targets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Delivered natively on Meta Quest 3/3S, Apple Vision Pro, and PCVR headsets."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "out-of-scope",
+      "note": "No shared anchors between devices are defined.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, delivery targets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Delivered natively on Meta Quest 3/3S, Apple Vision Pro, and PCVR headsets."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.vps",
+      "level": "out-of-scope",
+      "note": "No positioning from imagery is part of this work.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vye16/shape-of-motion/blob/main/README.md",
+          "title": "Shape of Motion repository README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We used MegaSaM to get cameras and depths for custom dataset."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "out-of-scope",
+      "note": "No geographic tiling; the streaming decomposition is by motion hierarchy, not by area.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2605.11427",
+          "title": "PD-4DGS, the three transmittable layers",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Hierarchical Deformation Decomposition (HDD) externalises the coarse-to-fine motion hierarchy already latent in 4DGS into three independently transmittable layers -- a static scaffold, a global deformation, and a local refinement -- so that any prefix of the bitstream is already renderable"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.indoor",
+      "level": "out-of-scope",
+      "note": "No structured description of interiors is produced.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "out-of-scope",
+      "note": "No session lifecycle is defined; the delivery kits belong to the engines.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, frequently asked questions, output formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": ".mint for proprietary temporal stability, or a .PLY sequence. SDKs include Unity, Unreal, and WebXR."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "out-of-scope",
+      "note": "No input model is part of the technique.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, delivery targets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Delivered natively on Meta Quest 3/3S, Apple Vision Pro, and PCVR headsets."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "out-of-scope",
+      "note": "No hand tracking is consumed or produced.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, delivery targets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Delivered natively on Meta Quest 3/3S, Apple Vision Pro, and PCVR headsets."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.eye",
+      "level": "out-of-scope",
+      "note": "No gaze input, though foveated delivery would be an obvious use of the layered streaming work.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2605.11427",
+          "title": "PD-4DGS, the three transmittable layers",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Hierarchical Deformation Decomposition (HDD) externalises the coarse-to-fine motion hierarchy already latent in 4DGS into three independently transmittable layers -- a static scaffold, a global deformation, and a local refinement -- so that any prefix of the bitstream is already renderable"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "out-of-scope",
+      "note": "No haptic output is part of the representation or its delivery kits.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, delivery targets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Delivered natively on Meta Quest 3/3S, Apple Vision Pro, and PCVR headsets."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "partial",
+      "note": "Device capability is what the streaming work is reacting to — mobile bandwidth and mobile decode budgets — and it is treated as an assumption in a paper rather than as something a client declares.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2605.11427",
+          "title": "PD-4DGS: Progressive Decomposition of 4D Gaussian Splatting for Bandwidth-Adaptive Dynamic Scene Streaming, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "current models remain monolithic bitstreams that clients must download in full before any frame can be rendered, causing black-screen waits of tens to hundreds of seconds on mobile bandwidth and leaving 4DGS incompatible with modern adaptive-bitrate delivery"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "out-of-scope",
+      "note": "No scripting; these are representations and pipelines.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, frequently asked questions, output formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": ".mint for proprietary temporal stability, or a .PLY sequence. SDKs include Unity, Unreal, and WebXR."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "out-of-scope",
+      "note": "No interactivity travels with a captured sequence.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, frequently asked questions, output formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": ".mint for proprietary temporal stability, or a .PLY sequence. SDKs include Unity, Unreal, and WebXR."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "out-of-scope",
+      "note": "No untrusted content execution question arises.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, frequently asked questions, output formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": ".mint for proprietary temporal stability, or a .PLY sequence. SDKs include Unity, Unreal, and WebXR."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "out-of-scope",
+      "note": "No agents act inside a captured sequence.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, frequently asked questions, output formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": ".mint for proprietary temporal stability, or a .PLY sequence. SDKs include Unity, Unreal, and WebXR."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "partial",
+      "note": "Budgets are stated as engineering targets rather than as anything a receiver can enforce: splat counts per delivery tier from the production pipeline, and model-size reductions in the compression papers.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, frequently asked questions, output formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": ".mint for proprietary temporal stability, or a .PLY sequence. SDKs include Unity, Unreal, and WebXR."
+        },
+        {
+          "url": "https://arxiv.org/abs/2510.03857",
+          "title": "Optimized Minimal 4D Gaussian Splatting, result",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "reducing model sizes by over 60% while maintaining reconstruction quality"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "out-of-scope",
+      "note": "Nothing persists; a capture is a finished recording.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, frequently asked questions, output formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": ".mint for proprietary temporal stability, or a .PLY sequence. SDKs include Unity, Unreal, and WebXR."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "out-of-scope",
+      "note": "No items and no holders.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, frequently asked questions, output formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": ".mint for proprietary temporal stability, or a .PLY sequence. SDKs include Unity, Unreal, and WebXR."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "out-of-scope",
+      "note": "No user settings travel with a capture.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, frequently asked questions, output formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": ".mint for proprietary temporal stability, or a .PLY sequence. SDKs include Unity, Unreal, and WebXR."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "out-of-scope",
+      "note": "No content addressing is defined by any member.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, frequently asked questions, output formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": ".mint for proprietary temporal stability, or a .PLY sequence. SDKs include Unity, Unreal, and WebXR."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "partial",
+      "note": "The production pipeline delivers a package with engine kits around it for Unity, Unreal and the web, which is a bundle in practice. The research delivers checkpoints and code.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, frequently asked questions, output formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": ".mint for proprietary temporal stability, or a .PLY sequence. SDKs include Unity, Unreal, and WebXR."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "partial",
+      "note": "Making these captures fit ordinary content delivery is the explicit goal of the 2026 streaming work, and today's models do not fit it: the paper says so in its first sentence.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2605.11427",
+          "title": "PD-4DGS: Progressive Decomposition of 4D Gaussian Splatting for Bandwidth-Adaptive Dynamic Scene Streaming, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "current models remain monolithic bitstreams that clients must download in full before any frame can be rendered, causing black-screen waits of tens to hundreds of seconds on mobile bandwidth and leaving 4DGS incompatible with modern adaptive-bitrate delivery"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "out-of-scope",
+      "note": "No versioning scheme exists for a capture; each method's checkpoint is its own repository's business.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://api.github.com/repos/JiahuiLei/MoSca",
+          "title": "MoSca repository metadata, read from the GitHub API",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "\"pushed_at\": \"2026-03-27T06:15:33Z\""
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "none",
+      "note": "Nothing in this family has a conformance test, because nothing in it has a specification. Comparison is by published quality numbers on shared benchmark datasets, which measures reconstruction, not agreement.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2510.03857",
+          "title": "Optimized Minimal 4D Gaussian Splatting, result",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "reducing model sizes by over 60% while maintaining reconstruction quality"
+        },
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "Nothing is generated from a description; every frame is fitted to observations.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2407.13764",
+          "title": "Shape of Motion: 4D Reconstruction from a Single Video, arXiv abstract page",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Shape of Motion: 4D Reconstruction from a Single Video"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "Playback follows the recording. Nothing continues the world in response to a viewer.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "partial",
+      "note": "The input is ordinary photography — in the monocular case a single video shot on a phone — and the output is a moving scene rather than a textured model, so the row is met in spirit and not in form.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2407.13764",
+          "title": "Shape of Motion: 4D Reconstruction from a Single Video, arXiv abstract page",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Shape of Motion: 4D Reconstruction from a Single Video"
+        },
+        {
+          "url": "https://github.com/vye16/shape-of-motion/blob/main/README.md",
+          "title": "Shape of Motion repository README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We used MegaSaM to get cameras and depths for custom dataset."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "none",
+      "note": "There is no splat interchange format for time-varying content. What exists is per-method checkpoints, one proprietary container, and numbered PLY sequences, which is the static format used many times over.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, frequently asked questions, output formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": ".mint for proprietary temporal stability, or a .PLY sequence. SDKs include Unity, Unreal, and WebXR."
+        },
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, how a dynamic splat is actually carried between tools today",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Either loaded as a sequence of PLY files (in a folder or zip)"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "partial",
+      "note": "Streaming is where this family is moving fastest and it has not arrived: one 2026 framework layers a model so that any prefix renders and cuts first-frame latency on a slow link from minutes to under two seconds, and another rebuilds long sequences clip by clip. Both are single implementations with no shared bitstream.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2605.11427",
+          "title": "PD-4DGS, the three transmittable layers",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Hierarchical Deformation Decomposition (HDD) externalises the coarse-to-fine motion hierarchy already latent in 4DGS into three independently transmittable layers -- a static scaffold, a global deformation, and a local refinement -- so that any prefix of the bitstream is already renderable"
+        },
+        {
+          "url": "https://arxiv.org/abs/2605.11427",
+          "title": "PD-4DGS, measured result",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "reduces first-frame latency from 73--930 s to ~1.7 s on a 2 Mbps link"
+        },
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "partial",
+      "note": "Volumetric video is exactly what this produces and sells, with delivery to two headset families and the web. What is missing is the media part of the definition: no carriage, no timing model, no way for a second implementation to play it.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, delivery targets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Delivered natively on Meta Quest 3/3S, Apple Vision Pro, and PCVR headsets."
+        },
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, frequently asked questions, output formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": ".mint for proprietary temporal stability, or a .PLY sequence. SDKs include Unity, Unreal, and WebXR."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "out-of-scope",
+      "note": "Point clouds appear only as initialisation; nothing in the family carries them as an output.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/vye16/shape-of-motion/blob/main/README.md",
+          "title": "Shape of Motion repository README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We used MegaSaM to get cameras and depths for custom dataset."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "partial",
+      "note": "Depth arrives as an input on both paths — inferred by a separate tool for monocular capture, or implied by a synchronised multi-camera rig — and nothing carries calibrated views plus depth onward.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://github.com/vye16/shape-of-motion/blob/main/README.md",
+          "title": "Shape of Motion repository README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We used MegaSaM to get cameras and depths for custom dataset."
+        },
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, frequently asked questions, capture requirements",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Required: shutter sync and genlock with hardware-synchronized cameras."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "native",
+      "note": "Producing an image from a viewpoint no camera occupied, at any moment in the recorded sequence, is the definition of the whole family.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2407.13764",
+          "title": "Shape of Motion: 4D Reconstruction from a Single Video, arXiv abstract page",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Shape of Motion: 4D Reconstruction from a Single Video"
+        },
+        {
+          "url": "https://github.com/weify627/4D-Rotor-Gaussians/blob/main/README.md",
+          "title": "4D-Rotor Gaussian Splatting repository README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "4D-Rotor Gaussian Splatting: Towards Efficieant Novel View Synthesis for Dynamic Scenes"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "partial",
+      "note": "Time is modelled properly here and travels nowhere. Four separate formulations of motion exist, the compression and streaming work is real and measured, and what a receiver can actually be handed is a proprietary file or a folder of numbered frames.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        },
+        {
+          "url": "https://arxiv.org/abs/2605.11427",
+          "title": "PD-4DGS, the three transmittable layers",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Hierarchical Deformation Decomposition (HDD) externalises the coarse-to-fine motion hierarchy already latent in 4DGS into three independently transmittable layers -- a static scaffold, a global deformation, and a local refinement -- so that any prefix of the bitstream is already renderable"
+        },
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, frequently asked questions, output formats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": ".mint for proprietary temporal stability, or a .PLY sequence. SDKs include Unity, Unreal, and WebXR."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "none",
+      "note": "Captured light stays fixed. The relighting work in the splat world is on avatars, not on dynamic scenes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, processing pipeline",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We reconstruct temporally consistent 4D Gaussian Splats, remove unwanted objects and floors, apply color LUTs"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "partial",
+      "note": "The production pipeline edits captures as a service — removing unwanted objects and floors, applying colour lookup tables, controlling each subject's splats — which proves the edits are possible. No published method carries an edit that another implementation could apply.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, processing pipeline",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We reconstruct temporally consistent 4D Gaussian Splats, remove unwanted objects and floors, apply color LUTs"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "Nothing is generated, so nothing is regenerated from a description.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, processing pipeline",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We reconstruct temporally consistent 4D Gaussian Splats, remove unwanted objects and floors, apply color LUTs"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "There is no generating system to specify a world to.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2407.13764",
+          "title": "Shape of Motion: 4D Reconstruction from a Single Video, arXiv abstract page",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Shape of Motion: 4D Reconstruction from a Single Video"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "none",
+      "note": "No mesh, point cloud or conventional asset is derived from a dynamic capture by any member of the family.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "No agent actions are carried in or out; the subject is recorded scenes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "out-of-scope",
+      "note": "No panoramic interchange is defined by these methods.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, frequently asked questions, capture requirements",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Required: shutter sync and genlock with hardware-synchronized cameras."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "out-of-scope",
+      "note": "Nothing is sensed live and no geometric description of a space is produced.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "partial",
+      "note": "Separating what moves from what does not is the central problem of the family and is solved by motion rather than by naming: motion bases, dynamic masks and clip-level fields identify moving content without ever labelling what it is.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2407.13764",
+          "title": "Shape of Motion: 4D Reconstruction from a Single Video, arXiv abstract page",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Shape of Motion: 4D Reconstruction from a Single Video"
+        },
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "partial",
+      "note": "Depth is estimated as part of monocular reconstruction, by a separate tool named in the reference implementation, and is not offered as an output.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://github.com/vye16/shape-of-motion/blob/main/README.md",
+          "title": "Shape of Motion repository README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "We used MegaSaM to get cameras and depths for custom dataset."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "No mixing with a live camera view, so no real-world occlusion question.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, delivery targets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Delivered natively on Meta Quest 3/3S, Apple Vision Pro, and PCVR headsets."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "out-of-scope",
+      "note": "Passthrough belongs to the runtimes that play these captures, not to the technique.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, delivery targets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Delivered natively on Meta Quest 3/3S, Apple Vision Pro, and PCVR headsets."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.face",
+      "level": "out-of-scope",
+      "note": "No face or body tracking is consumed as input at scene level.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "out-of-scope",
+      "note": "Nothing states where a body may stand in a captured performance.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, delivery targets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Delivered natively on Meta Quest 3/3S, Apple Vision Pro, and PCVR headsets."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "out-of-scope",
+      "note": "No published unit of logic and so no naming question.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.13746",
+          "title": "ClipGStream, CVPR 2026, arXiv abstract",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Existing dynamic Gaussian approaches are either Frame-Stream, offering scalability but poor temporal stability, or Clip, achieving local consistency at the cost of high memory and limited sequence length."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "out-of-scope",
+      "note": "No review process is part of the technique; the platforms that carry the result apply their own.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, delivery targets",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Delivered natively on Meta Quest 3/3S, Apple Vision Pro, and PCVR headsets."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "No map alignment; these captures have no geography.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, frequently asked questions, capture requirements",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Required: shutter sync and genlock with hardware-synchronized cameras."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "No geographic extent is declared for a capture.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://gracia.ai/",
+          "title": "Gracia, frequently asked questions, capture requirements",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Required: shutter sync and genlock with hardware-synchronized cameras."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.extension",
+      "level": "partial",
+      "note": "colmap4d adds optional metadata with explicit unknown-field tolerance; that specification is one temporal-data route and is not a shared extension mechanism for all dynamic Gaussian implementations.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/Kiri-Innovation/colmap4d/main/spec/colmap4d-v1.0.md",
+          "title": "colmap4d v1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "A reader MUST tolerate unknown top-level and unknown device fields (forward compatibility):"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.metadata",
+      "level": "partial",
+      "note": "colmap4d defines clock semantics and optional device provenance; this is a named temporal-data specification, and does not create common metadata across all dynamic Gaussian methods.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/Kiri-Innovation/colmap4d/main/spec/colmap4d-v1.0.md",
+          "title": "colmap4d v1.0 specification",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "**`devices` is provenance, not a conformance gate.**"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "out-of-scope",
+      "note": "Dynamic and four-dimensional Gaussian splat implementations is assessed here as the individually named dynamic Gaussian research implementations, colmap4d and Gracia player. The subject does not issue or exchange trust claims whose establishment a relying party evaluates; reconstruction confidence is a different quantity.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "out-of-scope",
+      "note": "Dynamic and four-dimensional Gaussian splat implementations is assessed here as the individually named dynamic Gaussian research implementations, colmap4d and Gracia player. The subject's scene or model data types are not a vocabulary for identity claims exchanged with a relying party.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "out-of-scope",
+      "note": "Dynamic and four-dimensional Gaussian splat implementations is assessed here as the individually named dynamic Gaussian research implementations, colmap4d and Gracia player. The subject is not an identity-presentation system with pairwise relationship identifiers and correlation guarantees.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.encryption",
+      "level": "out-of-scope",
+      "note": "Dynamic and four-dimensional Gaussian splat implementations is assessed here as the individually named dynamic Gaussian research implementations, colmap4d and Gracia player. Image, geometry and device processing do not define recipient identity keys or confidential identity delivery.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.key-lifecycle",
+      "level": "out-of-scope",
+      "note": "Dynamic and four-dimensional Gaussian splat implementations is assessed here as the individually named dynamic Gaussian research implementations, colmap4d and Gracia player. The subject does not govern identity-control key rotation, revocation or recovery; account administration belongs to its host.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "out-of-scope",
+      "note": "Dynamic and four-dimensional Gaussian splat implementations is assessed here as the individually named dynamic Gaussian research implementations, colmap4d and Gracia player. The subject does not issue portable credentials with a post-issuance status-discovery mechanism.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "via-extension",
+      "note": "The Gracia web SDK's optional styled player and XR panel dependencies provide reusable playback interfaces; this named player route is not intrinsic to the other dynamic research implementations.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/gracia-labs/web-sdk/main/README.md",
+          "title": "Gracia Web SDK README",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Default styles are auto-installed and scoped under `.gr-player`."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "out-of-scope",
+      "note": "Dynamic and four-dimensional Gaussian splat implementations is assessed here as the individually named dynamic Gaussian research implementations, colmap4d and Gracia player. Captured appearance and inferred training exposure are not runtime environmental illumination estimates supplied to content.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "out-of-scope",
+      "note": "Dynamic and four-dimensional Gaussian splat implementations is assessed here as the individually named dynamic Gaussian research implementations, colmap4d and Gracia player. Offline calibration targets or reference photos do not expose runtime physical-marker detection with tracked poses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.text",
+      "level": "out-of-scope",
+      "note": "Dynamic and four-dimensional Gaussian splat implementations is assessed here as the individually named dynamic Gaussian research implementations, colmap4d and Gracia player. Prompt strings or command-line parameters are authoring inputs, not a defined runtime character-entry interface for scene applications.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "out-of-scope",
+      "note": "Dynamic and four-dimensional Gaussian splat implementations is assessed here as the individually named dynamic Gaussian research implementations, colmap4d and Gracia player. Fitted motion and ordinary parenting are not authored node-to-node transform constraints with runtime evaluation rules.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "out-of-scope",
+      "note": "Dynamic and four-dimensional Gaussian splat implementations is assessed here as the individually named dynamic Gaussian research implementations, colmap4d and Gracia player. Capture extents or a training region do not report the user's usable physical play area and floor-relative reference.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "out-of-scope",
+      "note": "Dynamic and four-dimensional Gaussian splat implementations is assessed here as the individually named dynamic Gaussian research implementations, colmap4d and Gracia player. The selected reconstruction or sensing interface does not exchange a sound-synthesis model for evaluation during playback.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "out-of-scope",
+      "note": "Dynamic and four-dimensional Gaussian splat implementations is assessed here as the individually named dynamic Gaussian research implementations, colmap4d and Gracia player. The subject does not publish an exchange of identified spatial zones and typed, temporally scoped events; scene bounds or capture locations are not that protocol.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.consent",
+      "level": "out-of-scope",
+      "note": "Dynamic and four-dimensional Gaussian splat implementations is assessed here as the individually named dynamic Gaussian research implementations, colmap4d and Gracia player. An application permission dialog or dataset licence does not carry a subject-bound grant with scope, purpose, validity and withdrawal information.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "out-of-scope",
+      "note": "Dynamic and four-dimensional Gaussian splat implementations is assessed here as the individually named dynamic Gaussian research implementations, colmap4d and Gracia player. Training metrics and processing status are not machine-readable accounts of a recipient evaluating and acting on an arriving subject or claim.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "Dynamic and four-dimensional Gaussian splat implementations is assessed here as the individually named dynamic Gaussian research implementations, colmap4d and Gracia player. The selected subject does not define arrival between independent destinations; local API setup and asset loading are not pre-arrival admission responses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "out-of-scope",
+      "note": "Dynamic and four-dimensional Gaussian splat implementations is assessed here as the individually named dynamic Gaussian research implementations, colmap4d and Gracia player. Implementation shaders or learned weights do not make the subject a specified shader language with common execution semantics.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.parametric",
+      "level": "out-of-scope",
+      "note": "Dynamic and four-dimensional Gaussian splat implementations is assessed here as the individually named dynamic Gaussian research implementations, colmap4d and Gracia player. The selected representation is sampled imagery, points, splats or meshes; it does not carry exact parametric curves and surfaces for another system to evaluate.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "out-of-scope",
+      "note": "Dynamic and four-dimensional Gaussian splat implementations is assessed here as the individually named dynamic Gaussian research implementations, colmap4d and Gracia player. Gaussian primitives and optimized point samples are a representation, not exchanged emitters with runtime particle simulation parameters.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.style",
+      "level": "out-of-scope",
+      "note": "Dynamic and four-dimensional Gaussian splat implementations is assessed here as the individually named dynamic Gaussian research implementations, colmap4d and Gracia player. Capture edits and model appearance are not separate metadata-driven rules for selecting scene-feature visibility or color.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "out-of-scope",
+      "note": "Dynamic and four-dimensional Gaussian splat implementations is assessed here as the individually named dynamic Gaussian research implementations, colmap4d and Gracia player. Offline reconstructed geometry is not a sensing runtime that answers physical-environment ray queries with hit poses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "out-of-scope",
+      "note": "Dynamic and four-dimensional Gaussian splat implementations is assessed here as the individually named dynamic Gaussian research implementations, colmap4d and Gracia player. The subject does not expose a musical-instrument device or recorded-event input interface with channels, notes and controllers.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "native",
+      "note": "The named 4DGaussians implementation fits dynamic scenes from captured image sequences with configurable training and checkpoints, then renders trained outputs; it is one research method, not a unified family format.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/hustvl/4DGaussians/master/README.md",
+          "title": "4DGaussians README",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "You can customize your training config through the config files."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "via-extension",
+      "note": "The scoped colmap4d format/member adds timestamps to COLMAP pose-bearing images and sparse points, with declared clock semantics. This supplies time-associated camera poses through that named sidecar route.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/Kiri-Innovation/colmap4d/main/spec/colmap4d-v1.0.md",
+          "title": "colmap4d format specification — v1.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "**colmap4d = a standard COLMAP sparse model + one timestamp per image + one timestamp > per point.**"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "via-extension",
+      "note": "The scoped colmap4d/COLMAP route retains linked rig, frame and camera poses with declared world-to-camera and rig-from-world conventions. Receivers can reconstruct those linked frames for that named route.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/Kiri-Innovation/colmap4d/main/spec/colmap4d-v1.0.md",
+          "title": "colmap4d format specification — v1.0",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "a standard COLMAP sparse model directory (`cameras`, `images`, `points3D`, and optionally `rigs`/`frames`, in `.txt` or `.bin`)"
+        },
+        {
+          "url": "https://colmap.github.io/format.html",
+          "title": "Output Format — COLMAP",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The reconstructed pose of an image is specified as the projection from world to the camera coordinate system of an image"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "native",
+      "note": "The named author 4DGaussians implementation pins simple-knn, whose CUDA path launches Morton-coordinate and box-distance kernels over GPU points and indices. This provides concrete non-raster nearest-neighbour preprocessing in that research implementation. It does not assign the same behavior to colmap4d, Gracia or every dynamic-splat implementation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/hustvl/4DGaussians/843d5ac636c37e4b611242287754f3d4ed150144/.gitmodules",
+          "title": "dynsplat .gitmodules",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "simple-knn"
+        },
+        {
+          "url": "https://gitlab.inria.fr/bkerbl/simple-knn/-/raw/44f764299fa305faf6ec5ebd99939e0508331503/simple_knn.cu",
+          "title": "dynsplat knn",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "boxMeanDist << <num_boxes, BOX_SIZE >> >"
+        }
+      ]
+    }
+  ]
+}

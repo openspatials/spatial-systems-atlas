@@ -1,0 +1,2140 @@
+{
+  "subject_id": "threejs",
+  "summary": "Three.js is an open source JavaScript library for drawing three-dimensional scenes in a web browser. Its core covers drawing and scene structure: a scene tree, cameras, materials, lights and shadows, skinning, morph targets, instancing, keyframe animation, positioned sound through the browser's own audio engine, and an immersive session manager that drives WebXR. Almost everything else people associate with the library sits in the addons folder of the same repository as optional modules rather than in the core build: every file format reader and writer including glTF, USD and FBX, all post-processing on the WebGL path, the camera controls, and thin wrappers around three outside physics engines that are fetched from a content delivery network at run time. There is no networking of any kind, no avatar format or skeleton agreement, no identity, rights or provenance model, and no geospatial frame. Two traps for a standards audience: the WebGL renderer is still the default import and the WebGPU renderer is a separate entry point, and a growing set of newer features (Gaussian splats, MaterialX materials) runs only on the WebGPU path. A third: the whole Gaussian splat stack is on the development branch and is in no tagged release up to r185, so a claim that Three.js renders splats is true of the branch and not of the shipped library.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "native",
+      "note": "Core ships two complete renderers: WebGLRenderer with its own render lists, sorting and shadow pass, and WebGPURenderer built on a render pipeline, render context and render bundle layer in src/renderers/common.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/src/renderers",
+          "title": "three.js source tree, src/renderers",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/README.md",
+          "title": "three.js README",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The current builds only include WebGL and WebGPU renderers but SVG and CSS3D renderers are also available as addons."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "native",
+      "note": "Both WebGL 2 and WebGPU are targeted in core, but they are separate entry points: the plain 'three' import gives WebGLRenderer, and WebGPU requires importing 'three/webgpu'; the project's own guidance still calls WebGL the default, and WebGPURenderer falls back to a WebGL backend where WebGPU is missing.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/package.json",
+          "title": "three.js package.json exports",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "\"./webgpu\": \"./build/three.webgpu.js\""
+        },
+        {
+          "url": "https://threejs.org/docs/llms.txt",
+          "title": "three.js documentation, machine guidance file",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "**Use WebGLRenderer** (default, mature)"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/src/renderers/webgl-fallback",
+          "title": "three.js source tree, WebGL fallback backend for WebGPURenderer",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "native",
+      "note": "Core carries a metal-roughness physically based material family (MeshStandardMaterial, MeshPhysicalMaterial) that lines up with glTF, raw GLSL through ShaderMaterial, and a node material system with its own shading language exposed as the 'three/tsl' entry point.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/src/materials",
+          "title": "three.js source tree, src/materials",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/package.json",
+          "title": "three.js package.json exports",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "\"./tsl\": \"./build/three.tsl.js\""
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "partial",
+      "note": "Direct lights, shadow maps, light probes with spherical harmonics and image-based lighting from a prefiltered environment map are all core; what is missing is any global illumination solver or baking pipeline in core, and addons only partly fill it with a progressive light map baker, light probe grids, clustered lighting and cascaded shadow maps.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/src/lights",
+          "title": "three.js source tree, src/lights",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/examples/jsm/lighting",
+          "title": "three.js addons, examples/jsm/lighting",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/examples/jsm/misc",
+          "title": "three.js addons, examples/jsm/misc (ProgressiveLightMap)",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.post",
+      "level": "via-extension",
+      "note": "On the WebGL path the effect composer and its whole pass library are addons in examples/jsm/postprocessing; the WebGPU build instead carries a core RenderPipeline class driven by shading-language effect nodes, renamed from PostProcessing at r183.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/examples/jsm/postprocessing",
+          "title": "three.js addons, examples/jsm/postprocessing",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/renderers/common/PostProcessing.js",
+          "title": "three.js source, PostProcessing compatibility wrapper",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "PostProcessing has been renamed to RenderPipeline."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "partial",
+      "note": "Core has a discrete LOD object that swaps children by camera distance, and a batched mesh for merged draws; what is missing is any streaming or send-order model, and progressive loading of glTF only exists through a third-party plugin the loader documentation points at (NEEDLE_progressive), not in the repository.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/src/objects",
+          "title": "three.js source tree, src/objects (LOD, BatchedMesh)",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/loaders/GLTFLoader.js",
+          "title": "three.js addon, GLTFLoader documentation block",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The following glTF 2.0 extensions are supported by separately registered plugins:"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "via-extension",
+      "note": "Gaussian splats are addons, not core: a GaussianSplat object, readers for the splat, spz, ksplat and splat-ply files, and a glTF plugin for KHR_gaussian_splatting; all of it imports 'three/webgpu' so it needs the WebGPU renderer, and none of these files exist in the r184 or r185 release tags, only on the development branch.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/objects/GaussianSplat.js",
+          "title": "three.js addon, GaussianSplat",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "} from 'three/webgpu';"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/loaders/GLTFGaussianSplatLoaderExtension.js",
+          "title": "three.js addon, glTF Gaussian splat plugin",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A glTF loader plugin for `KHR_gaussian_splatting`."
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/releases/tag/r185",
+          "title": "three.js release r185",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "partial",
+      "note": "Point clouds are core (Points and PointsMaterial) and three-dimensional textures are supported, with point cloud readers for pcd, vox, xyz and medical volume files as addons; what is missing is any volumetric video path or compressed point cloud codec.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/src/objects",
+          "title": "three.js source tree, src/objects (Points)",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/examples/jsm/loaders",
+          "title": "three.js addons, examples/jsm/loaders",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "via-extension",
+      "note": "Core has no text at all; addons give extruded text geometry from the project's own font format plus a font reader, a font converter for TrueType, a small canvas-texture label class for immersive use, and DOM-based label renderers, but no signed distance field text and no text layout.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/examples/jsm/geometries",
+          "title": "three.js addons, examples/jsm/geometries (TextGeometry)",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/examples/jsm/renderers",
+          "title": "three.js addons, CSS2DRenderer and CSS3DRenderer",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "native",
+      "note": "Perspective, orthographic, stereo, cube and array cameras are core, the last of these being what the immersive session manager fills with one view per eye; every camera control scheme is an addon.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/src/cameras",
+          "title": "three.js source tree, src/cameras",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/examples/jsm/controls",
+          "title": "three.js addons, examples/jsm/controls",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "native",
+      "note": "A single Object3D tree with parent and child links, world matrix propagation, visibility, render layers and traversal is the centre of the library.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/core/Object3D.js",
+          "title": "three.js source, Object3D",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "native",
+      "note": "The up axis is positive Y by default and a camera looks along its own negative Z, the right-handed arrangement glTF also uses; rotations are quaternions with Euler order XYZ by default, and four-by-four matrices are stored column-major even though the setter takes its arguments in reading order, which is a common source of transcription errors.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/core/Object3D.js",
+          "title": "three.js source, Object3D",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Object3D.DEFAULT_UP = /*@__PURE__*/ new Vector3( 0, 1, 0 );"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/cameras/Camera.js",
+          "title": "three.js source, Camera",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "return super.getWorldDirection( target ).negate();"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/math/Matrix4.js",
+          "title": "three.js source, Matrix4",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "internally all calculations are performed using column-major ordering."
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/math/Euler.js",
+          "title": "three.js source, Euler",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "@default 'XYZ'"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "via-extension",
+      "note": "Core only reads and writes the project's own JSON scene format through ObjectLoader and toJSON; every interchange container is an addon, and read and write support is lopsided: glTF, USD including USDZ, OBJ, PLY and STL both ways, while FBX, Collada, VRML, 3MF, AMF, 3DM, LDraw, LWO and VOX are read only.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/examples/jsm/loaders",
+          "title": "three.js addons, examples/jsm/loaders",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/examples/jsm/exporters",
+          "title": "three.js addons, examples/jsm/exporters",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/loaders/ObjectLoader.js",
+          "title": "three.js source, ObjectLoader",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "partial",
+      "note": "Core encodes meshes as typed-array attribute buffers with optional interleaving and indices and can serialise them; what is missing is any compression in core, so Draco, mesh optimiser compression and quantised attributes all arrive only through addon readers, and the glTF writer cannot write any of them back.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/loaders/GLTFLoader.js",
+          "title": "three.js addon, GLTFLoader documentation block",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "`GLTFLoader` supports the following glTF 2.0 extensions:"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/exporters/GLTFExporter.js",
+          "title": "three.js addon, GLTFExporter documentation block",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "GLTFExporter supports the [glTF 2.0 extensions]"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "partial",
+      "note": "Core holds plain, data, three-dimensional, array and compressed textures and consumes whatever the browser decodes; what is missing is any container decoding in core, so device-compressed and high dynamic range formats (KTX2 with Basis transcoding, DDS, PVRTC, KTX, EXR, RGBE, UltraHDR, TIFF) all need addon readers plus, for Basis, a separate WebAssembly transcoder.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/src/textures",
+          "title": "three.js source tree, src/textures",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/examples/jsm/loaders",
+          "title": "three.js addons, examples/jsm/loaders",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "via-extension",
+      "note": "A MaterialX reader addon parses .mtlx documents and zipped archives into node materials, but it imports 'three/webgpu' so it only works on the node path, and there is no MaterialX writing.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/loaders/MaterialXLoader.js",
+          "title": "three.js addon, MaterialXLoader",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "import { FileLoader, Loader } from 'three/webgpu';"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "native",
+      "note": "Core has animation clips, keyframe tracks for numbers, vectors, quaternions, colours, strings and booleans, an interpolation layer, a mixer with cross-fading and additive blending, and property binding by path; clips themselves arrive through addon readers for glTF, FBX, Collada and BVH.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/src/animation",
+          "title": "three.js source tree, src/animation",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "native",
+      "note": "Bones, skeletons with inverse bind matrices and skinned meshes are core and skinning is done on the graphics processor; the bone names are whatever the source file used, because the library defines no naming scheme.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/src/objects",
+          "title": "three.js source tree, src/objects (Bone, Skeleton, SkinnedMesh)",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "native",
+      "note": "Morph attributes, per-mesh influence values and relative morph targets are core, and the glTF reader builds a name-to-index dictionary from the target names carried in the file.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/core/BufferGeometry.js",
+          "title": "three.js source, BufferGeometry morph attributes",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/loaders/GLTFLoader.js",
+          "title": "three.js addon, GLTFLoader",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "native",
+      "note": "Instanced meshes with per-instance matrices, colours and morph state, instanced buffer geometry, and a batched mesh for many different geometries in one draw are all core, and the glTF reader consumes EXT_mesh_gpu_instancing.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/src/objects",
+          "title": "three.js source tree, src/objects (InstancedMesh, BatchedMesh)",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/loaders/GLTFLoader.js",
+          "title": "three.js addon, GLTFLoader documentation block",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "- EXT_mesh_gpu_instancing"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "via-extension",
+      "note": "The runtime scene graph has no layering or override concept; the only composition machinery is inside the USD reader addon, whose composer resolves references, payloads and variant selections when it flattens a USD file into a plain object tree, with no sub-layer stacks and no live editing of the composition afterwards.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/loaders/usd/USDComposer.js",
+          "title": "three.js addon, USDComposer",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This includes reference resolution, variant selection, transform handling,"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/loaders/USDLoader.js",
+          "title": "three.js addon, USDLoader",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A loader for the USD format (USD, USDA, USDC, USDZ)."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "none",
+      "note": "Scene units are dimensionless: nothing in the core tree records a unit or a scale for an imported asset, so agreement is by convention only, and the one place it is forced is an immersive session, where the device poses the library consumes are in metres.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/src",
+          "title": "three.js core source tree",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/renderers/webxr/WebXRManager.js",
+          "title": "three.js source, WebXRManager",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "let referenceSpaceType = 'local-floor';"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "partial",
+      "note": "The glTF reader hands the whole asset block, including any copyright and generator strings, to the application as gltf.asset; what is missing is everything else, since there is no rights model, no licence field on any object, and nothing carries a licence back out through the writers.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/loaders/GLTFLoader.js",
+          "title": "three.js addon, GLTFLoader",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "@property {Object} asset - Meta data about the loaded asset."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "none",
+      "note": "No signing, manifest or content credential handling anywhere in the core tree or the addons tree.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/examples/jsm",
+          "title": "three.js addons tree",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "none",
+      "note": "There is no avatar concept and no avatar reader in the addons tree, VRM included; an avatar is just a skinned mesh from a glTF or FBX file, so anything portable has to come from a library outside this project.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/examples/jsm/loaders",
+          "title": "three.js addons, examples/jsm/loaders",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "none",
+      "note": "No bone naming or structure agreement exists; the retargeting addon works from a caller-supplied bone name map, which is the clearest sign the library expects skeletons not to match.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/utils/SkeletonUtils.js",
+          "title": "three.js addon, SkeletonUtils",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "function getBoneName( bone, options ) {"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "none",
+      "note": "Morph target names travel from the file into a lookup dictionary, but the library defines no expression or viseme vocabulary, so two worlds have to agree names out of band.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/loaders/GLTFLoader.js",
+          "title": "three.js addon, GLTFLoader",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "via-extension",
+      "note": "A SkeletonUtils addon retargets a pose or a whole clip from one skeleton to another using a bone name map, with optional hip scaling; there is no full-body inverse kinematics, only a cyclic-coordinate-descent solver addon for chains.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/utils/SkeletonUtils.js",
+          "title": "three.js addon, SkeletonUtils",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "function retargetClip( target, source, clip, options = {} ) {"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/animation/CCDIKSolver.js",
+          "title": "three.js addon, CCDIKSolver",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "none",
+      "note": "The mechanism exists, since any object can be parented to a bone and Object3D.attach keeps the world transform, but there is no attachment point convention, so nothing about a worn item survives a move to another runtime.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/core/Object3D.js",
+          "title": "three.js source, Object3D.attach",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "attach( object ) {"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "none",
+      "note": "The generic distance-based LOD object could be pointed at avatar meshes, but there is no avatar-aware reduction, no crowd representation and no imposter path.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/src/objects",
+          "title": "three.js source tree, src/objects",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "out-of-scope",
+      "note": "A drawing library holds no notion of a person or a credential.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/src",
+          "title": "three.js core source tree",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "via-extension",
+      "note": "There is no physics in core; three addon wrappers bind to outside engines (Ammo, Jolt and Rapier), each of which is fetched from a content delivery network at run time rather than bundled, and the wrapper surface is small: add a mesh with a mass and a bounce value, set a position or a velocity, apply an impulse, step at a fixed sixty steps a second.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/physics/AmmoPhysics.js",
+          "title": "three.js addon, AmmoPhysics",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The component automatically imports Ammo.js from a CDN"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/physics/RapierPhysics.js",
+          "title": "three.js addon, RapierPhysics",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "const RAPIER_PATH = 'https://cdn.skypack.dev/@dimforge/rapier3d-compat@0.17.3';"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/physics/JoltPhysics.js",
+          "title": "three.js addon, JoltPhysics",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "const JOLT_PATH = 'https://cdn.jsdelivr.net/npm/jolt-physics@1.0.0/dist/jolt-physics.wasm-compat.js';"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "via-extension",
+      "note": "The wrappers guess a collider from the mesh's own geometry type, covering box, rounded box, sphere, cylinder, capsule, triangle mesh and height field, so there is no separate collision representation an author can ship; core itself offers only ray casting and bounding volume maths.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/physics/RapierPhysics.js",
+          "title": "three.js addon, RapierPhysics",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "function getShape( geometry ) {"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/core/Raycaster.js",
+          "title": "three.js source, Raycaster",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "none",
+      "note": "None of the three physics wrappers expose a joint or constraint call; the joints example reaches past the wrapper and calls the Rapier engine's own joint interface directly, which the wrapper permits by handing back the raw engine object and world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/physics_rapier_joints.html",
+          "title": "three.js example, Rapier joints",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "physics.world.createImpulseJoint( jointParams, body1, body2, true );"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.material",
+      "level": "partial",
+      "note": "The wrappers read only a mass and a restitution value from an object's user data; friction is absent from the wrapper interface, and there is no surface response model, so anything richer means calling the underlying engine.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/physics/RapierPhysics.js",
+          "title": "three.js addon, RapierPhysics",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "box.userData.physics = { mass: 1, restitution: 0 };"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.determinism",
+      "level": "none",
+      "note": "Nothing about repeatable results is offered or claimed; the wrappers simply step the outside engine on a fixed sixty-per-second timer, and which engine is used is the application's choice.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/physics/RapierPhysics.js",
+          "title": "three.js addon, RapierPhysics",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "const frameRate = 60;"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "none",
+      "note": "No cloth or soft body in core or in any of the three wrappers; the cloth and rope examples do not import the wrapper at all and call the Ammo engine's soft body helpers directly.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/physics/AmmoPhysics.js",
+          "title": "three.js addon, AmmoPhysics",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/physics_ammo_cloth.html",
+          "title": "three.js example, Ammo cloth",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "const softBodyHelpers = new Ammo.btSoftBodyHelpers();"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "none",
+      "note": "No trigger or sensor volume in the wrapper interface and no collision event dispatch; applications test regions themselves with bounding boxes or ray casts.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/examples/jsm/physics",
+          "title": "three.js addons, examples/jsm/physics",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "native",
+      "note": "Core has a listener attached to the camera and positioned sources with distance models, reference and maximum distance, roll-off and directional cones, all of it a thin layer over the browser's audio engine.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/audio/PositionalAudio.js",
+          "title": "three.js source, PositionalAudio",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "this.panner = this.context.createPanner();"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "native",
+      "note": "Direction is rendered by the browser's own panner set to head-related transfer function mode; the library adds no ambisonic path, no choice of head model and no way to supply a personal transfer function.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/audio/PositionalAudio.js",
+          "title": "three.js source, PositionalAudio",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "this.panner.panningModel = 'HRTF';"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "none",
+      "note": "No room, reverb or early reflection model; an application can splice arbitrary browser audio filter nodes into a source's chain through setFilters and build its own reverb that way, but the library models no space.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/audio/Audio.js",
+          "title": "three.js source, Audio",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "setFilters( value ) {"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "none",
+      "note": "Sound is never tested against geometry; a wall does not muffle anything unless the application computes it and adjusts a filter itself.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/src/audio",
+          "title": "three.js source tree, src/audio",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "partial",
+      "note": "A source can be fed from a media element or a live media stream so that streamed audio is positioned in the scene; what is missing is all of the delivery, since the library never opens a connection or manages a buffer itself.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/audio/Audio.js",
+          "title": "three.js source, Audio",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "setMediaElementSource( mediaElement ) {"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "partial",
+      "note": "Live voice can be placed in the scene by handing a browser media stream to a positioned source; what is missing is the whole transport, since there is no signalling, no peer connection and no codec handling anywhere in the project.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/audio/Audio.js",
+          "title": "three.js source, Audio",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "this.source = this.context.createMediaStreamSource( mediaStream );"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "out-of-scope",
+      "note": "The library draws one client's scene and has no multi-user model at all: no replication, no authority, no interest management and no prediction anywhere in the core or addon trees.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/src",
+          "title": "three.js core source tree",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/examples/jsm",
+          "title": "three.js addons tree",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "out-of-scope",
+      "note": "The only network use is fetching asset files over HTTP through the file loader; there is no session wire protocol of any kind.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/loaders/FileLoader.js",
+          "title": "three.js source, FileLoader",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "out-of-scope",
+      "note": "There is no world to join, so no joining, authentication or roster concept exists; the word session in this project means an immersive device session, not a shared one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/renderers/webxr/WebXRManager.js",
+          "title": "three.js source, WebXRManager",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.media",
+      "level": "out-of-scope",
+      "note": "Video arrives as a browser video element or media stream wrapped in a video texture, and audio the same way; the delivery of those streams is entirely the browser's and the application's business.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/textures/VideoTexture.js",
+          "title": "three.js source, VideoTexture",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "none",
+      "note": "Core has a clock and a timer for local frame timing only; there is no shared or agreed time base, because there is nothing to share it with.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/src/core",
+          "title": "three.js source tree, src/core (Clock, Timer)",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "out-of-scope",
+      "note": "Nothing in the project touches identity, credentials, permission grants, selective disclosure, reputation or rights enforcement.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/src",
+          "title": "three.js core source tree",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "out-of-scope",
+      "note": "Coordinates are plain scene coordinates with no Earth frame; there is no geodetic position, no coordinate reference system handling and no globe, which is where a geospatial library such as CesiumJS differs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/src/math",
+          "title": "three.js source tree, src/math",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "partial",
+      "note": "Core surfaces the device's plane detection as an event and supports depth sensing, and an addon turns detected planes into meshes; what is missing is anchors and hit testing, which are never wrapped, so the augmented reality examples call the browser's own hit test interface directly using the reference space the renderer exposes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/webxr/XRPlanes.js",
+          "title": "three.js addon, XRPlanes",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A utility class for the WebXR Plane Detection Module."
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/webxr_ar_hittest.html",
+          "title": "three.js example, augmented reality hit test",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "session.requestHitTestSource( { space: referenceSpace } )"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "none",
+      "note": "No persistent or shared anchor handling, and no way to store or exchange one, which follows from having no networking.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/renderers/webxr/WebXRManager.js",
+          "title": "three.js source, WebXRManager",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "out-of-scope",
+      "note": "Nothing in the project reads or streams a tile set; the addon readers all take a single whole file.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/examples/jsm/loaders",
+          "title": "three.js addons, examples/jsm/loaders",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "native",
+      "note": "Immersive sessions are core on both renderers: an XR manager on renderer.xr owns the session, requests a reference space that defaults to floor level, drives an array camera with one view per eye, sets foveation, uses a projection layer where the device supports layers and a plain graphics layer otherwise, and handles depth sensing; only the buttons that start a session are addons.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/renderers/webxr/WebXRManager.js",
+          "title": "three.js source, WebXRManager",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "let referenceSpaceType = 'local-floor';"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/renderers/common/XRManager.js",
+          "title": "three.js source, XRManager for the WebGPU renderer",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/examples/jsm/webxr",
+          "title": "three.js addons, examples/jsm/webxr",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "native",
+      "note": "Core gives a target ray space, a grip space and linear and angular velocity per controller, and passes the device's own input source, including its gamepad, to the application on connect; controller models rendered from the input profile registry are an addon.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/renderers/webxr/WebXRController.js",
+          "title": "three.js source, WebXRController",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A group representing the grip space"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/webxr/XRControllerModelFactory.js",
+          "title": "three.js addon, XRControllerModelFactory",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "native",
+      "note": "Core builds a group per hand joint from the device's hand input and updates each from the joint pose every frame, and tracks a pinch state; hand meshes and pointer models are addons.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/renderers/webxr/WebXRController.js",
+          "title": "three.js source, WebXRController",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "const jointPose = frame.getJointPose( inputjoint, referenceSpace );"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/webxr/XRHandModelFactory.js",
+          "title": "three.js addon, XRHandModelFactory",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.eye",
+      "level": "none",
+      "note": "No gaze or eye pose input source anywhere in the immersive code and therefore no privacy handling around one; the controller wraps only the target ray, the grip and the hand joints.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/renderers/webxr/WebXRController.js",
+          "title": "three.js source, WebXRController",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "none",
+      "note": "No haptics interface; the haptics example pulses the actuator on the browser's gamepad object that the library passed through untouched.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/webxr_xr_haptics.html",
+          "title": "three.js example, immersive haptics",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "gamepad.hapticActuators[ 0 ].pulse( intensity, 100 );"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "partial",
+      "note": "Core reports graphics limits through the renderer's capabilities object, and addons check whether the browser has WebGL or WebGPU and whether an immersive session type is supported; what is missing is any wider description of the device, such as its class, tracking features or comfort settings.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/examples/jsm/capabilities",
+          "title": "three.js addons, examples/jsm/capabilities",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/webxr/VRButton.js",
+          "title": "three.js addon, VRButton",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "navigator.xr.isSessionSupported( 'immersive-vr' )"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "none",
+      "note": "There is no component model, no script attachment and no world rule system; behaviour is ordinary JavaScript in the host page, which the library neither defines nor manages.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/src",
+          "title": "three.js core source tree",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "none",
+      "note": "No behaviour graph and no support for the glTF interactivity extension; the only interactivity that travels with an asset is an animation clip, which the application must decide to play.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/loaders/GLTFLoader.js",
+          "title": "three.js addon, GLTFLoader supported extension list",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "`GLTFLoader` supports the following glTF 2.0 extensions:"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "none",
+      "note": "Every reader parses whatever bytes it is given inside the page's own origin, with no isolation and no limits, so the only boundary around untrusted content is the browser's rather than the library's.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/examples/jsm/loaders",
+          "title": "three.js addons, examples/jsm/loaders",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "none",
+      "note": "No memory, time or draw call budget for guest content; the renderer reports counts after the fact through its info object but enforces nothing.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/tree/dev/src/renderers",
+          "title": "three.js source tree, src/renderers",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "out-of-scope",
+      "note": "There is no running world to persist; a scene can be written to the project's own JSON and read back, which is a file, not world state.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/loaders/ObjectLoader.js",
+          "title": "three.js source, ObjectLoader",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "none",
+      "note": "Assets are always referred to by path or URL; nothing hashes content or resolves a hash, and the loading cache is keyed by URL.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/loaders/Cache.js",
+          "title": "three.js source, Cache",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "none",
+      "note": "The library ships as an npm package with module entry points for core, addons, the WebGPU build and the shading language, but it defines no package format for a runnable experience; an application is an HTML page the author assembles.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/package.json",
+          "title": "three.js package.json exports",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "\"./addons/*\": \"./examples/jsm/*\""
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "partial",
+      "note": "Releases are frequent and numbered by revision (r185 was published on 1 July 2026) and the package version stays below one, deprecated names warn once before being removed, and a migration guide is kept in the project wiki; what is missing is any stability promise, so code and assets written against one revision can break on the next, which is a real risk for content meant to outlive its viewer.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/releases/tag/r185",
+          "title": "three.js release r185",
+          "retrieved": "2026-08-22",
+          "kind": "primary"
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/package.json",
+          "title": "three.js package.json",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "\"version\": \"0.185.0\""
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/renderers/common/PostProcessing.js",
+          "title": "three.js source, deprecation shim",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This class is a wrapper for backward compatibility and will be removed in a future version."
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/README.md",
+          "title": "three.js README",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "[Migrating](https://github.com/mrdoob/three.js/wiki/Migration-Guide)"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "out-of-scope",
+      "note": "There is no specification to conform to, so nothing certifies an implementation; the project tests itself with unit tests and screenshot comparison across its examples, which is quality control rather than conformance.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/package.json",
+          "title": "three.js package.json test scripts",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "\"test-e2e\": \"node test/e2e/puppeteer.js\""
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "Three.js is a general-purpose rendering library whose core draws a scene and whose addons read the file formats, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/mrdoob/three.js/dev/README.md",
+          "title": "three.js README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The aim of the project is to create an easy-to-use, lightweight, cross-browser, general-purpose 3D library."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "Three.js is a general-purpose rendering library whose core draws a scene and whose addons read the file formats, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/mrdoob/three.js/dev/README.md",
+          "title": "three.js README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The aim of the project is to create an easy-to-use, lightweight, cross-browser, general-purpose 3D library."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "Three.js is a general-purpose rendering library whose core draws a scene and whose addons read the file formats, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/mrdoob/three.js/dev/README.md",
+          "title": "three.js README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The aim of the project is to create an easy-to-use, lightweight, cross-browser, general-purpose 3D library."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "via-extension",
+      "note": "Splats are addons, not core: a Gaussian splat object, readers for the splat, spz, ksplat and splat-ply files, and a glTF plugin for the Khronos extension. Two limits belong in the same breath: all of it imports the WebGPU entry point, so the WebGL renderer cannot use it, and none of these files exists in the r184 or r185 release tags, only on the development branch.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/loaders/GLTFGaussianSplatLoaderExtension.js",
+          "title": "three.js addon, GLTFGaussianSplatLoaderExtension.js",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A glTF loader plugin for `KHR_gaussian_splatting`."
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/objects/GaussianSplat.js",
+          "title": "three.js addon, GaussianSplat.js",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "} from 'three/webgpu';"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "out-of-scope",
+      "note": "Three.js is a general-purpose rendering library whose core draws a scene and whose addons read the file formats, and it delivers no captured scene, progressively by region and detail or otherwise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/mrdoob/three.js/dev/README.md",
+          "title": "three.js README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The aim of the project is to create an easy-to-use, lightweight, cross-browser, general-purpose 3D library."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "Three.js is a general-purpose rendering library whose core draws a scene and whose addons read the file formats, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/mrdoob/three.js/dev/README.md",
+          "title": "three.js README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The aim of the project is to create an easy-to-use, lightweight, cross-browser, general-purpose 3D library."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "via-extension",
+      "note": "Points are a core object with their own material, and the readers for the scanner and volume formats sit in the addons rather than the library. Nothing compresses a point cloud and nothing reads a compressed one, so this is a viewer's answer, not a pipeline's.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/mrdoob/three.js/dev/src/objects/Points.js",
+          "title": "three.js source, src/objects/Points.js",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A class for displaying points or point clouds."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/jsm/loaders/PCDLoader.js",
+          "title": "three.js addon, PCDLoader.js",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A loader for the Point Cloud Data (PCD) format."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "Three.js is a general-purpose rendering library whose core draws a scene and whose addons read the file formats, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/mrdoob/three.js/dev/README.md",
+          "title": "three.js README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The aim of the project is to create an easy-to-use, lightweight, cross-browser, general-purpose 3D library."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "via-extension",
+      "note": "Drawing a captured radiance field from a viewpoint no camera occupied is what the splat addon does, and it is only in the addons and only on the WebGPU path. Nothing in core knows what a radiance field is.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/objects/GaussianSplat.js",
+          "title": "three.js addon, GaussianSplat.js",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "} from 'three/webgpu';"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "Three.js is a general-purpose rendering library whose core draws a scene and whose addons read the file formats, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/mrdoob/three.js/dev/README.md",
+          "title": "three.js README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The aim of the project is to create an easy-to-use, lightweight, cross-browser, general-purpose 3D library."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "Three.js is a general-purpose rendering library whose core draws a scene and whose addons read the file formats, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/mrdoob/three.js/dev/README.md",
+          "title": "three.js README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The aim of the project is to create an easy-to-use, lightweight, cross-browser, general-purpose 3D library."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "Three.js is a general-purpose rendering library whose core draws a scene and whose addons read the file formats, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/mrdoob/three.js/dev/README.md",
+          "title": "three.js README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The aim of the project is to create an easy-to-use, lightweight, cross-browser, general-purpose 3D library."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "Three.js is a general-purpose rendering library whose core draws a scene and whose addons read the file formats, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/mrdoob/three.js/dev/README.md",
+          "title": "three.js README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The aim of the project is to create an easy-to-use, lightweight, cross-browser, general-purpose 3D library."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "Three.js is a general-purpose rendering library whose core draws a scene and whose addons read the file formats, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/mrdoob/three.js/dev/README.md",
+          "title": "three.js README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The aim of the project is to create an easy-to-use, lightweight, cross-browser, general-purpose 3D library."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "Three.js is a general-purpose rendering library whose core draws a scene and whose addons read the file formats, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/mrdoob/three.js/dev/README.md",
+          "title": "three.js README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The aim of the project is to create an easy-to-use, lightweight, cross-browser, general-purpose 3D library."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "Three.js is a general-purpose rendering library whose core draws a scene and whose addons read the file formats, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/mrdoob/three.js/dev/README.md",
+          "title": "three.js README",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The aim of the project is to create an easy-to-use, lightweight, cross-browser, general-purpose 3D library."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "native",
+      "note": "A 360-degree image is a first-class idea in the library rather than a texture that happens to be wide: the constants name an equirectangular reflection mapping, so a scene background or environment map declares its projection and the renderer samples it accordingly.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/mrdoob/three.js/dev/src/constants.js",
+          "title": "three.js source, src/constants.js",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "export const EquirectangularReflectionMapping = 303;"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "partial",
+      "note": "One add-on covers the plane detection module and turns each detected plane into a thin box mesh added to the scene automatically. There is no support for the mesh detection module, so a room that the headset reports as triangles never reaches a three.js scene. Planes only, and through an example module rather than the library core.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/webxr/XRPlanes.js",
+          "title": "three.js source, examples/jsm/webxr/XRPlanes.js",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A utility class for the WebXR Plane Detection Module. If planes are detected by WebXR, this class will automatically add them as thin box meshes to the scene when below code snippet is used."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "none",
+      "note": "The plane add-on reads a plane's transform and its bounding polygon and ignores the semantic label the specification puts beside them; no part of the library reads a label from a plane or a mesh. An application that wants to know a surface is a floor has to reach past three.js to the raw WebXR object.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/webxr/XRPlanes.js",
+          "title": "three.js source, examples/jsm/webxr/XRPlanes.js",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A utility class for the WebXR Plane Detection Module. If planes are detected by WebXR, this class will automatically add them as thin box meshes to the scene when below code snippet is used."
+        },
+        {
+          "url": "https://immersive-web.github.io/plane-detection/",
+          "title": "WebXR Plane Detection Module, Editor's Draft, 30 March 2026",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The semanticLabel attribute is a string that describes the semantic label of the polygon. This string MAY be either null or empty if there is no semantic information."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "native",
+      "note": "Depth sensing is in the renderer itself, not an add-on: a module inside the WebXR manager takes the depth data at session start and returns a texture of the depth of the user's environment, with the near and far values fed back into the camera set-up.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/renderers/webxr/WebXRDepthSensing.js",
+          "title": "three.js source, src/renderers/webxr/WebXRDepthSensing.js",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A XR module that manages the access to the Depth Sensing API."
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/renderers/webxr/WebXRDepthSensing.js",
+          "title": "three.js source, src/renderers/webxr/WebXRDepthSensing.js",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Returns a texture representing the depth of the user's environment."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "partial",
+      "note": "The depth module can hand back a plane mesh whose fragment shader writes the environment depth into the depth buffer, which is the whole mechanism of depth-based occlusion. The application has to ask for that mesh and draw it; nothing occludes by default and no material is patched for the developer.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/renderers/webxr/WebXRDepthSensing.js",
+          "title": "three.js source, src/renderers/webxr/WebXRDepthSensing.js",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Returns a plane mesh that visualizes the depth texture."
+        },
+        {
+          "url": "https://github.com/mrdoob/three.js/blob/dev/src/renderers/webxr/WebXRDepthSensing.js",
+          "title": "three.js source, src/renderers/webxr/WebXRDepthSensing.js",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A XR module that manages the access to the Depth Sensing API."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "partial",
+      "note": "three.js reads the blend and leaves the choosing to the session. Its WebXR manager exposes the environment blend mode the runtime reports — opaque, additive or alpha blend — so an application can branch on whether the real room is showing, and the library draws with a transparent clear colour when it is. There is no control over the amount, no styling of the camera image and no way to cut a hole through a virtual environment.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/mrdoob/three.js/dev/src/renderers/webxr/WebXRManager.js",
+          "title": "three.js WebXRManager source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "@return {'opaque'|'additive'|'alpha-blend'|undefined} The environment blend mode. Returns `undefined` when used outside of a XR session."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/mrdoob/three.js/dev/src/renderers/webxr/WebXRManager.js",
+          "title": "three.js WebXRManager source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "this.getEnvironmentBlendMode = function () {"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.face",
+      "level": "none",
+      "note": "three.js wraps what the WebXR Device API offers, and the Device API offers no face or body stream, so nothing reaches a three.js application. Face data in three.js is a stored morph target on a mesh, which is a different row.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/mrdoob/three.js/dev/src/renderers/webxr/WebXRManager.js",
+          "title": "three.js WebXRManager source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "@return {'opaque'|'additive'|'alpha-blend'|undefined} The environment blend mode. Returns `undefined` when used outside of a XR session."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "none",
+      "note": "The library has an object graph, cameras, lights and animation, and no notion of navigable space anywhere in it: no walkable surface, no bounds for a body, no spawn point. Applications that need pathfinding reach for a third-party package outside the library.",
+      "confidence": "unverified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/mrdoob/three.js/dev/src/renderers/webxr/WebXRManager.js",
+          "title": "three.js WebXRManager source",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "this.getEnvironmentBlendMode = function () {"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "out-of-scope",
+      "note": "three.js is a drawing library. Naming a published unit of logic so it resolves forever is the package registry's business, not the renderer's, and three.js operates none.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "out-of-scope",
+      "note": "The library draws what the page already loaded. Nothing is published to an audience through it, so no review can stand in that path.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "No geographic frame in the library, so no map of a place to declare and nothing to align it to.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "three.js is not a service bound to a place and declares no area where anything applies.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.extension",
+      "level": "partial",
+      "note": "GLTFLoader registers plugins for named format extensions; the cited API does not settle the rules for every recipient that lacks an extension.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://threejs.org/docs/pages/GLTFLoader.html",
+          "title": "GLTFLoader - Three.js Docs",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Registers a plugin callback."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.color",
+      "level": "partial",
+      "note": "Color declares source and working color spaces and conversion operations; this page alone does not establish the output dynamic-range contract for rendering surfaces.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://threejs.org/docs/pages/Color.html",
+          "title": "Color - Three.js Docs",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Converts this color from SRGBColorSpace to LinearSRGBColorSpace"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.metadata",
+      "level": "partial",
+      "note": "Object3D carries custom userData and has JSON serialization; the custom property vocabulary and types remain application-defined.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://threejs.org/docs/pages/Object3D.html",
+          "title": "Object3D - Three.js Docs",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "store custom data about the 3D object"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "out-of-scope",
+      "note": "As a rendering/scene library, threejs provides host application facilities rather than the credential or destination authority responsible for assurance evidence accompanying an identity claim for relying-party evaluation. This scope judgment applies to the library itself; a host service or separately assessed integration may perform that role.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "out-of-scope",
+      "note": "As a rendering/scene library, threejs provides host application facilities rather than the credential or destination authority responsible for the vocabulary, types and validation schema for an identity claim. This scope judgment applies to the library itself; a host service or separately assessed integration may perform that role.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "out-of-scope",
+      "note": "As a rendering/scene library, threejs provides host application facilities rather than the credential or destination authority responsible for pairwise identifiers or presentations with stated residual correlation risks. This scope judgment applies to the library itself; a host service or separately assessed integration may perform that role.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.encryption",
+      "level": "out-of-scope",
+      "note": "As a rendering/scene library, threejs provides host application facilities rather than the credential or destination authority responsible for recipient key material and algorithms for confidential delivery to an intended subject. This scope judgment applies to the library itself; a host service or separately assessed integration may perform that role.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.key-lifecycle",
+      "level": "out-of-scope",
+      "note": "As a rendering/scene library, threejs provides host application facilities rather than the credential or destination authority responsible for identity-control key rotation, revocation or recovery and discovery of verification material. This scope judgment applies to the library itself; a host service or separately assessed integration may perform that role.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "out-of-scope",
+      "note": "As a rendering/scene library, threejs provides host application facilities rather than the credential or destination authority responsible for discovery of a credential status after issuance. This scope judgment applies to the library itself; a host service or separately assessed integration may perform that role.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "via-extension",
+      "note": "The HTMLMesh addon displays a laid-out DOM element on a scene plane; its supported HTML subset and host DOM remain part of this route.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://threejs.org/docs/pages/HTMLMesh.html",
+          "title": "HTMLMesh - Three.js Docs",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "The DOM element to display as a plane mesh."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "via-extension",
+      "note": "The XREstimatedLight addon exposes the immersive environment's estimated light and reflection texture when supported by the browser and device.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://threejs.org/docs/pages/XREstimatedLight.html",
+          "title": "XREstimatedLight - Three.js Docs",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Represents the primary light from the XR environment."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.resolve",
+      "level": "native",
+      "note": "LoadingManager applies a resource URL modifier and returns the resolved URL before loading.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://threejs.org/docs/pages/LoadingManager.html",
+          "title": "LoadingManager - Three.js Docs",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "returns a resolved URL"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "native",
+      "note": "Raycaster reports scene-object intersections ordered by distance; this concerns virtual content rather than physical surroundings.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://threejs.org/docs/pages/Raycaster.html",
+          "title": "Raycaster - Three.js Docs",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Checks all intersection between the ray and the object"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "native",
+      "note": "XRManager creates shaped compositor layers with translation, orientation and render-target dimensions; availability depends on the browser and immersive runtime.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://threejs.org/docs/pages/XRManager.html",
+          "title": "XRManager - Three.js Docs",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "create a cylindrical layer that presents a separate rendered scene"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.bounds",
+      "level": "partial",
+      "note": "Box3 supplies spatial bounds and intersection tests; bounds calculated from loaded objects do not establish rejection before detailed geometry is loaded.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://threejs.org/docs/pages/Box3.html",
+          "title": "Box3 - Three.js Docs",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Constructs a new bounding box."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.collection",
+      "level": "native",
+      "note": "Numbered layer membership supplies rule-defined object sets used for rendering and selection, independent of the parent tree.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://threejs.org/docs/pages/Layers.html",
+          "title": "Layers - Three.js Docs",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Adds membership of the given layer."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "partial",
+      "note": "VideoTexture presents a video element in scene content; media-element playback does not itself define scene-wide audiovisual synchronization.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://threejs.org/docs/pages/VideoTexture.html",
+          "title": "VideoTexture - Three.js Docs",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "The video element to use as a data source for the texture."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.consent",
+      "level": "out-of-scope",
+      "note": "As a rendering/scene library, threejs provides host application facilities rather than the credential or destination authority responsible for a carried permission grant including scope, purpose, validity and withdrawal information. This scope judgment applies to the library itself; a host service or separately assessed integration may perform that role.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "out-of-scope",
+      "note": "As a rendering/scene library, threejs provides host application facilities rather than the credential or destination authority responsible for a machine-readable recipient evaluation/action account with integrity mechanisms identified. This scope judgment applies to the library itself; a host service or separately assessed integration may perform that role.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "As a rendering/scene library, threejs provides host application facilities rather than the credential or destination authority responsible for a destination pre-arrival approval or refusal response with its applicable validity. This scope judgment applies to the library itself; a host service or separately assessed integration may perform that role.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "native",
+      "note": "The documented ComputeNode defines shader logic, workgroup dimensions and dispatch counts for the WebGPU renderer path.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://threejs.org/docs/pages/ComputeNode.html",
+          "title": "ComputeNode - Three.js Docs",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "The node that defines the compute shader logic."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "native",
+      "note": "ShaderMaterial consumes versioned GLSL shader source; Three.js-specific uniforms and injected code still need compatible bindings.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://threejs.org/docs/pages/ShaderMaterial.html",
+          "title": "ShaderMaterial - Three.js Docs",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Fragment shader GLSL code."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.parametric",
+      "level": "partial",
+      "note": "The NURBS addon evaluates mathematical surfaces from degrees, knots and control points; this capture does not establish interchange of the surface description.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://threejs.org/docs/pages/NURBSSurface.html",
+          "title": "NURBSSurface - Three.js Docs",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Constructs a new NURBS surface."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "via-extension",
+      "confidence": "verified",
+      "note": "The CCDIKSolver addon evaluates authored target/effector bone chains with rotation limits and blending. This covers bone transform relationships through the named addon.",
+      "sources": [
+        {
+          "url": "https://threejs.org/docs/pages/CCDIKSolver.html",
+          "title": "CCDIKSolver - Three.js Docs",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Updates all IK bones by solving the CCD algorithm."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "native",
+      "confidence": "verified",
+      "note": "Three.js WebXRManager accepts a requested or supplied XR reference space and returns it to the application. For bounded-floor sessions, the WebXR binding supplies the physical boundary polygon and floor-relative coordinates; availability depends on the XR runtime.",
+      "sources": [
+        {
+          "url": "https://threejs.org/docs/pages/WebXRManager.html",
+          "title": "WebXRManager - Three.js Docs",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Default is local-floor ."
+        },
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "boundsGeometry. Tracking in a bounded-floor reference space is optimized for keeping the native origin and boundsGeometry stable relative to the user’s environment. Passing a"
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "scene.variant",
+      "level": "via-extension",
+      "confidence": "verified",
+      "note": "GLTFLoader supports KHR_materials_variants through a separately registered plugin. The named extension supplies material alternatives and selection within imported glTF models.",
+      "sources": [
+        {
+          "url": "https://threejs.org/docs/pages/GLTFLoader.html",
+          "title": "GLTFLoader - Three.js Docs",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "KHR_materials_variants"
+        },
+        {
+          "url": "https://threejs.org/docs/pages/GLTFLoader.html",
+          "title": "GLTFLoader - Three.js Docs",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "The following glTF 2.0 extensions are supported by separately registered plugins:"
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "partial",
+      "confidence": "verified",
+      "note": "Audio can use a live oscillator node as its source, so local synthesis is possible; Three.js does not define an exchanged synthesis model in this interface.",
+      "sources": [
+        {
+          "url": "https://threejs.org/docs/pages/Audio.html",
+          "title": "Audio - Three.js Docs",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "The audio node like an instance of OscillatorNode ."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "via-extension",
+      "confidence": "verified",
+      "note": "The official Three.js AR hit-test example uses the named WebXR Hit Test API to obtain physical hit results and poses. This requires the browser's hit-test service and a supported XR session.",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/webxr_ar_hittest.html",
+          "title": "three.js ar - hit test",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "const hitTestResults = frame.getHitTestResults( hitTestSource );"
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "native",
+      "confidence": "verified",
+      "note": "Object3D represents local/world transforms in a parent-child hierarchy and serializes that hierarchy to JSON for ObjectLoader reconstruction. This is Three.js scene-graph interchange.",
+      "sources": [
+        {
+          "url": "https://threejs.org/docs/pages/Object3D.html",
+          "title": "Object3D - Three.js Docs",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "computes the world matrix from the current local matrix and the object's transformation hierarchy."
+        },
+        {
+          "url": "https://threejs.org/docs/pages/Object3D.html",
+          "title": "Object3D - Three.js Docs",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Serializes the 3D object into JSON."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.frame-timing",
+      "level": "native",
+      "confidence": "verified",
+      "note": "Three.js WebXRManager consumes the XR animation frame's viewer pose and forwards the frame/time in its rendering loop. WebXR defines the frame's predicted display time and the time used for pose estimation.",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/mrdoob/three.js/dev/src/renderers/webxr/WebXRManager.js",
+          "title": "threejs timing — official documentation/source",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "pose = frame.getViewerPose( customReferenceSpace || referenceSpace );"
+        },
+        {
+          "url": "https://www.w3.org/TR/webxr/",
+          "title": "WebXR Device API",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "set frame’s predictedDisplayTime to the average timestamp the XR Compositor is expected to display this XR animation frame."
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "native",
+      "confidence": "verified",
+      "note": "Three.js keyframe tracks associate times and interpolation with scene properties. PropertyBinding resolves the tracks to Object3D position and rotation/quaternion properties, providing timed pose sequences in the scene frame.",
+      "sources": [
+        {
+          "url": "https://threejs.org/docs/pages/KeyframeTrack.html",
+          "title": "KeyframeTrack - Three.js Docs",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "times A list of keyframe times. values A list of keyframe values. interpolation The interpolation type."
+        },
+        {
+          "url": "https://threejs.org/docs/pages/PropertyBinding.html",
+          "title": "Three.js PropertyBinding",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This holds a reference to a real property in the scene graph; used internally."
+        },
+        {
+          "url": "https://threejs.org/docs/pages/PropertyBinding.html",
+          "title": "Three.js PropertyBinding",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": ".bone[Armature.DEF_cog].position"
+        },
+        {
+          "url": "https://threejs.org/docs/pages/Object3D.html",
+          "title": "Object3D - Three.js Docs",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "quaternion : Quaternion Represents the object's local rotation as Quaternions. . receiveShadow : boolean When set to true"
+        }
+      ],
+      "direction": "both"
+    }
+  ]
+}

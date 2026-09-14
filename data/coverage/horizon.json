@@ -1,0 +1,2415 @@
+{
+  "subject_id": "horizon",
+  "summary": "Meta Horizon Worlds is a closed social platform that Meta both builds and runs: worlds are authored in Meta's own desktop editor or inside the headset, and a published world is never a file a creator can hold, because it lives in Meta's store and reaches players only through Meta's own app. The one format that crosses the wall is FBX. Custom models go in as FBX with PNG textures, and unusually for a closed platform the editor can write a whole world back out as FBX for Maya or Blender, so the geometry is not a one-way trip; but only geometry, materials and textures come back, while gizmos, scripts, lighting, colliders and everything that makes it a world stay behind. Horizon carries a great deal of meaning in names rather than in file data: collision shapes are declared by mesh-name prefixes borrowed from Unreal Engine, the material type is declared by a suffix on the material name, and the channel packing of a texture is declared by a suffix on the texture filename, and no reader outside Horizon will honour any of that. Two traps for a standards reader. Lighting is baked into vertex colours, so a model's topology must be authored for Horizon's own light and the mesh then carries that light with it, which is the opposite of how the neutral transfer formats keep the two apart. And Horizon does one thing most closed platforms refuse: a player's saved data can follow them from world to world, because a creator's variable group can be added to many worlds and shared with other creators, though only inside Horizon and only where the creators agree.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "native",
+      "note": "Horizon draws the scene itself and gives creators no way into the pipeline: there are no custom shaders, no render passes to add or reorder, and no named graphics settings. The engine underneath is Unity, which Meta never says outright but which its own collider page gives away by naming Unity's collider components, and the scripting API has a Unity asset bundle module.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/getting-started-with-custom-model-import/",
+          "title": "Getting started with 3D model import",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "The desktop editor does not support custom shaders."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/creating-custom-models-for-horizon-worlds/collider-ingestion-user-guide",
+          "title": "Collider Ingestion User Guide",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Collider entities have collision, physics, and grabbable components but no renderable mesh component."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "conflicts",
+      "note": "A surface is not described by data in the file. It is described by the spelling of the material's name: a name ending _Metal is metal, _Unlit takes no light, _Blend, _Transparent, _Masked, _VXC, _VXM and _UIO each select a different fixed shading model, and the texture filename suffix says which channels are packed where. Normal maps are not supported at all and nothing is double-sided. No renderer outside Horizon reads material intent out of a name, so a material cannot survive the trip in either direction.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/creating-custom-models-for-horizon-worlds/materials-guidance-and-reference-for-custom-models/",
+          "title": "Materials Guidance and Reference for Custom Models",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Material names must end in “_Metal”."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/creating-custom-models-for-horizon-worlds/best-practices",
+          "title": "Best practices for custom models",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "we currently do not support normal maps, so use geometry to convey information you typically might put into a normal map."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "conflicts",
+      "note": "Horizon bakes light into the vertex colours of the mesh itself, so how good the lighting looks depends on where the modeller put the vertices, and Meta tells creators to plan their topology around light and shadow before they ever import. Global illumination is precomputed in the cloud and cached with the world. Static and dynamic light gizmos exist, but a model that already carries its own lighting cannot be used in a custom model world. Every other system in this map keeps lighting and geometry apart; Horizon fuses them, so a mesh authored for Horizon arrives elsewhere with Horizon's light stuck to it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/creating-custom-models-for-horizon-worlds/best-practices",
+          "title": "Best practices for custom models",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Horizon’s lighting solution (RTK) uses vertex colors to add lighting information to the scene."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/typescript/asset-spawning/world-streaming",
+          "title": "World Streaming",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Cached global illumination is leveraged to precompute mesh lighting in the cloud."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/getting-started-with-custom-model-import/",
+          "title": "Getting started with 3D model import",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Objects with built-in lighting can not be used in custom model worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.post",
+      "level": "none",
+      "note": "No screen-space effect stage is offered to creators. The gizmo set is closed and holds nothing that applies an effect after the main render, and custom shaders are not supported, so a creator cannot add one. The nearest thing is the environment gizmo's fog and sky brightness, which colour the scene rather than the finished frame.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/code-blocks-and-gizmos/use-the-environment-gizmo",
+          "title": "Environment gizmo",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "There are additional settings in the skydome feature that provides control over lighting and fog, enabling you to customize the lighting intensity, sky brightness, fog color and density."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/getting-started-with-custom-model-import/",
+          "title": "Getting started with 3D model import",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "The desktop editor does not support custom shaders."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "partial",
+      "note": "Creators can upload their own detail levels with a model and Meta added manual control over them, but there is no occlusion culling, so Meta warns that what the whole world costs can approach what one view costs. Streaming order is manual and coarse: a world can be split into sublevels that a script loads and unloads, but nothing streams by itself as a player walks. Detail levels go in with a model; nothing in the export path says they come back out.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/release-notes/",
+          "title": "Release Notes",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Creators now have more manual LOD (Level of Detail) control when importing models."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/performance-best-practices-and-tooling/performance-limits-for-a-world",
+          "title": "Performance limits for a World",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "These limits are view dependent however, since there is no occlusion culling, the world limit can often approach the following view limits."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/typescript/asset-spawning/world-streaming",
+          "title": "World Streaming",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Automated streaming based on player movement is not supported"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "none",
+      "note": "Nothing renders splats or radiance fields. The asset types a creator may upload are a 3D model, a texture, an audio file and a few Meta-made kinds, and there is no way to add a renderer because custom shaders are not supported.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/getting-started-with-custom-model-import/",
+          "title": "Getting started with 3D model import",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "The desktop editor does not support custom shaders."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/desktop-editor/assets/creating-importing-viewing-and-spawning-assets",
+          "title": "Creating, importing, viewing, and spawning assets",
+          "retrieved": "2026-08-24",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "none",
+      "note": "No point cloud, voxel or volumetric video rendering is published. There is a particle effects gizmo, which draws sprites, not captured volume, and no way to write a renderer of one's own.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/code-blocks-and-gizmos/about-gizmos",
+          "title": "About gizmos",
+          "retrieved": "2026-08-24",
+          "kind": "primary"
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/getting-started-with-custom-model-import/",
+          "title": "Getting started with 3D model import",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "The desktop editor does not support custom shaders."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "partial",
+      "note": "There are two text systems and they do not agree. The text gizmo takes a markup that sets colour, size, font, bold, italics, underline, offsets, line height and alignment, and the total length is capped. The panel system says plainly that italics are not supported and that only a few fonts are on offer. In neither case can a creator supply a font file, so text is legible but not portable.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/desktop-editor/custom-ui/api-reference-for-custom-ui",
+          "title": "Custom UI Styles",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Italics are not supported, and there are only a limited number of custom fonts available."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/code-blocks-and-gizmos/use-the-text-gizmo",
+          "title": "Text gizmo",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "allow you to change color, size, font, bold, italics, underline, vertical and horizontal offsets, line height, alignment"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "partial",
+      "note": "A script can set the player's camera: first or third person at the spawn point, a fixed camera, a pan camera, a spectator view, and a call that pulls the camera onto a chosen object. Almost all of it is documented under the pages for screens rather than headsets, and none of it is a viewpoint definition that could be carried anywhere else.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/create-for-web-and-mobile/setting-up-worlds-for-web-and-mobile-compatibility",
+          "title": "Setting up worlds for mobile and web",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Set the player camera (1st or 3rd person) on spawning the player"
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/create-for-web-and-mobile/typescript-apis-for-mobile/focused-interaction",
+          "title": "Focused Interaction",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Can use a fixed camera."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "native",
+      "note": "A world is a hierarchy of entities. Everything placed in a world, including every gizmo, is an entity with a parent, and scripts attach to entities as components. Meta has raised the number of entities allowed under one parent to let creators build deeper trees.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/code-blocks-and-gizmos/about-gizmos",
+          "title": "About gizmos",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "In the desktop editor, gizmos are self-contained modules that you can place in your world to create actions or functions."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/release-notes/",
+          "title": "Release Notes",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "increasing entity limits under a single parent object, giving creators significantly greater flexibility to create complex hierarchies"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "partial",
+      "note": "Every entity carries a position, a rotation and a scale, and the world grid is marked out in metres. What is missing is the convention itself: nowhere in the creator documentation does Meta state which way the axes point or which hand the coordinate system turns in. Because the collider pages name Unity's own components, the underlying frame is almost certainly Unity's left-handed one with Y up, the opposite of the neutral transfer formats, but Meta does not say so and this map does not assert it.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/code-blocks-and-gizmos/use-the-environment-gizmo",
+          "title": "Environment gizmo",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "The grid is 64 square meters in size, with each tile representing one square meter."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/creating-custom-models-for-horizon-worlds/collider-ingestion-user-guide",
+          "title": "Collider Ingestion User Guide",
+          "retrieved": "2026-08-24",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "conflicts",
+      "note": "This is the row that decides everything else. Horizon reads exactly one model format, FBX, with PNG textures beside it, and it reads no glTF and no USD even though Meta's own Spatial toolkit for other products reads glTF. Going the other way the desktop editor really can write an FBX of a whole world or a selection, into a folder next to the app, and Meta has since improved that export to carry several materials per object, material textures, several texture coordinate channels and mesh names. But the published world is not a container at all: it lives in Meta's store, is edited live, and only geometry, materials and textures come back out. Gizmos, scripts, colliders, lighting and saved state stay behind.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/desktop-editor/assets/asset-export-to-fbx-file",
+          "title": "Asset Export to FBX File",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "You can export the worlds you create in Horizon into an FBX file which can be loaded in desktop DCC tools like Maya and Blender."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/getting-started-with-custom-model-import/",
+          "title": "Getting started with 3D model import",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "To complete this procedure, you need a custom 3D model (an FBX file and one or more PNG texture files) to import."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/release-notes/",
+          "title": "Release Notes",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Improved the Export Geometry feature, adding export support for multiple materials per object, material texture export, multi-UV channels, and specific mesh names."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "partial",
+      "note": "Meshes arrive inside an FBX, several meshes to a file. Only the first texture coordinate channel is used, vertex normals are read, the recommended ceiling is twelve thousand polygons with four hundred thousand vertices as the hard limit, hierarchy is flattened and every pivot is moved to the centre on import. Meshes go back out through the world export, which now writes several coordinate channels and keeps mesh names, so this one is genuinely two-way, but what comes back has already lost its pivots and its tree.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/creating-custom-models-for-horizon-worlds/guidance-for-custom-models-budgets-and-model-specs",
+          "title": "Guidance for Custom Models: Budgets and Model Specs",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Only UV channel 0 is used to map textures onto the mesh"
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/creating-custom-models-for-horizon-worlds/guidance-for-custom-models-budgets-and-model-specs",
+          "title": "Guidance for Custom Models: Budgets and Model Specs",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "12K recommended maximum, 400K maximum vertices."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/desktop-editor/assets/asset-export-to-fbx-file",
+          "title": "Asset Export to FBX File",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "It’s possible to choose whether to export your whole world or just a small selection of assets"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "partial",
+      "note": "Textures go in as eight-bit PNG, any power of two up to four thousand and ninety six on a side, and since a change in the release notes a model may now be imported with no texture at all. What ships to the device is a compressed form which Meta names only in passing while doing the arithmetic on download budgets. Textures come back out through the world export. There is no support for the newer container formats that carry device compression.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/creating-custom-models-for-horizon-worlds/guidance-for-custom-models-budgets-and-model-specs",
+          "title": "Guidance for Custom Models: Budgets and Model Specs",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Horizon will support any power of 2 textures up to 4096 x 4096"
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/performance-best-practices-and-tooling/performance-limits-for-a-world",
+          "title": "Performance limits for a World",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "40 Megapixels = 25 MB (ASTC 6x6)."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/release-notes/",
+          "title": "Release Notes",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "PNG textures are no longer required for any FBX 3D Model import. If no PNG is specified, it will be imported with the same basic material as the default shapes."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "conflicts",
+      "note": "Material exchange happens through spelling, not through data. The suffix on the material name picks one of about ten fixed shading models, the suffix on the texture filename says which channels are packed together, and when slot order matters Horizon borrows Unreal Engine's _skin00 convention. Meta names glTF 2.0 once, only to say its cutout threshold of one half matches. Coming the other way the export writes ordinary FBX materials and textures, which carries none of that meaning back, so material intent only ever travels inwards.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/creating-custom-models-for-horizon-worlds/materials-guidance-and-reference-for-custom-models/",
+          "title": "Materials Guidance and Reference for Custom Models",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Alpha cutout happens at 0.5 (matching the default for GLTF 2.0 and Unity)."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/creating-custom-models-for-horizon-worlds/multiple-materials-per-mesh",
+          "title": "Multiple Materials per Mesh",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "When the order of material slots is important, Horizon uses the same naming convention as Unreal Engine."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "conflicts",
+      "note": "Authored animation cannot come in. Meta says plainly that importing animation is not supported, even though the FBX it reads is a format built to carry it. What Horizon offers instead is an animation recorded by hand: the creator grabs an object in the headset and moves it, for at most twenty seconds, with a loop or a back-and-forth setting, or else moves things frame by frame from a script. Nothing about that model has a way in or a way out.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/creating-custom-models-for-horizon-worlds/guidance-for-custom-models-budgets-and-model-specs",
+          "title": "Guidance for Custom Models: Budgets and Model Specs",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Importing animation is not currently supported"
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/vr-creation/sfx/adding-physics-and-animation-in-horizon",
+          "title": "Use physics and animation in Meta Horizon Worlds",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Animations can be up to 20 seconds long."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "none",
+      "note": "Rigged meshes cannot be uploaded. Meta states the limit in one sentence on the model creation page: the upload path takes rigid models only and skeletal deformation is not supported. The player's own body is Meta's, and its bone structure is not published to creators.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/creating-custom-models-for-horizon-worlds/creating-a-custom-model/",
+          "title": "Creating a Custom Model",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "This only works for unanimated rigid models; skeletal deformations are not supported with this upload flow."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "none",
+      "note": "The model specification lists what Horizon reads out of an FBX: meshes, textures, materials, vertex colours, vertex normals and the first texture coordinate channel. Blend shapes and morph targets are named nowhere in it, and since rigged and deforming meshes are refused outright there is nothing for them to drive.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/creating-custom-models-for-horizon-worlds/guidance-for-custom-models-budgets-and-model-specs",
+          "title": "Guidance for Custom Models: Budgets and Model Specs",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "A 3D model is made up of Mesh + Textures + Materials."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/creating-custom-models-for-horizon-worlds/creating-a-custom-model/",
+          "title": "Creating a Custom Model",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "skeletal deformations are not supported with this upload flow"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "partial",
+      "note": "Repeating an object is done by spawning it from an asset, either one at a time through a spawn controller or from a pool gizmo that holds copies ready. Draw calls are budgeted and counted. What is missing is any cheap-repeat mechanism: Meta publishes no instancing control, and warns that loading costs half a millisecond of every frame and spawning ten times that, so many copies are expensive rather than free.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/typescript/asset-spawning/introduction-to-asset-spawning",
+          "title": "Introduction to Asset Spawning",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "The load() method performs 0.5 ms/frame of spawning work, while spawn() performs 5 ms/frame of spawning work."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/performance-best-practices-and-tooling/performance-limits-for-a-world",
+          "title": "Performance limits for a World",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Draw Calls"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "partial",
+      "note": "A large world can be split into sublevels, each of which is a separate published Horizon world holding its own meshes, gizmos and scripts, which a parent world references by a link and a script loads, unloads or holds in memory. Teams can work on different sublevels and stitch them together. Two things are missing: there is no override mechanism, so a parent cannot change anything inside a sublevel, and composition is the same for everyone, because loading a sublevel loads it for every player at once.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/typescript/asset-spawning/world-streaming",
+          "title": "World Streaming",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Sublevels are separate worlds, which can each contain meshes, gizmos, scripts."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/typescript/asset-spawning/world-streaming",
+          "title": "World Streaming",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "World streaming is client independent. Loading a sublevel loads it for every player simultaneously."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "partial",
+      "note": "Horizon works in metres and tells creators to build at real-world scale and to set the units correctly when exporting the FBX. The part that is missing is reliability: Meta records a known fault where a model arrives at the right size but with its scale value set to one hundredth, which means the number on the entity and the size on screen disagree.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/creating-custom-models-for-horizon-worlds/best-practices",
+          "title": "Best practices for custom models",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "There is a known scale issue where models will come in at the correct size but will have their transforms set to 0.01 scale."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/code-blocks-and-gizmos/use-the-environment-gizmo",
+          "title": "Environment gizmo",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "The grid is 64 square meters in size, with each tile representing one square meter."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "conflicts",
+      "note": "No permission travels with an asset. Meta enforces rights centrally instead: recorded sound is scanned for copyrighted music and may be blocked or muted, the scans run again later so something that passed can be muted afterwards, and the only remedy is an email appeal. Digital goods carry an age rating, which is a suitability label, not a licence. Nothing here is machine-readable by a recipient.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/safety-and-privacy/using-music-audio-recordings-horizon-worlds",
+          "title": "Using music in audio recordings in Meta Horizon Worlds",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "our system conducts periodic retroactive scans, so your content may be muted at a later point in time, even if your recorded audio was initially available."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/save-optimize-and-publish/restrictions-to-worlds-in-horizon",
+          "title": "Worlds content guidelines",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Every digital good in Worlds receives a rating indicating its suitability for different age groups."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "none",
+      "note": "An asset has an owner inside Meta's library, and ownership decides who may replace it and who may share it, but that is an access rule held on Meta's servers. There is no signature, no signed manifest and no record of authorship that leaves with the asset.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/desktop-editor/help-and-reference/horizon-worlds-audio-ingestion",
+          "title": "Meta Horizon Worlds Audio Ingestion",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "You can replace the audio assets only for assets that you own."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "conflicts",
+      "note": "A creator never supplies a body. The avatar belongs to the person's Meta account and is made in Meta's own editor, now including bodies generated from a written prompt. Creators may design and sell clothing for it, tops, bottoms and shoes, but there is no avatar file to import and none to export, and no path to any portable avatar format. Whatever a person wears follows their account across Meta's own products and stops there.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/release-notes/",
+          "title": "Release Notes",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "This update enables creators to design and sell avatar clothing, including tops, bottoms, and shoes, with manual and Meta AI texturing and versioning support."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/release-notes/",
+          "title": "Release Notes",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Avatars can now be created by AI prompts!"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "none",
+      "note": "Meta publishes no bone names and no rig structure to Horizon creators. The only handle a script gets on the body is a short closed list of named animations tied to how the avatar is holding something. There is nothing an outside tool could target.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/create-for-web-and-mobile/typescript-apis-for-mobile/player-animations",
+          "title": "Player Animations",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "You can find the names of the supported animations in the"
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/creating-custom-models-for-horizon-worlds/creating-a-custom-model/",
+          "title": "Creating a Custom Model",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "skeletal deformations are not supported with this upload flow"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "none",
+      "note": "Nothing in the creator documentation names a facial expression, a mouth shape or a set of them. Emotes exist as buttons a player presses, and a like on a photo board fires a thumbs-up, but there is no named vocabulary a script can set and nothing that could survive a move to another platform. This is an absence, and Meta simply does not write about it.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/code-blocks-and-gizmos/media-board-gizmo",
+          "title": "Media board gizmo",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "which triggers a thumbs up emote"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "none",
+      "note": "There is no way to play an animation authored for one body on another, because there is no way to bring an animation in at all. What a script can do is ask for one of Meta's own animations by name, which is selection, not retargeting.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/create-for-web-and-mobile/typescript-apis-for-mobile/player-animations",
+          "title": "Player Animations",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "These animations play only when visiting Meta Horizon Worlds on web and mobile."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/creating-custom-models-for-horizon-worlds/guidance-for-custom-models-budgets-and-model-specs",
+          "title": "Guidance for Custom Models: Budgets and Model Specs",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Importing animation is not currently supported"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "partial",
+      "note": "Objects can be worn and carried: an entity can be marked to attach to the avatar, held items can be holstered and swapped from on-screen buttons, and a grip pose setting says how the hand should hold a thing. Creators can also make and sell clothing. What is missing is the part that would travel: the attachment points are never published, and Meta has said outright that attachables for the legs cannot be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/create-for-web-and-mobile/setting-up-worlds-for-web-and-mobile-compatibility",
+          "title": "Setting up worlds for mobile and web",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "allowing mobile players to switch between several attached-to-avatar grabbables with on-screen buttons"
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/full-bodied-avatars/optimizing-for-fullbodied-avatars-in-horizon-worlds/",
+          "title": "Optimizing for Full-Bodied Avatars in Meta Horizon Worlds",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "You are not able to create attachables for legs at this time but this functionality may be available with future updates."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "none",
+      "note": "No reduced avatar representation is offered to creators. Meta has improved avatar skinning cost on its own side and lets a creator cap a world at one avatar, but capping the crowd is not the same as cheapening it, and no detail levels for bodies are published.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/release-notes/",
+          "title": "Release Notes",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "All creators now have the ability to set avatar cap to 1 per world if desired."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "partial",
+      "note": "The avatar is firmly tied to an identity: a creator must be signed in to a Meta account to upload anything, worlds carry age ratings, and who may publish or even enter a world follows from the account's age and from whether a parent manages it. This is a real binding, and it does nothing at all for anyone outside Meta, because the account is not something another operator can check.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/creating-custom-models-for-horizon-worlds/creating-a-custom-model/",
+          "title": "Creating a Custom Model",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Make sure you are signed into your Meta account"
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/save-optimize-and-publish/restrictions-to-worlds-in-horizon",
+          "title": "Worlds content guidelines",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Ages 18+: Only people ages 18 and up can publish content with this rating."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "native",
+      "note": "Bodies move by rule. An entity switched to simulated falls when gravity is on and reacts to what it hits, and simulation always works in world space, so a simulated child ignores its parent's motion. Recorded animation and physics cannot both drive one object: turning on animation cancels simulation and scripted motion.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/vr-creation/sfx/adding-physics-and-animation-in-horizon",
+          "title": "Use physics and animation in Meta Horizon Worlds",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "When Gravity is on (along with Simulated), objects will fall until they hit another object or the floor."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/vr-creation/sfx/adding-physics-and-animation-in-horizon",
+          "title": "Use physics and animation in Meta Horizon Worlds",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "If an object has animation properties on, any simulation properties or scripted motion (motion due to a script) will be canceled out."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "native",
+      "note": "Collision shapes are separate from visible geometry and are declared in the FBX by the name of the mesh: a prefix picks a box, a sphere, a capsule, a convex hull or a full mesh. Meta points out that this is the same name-based approach Unreal, Houdini and Unity use, which makes it one of the few genuinely shared conventions in this record. It runs one way only: shapes come in from the model file, and nothing in the world export says colliders are written back out.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/creating-custom-models-for-horizon-worlds/collider-ingestion-user-guide",
+          "title": "Collider Ingestion User Guide",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Mesh names saved out from the DCC tool define which meshes represent colliders and what type of colliders they are."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/creating-custom-models-for-horizon-worlds/collider-ingestion-user-guide",
+          "title": "Collider Ingestion User Guide",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "This same mesh name-based custom collider approach is used by Unreal, Houdini, and Unity (via plugin)."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/desktop-editor/assets/asset-export-to-fbx-file",
+          "title": "Asset Export to FBX File",
+          "retrieved": "2026-08-24",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "none",
+      "note": "The published physics properties of an entity are simulated, gravity, grabbable, collidable and a physics material. No hinge, slider or other link between two bodies appears anywhere in them. The scripting examples index does list a page on spring physics, which suggests spring-like forces can be scripted, but that page could not be reached and Meta documents no constraint type.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/vr-creation/sfx/adding-physics-and-animation-in-horizon",
+          "title": "Use physics and animation in Meta Horizon Worlds",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Simulation properties involve motion due to physics."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.material",
+      "level": "conflicts",
+      "note": "Surface response is chosen from a short fixed list of named presets, among them balloon, hardwood, ice, lead, rubber ball, super ball and super ice, each with density, drag, bounciness and friction already decided. A creator cannot set a number. Any system that exchanges surface parameters as values has nothing to exchange with a name like super ice, so this cannot round-trip even in principle.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/vr-creation/sfx/adding-physics-and-animation-in-horizon",
+          "title": "Use physics and animation in Meta Horizon Worlds",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Physics materials have preset values for density, drag (air resistance), bounciness and friction, and do not affect an object’s appearance or any sound it may make."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.determinism",
+      "level": "none",
+      "note": "Horizon does not aim at the same result on two machines; it names one machine the owner and copies its answer to the rest. Meta says that when ownership moves, state is lost and the script restarts, so the creator has to pack the state up and send it across. That is the opposite of a shared deterministic simulation, and no determinism guarantee is published anywhere.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/typescript/local-scripting/ownership-in-horizon-worlds",
+          "title": "Ownership in Meta Horizon Worlds",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "When ownership transfers, state details are actually lost."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "none",
+      "note": "No cloth and no deformable simulation is published. Every documented physics property acts on a whole rigid entity, and deforming meshes cannot even be imported.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/creating-custom-models-for-horizon-worlds/creating-a-custom-model/",
+          "title": "Creating a Custom Model",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "skeletal deformations are not supported with this upload flow"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "native",
+      "note": "The trigger zone gizmo fires an event when a player or an object enters or leaves it, and a script can say which players are allowed to set it off, ask who currently can, and switch the zone on and off. Two limits are documented: one zone answers to players or to objects but not both, and the object filter takes exactly one name. Triggers are counted against the capacity a world must stay under to be published.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/code-blocks-and-gizmos/use-the-trigger-zone",
+          "title": "Trigger zone gizmo",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Each trigger can be activated by either players or objects, but not both."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/code-blocks-and-gizmos/use-the-trigger-zone",
+          "title": "Trigger zone gizmo",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "This field currently accepts only one name, and any object with that name can activate the trigger."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "native",
+      "note": "Sound is placed in the world inside an audio gizmo with a full set of properties: play on start, loop, volume and volume randomness, pitch in semitones and pitch randomness, a global switch that removes distance falloff, minimum and maximum distance in metres, a low-pass cutoff frequency, and an event when playback finishes. A script can play, pause and stop with a fade and can aim the sound at named players. Files go in as MP3, WAV, FLAC or Ogg Opus at five listed sample rates; no export path for audio is published.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/desktop-editor/help-and-reference/horizon-worlds-audio-ingestion",
+          "title": "Meta Horizon Worlds Audio Ingestion",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Supported sample rates are 16kHz, 22.5kHz, 24kHz, 44.1kHz and 48kHz."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/typescript/api-references-and-examples/audio-apis",
+          "title": "Audio APIs",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "object that configures fade-in and fade-out timing and a list of users to deliver the audio to."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "partial",
+      "note": "Horizon takes mono files for anything placed in space and names one real standard for the wider bed: first-order ambisonic files must be in Ambix channel order so they point the right way. That is a checkable convention, and it is the only one in Horizon's audio. What is missing is the renderer: Meta never says how direction is turned into two ears, gives creators no control over it, and tells them not to bake spatialisation into the file. Ambisonic beds go in; nothing spatial comes out.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/desktop-editor/help-and-reference/horizon-worlds-audio-ingestion",
+          "title": "Meta Horizon Worlds Audio Ingestion",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "First Order Ambisonic files must be Ambix format to ensure correct orientation."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/desktop-editor/help-and-reference/horizon-worlds-audio-ingestion",
+          "title": "Meta Horizon Worlds Audio Ingestion",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Avoid including reverb or spatialization pre-baked into asset files unless for expression/flavor"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "none",
+      "note": "There is no room model and no reverb. The audio gizmo's whole property list has nothing about a space colouring a sound, and Meta's own guidance tells creators not to bake reverb into the file either, which leaves rooms sounding like nowhere.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/desktop-editor/help-and-reference/horizon-worlds-audio-ingestion",
+          "title": "Meta Horizon Worlds Audio Ingestion",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Avoid including reverb or spatialization pre-baked into asset files unless for expression/flavor"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "none",
+      "note": "Geometry does not block sound. The only shaping Horizon offers is a minimum and a maximum distance and a fixed low-pass cutoff frequency that dulls a sound the same way whatever stands between the listener and it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/desktop-editor/help-and-reference/horizon-worlds-audio-ingestion",
+          "title": "Meta Horizon Worlds Audio Ingestion",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Frequency in hertz that defines the low-pass cutoff, which accentuates sounds below this frequency and attenuates sounds above it."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "partial",
+      "note": "Streaming here means off the local disk, not off the network: anything above two and a half megabytes is streamed rather than held in memory, and only one such file should play at once. Uploads are capped at fifty megabytes. There is no way to pull live audio from an outside host into a world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/desktop-editor/help-and-reference/horizon-worlds-audio-ingestion",
+          "title": "Meta Horizon Worlds Audio Ingestion",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Audio assets that are larger than 2.5 MB are streamed from disk."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/desktop-editor/help-and-reference/horizon-worlds-audio-ingestion",
+          "title": "Meta Horizon Worlds Audio Ingestion",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Audio uploads under 50MB."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "partial",
+      "note": "Live voice works and a creator can shape it: the environment gizmo carries the voice settings and a script can change them, and voice counts as one of the sixty-four sounds a world may play at once. Meta also runs captions over it, in English only, with translation into four languages. All of that lives inside the runtime and nothing about the transport is published, so a creator can turn voice up and down but nobody outside Horizon can carry it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/code-blocks-and-gizmos/use-the-environment-gizmo",
+          "title": "Environment gizmo",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "is available to configure how players hear each other in the world."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/desktop-editor/help-and-reference/horizon-worlds-audio-ingestion",
+          "title": "Meta Horizon Worlds Audio Ingestion",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "If enabled, player-to-player voice-over (VOIP) counts as 1 audible sound source."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/release-notes/",
+          "title": "Release Notes",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Only English language voiceover can be transcribed at this time"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "partial",
+      "note": "Everything that moves is replicated, and it goes to everybody. Meta's own performance advice says so and tells creators the remedy is to have fewer moving things. A creator cannot choose what replicates, cannot set a rate, and is given no schema or wire form; the only lever is the ownership model, which decides which machine is the source of truth.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/performance-best-practices-and-tooling/performance-best-practices/network-best-practices",
+          "title": "Network best practices",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "All moving (dynamic) objects in the world have their positions synchronized between clients, where updates are sent to every player in the world."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "native",
+      "note": "This is the best documented part of Horizon. Ownership decides which machine holds the truth for an entity and therefore where its script runs. The server owns everything by default, which keeps the view common and stops a client cheating. Ownership moves to a player automatically when they grab a thing or collide with it, or by hand from a script, and a keep-ownership-on-collision setting turns the automatic case off. Meta explains when not to hand ownership over, with worked examples of bowling pins and racing cars.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/typescript/local-scripting/ownership-in-horizon-worlds",
+          "title": "Ownership in Meta Horizon Worlds",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Ownership is a mechanism used to determine which client (either the server or a user’s device) is the authority for a particular entity’s state."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/typescript/local-scripting/ownership-in-horizon-worlds",
+          "title": "Ownership in Meta Horizon Worlds",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Entity ownership automatically transfers from one client to another whenever a player in the game grabs something (for example, a gun), or when a player collides with something."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "none",
+      "note": "Nobody is sent less than anybody else. Movement updates go to every player in the world, and even the coarse tool that could have helped, sublevel streaming, is explicitly the same for everyone: loading a sublevel loads it for all players at once, and per-player streaming is not supported. A creator has no way to give two people in one world different content.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/performance-best-practices-and-tooling/performance-best-practices/network-best-practices",
+          "title": "Network best practices",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "updates are sent to every player in the world"
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/typescript/asset-spawning/world-streaming",
+          "title": "World Streaming",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Per-player world streaming is not supported"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.prediction",
+      "level": "none",
+      "note": "Horizon's answer to latency is not to guess and correct but to move the work. Meta tells creators that a script running on the owning player's own device has no latency problem, and that the way to get a good feel is to hand that player ownership. No prediction and no reconciliation is documented anywhere.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/typescript/local-scripting/ownership-in-horizon-worlds",
+          "title": "Ownership in Meta Horizon Worlds",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "there are no latency problems when scripts execute locally"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "none",
+      "note": "Horizon obviously has a working transport and publishes nothing whatever about it. Across the networking pages, the ownership pages, the local scripting pages and the network performance advice, no protocol is named, no message form is described and no port is given. This is an absence of published information rather than a technical gap, and it means nothing here can be implemented against.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/performance-best-practices-and-tooling/performance-best-practices/network-best-practices",
+          "title": "Network best practices",
+          "retrieved": "2026-08-24",
+          "kind": "primary"
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/typescript/local-scripting/ownership-in-horizon-worlds",
+          "title": "Ownership in Meta Horizon Worlds",
+          "retrieved": "2026-08-24",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.media",
+      "level": "partial",
+      "note": "Media moves one way, outwards, and only to Meta. World Broadcast takes cameras a creator places in a world and turns them into streams that appear in the Meta Horizon app feed and on Facebook and Instagram. The media board shows photos players took in the world, thirty at a time, chosen per viewer and approved by the creator. Nothing lets a world pull in a live stream from anywhere else.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/release-notes/",
+          "title": "Release Notes",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "The World Broadcast feed is then shown on surfaces such as the Meta Horizon App feed and other Meta platforms such as Facebook and Instagram."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/code-blocks-and-gizmos/media-board-gizmo",
+          "title": "Media board gizmo",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Each player sees a personalized set of 30 photos, selected from photos that are included in the approved world posts."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "partial",
+      "note": "Joining works and is entirely Meta's. A world must be published before anyone can enter, the person must be signed in to a Meta account, and a creator can mark an instance open or closed and can shut a server down. Nothing about how a client authenticates or how it is handed to a running instance is documented.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/save-optimize-and-publish/publish-your-world",
+          "title": "Publish your world",
+          "retrieved": "2026-08-24",
+          "kind": "primary"
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/creating-custom-models-for-horizon-worlds/creating-a-custom-model/",
+          "title": "Creating a Custom Model",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Make sure you are signed into your Meta account"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "conflicts",
+      "note": "Doors work, and they work by name. A creator drops a door gizmo, points it at another published Horizon world by typing that world's exact name, and a player presses a trigger to travel. Meta warns that the name must be exact and that two worlds must not share a name, which is the problem in one sentence: a display name is not an address, and a scheme that breaks when two people choose the same title cannot cross an operator boundary. Doors also stop working inside the editor. What travels is the account and, where the two worlds share a variable group, the player's saved data; nothing else.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/code-blocks-and-gizmos/use-the-portal-gizmo",
+          "title": "Door gizmo",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Ensure to enter the exact name of the destination world."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/code-blocks-and-gizmos/use-the-portal-gizmo",
+          "title": "Door gizmo",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Ensure that the two worlds do not have the same name."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/release-notes/",
+          "title": "Release Notes",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Portals and doors will no longer be usable for navigation while in the Editor or Edit mode."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "partial",
+      "note": "Inside a world a script knows exactly who is there, because entering and leaving raise events a creator can handle. Outside it, nothing: there is a following relationship inside Horizon and a count of world visits in Meta's dashboard, but no roster that crosses an operator boundary and no way to ask where somebody is.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/typescript/local-scripting/getting-started-with-local-scripting",
+          "title": "Getting Started with Local Scripting",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "it won’t receive that event if the player that owns the script leaves the world"
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/release-notes/",
+          "title": "Release Notes",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "We're introducing a new World Visits metric, so you can now easily see how popular a world truly is by viewing the real number of people who have joined each world."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "conflicts",
+      "note": "There are two ways to name a place and neither is an address in the ordinary sense. Inside a world, doors resolve a destination by matching its exact display name, which Meta admits breaks if two worlds share one. Outside, Meta issues a link that opens the Horizon app if the person has it installed, and the desktop editor gained deep-link support. Both resolve only within Meta's own directory, so no third party can name a Horizon world or be named by one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/create-for-web-and-mobile/setting-up-worlds-for-web-and-mobile-compatibility",
+          "title": "Setting up worlds for mobile and web",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "The ability to share a direct link to your world (which will open in the mobile app if the person who clicks it has it installed) is a critical advantage"
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/code-blocks-and-gizmos/use-the-portal-gizmo",
+          "title": "Door gizmo",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Ensure that the two worlds do not have the same name."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "partial",
+      "note": "Finding a world is a Meta product, not a protocol. Meta runs a personalised hub, ranks worlds, sets rules for the preview image, offers a tool to test two thumbnails against each other, publishes a taxonomy for tagging, and gates everything by age rating. It works, and it works only for Meta: there is no query interface any other party could call, and no way for a Horizon world to appear in someone else's directory.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/release-notes/",
+          "title": "Release Notes",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "our redesigned UI called Navigator – a personalized hub that makes navigating the metaverse intuitive and seamless."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/save-optimize-and-publish/restrictions-to-worlds-in-horizon",
+          "title": "Worlds content guidelines",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Every world and event gets a rating in Worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "none",
+      "note": "No shared clock is published. The only time a script is given is the gap since the last frame, delivered per frame on the machine the script happens to be running on, and a way to run something after a delay. There is no world time, no ordering guarantee across machines, and no way to say when two events happened relative to each other.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/typescript/getting-started/typescript-faq",
+          "title": "TypeScript FAQ",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "deltaTime is in microseconds"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "partial",
+      "note": "The base identifier for a person is a Meta account, and Meta ties it to the rest of its estate: creators sign in with it, it can be linked to a Facebook account through the accounts centre so the sound library becomes available, and a parent can manage a child's. It is a real identity root and it is Meta's alone; no other party can resolve it or check anything about it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/safety-and-privacy/using-music-audio-recordings-horizon-worlds",
+          "title": "Using music in audio recordings in Meta Horizon Worlds",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "add your Facebook account"
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/release-notes/",
+          "title": "Release Notes",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "voice chat is disabled for parent-managed Meta account users in Horizon Worlds except for specific parent-approved contacts."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "none",
+      "note": "No verifiable claim format appears anywhere in the creator documentation. Claims about a person, such as their age band or whether their account is parent-managed, exist only as facts Meta holds and acts on, never as something expressed in a form a second party could read.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/save-optimize-and-publish/restrictions-to-worlds-in-horizon",
+          "title": "Worlds content guidelines",
+          "retrieved": "2026-08-24",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "none",
+      "note": "There is no protocol by which two parties request and present claims, because there is only ever one party. Every check happens inside Meta, against Meta's own record of the account.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/save-optimize-and-publish/restrictions-to-worlds-in-horizon",
+          "title": "Worlds content guidelines",
+          "retrieved": "2026-08-24",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "partial",
+      "note": "Permission grants are real and reasonably fine-grained: collaborators are added to a world with stated permissions, a variable group is shared with named creators who may use it but may not change it, members-only worlds restrict entry, age ratings restrict both entry and publishing, and a trigger zone can be limited to chosen players. Every one of those grants is stored and read by Meta, so a party that did not issue it cannot read it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/vr-creation/scripting/use-persistent-variables",
+          "title": "Use persistent variables",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "sharing a variable group with another creator only allows them to use it in their worlds. They cannot edit the variable group or add persistent variables to it."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/code-blocks-and-gizmos/use-the-trigger-zone",
+          "title": "Trigger zone gizmo",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "You can control which specific players can trigger the zone using the"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "none",
+      "note": "Selective disclosure does not arise, because nothing is disclosed to a receiving world in the first place. Meta knows the person's age and account status and enforces on that knowledge itself; a creator is never told and never asked.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/release-notes/",
+          "title": "Release Notes",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "voice chat is disabled for parent-managed Meta account users in Horizon Worlds except for specific parent-approved contacts."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.social",
+      "level": "partial",
+      "note": "Relationships exist and Meta uses them: photos from people a player follows are pushed up the media board, there is an asset template for following a creator on Instagram and in Horizon, and creators can share links to their avatar items across Facebook and Instagram. The graph is Meta's own, spans Meta's own products, and nothing about standing or relationship leaves that estate.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/code-blocks-and-gizmos/media-board-gizmo",
+          "title": "Media board gizmo",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Photos from others that the player follows and photos with a high"
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/release-notes/",
+          "title": "Release Notes",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "These links can be pasted across platforms like Facebook, Instagram, and more"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "conflicts",
+      "note": "Rights are enforced, but not at the point of use and not from terms attached to the work. Meta scans recorded sound for copyrighted music, blocks or mutes it, repeats the scan later so something already published can be silenced afterwards, and flashes the gizmo red while emailing the creator. The appeal route is an email address. That is central after-the-fact takedown, which is the opposite of a licence a receiving runtime could read and honour on its own.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/safety-and-privacy/using-music-audio-recordings-horizon-worlds",
+          "title": "Using music in audio recordings in Meta Horizon Worlds",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Content may be scanned for copyrighted music; if copyrighted music is detected in your recording, your content may be blocked."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/code-blocks-and-gizmos/use-the-sound-recorder-gizmo",
+          "title": "Sound recorder gizmo",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Before a sound is recorded, a purple banner informs you that any sound recorded will be scanned for copyrighted content."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "out-of-scope",
+      "note": "Horizon worlds are invented places with their own origin, which the export dialogue offers as one of two choices of frame. Nothing in the platform expresses a position against the Earth, and nothing would use it if it did.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/desktop-editor/assets/asset-export-to-fbx-file",
+          "title": "Asset Export to FBX File",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "decide whether to use the world-origin as the origin in your FBX file or use the center point of the models you have selected as the origin"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "out-of-scope",
+      "note": "There is one frame, the world's own, set either by the world origin or by the centre of whatever is selected when exporting. No Earth reference frame is involved and none could be named.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/desktop-editor/assets/asset-export-to-fbx-file",
+          "title": "Asset Export to FBX File",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "The scene center point, whether to use the world’s origin or use the center point of the selected objects."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "none",
+      "note": "This is in scope because Horizon does ship mixed reality: Meta opened public mixed reality worlds where people play with passthrough on. But nothing published lets a creator fix content to a place in the player's own room, and no anchor of any kind appears in the gizmo set or the scripting documentation.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/release-notes/",
+          "title": "Release Notes",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "world, where you can now play mixed reality games with others in Worlds!"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "none",
+      "note": "Shared and persistent anchors are equally absent, and the platform's design points away from them: content in a world is the same for every player, and per-player content is explicitly not supported, which is the opposite of everyone seeing the same thing pinned to their own different room.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/typescript/asset-spawning/world-streaming",
+          "title": "World Streaming",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Per-player world streaming is not supported"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.vps",
+      "level": "out-of-scope",
+      "note": "Recovering a pose from camera imagery is not something Horizon does or exposes. The whole input surface a creator sees is buttons, keys, sticks and screen touches; camera imagery never reaches a script, and the camera pages are about where the virtual viewpoint sits rather than about reading the real world.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/create-for-web-and-mobile/typescript-apis-for-mobile/custom-input-api",
+          "title": "Custom Input API",
+          "retrieved": "2026-08-24",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "out-of-scope",
+      "note": "Horizon streams sublevels, which are other Horizon worlds a creator places by hand and a script loads, not tiles of terrain indexed by ground position. There is no geospatial data of any kind to tile.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/typescript/asset-spawning/world-streaming",
+          "title": "World Streaming",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Sublevels are separate worlds, which can each contain meshes, gizmos, scripts."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.indoor",
+      "level": "out-of-scope",
+      "note": "There is no structured description of an interior. A building in Horizon is meshes and colliders, with a navigation mesh laid over the walkable parts so characters can find their way, which says where a character may walk rather than what the rooms are.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/desktop-editor/npcs/navigation-mesh-generation",
+          "title": "Navigation mesh generation",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Navigation meshes are 3D polygonal meshes representing the predetermined walkable spaces of a world."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "partial",
+      "note": "There is a session lifecycle, but it is a world lifecycle rather than a device one: players enter and leave a world and scripts get events for both, a spawn point gizmo says where they arrive, and the same world runs on headsets, phones, the web and desktop with any world available on all of them by default. What is missing is the device-facing part, starting and ending an immersive session, which Meta's app does and never exposes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/create-for-web-and-mobile/setting-up-worlds-for-web-and-mobile-compatibility",
+          "title": "Setting up worlds for mobile and web",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Any world you create is available on web and mobile by default."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/typescript/local-scripting/getting-started-with-local-scripting",
+          "title": "Getting Started with Local Scripting",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "When the player exits the world, local scripts for that player will run on the server instead of locally."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "conflicts",
+      "note": "Input is a closed list. Meta gives creators an enumeration of fifteen actions, each already bound to a particular Oculus Touch button, a particular desktop key and a particular on-screen button, and a script can only ask for one of those fifteen. It can test whether the action exists on this device and can read the left stick, and connecting to something unsupported quietly does nothing. Fifteen fixed, vendor-named bindings will not meet an extensible action system where the application declares its own actions and the runtime binds them per device.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/create-for-web-and-mobile/typescript-apis-for-mobile/custom-input-api",
+          "title": "Custom Input API",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "The enumeration lists the 15 available actions for input."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/create-for-web-and-mobile/typescript-apis-for-mobile/custom-input-api",
+          "title": "Custom Input API",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Connecting to an unsupported input is allowed, but the input never becomes active, and its axis value remains 0."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "none",
+      "note": "No articulated hand pose reaches a creator. The whole published input surface is the fifteen fixed actions with their button bindings, plus screen touches on phones and desktops that arrive as a screen position and a ray. Meta documents hand tracking at length for people writing native applications for its headsets, and none of that is available inside Horizon Worlds.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/create-for-web-and-mobile/typescript-apis-for-mobile/custom-input-api",
+          "title": "Custom Input API",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "The enumeration lists the 15 available actions for input."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/create-for-web-and-mobile/typescript-apis-for-mobile/focused-interaction",
+          "title": "Focused Interaction",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "The origin point of a ray into the world generated from"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.eye",
+      "level": "none",
+      "note": "Gaze is not an input a Horizon creator can read. It appears nowhere in the input documentation, nowhere in the release notes, and nowhere in the privacy pages, which is notable given how carefully Meta writes about eye data for its other developer products.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/create-for-web-and-mobile/typescript-apis-for-mobile/custom-input-api",
+          "title": "Custom Input API",
+          "retrieved": "2026-08-24",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "none",
+      "note": "No way to send touch feedback to a player is published. The input pages cover buttons, keys, on-screen controls and screen touches, and none of them go the other way.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/create-for-web-and-mobile/typescript-apis-for-mobile/custom-input-api",
+          "title": "Custom Input API",
+          "retrieved": "2026-08-24",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "native",
+      "note": "A script can genuinely ask what it is running on. One call reports whether an input action is supported on this platform, another returns the physical key or button names bound to it so the world can tell the player what to press, and device branching lets a script take a different path on a phone, a computer or a headset. Meta builds a whole design method on top of this, telling creators to emulate, adapt or split the experience by device.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/create-for-web-and-mobile/typescript-apis-for-mobile/custom-input-api",
+          "title": "Custom Input API",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "whether the action is supported on the current platform"
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/create-for-web-and-mobile/setting-up-worlds-for-web-and-mobile-compatibility",
+          "title": "Setting up worlds for mobile and web",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Enables script to respond to player’s device and branch based on device type (mobile, PC, VR)."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "partial",
+      "note": "World rules are written in real TypeScript, which is a genuine strength next to platforms that invented their own language. The restrictions are heavy though: exactly one compiler version is supported and no other, there is no eval, no typed arrays and no proxies, bundled or minified libraries are not supported, and a script is capped at sixty-four thousand bytes unless the world uses file-backed scripts. Version two of the interface is the default and version one is no longer updated. The reference for the interface itself sits behind a Meta account login, so the surface a creator writes against cannot be read by anyone who does not have a Horizon account.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/typescript/getting-started/about-typescript",
+          "title": "About TypeScript",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "TypeScript version 4.7.4 is the only version of TypeScript that is supported by Meta Horizon Worlds."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/typescript/getting-started/about-typescript",
+          "title": "About TypeScript",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "You are limited to 64k in script size"
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/typescript/getting-started/typescript-faq",
+          "title": "TypeScript FAQ",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Hit “login” in the top right and log in using the Meta account you use for Horizon"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "conflicts",
+      "note": "Horizon has a visual block language, authored in the headset, which reads at a glance like the portable declarative interactivity other systems are converging on. It is not. The blocks are Meta's own, they live on entities inside Meta's world record rather than inside an asset, and the world export writes geometry, materials and textures and nothing else. Behaviour therefore never travels with a thing: take an object out of Horizon and it arrives inert.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/vr-creation/scripting/use-persistent-variables",
+          "title": "Use persistent variables",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "you can begin using them inside Code Blocks scripts"
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/desktop-editor/assets/asset-export-to-fbx-file",
+          "title": "Asset Export to FBX File",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "This can help when you want to convert you gray-box levels in Horizon into fully polished 3d models."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "partial",
+      "note": "There is a real boundary and Meta explains why it is where it is: scripts run on the server by default so a hostile client cannot change them, which Meta names as its anti-cheat argument. Scripts moved to a player's own device are then denied things: they cannot spawn assets, cannot touch texture assets, and cannot reach the persistent store, all for stated security and integrity reasons. The missing part is any permission model within a world: the split is between server and client, and there is nothing that isolates one creator's script from another's.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/typescript/local-scripting/getting-started-with-local-scripting",
+          "title": "Getting Started with Local Scripting",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Due to security and integrity concerns, local scripts can’t trigger asset spawning."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/typescript/local-scripting/ownership-in-horizon-worlds",
+          "title": "Ownership in Meta Horizon Worlds",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "script components attached to entities owned by the server can’t be modified by malicious clients, which prevents cheating"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "native",
+      "note": "Autonomous characters are one of Horizon's strongest published areas. A character gizmo places one, a navigation mesh built from volumes and agent profiles gives it somewhere to walk with its own height, width, slope and step limits, and a script queries paths at runtime. Characters can hold a conversation driven by a model, speak with a generated voice, exist without a body at all, and there is a documented route for reporting abuse by one. None of it is expressed in any form another platform could take.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/desktop-editor/npcs/navigation-mesh-generation",
+          "title": "Navigation mesh generation",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Navigation meshes are 3D polygonal meshes representing the predetermined walkable spaces of a world."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/release-notes/",
+          "title": "Release Notes",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Make customizable NPCs that can engage in lifelike conversation by responding to player voice input."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "native",
+      "note": "Horizon bounds guest content harder than almost anything else in this map, and the bounds are gates, not advice. A world cannot be published unless it is under one hundred per cent in four separate areas, and Meta enforces a six gigabyte memory ceiling by refusing to let a creator publish or even add assets above it. On top of that sit runtime vertex and draw-call budgets, download-time budgets tied to slower connections, a cap of one thousand and twenty-four sound sources with sixty-four audible, ten kilobytes per saved object, five variable groups of one hundred and fifty variables each, and sixty-four thousand bytes of script. A real-time meter shows the creator where they stand.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/save-optimize-and-publish/capacity-limits-in-horizon",
+          "title": "Creator capacity limits",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "For a world to be published, it has to stay below 100% capacity in four areas:"
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/performance-best-practices-and-tooling/memory-limits-in-horizon-worlds",
+          "title": "Memory limits in Meta Horizon Worlds",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "creators will be restricted from publishing or adding assets to Worlds that are over 6 GB"
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/typescript/getting-started/persistent-variables-v2",
+          "title": "Persistent Variables",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "A world can contain up to 5 variable groups. Each group has a limit of 150 persistent variables."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "partial",
+      "note": "A world can keep state of its own. Meta added world-level data persistence for things like a shared counter or a complex world state, with a documented way to update a world variable safely when several people change it at once, and a world can be restored from a backup. What is not published is the thing a standards reader would ask: what an instance keeps when the last person leaves, and whether the next instance sees it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/release-notes/",
+          "title": "Release Notes",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "this capability is designed to enhance the experience for creators and users alike by enabling data persistence at a world level."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/typescript/getting-started/persistent-variables-v2",
+          "title": "Persistent Variables",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Unless player data is stored in a persistent variable, it is not retained across play sessions."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "partial",
+      "note": "There is a working inventory economy: a shop gizmo, an inventory template, an interface for a world's inventory, purchases paid for in Meta's own credits from the headset or the phone, an event a script receives when somebody buys something, and the option for a creator to hide Meta's default shop and run their own. The items are entries in Meta's ledger. They follow the account from Horizon world to Horizon world and they stop at the edge of Horizon, because no other operator can read that ledger or write to it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/release-notes/",
+          "title": "Release Notes",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "A new NetworkEvent is launching: OnPlayerPurchasedItemEvent."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/release-notes/",
+          "title": "Release Notes",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Meta Credits can be used for in-world purchases, directly from your headset or the Meta Horizon mobile app."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/release-notes/",
+          "title": "Release Notes",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Now, creators can disable the default in-world shop and the 'In-world items' tab in the inventory for their worlds."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "partial",
+      "note": "This is the surprise in the record. Saved player data really does follow a person between worlds: Meta says persistent variables persist across the worlds a player explores, a variable group can be added to many worlds, and a creator can share a group with other creators so their worlds read the same values, though the sharer keeps sole control of its shape. The store is a numbers-and-objects key store, capped at ten kilobytes an object and flushed every five seconds, and it is unreachable from a script running on the player's own device. It is not accessibility or preference portability, and it never leaves Horizon, but it is cross-world player state, which several comparable platforms forbid outright.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/typescript/getting-started/persistent-variables-v2",
+          "title": "Persistent Variables",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Persistent variables (or PVARs) enable the storage and retrieval of player-specific data during gameplay, which persists across the worlds that players explore."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/vr-creation/scripting/use-persistent-variables",
+          "title": "Use persistent variables",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Any persistent variables you create inside this variable group will be available to use in all your worlds added to the variable group."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/typescript/getting-started/persistent-variables-v2",
+          "title": "Persistent Variables",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Every five seconds, per-user updates for persistent variables are applied."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "none",
+      "note": "Content is referred to by identifier and version, not by what it contains. Asset pools were changed to spawn a pinned version rather than always the latest, and a script holds an asset reference or an asset identifier. No hash-based addressing appears anywhere, so two copies of the same bytes are two different things to Horizon.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/release-notes/",
+          "title": "Release Notes",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Updated AssetPools to spawn versioned assets instead of always spawning latest asset versions to avoid multiple versions of the same asset existing in the scene."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "conflicts",
+      "note": "There is no runnable package. A world is a live record in Meta's store, edited in place, and Meta's own version control advice makes the consequence plain: every save is the equivalent of forcing a push straight onto the main branch that everyone shares. Publishing hands it to Meta, which caches it for a minute or two before players get a fast load and emails the creator if that fails. The only artefact a creator ever holds is an FBX of the geometry, written into a folder beside the app. Nothing about the world can be handed to another runtime, archived, or signed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/typescript/recommended-version-control-strategies",
+          "title": "Recommended Version Control Strategies",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "In Git terms, this would mean every time one of your teammates updates a script file locally, it’s immediately force-pushed to the main branch of your repository."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/getting-started-with-custom-model-import/",
+          "title": "Getting started with 3D model import",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "When you publish your custom model world, it takes anywhere from one to two minutes for it to be cached."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/desktop-editor/assets/asset-export-to-fbx-file",
+          "title": "Asset Export to FBX File",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Clicking export will create a file in a folder called FBXExport located wherever the Horizon app is installed."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "partial",
+      "note": "Delivery is entirely Meta's and the creator's only role is to keep inside the budget. Meta publishes download-time budgets aimed at people on slower connections, caches a published world server-side and emails the creator when caching fails so loads will be slow, and serves assets from its own hosts. There is no creator control over where anything is served from and no way to serve it elsewhere.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/performance-best-practices-and-tooling/performance-limits-for-a-world",
+          "title": "Performance limits for a World",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "The following limits are designed to keep world travel times in check, especially for visitors with lower internet speeds."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/getting-started-with-custom-model-import/",
+          "title": "Getting started with 3D model import",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "If caching fails, you’ll receive an email to let you know that your custom model world load time will take longer than normal."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "partial",
+      "note": "Assets are versioned properly: a pool spawns a pinned version rather than whatever is newest, templates carry draft version notes, and worlds can be restored from a backup. The scripting interface has two versions with a documented upgrade path, and Meta says the older one gets no new features. Worlds themselves are not versioned at all. Scripts are written straight into the shared world with no branch and no merge, so Meta's advice is to keep a separate copy under real version control and copy changes across by hand.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/typescript/getting-started/about-typescript",
+          "title": "About TypeScript",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "All new Meta Horizon worlds use TypeScript API version 2.0 by default."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/typescript/recommended-version-control-strategies",
+          "title": "Recommended Version Control Strategies",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Meta recommends that you make your edits in a separate directory from the auto-sync directory."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/release-notes/",
+          "title": "Release Notes",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Updated AssetPools to spawn versioned assets instead of always spawning latest asset versions"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "out-of-scope",
+      "note": "There is one implementation and Meta runs it, so there is no specification for a second party to match and nothing for a conformance test to test. What Meta does publish is the reverse of conformance: gates a creator's world must pass before Meta will host it, checked by Meta's own tools at publish time.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/save-optimize-and-publish/capacity-limits-in-horizon",
+          "title": "Creator capacity limits",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "For a world to be published, it has to stay below 100% capacity in four areas:"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "partial",
+      "note": "Meta ships generation of a whole environment from a text prompt, and states its own limit: one theme, islands, with more promised. A separate tool generates a textured mesh from a prompt into the world's asset library. So a place can be made from a description, within one theme, and it stays inside Horizon.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/desktop-editor/generative-ai-creation-tools/generative-ai-environment-generation-tool/",
+          "title": "Generative AI Environment Generation Tool, Meta Horizon Worlds documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The GenAI Environment Generation tool offers a rapid solution for creating immersive environments in your world. Currently this tool supports generating island themed environments, with more themes planned to come in the future."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/desktop-editor/generative-ai-creation-tools/generative-ai-mesh-generation-tool/",
+          "title": "Generative AI Mesh Generation Tool, Meta Horizon Worlds documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The Generative AI Mesh tool allows you to dynamically generate textured meshes that can then be added to your worlds asset library."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "Meta Horizon Worlds is a hosted platform whose desktop editor now carries a family of first-party generative tools, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/getting-started-with-custom-model-import/",
+          "title": "Getting started with 3D model import, Meta Horizon Worlds documentation",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "The desktop editor does not support custom shaders."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "Meta Horizon Worlds is a hosted platform whose desktop editor now carries a family of first-party generative tools, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/getting-started-with-custom-model-import/",
+          "title": "Getting started with 3D model import, Meta Horizon Worlds documentation",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "The desktop editor does not support custom shaders."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "none",
+      "note": "Nothing renders splats or radiance fields and nothing carries them. The asset types a creator may upload are a model, a texture, an audio file and a few Meta-made kinds, and no renderer can be added because custom shaders are not supported.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/getting-started-with-custom-model-import/",
+          "title": "Getting started with 3D model import, Meta Horizon Worlds documentation",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "The desktop editor does not support custom shaders."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "out-of-scope",
+      "note": "Meta Horizon Worlds is a hosted platform whose desktop editor now carries a family of first-party generative tools, and it delivers no captured scene, progressively by region and detail or otherwise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/getting-started-with-custom-model-import/",
+          "title": "Getting started with 3D model import, Meta Horizon Worlds documentation",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "The desktop editor does not support custom shaders."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "Meta Horizon Worlds is a hosted platform whose desktop editor now carries a family of first-party generative tools, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/getting-started-with-custom-model-import/",
+          "title": "Getting started with 3D model import, Meta Horizon Worlds documentation",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "The desktop editor does not support custom shaders."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "out-of-scope",
+      "note": "Meta Horizon Worlds is a hosted platform whose desktop editor now carries a family of first-party generative tools, and it defines no encoding or compression for a set of points with attributes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/getting-started-with-custom-model-import/",
+          "title": "Getting started with 3D model import, Meta Horizon Worlds documentation",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "The desktop editor does not support custom shaders."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "Meta Horizon Worlds is a hosted platform whose desktop editor now carries a family of first-party generative tools, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/getting-started-with-custom-model-import/",
+          "title": "Getting started with 3D model import, Meta Horizon Worlds documentation",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "The desktop editor does not support custom shaders."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "out-of-scope",
+      "note": "Meta Horizon Worlds is a hosted platform whose desktop editor now carries a family of first-party generative tools, and it produces no image from a viewing position that no capture camera occupied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/getting-started-with-custom-model-import/",
+          "title": "Getting started with 3D model import, Meta Horizon Worlds documentation",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "The desktop editor does not support custom shaders."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "Meta Horizon Worlds is a hosted platform whose desktop editor now carries a family of first-party generative tools, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/getting-started-with-custom-model-import/",
+          "title": "Getting started with 3D model import, Meta Horizon Worlds documentation",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "The desktop editor does not support custom shaders."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "Meta Horizon Worlds is a hosted platform whose desktop editor now carries a family of first-party generative tools, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/getting-started-with-custom-model-import/",
+          "title": "Getting started with 3D model import, Meta Horizon Worlds documentation",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "The desktop editor does not support custom shaders."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "Meta Horizon Worlds is a hosted platform whose desktop editor now carries a family of first-party generative tools, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/getting-started-with-custom-model-import/",
+          "title": "Getting started with 3D model import, Meta Horizon Worlds documentation",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "The desktop editor does not support custom shaders."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "none",
+      "note": "The generative tools make new assets; nothing described lets a creator change a world already generated by describing the change or pointing at a region, and nothing keeps earlier versions of a generation. Regeneration is a fresh prompt.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/desktop-editor/generative-ai-creation-tools/generative-ai-environment-generation-tool/",
+          "title": "Generative AI Environment Generation Tool, Meta Horizon Worlds documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The GenAI Environment Generation tool offers a rapid solution for creating immersive environments in your world. Currently this tool supports generating island themed environments, with more themes planned to come in the future."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "partial",
+      "note": "Control is a text prompt and a chosen style, in the editor's own panel. There is no interchange format a caller may hand in, no seed for repeatability documented, and no way for an existing authoring pipeline to drive the generator with files it already has.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/desktop-editor/generative-ai-creation-tools/generative-ai-skybox-tool/",
+          "title": "Generative AI Skybox Generation Tool, Meta Horizon Worlds documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The Generative AI Skybox Generation Tool allows you to dynamically generate skyboxes for your created worlds."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/desktop-editor/generative-ai-creation-tools/generative-ai-environment-generation-tool/",
+          "title": "Generative AI Environment Generation Tool, Meta Horizon Worlds documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The GenAI Environment Generation tool offers a rapid solution for creating immersive environments in your world. Currently this tool supports generating island themed environments, with more themes planned to come in the future."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "Meta Horizon Worlds is a hosted platform whose desktop editor now carries a family of first-party generative tools, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/getting-started-with-custom-model-import/",
+          "title": "Getting started with 3D model import, Meta Horizon Worlds documentation",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "The desktop editor does not support custom shaders."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "Meta Horizon Worlds is a hosted platform whose desktop editor now carries a family of first-party generative tools, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/custom-model-import/getting-started-with-custom-model-import/",
+          "title": "Getting started with 3D model import, Meta Horizon Worlds documentation",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "The desktop editor does not support custom shaders."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "partial",
+      "note": "A skybox is generated from a prompt and can be saved to the asset library or downloaded to disk, so a 360-degree view of a place does leave the platform. What the documentation never states is the projection of the file that comes out, which is the one fact this row asks for.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/desktop-editor/generative-ai-creation-tools/generative-ai-skybox-tool/",
+          "title": "Generative AI Skybox Generation Tool, Meta Horizon Worlds documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The Generative AI Skybox Generation Tool allows you to dynamically generate skyboxes for your created worlds."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/desktop-editor/generative-ai-creation-tools/generative-ai-skybox-tool/",
+          "title": "Generative AI Skybox Generation Tool, Meta Horizon Worlds documentation",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can also download and save your generated skybox to your local disk using the download icon."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "out-of-scope",
+      "note": "Worlds are assembled in Meta's desktop editor from gizmos and scripts, and the documented creator surface has no gizmo or script interface that hands a world the shape of the player's real room.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/code-blocks-and-gizmos/about-gizmos",
+          "title": "Meta Horizon Worlds documentation, About gizmos",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "In the desktop editor, gizmos are self-contained modules that you can place in your world to create actions or functions."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "There is no semantic reading of the physical world available to a world's script. Everything a world can name is something a creator placed in it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/code-blocks-and-gizmos/about-gizmos",
+          "title": "Meta Horizon Worlds documentation, About gizmos",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "In the desktop editor, gizmos are self-contained modules that you can place in your world to create actions or functions."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "out-of-scope",
+      "note": "No depth map of the player's surroundings reaches world code; the documented scripting surface offers no such channel.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/code-blocks-and-gizmos/about-gizmos",
+          "title": "Meta Horizon Worlds documentation, About gizmos",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "In the desktop editor, gizmos are self-contained modules that you can place in your world to create actions or functions."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "Worlds are drawn as fully virtual scenes, so there is nothing real for virtual content to be occluded by.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/code-blocks-and-gizmos/about-gizmos",
+          "title": "Meta Horizon Worlds documentation, About gizmos",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "In the desktop editor, gizmos are self-contained modules that you can place in your world to create actions or functions."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "none",
+      "note": "Not settled. Meta's Horizon Worlds documentation now requires a sign-in and could not be read for this lane, and the capture of it in this project's database — the creator-facing pages on cameras, navigation meshes and publishing — contains no passthrough or environment blend control for world authors. Recorded unverified rather than proven absent; a reader with account access should settle it.",
+      "confidence": "unverified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.face",
+      "level": "none",
+      "note": "Not settled, for the same reason: the Horizon Worlds documentation is behind a sign-in and this project's capture of it shows no face or body stream delivered to a world's scripts. Meta's avatars animate from the headset's own sensing, but that is the platform's, not something a creator receives. Recorded unverified.",
+      "confidence": "unverified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "partial",
+      "note": "Horizon carries a real walkable surface with the world: navigation meshes are described as polygonal meshes representing the predetermined walkable spaces of a world, generated in the desktop editor from volumes and agent profiles, and used by the world's characters. They are built for non-player characters rather than declared for visitors, the spawn point is a script setting on the player rather than a listed arrival, and none of it leaves Horizon.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/desktop-editor/npcs/navigation-mesh-generation",
+          "title": "Navigation mesh generation, Meta Horizon Worlds documentation",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Navigation meshes are 3D polygonal meshes representing the predetermined walkable spaces of a world."
+        },
+        {
+          "url": "https://developers.meta.com/horizon-worlds/learn/documentation/create-for-web-and-mobile/setting-up-worlds-for-web-and-mobile-compatibility",
+          "title": "Setting up worlds for mobile and web, Meta Horizon Worlds documentation",
+          "retrieved": "2026-08-24",
+          "kind": "primary",
+          "quote": "Set the player camera (1st or 3rd person) on spawning the player"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "none",
+      "note": "Scripts belong to the world they are written in and assets are versioned inside Meta's own asset system. Nothing is published as a unit of logic under a name another author resolves, so there is no namespace to keep permanent. The documentation could not be re-read for this lane, so this is recorded unverified.",
+      "confidence": "unverified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "none",
+      "note": "Not settled. A platform of this kind plainly reviews and rates what is published, but the creator documentation that would say who reviews, when, and what a receiving system can learn is behind a sign-in and this project's capture of it carries no such statement. Recorded unverified rather than claimed either way.",
+      "confidence": "unverified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "Horizon worlds are virtual. There is no map of a real place to declare, version or align.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "A world is not a service bound to a region of the Earth and declares no coverage area.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.metadata",
+      "level": "partial",
+      "note": "Text assets carry JSON metadata about enemies, weapons and environments; this example leaves the domain schema to the world author.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/documentation/desktop-editor/tutorial-worlds/feature-samples/text-as-asset-tutorial-world/module-3-using-text-assets-as-metadata/",
+          "title": "Module 3 - Using Text assets as metadata",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "store data about enemies, weapons, and environments as JSON data."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.thumbnail",
+      "level": "native",
+      "note": "Saving a custom asset requires an associated thumbnail image for the asset library.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/documentation/desktop-editor/vr-creation/getting-started/asset-thumbnail-creation-horizon/",
+          "title": "Create an asset thumbnail with Meta Horizon Worlds",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "When you save an asset, you must also add a thumbnail image of the asset."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "native",
+      "note": "UIComponent defines a panel's pixel dimensions and UI-node structure; those dimensions cannot change after initialization.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/reference/desktop-editor/2.0.0/ui_uicomponent/",
+          "title": "UIComponent Class",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The base class for a UI panel"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "native",
+      "note": "RaycastGizmo takes an origin and direction and reports collision information for scene objects; it is not physical-world sensing.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/reference/desktop-editor/2.0.0/core_raycastgizmo/",
+          "title": "RaycastGizmo Class",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "return information about any objects it collides with."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.bounds",
+      "level": "partial",
+      "note": "Entity supplies aggregate renderer and collider bounds for loaded children; the captured API does not establish pre-load geometry rejection.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/reference/desktop-editor/2.0.0/core_entity/",
+          "title": "Entity Class",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Get an axis aligned bounding box that surrounds the renderers"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.collection",
+      "level": "native",
+      "note": "Gameplay tags define entity sets with tag updates and world-level matching queries; TypeScript changes remain session-scoped.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/documentation/desktop-editor/typescript/gameplay-tags-api/modify-gameplay-tags-on-entity-and-get-entities-with-tags/",
+          "title": "Modify and Retrieve Entity Tags",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "retrieve all entities in the world with a specified set of tags."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "partial",
+      "note": "allowPlayerJoin opens or closes an instance for matchmaking; the captured interface does not define a pre-arrival response with validity and explanation fields.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/documentation/desktop-editor/typescript/api-references-and-examples/marking-instances-as-opened-or-closed/",
+          "title": "Marking Instances as Opened or Closed",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "indicates whether a user can or cannot join an instance at a given time."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "partial",
+      "note": "ParticleGizmo exposes runtime PopcornFX parameter types and values; the captured API does not establish exchanging an entire emitter-system description.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/reference/desktop-editor/2.0.0/core_particlegizmo/",
+          "title": "ParticleGizmo Class",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Sets a custom PopcornFX parameter at runtime."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.objectgen",
+      "level": "native",
+      "note": "The mesh-generation tool turns a text prompt into candidate images, then a selected image into a textured mesh saved for placement in a separate world; age, region and rate limits remain source-specific.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/documentation/desktop-editor/desktop-editor/generative-ai-creation-tools/generative-ai-mesh-generation-tool/",
+          "title": "Generative AI Mesh Generation Tool",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "select one or more of these images to generate a 3D model from."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "native",
+      "confidence": "verified",
+      "note": "Entity transform constraints define snapping and keep-relative evaluation; asset-bundle targets also require matching ownership and Always Animate import settings. This documents the platform feature, not cross-runtime conformance.",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/reference/desktop-editor/2.0.0/core_entity/",
+          "title": "Entity Class",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Sets a transform constraint of an entity (the child) to another (the parent)."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "partial",
+      "confidence": "verified",
+      "note": "AudioGizmo binds audio content to world entities and exposes per-player playback and completion events; the cited API does not define timestamped audiovisual synchronization.",
+      "sources": [
+        {
+          "url": "https://developers.meta.com/horizon-worlds/reference/desktop-editor/2.0.0/core_audiogizmo/",
+          "title": "AudioGizmo Class",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Plays audio for all players immediately."
+        }
+      ]
+    }
+  ]
+}

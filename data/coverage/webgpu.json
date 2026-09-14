@@ -1,0 +1,2401 @@
+{
+  "subject_id": "webgpu",
+  "summary": "A low level interface that lets a web page drive the graphics processor for drawing and for general computation, designed to map onto the native driver interfaces used on Windows, Apple platforms and Vulkan. It is not finished. Both the main specification and its separate shading language specification are Candidate Recommendation Drafts, dated 20 and 17 August 2026, and the last formally reviewed snapshot of each is 19 December 2024, so no one should cite it as a completed recommendation. What it covers is draw pipelines, compute pipelines, buffers, textures, samplers, command queues, and a system of named optional features and numeric limits that an application must ask for and check. What it leaves to others is everything above that line: no materials, no lighting, no scene tree, no mesh or animation format, no physics, no sound, no networking, no anchors and no input devices. The trap for a spatial computing audience is that this interface cannot yet draw into an immersive session at all, because the binding that would join it to the immersive web interface is an editor's draft that has never been published on the technical reports track, so immersive web content still draws through the older web graphics interface.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "native",
+      "note": "Defines render pipelines, render passes, render bundles and command encoders that turn vertex and fragment work into pixels. It has no render graph: the order and structure of passes is the application's business.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A GPURenderPipeline is a kind of pipeline that controls the vertex and fragment shader stages, and can be used in GPURenderPassEncoder as well as GPURenderBundleEncoder."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "native",
+      "note": "This is the graphics interface itself, not a renderer that targets one. The shading language is a separate specification at the same candidate stage.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU is an API that exposes the capabilities of GPU hardware for the Web."
+        },
+        {
+          "url": "https://www.w3.org/TR/WGSL/",
+          "title": "WebGPU Shading Language, W3C Candidate Recommendation Draft, 17 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Shading language for WebGPU."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "out-of-scope",
+      "note": "Surface appearance is written by the application in shader code. The specification names no material model. The word material does not appear in it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "out-of-scope",
+      "note": "Light, shadow and indirect light are things an application builds with shaders. The word lighting does not appear in the specification.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.post",
+      "level": "out-of-scope",
+      "note": "Effects after the main pass are ordinary extra render passes written by the application. The specification names none.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "out-of-scope",
+      "note": "No mention of splats or radiance fields. These are built on top with compute and render pipelines.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "out-of-scope",
+      "note": "No mention of point clouds, voxels or volumetric video. Three dimensional textures and compute pipelines are the building blocks, not the feature.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "out-of-scope",
+      "note": "No fonts, no glyphs, no text layout. Text is drawn by the application or handed in as a texture.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "out-of-scope",
+      "note": "No viewpoint model. Projection is whatever matrix the application writes into its own shader.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "partial",
+      "note": "It fixes the drawing coordinate conventions that every engine has to match: normalized device coordinates with the bottom left at minus one and depth from zero to one, plus clip space, framebuffer and texture coordinate spaces. It defines no scene transform hierarchy and no way for transforms to compose across content.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Normalized device coordinates (or NDC) have three dimensions"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "out-of-scope",
+      "note": "No file format. Geometry arrives as untyped bytes in a buffer that the application has already parsed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "out-of-scope",
+      "note": "Vertex buffers and index buffers are raw memory with an application-declared layout. No mesh encoding and no geometry compression are specified.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "partial",
+      "note": "It defines the texture formats a device can hold, including compressed families behind named optional features. It defines no image file or container format, so nothing here tells you how a texture is delivered over the wire.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Allows for explicit creation of textures of BC compressed formats which include the \"S3TC\", \"RGTC\", and \"BPTC\" formats."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "out-of-scope",
+      "note": "No animation model. The only uses of the word are the browser's frame callback in example code.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "native",
+      "note": "Instanced drawing is a first class draw call parameter and the shading language exposes the instance index. This is the hardware primitive only; there is no scene level notion of a repeated object.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The number of instances to draw."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "out-of-scope",
+      "note": "No real world scale. Coordinates are whatever the application's shaders decide they mean.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.material",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.determinism",
+      "level": "out-of-scope",
+      "note": "No simulation, so no determinism guarantee. Note for anyone tempted: floating point results differ between graphics processors, so compute work run here is not a base for repeatable simulation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "out-of-scope",
+      "note": "Sound on the web is a separate specification. The word audio does not appear in this one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.prediction",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.media",
+      "level": "out-of-scope",
+      "note": "It can take a video frame in as a texture source, under cross origin rules, but it carries no media and defines no transport.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU allows accessing image data stored in images, videos, and canvases."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "out-of-scope",
+      "note": "There is an optional timestamp query feature for measuring how long work took on the graphics processor. That is a stopwatch, not a shared clock.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "out-of-scope",
+      "note": "Not an identity system, but it does cap what a page can learn about the machine: a browser must not reveal more than thirty two distinguishable device configurations.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "A user agent must not reveal more than 32 distinguishable configurations or buckets."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.social",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "out-of-scope",
+      "note": "No anchors of any kind. The word does not appear in the specification.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.vps",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.indoor",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "out-of-scope",
+      "note": "It runs no immersive session. It carries one hook towards them: an application can ask for the adapter best suited to an immersive session. The document that would let it draw into such a session is a separate editor's draft that has never been published on the technical reports track, so at present this interface cannot present to a headset.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "When set to true indicates that the best adapter for rendering to a WebXR session must be returned."
+        },
+        {
+          "url": "https://immersive-web.github.io/webxr-webgpu-binding/",
+          "title": "WebXR/WebGPU Binding Module - Level 1, Editor's Draft, 12 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "This specification describes support for rendering content for a WebXR session with WebGPU."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.eye",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "partial",
+      "note": "It has a real capability discovery model, but only for the graphics processor: a set of named features and a table of numeric limits, each with a guaranteed default, readable from the adapter and from the device. It tells you nothing about displays, tracking or input.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU adapters and devices have capabilities, which describe WebGPU functionality that differs between different implementations, typically due to hardware or system software constraints. A capability is either a feature or a limit."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "out-of-scope",
+      "note": "The separate shading language specification is a language for graphics processor programs, not a runtime for world rules.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/WGSL/",
+          "title": "WebGPU Shading Language, W3C Candidate Recommendation Draft, 17 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Shading language for WebGPU."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "partial",
+      "note": "It specifies in detail how untrusted shader code is made safe: every command is validated before it reaches the graphics processor, resources start zeroed, out of bounds reads are clamped by robust buffer access, and cross origin images may not be uploaded. That covers work sent to the graphics processor only. Isolating the surrounding application is the browser's job, not this specification's.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "The general approach is strictly validating all the commands before they reach GPU, ensuring that a page can only work with its own data."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "partial",
+      "note": "Every limit is a hard, validated bound on graphics processor use, with a guaranteed default value, and calls are checked against the device's limits rather than the adapter's. It bounds graphics resources only. There is no time budget, no call budget and no way to give guest content a smaller allowance than the page itself.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Each limit is a numeric limit on the usage of WebGPU on a device."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "out-of-scope",
+      "note": "A graphics processor interface. It defines adapters, devices, queues, buffers, textures, samplers, bind groups, shader modules, pipelines and command buffers, and nothing above that line. A full text search of the specification finds no mention of this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "native",
+      "note": "Change ships through named features and numeric limits that an application detects and asks for, with a stated rule that a browser must not expose anything from a side document. There is also a reduced tier, called compatibility mode, with its own lower default limits, for weaker hardware.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU implementations must not expose extension functionality; doing so is a spec violation."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "native",
+      "note": "There is an official test suite, and the working group has made it normative: an implementation has to pass it to be called conformant, and a mismatch between test and specification counts as a bug. The published document names it as its test suite.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/gpuweb/cts",
+          "title": "WebGPU Conformance Test Suite (gpuweb/cts) README",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "implementations must pass them to be WebGPU-conformant"
+        },
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "Test Suite: WebGPU CTS"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "WebGPU is a graphics and compute interface to a GPU, one level below anything that knows what a scene is, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "WebGPU is a graphics and compute interface to a GPU, one level below anything that knows what a scene is, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "WebGPU is a graphics and compute interface to a GPU, one level below anything that knows what a scene is, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "out-of-scope",
+      "note": "WebGPU is a graphics and compute interface to a GPU, one level below anything that knows what a scene is, and it names no Gaussian splat interchange format and carries no splat data.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "out-of-scope",
+      "note": "WebGPU is a graphics and compute interface to a GPU, one level below anything that knows what a scene is, and it delivers no captured scene, progressively by region and detail or otherwise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "WebGPU is a graphics and compute interface to a GPU, one level below anything that knows what a scene is, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "out-of-scope",
+      "note": "WebGPU is a graphics and compute interface to a GPU, one level below anything that knows what a scene is, and it defines no encoding or compression for a set of points with attributes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "WebGPU is a graphics and compute interface to a GPU, one level below anything that knows what a scene is, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "out-of-scope",
+      "note": "WebGPU is a graphics and compute interface to a GPU, one level below anything that knows what a scene is, and it produces no image from a viewing position that no capture camera occupied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "WebGPU is a graphics and compute interface to a GPU, one level below anything that knows what a scene is, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "WebGPU is a graphics and compute interface to a GPU, one level below anything that knows what a scene is, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "WebGPU is a graphics and compute interface to a GPU, one level below anything that knows what a scene is, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "WebGPU is a graphics and compute interface to a GPU, one level below anything that knows what a scene is, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "WebGPU is a graphics and compute interface to a GPU, one level below anything that knows what a scene is, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "WebGPU is a graphics and compute interface to a GPU, one level below anything that knows what a scene is, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "WebGPU is a graphics and compute interface to a GPU, one level below anything that knows what a scene is, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "out-of-scope",
+      "note": "WebGPU is a graphics and compute interface to a GPU, one level below anything that knows what a scene is, and it carries no full 360-degree view of a place as an image with its projection stated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "out-of-scope",
+      "note": "An interface for rendering and computation on a graphics processor. It draws and computes what it is given and has no access to cameras or spatial tracking.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "It has no notion of a real surface, so it has nothing to name.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "out-of-scope",
+      "note": "Depth in WebGPU is a texture format and a depth-stencil state for its own rendering, not a measurement of the physical world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "It provides the depth test that an occlusion effect would be built on, but the real-world depth it would test against has to come from somewhere else entirely.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU, W3C Candidate Recommendation Draft, 20 August 2026",
+          "retrieved": "2026-08-22",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "out-of-scope",
+      "note": "WebGPU draws into a texture. It never sees a camera image of the room and has no compositor, so the blend with the real world happens somewhere else entirely.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.face",
+      "level": "out-of-scope",
+      "note": "A graphics interface has no sensors and no user model; nothing about the person in front of the screen reaches it.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "out-of-scope",
+      "note": "WebGPU has no scene: it takes buffers, pipelines and draw calls. Walkable surface and spawn points belong to a place description, which it does not have.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "out-of-scope",
+      "note": "Shader modules are created from source at run time inside one page. There is no published unit of logic anyone else depends on by name.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "out-of-scope",
+      "note": "No content is delivered to an audience through a graphics API, so there is no path for a review to stand in.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "WebGPU has no notion of place at all, so no map and no alignment between maps.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "No geographic frame and no service boundary; the row has nothing to attach to.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.extension",
+      "level": "native",
+      "note": "The API exposes supported/enabled feature sets and enforces their use, including WGSL language extensions; requesting unsupported capabilities fails device or shader validation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "Using a non-enabled WGSL enable directive always results in a createShaderModule()"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.profile",
+      "level": "native",
+      "note": "The core and compatibility feature levels name defined capability sets and limits; adapter selection rejects a requested level that the implementation cannot provide.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "If the implementation or system does not support all of the capabilities in the requested feature level, requestAdapter() will return null."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.color",
+      "level": "native",
+      "note": "The API defines texture color conversions, canvas colorSpace and toneMapping with standard/extended output range; device/display support still controls the actual result.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "Color values in the extended dynamic range of the screen are unchanged"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.metadata",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires structured descriptive properties attached to a scene or its parts, with enough declared structure for another system to read them. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires evidence and assurance information accompanying a claim, enabling the relying party to assess how the claim was established. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires declaring the vocabulary, types, and validation schemas needed to interpret and check the structure of a claim. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires pairwise identifiers and presentation mechanisms that reduce correlation across relationships, with their remaining correlation risks stated. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.thumbnail",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires a preview image referenced or packaged with an asset, usable without rendering its three-dimensional contents. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.encryption",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires identifying recipient key material and algorithms that permit confidential communication or encrypted content for an intended subject. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.key-lifecycle",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires rules for changing, revoking, or recovering identity-control keys and for discovering the applicable verification material. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires a defined mechanism to discover the suspension, revocation, or other status of a credential after issuance. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires runtime estimates of environmental illumination made available to content for lighting or reflections. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires detecting recognized physical markers or images and reporting their tracked pose relative to a runtime reference space. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.resolve",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires resolving scene resource identifiers against a context or resolver so the referenced resources can subsequently be accessed. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires time-associated pose sequences or streams describing an object's changing location and orientation, with any interpolation rules declared separately. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires picking scene content from pointing input and reporting the intersected object or geometry to the application. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.text",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires receiving character or string entry through a defined input interface, separate from interpreting physical controller actions. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.bounds",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires bounding volumes associated with scene content, organized for spatial rejection, traversal, or selection before detailed geometry is loaded. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.collection",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires named or rule-defined sets of scene objects that consumers can use as targets for scene operations. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires authored runtime relationships that constrain one node's transform using another node and defined evaluation rules. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "partial",
+      "note": "External textures import a video frame for GPU sampling, but WebGPU does not define a scene-level media reference or audiovisual synchronization contract.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "An external texture is created from an external video object using importExternalTexture()."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires runtime-reported physical play-area bounds and floor-relative reference information available to an application. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires generating audio during playback from an exchanged synthesis model, supporting data, and changing control parameters. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.protection",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires declaring the protection scheme associated with protected content components so recipients can identify the required protection mechanism. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires interchanging linked poses and transforms as chains or graphs so related frames can be reconstructed consistently. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires interchanging identified spatial zones, typed events scoped to them, and summaries with defined spatial and temporal meaning. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.consent",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires carrying a grant of permission with scope, purpose, validity, and withdrawal information for uses of the subject or represented data. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires a machine-readable account of a recipient's evaluation and action, with any signature or integrity proof explicitly identified. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires a destination's pre-arrival approval or refusal response, including any validity limit and optional explanatory information. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "native",
+      "note": "Compute pipelines and compute passes dispatch programmable workgroups against bound GPU resources, with defined validation, synchronization and resource-access rules.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "Dispatch work to be performed with the current GPUComputePipeline."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "native",
+      "note": "WGSL defines portable shader source, types and execution semantics consumed by WebGPU shader modules; native driver binaries are not the shared language contract.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/WGSL/",
+          "title": "WebGPU Shading Language",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "WebGPU Shading Language (WGSL) is the shader language for [WebGPU]."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.parametric",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires carrying parametric curves and surfaces in mathematical form so a receiver can evaluate or tessellate them. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires exchanging particle-system emitters and simulation/rendering parameters that a receiving runtime evaluates. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance-recovery",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires locating associated provenance through a supported content fingerprint or watermark when embedded association has been lost. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.style",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires separately expressed styling rules that select feature visibility, color, or other supported display properties from content metadata. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.variant",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires named alternatives of an asset's authored configuration, with a defined selection mechanism. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.voxel",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires interchanging spatial cell volumes and their properties, including updates, as a scene representation. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires asking a sensing runtime for ray intersections with its estimate of physical surroundings and receiving hit poses. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.privacy",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires sensed-data disclosure controls such as spatial coarsening, payload use/retention declarations, and restricted or pseudonymous pose publication. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires receiving typed musical instrument events with channel, note or control identifiers and values through a documented device or recorded-event input interface. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires reconstructing a radiance field or Gaussian representation from observed images and camera information, including optimization controls and a trained scene usable for subsequent view synthesis. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.objectgen",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: WebGPU specifies GPU resources, rendering and computation rather than a scene model. This row requires producing an individual three-dimensional object from a text or image prompt, with geometry or another renderable representation available for placement in a separately authored scene. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "out-of-scope",
+      "note": "WebGPU supplies GPU resources and commands; the host UI system owns region layout, size and alignment. Required function: Layout and presentation of two-dimensional interface regions, including their size, alignment, and relationship to a display or scene.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "out-of-scope",
+      "note": "A GPU texture/canvas is not a shaped layer submitted under a display compositor contract; that submission interface belongs to the host display system. Required function: Submitting distinct shaped image layers to a display compositor with their placement and composition properties.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.frame-timing",
+      "level": "out-of-scope",
+      "note": "GPU queue timestamps and presentation textures do not own an XR runtime's predicted display time and associated view-pose submission contract. Required function: Coordinating frame submission with predicted display timing and the view poses associated with that time.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.w3.org/TR/webgpu/",
+          "title": "WebGPU Candidate Recommendation Draft",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "WebGPU exposes an API for performing operations, such as rendering and computation, on a Graphics Processing Unit."
+        }
+      ]
+    }
+  ]
+}

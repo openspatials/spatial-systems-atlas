@@ -1,0 +1,2658 @@
+{
+  "subject_id": "hyworld",
+  "summary": "Tencent's HY-World 2.0, which the map lists as Hunyuan World 2.0, is a model that turns a sentence, a photograph, a set of photographs or a video into a three-dimensional place, and its whole argument is that the place should be a file rather than a film: where a video world model draws the next frame forever, this one runs once and hands you Gaussian splats, a fused mesh and a point cloud that an ordinary engine can open. Two halves sit in one repository. Reconstruction takes pictures and returns depth, surface normals, camera poses, intrinsics, points and splats in a single pass, and will take known cameras or depth as a prior. Generation makes a 360-degree panorama, parses it into a mesh and a navigation mesh, has a vision-language model plan collision-free camera routes through it, generates the views those routes would see, and fits a splat scene to the result. It is genuinely open in the sense that weights, code and a detailed report are published, and genuinely not open source: the licence excludes the European Union, the United Kingdom and South Korea, forbids using the outputs to improve any other model, and requires a separate grant above a million monthly users. For a standards audience the important part is what does not come out. Everything it writes is somebody else's format used as-is — splat and mesh PLY, the compressed SPZ form, a COLMAP model, a camera JSON — with no scene graph, no object identity, no units, no licence field, no signature and no statement that the place was manufactured rather than photographed. There is no specification of the output and no conformance test, and the documentation chapter for the generation pipeline reads coming soon. Two claims in the technical report describe a rendering platform called WorldLens, with image-based lighting, collision and character control; it is not in the repository or the open-source plan, so the interactive, lit, walkable world the report shows cannot be reproduced from the release, and the rows here are scored on what was published.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "partial",
+      "note": "It rasterizes, but only Gaussians. The trainer and both viewers draw the scene through a modified copy of the gsplat CUDA rasterizer, with render modes for colour, depth, alpha and normals; there is no render graph, no pass structure and no path for ordinary triangle meshes, which are exported for other engines to draw.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Uses `gsplat_maskgaussian` (our custom gsplat fork with integrated MaskGaussian) for differentiable rasterization and adaptive probabilistic Gaussian pruning"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/show_gs.py",
+          "title": "HY-World 2.0 splat viewer source",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "from gsplat.rendering import rasterization"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/world_gs_trainer.py",
+          "title": "HY-World 2.0 Gaussian splatting trainer source",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "render_mode=\"RGB+ED\" if need_depth else \"RGB\""
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "conflicts",
+      "note": "The renderer targets CUDA, not a graphics interface. Drawing runs through hand-written CUDA kernels in the bundled gsplat fork, and the install instructions require CUDA 12.8 and a FlashAttention backend, so nothing in this subject runs on a machine without an NVIDIA GPU. Content leaves as splat and mesh files that other runtimes draw with their own interface; the subject itself will not interoperate with Vulkan, Metal or WebGPU renderers.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "We recommend **CUDA 12.8** and **Python 3.11+**."
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Install **one** FlashAttention backend:"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/requirements.txt",
+          "title": "HY-World 2.0 requirements file",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "torch==2.7.1"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "partial",
+      "note": "Appearance is per-Gaussian colour and opacity, not a material. Spherical harmonic degree defaults to zero and the report says view-dependent effects were dropped deliberately in favour of a flat colour per Gaussian, so a surface has no roughness, no metalness and no view-dependent response. The exported mesh carries only the colour fused into it from rendered views.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/world_gs_trainer.py",
+          "title": "HY-World 2.0 Gaussian splatting trainer source",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "sh_degree: int = 0"
+        },
+        {
+          "url": "https://arxiv.org/html/2604.14268v1",
+          "title": "HY-World 2.0 technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "we adopt view-independent RGB colors"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/gs/extract_mesh.py",
+          "title": "HY-World 2.0 mesh extraction source",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "color_type=o3d.pipelines.integration.TSDFVolumeColorType.RGB8,"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "none",
+      "note": "Light is baked into the Gaussians at training time and there is no lighting model in the released code: no probe, no shadow, no global illumination pass. The technical report claims automatic image-based lighting in a rendering platform called WorldLens, which is described in the report and is not in the open-source plan or the repository, so nothing in the release can be checked against that claim.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.14268",
+          "title": "HY-World 2.0 technical report, abstract",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Also, we introduce WorldLens, a high-performance 3DGS rendering platform featuring a flexible engine-agnostic architecture, automatic IBL lighting, efficient collision detection, and training-rendering co-design, enabling interactive exploration of 3D worlds with character support."
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "- [x] Panorama Generation (HY-Pano 2.0) Model & Code"
+        },
+        {
+          "url": "https://arxiv.org/html/2604.14268v1",
+          "title": "HY-World 2.0 technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "we adopt view-independent RGB colors"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.post",
+      "level": "out-of-scope",
+      "note": "No presentation-time effect stack. The one image-space correction in the code is a bilateral grid applied during optimisation to absorb per-photograph exposure differences, which is a fitting device rather than a post-processing pass a viewer would run.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Depth, normal, and LPIPS loss regularization for high-quality geometry"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "none",
+      "note": "Detail is decided once, at training time, and never again. Adaptive pruning cuts the Gaussian count by about three quarters to make real-time drawing possible, and the mesh is decimated by quadric edge collapse, but the result is a single fixed level: the exported files carry no level-of-detail hierarchy and no streaming order, so a client must take the whole world or none of it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/html/2604.14268v1",
+          "title": "HY-World 2.0 technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The full configuration retains comparable visual quality while reducing 77% Gaussian count compared to the baseline."
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/world_gs_trainer.py",
+          "title": "HY-World 2.0 Gaussian splatting trainer source",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "'meshing_decimation_quadric_edge_collapse',"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Geometry-aware point cloud downsampling"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "native",
+      "note": "This is the subject's core. Both halves of the system end in 3D Gaussian splats: reconstruction predicts splat means, scales, rotations, opacities and spherical harmonics in one forward pass, and generation optimises a splat scene and exports it. The bundled viewer reads a standard splat PLY, with the usual x, y, z, rot_*, scale_*, opacity and f_dc_* fields, and draws it.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "a unified feed-forward model that simultaneously predicts depth, surface normals, camera parameters, 3D point clouds, and 3DGS attributes in a single forward pass"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "predictions[\"splats\"][\"means\"]      # [B, N, 3] — Gaussian centers"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/show_gs.py",
+          "title": "HY-World 2.0 splat viewer source",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "vertex['f_dc_0'], vertex['f_dc_1'], vertex['f_dc_2']"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "partial",
+      "note": "Point clouds are first-class: the pipeline predicts them, writes them as coloured PLY, and the web demo displays them beside the splats. Voxels and volumetric video are absent; the only voxel in the code is a grid used to merge points and to fuse depth into a mesh, not a thing that is drawn.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "# Colored point cloud"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Upload images or videos and visualize 3DGS, point clouds, depth maps, normal maps, and camera parameters in your browser."
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**Voxel merging**: Points within each voxel (size controlled by `compress_pts_voxel_size`) are merged via weighted averaging."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "out-of-scope",
+      "note": "No text of any kind is placed in the scene. The output is a captured or generated appearance; letters exist only where they were in the photographs or the generated imagery, as colour.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "produces 3D world representations (meshes / Gaussian Splattings)"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "native",
+      "note": "The camera is the one thing this subject models rigorously. Reconstruction predicts camera-to-world matrices and intrinsics per view in the OpenCV convention and writes them to a documented JSON file; the same file can be fed back in as a prior. Generation plans the viewpoints itself, writing a camera file per trajectory, and the checkpoint stores an up direction, a facing direction and a centre point for a viewer to start from.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Camera-to-world (c2w), OpenCV convention"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The camera parameter file follows the same format as the `camera_params.json` output by the pipeline:"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "│       ├── camera.json            # Camera parameters"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/show_gs.py",
+          "title": "HY-World 2.0 splat viewer source",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "up_direction = ckpt_all.get(\"up_direction\", up_direction)"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "none",
+      "note": "There is no scene graph and no object identity. A generated world is one undivided set of Gaussians plus one fused mesh; the only per-object record anywhere is a list of things a vision-language model spotted in the panorama in order to plan a camera route, and it never reaches the exported world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "├── objects.json                        # Detected objects from VLM"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Uses VLM (Qwen3-VL) to identify interesting targets"
+        },
+        {
+          "url": "https://arxiv.org/html/2604.14268v1",
+          "title": "HY-World 2.0 technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "is utilized to yield 2D semantic masks for these objects."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "partial",
+      "note": "Conventions are stated where cameras are concerned — camera-to-world matrices in the OpenCV convention, and a coordinate system conversion on export to the compressed splat format, from right-down-front to right-up-back — but the scene itself has no declared frame. Poses are normalised against the first input view, so origin, orientation and scale are whatever that view happened to be, and the exported PLY carries no statement of any of it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**Extrinsics alignment:** The pipeline automatically normalizes all extrinsics relative to the first view, consistent with training behavior."
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/world_gs_trainer.py",
+          "title": "HY-World 2.0 Gaussian splatting trainer source",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "unpack_options.to_coord = spz.CoordinateSystem.RUB"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/world_gs_trainer.py",
+          "title": "HY-World 2.0 Gaussian splatting trainer source",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "pack_options.from_coord = spz.CoordinateSystem.RDF  # from RDF to RUB"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "partial",
+      "note": "It writes into other people's containers and defines none of its own. A finished world leaves as splat PLY, optionally the compressed SPZ or SPX form, a mesh PLY, a coloured point PLY, a camera JSON and, on request, a COLMAP sparse model. There is no packaged scene: no glTF, no OpenUSD, no manifest tying the parts together. The only container it reads back is a splat PLY in its own viewer.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Exports to `.ply`, `.spz` (compressed), and mesh (TSDF fusion) formats"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "# 3D Gaussian Splatting (standard format)"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "# COLMAP format (if --save_colmap)"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/show_gs.py",
+          "title": "HY-World 2.0 splat viewer source",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "plydata = PlyData.read(args.ckpt)"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "partial",
+      "note": "Mesh geometry is produced but not encoded in any considered way. Rendered colour and depth from every training view are fused into a truncated signed distance volume, marching cubes extracts a surface, small components are dropped and the result is decimated; it is written as a plain PLY with no compression, no index scheme and no material binding.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://arxiv.org/html/2604.14268v1",
+          "title": "HY-World 2.0 technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "we further extract a mesh from the optimized 3DGS representation"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/world_gs_trainer.py",
+          "title": "HY-World 2.0 Gaussian splatting trainer source",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "o3d.io.write_triangle_mesh(f\"{self.ply_dir}/fuse_post.ply\", mesh_post)"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/world_gs_trainer.py",
+          "title": "HY-World 2.0 Gaussian splatting trainer source",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "'meshing_decimation_quadric_edge_collapse',"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "none",
+      "note": "Nothing is textured. The exported mesh has no parameterisation and no image maps; its colour comes from fusing rendered views into the volume it was extracted from, so appearance lives per vertex on the mesh and per Gaussian in the splats. Device texture compression is not addressed anywhere.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/gs/extract_mesh.py",
+          "title": "HY-World 2.0 mesh extraction source",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "color_type=o3d.pipelines.integration.TSDFVolumeColorType.RGB8,"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/world_gs_trainer.py",
+          "title": "HY-World 2.0 Gaussian splatting trainer source",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "sh_degree: int = 0"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "out-of-scope",
+      "note": "There is no material to exchange. Appearance is a colour per primitive, so the question a material exchange format answers does not arise for this subject.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/html/2604.14268v1",
+          "title": "HY-World 2.0 technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "we adopt view-independent RGB colors"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "out-of-scope",
+      "note": "The worlds it makes do not move. Video appears only as an intermediate — point-cloud renders along a planned route, and the keyframes the expansion model generates — and is consumed by the next stage rather than kept as an animation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "│       ├── render.mp4             # Point-cloud rendered video (Stage 2)"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| **Output** | Pixel videos (non-editable) | Real 3D assets — meshes / 3DGS (fully editable) |"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "out-of-scope",
+      "note": "It reconstructs and generates places, not articulated bodies. No bone hierarchy exists anywhere in the model outputs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "produces 3D world representations (meshes / Gaussian Splattings)"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "out-of-scope",
+      "note": "No deformation of any kind. Every representation the subject writes is static.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "produces 3D world representations (meshes / Gaussian Splattings)"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "out-of-scope",
+      "note": "Nothing is repeated cheaply because nothing is an object. The viewer has a debugging switch that draws copies of the whole scene in a grid, which is not instancing of scene content.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/show_gs.py",
+          "title": "HY-World 2.0 splat viewer source",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "parser.add_argument(\"--scene_grid\", type=int, default=1, help=\"repeat the scene into a grid of NxN\")"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "none",
+      "note": "The pipeline composes internally — a panorama, planned routes, generated keyframes and a reconstruction are fused into one world — but the result cannot be composed with anything else. There is no layer, no reference to another scene and no override; a second world can only be placed beside the first by whatever engine imported them both.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "d) ![World Composition](https://img.shields.io/badge/World_Composition-34A853?style=flat-square) with WorldMirror 2.0 & 3DGS learning."
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "│   └── generation_bank_worldstereo-memory-dmd/  # Accumulated generation results"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "partial",
+      "note": "Scale is recoverable only when the caller supplies it. The report states plainly that calibrated intrinsics are what resolve metric scale ambiguity, and intrinsics are one of the three priors reconstruction accepts; without them, and in the generation path where there is no real camera at all, the world has no real-world size. No exported file declares a unit either way.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/html/2604.14268v1",
+          "title": "HY-World 2.0 technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "calibrated intrinsics resolve metric scale ambiguity"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "WorldMirror 2.0 accepts three types of geometric priors as conditioning inputs."
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**Intrinsics resolution:** Values should correspond to the **original image resolution**."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "none",
+      "note": "Nothing about rights travels with the asset. The licence on the model is heavy — it excludes three jurisdictions outright, demands a notice file on every redistribution and requires a licence from Tencent above a million monthly users — yet the splat and mesh files it produces carry no licence field, no notice and no pointer to the agreement. The obligation is on the person, and the file that leaves the machine says nothing.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/License.txt",
+          "title": "Tencent HY-World 2.0 Community License Agreement",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "THIS LICENSE AGREEMENT DOES NOT APPLY IN THE EUROPEAN UNION, UNITED KINGDOM AND SOUTH KOREA AND IS EXPRESSLY LIMITED TO THE TERRITORY, AS DEFINED BELOW."
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/License.txt",
+          "title": "Tencent HY-World 2.0 Community License Agreement",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "All distributions to Third Parties (other than through a Hosted Service) must be accompanied by a “Notice” text file"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Exports to `.ply`, `.spz` (compressed), and mesh (TSDF fusion) formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "none",
+      "note": "A generated world leaves as an unsigned PLY. There is no signature, no authorship record and no marker that the content was made by a model rather than captured, even though the licence explicitly disclaims Tencent's rights in the output and hands responsibility for it to the user. For a subject whose whole purpose is manufacturing places that look photographed, this is the sharpest absence on the sheet.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/License.txt",
+          "title": "Tencent HY-World 2.0 Community License Agreement",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Tencent claims no rights in Outputs You generate. You and Your users are solely responsible for Outputs and their subsequent uses."
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "# 3D Gaussian Splatting (standard format)"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "out-of-scope",
+      "note": "Not an avatar system. The technical report describes character support in a rendering platform that is not part of the release, and no avatar representation, rig or expression set appears anywhere in the published code or documentation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.14268",
+          "title": "HY-World 2.0 technical report, abstract",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "enabling interactive exploration of 3D worlds with character support"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "- [x] WorldMirror 2.0 Code & Model Checkpoints"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "out-of-scope",
+      "note": "Not an avatar system. The technical report describes character support in a rendering platform that is not part of the release, and no avatar representation, rig or expression set appears anywhere in the published code or documentation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.14268",
+          "title": "HY-World 2.0 technical report, abstract",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "enabling interactive exploration of 3D worlds with character support"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "- [x] WorldMirror 2.0 Code & Model Checkpoints"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "out-of-scope",
+      "note": "Not an avatar system. The technical report describes character support in a rendering platform that is not part of the release, and no avatar representation, rig or expression set appears anywhere in the published code or documentation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.14268",
+          "title": "HY-World 2.0 technical report, abstract",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "enabling interactive exploration of 3D worlds with character support"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "- [x] WorldMirror 2.0 Code & Model Checkpoints"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "out-of-scope",
+      "note": "Not an avatar system. The technical report describes character support in a rendering platform that is not part of the release, and no avatar representation, rig or expression set appears anywhere in the published code or documentation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.14268",
+          "title": "HY-World 2.0 technical report, abstract",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "enabling interactive exploration of 3D worlds with character support"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "- [x] WorldMirror 2.0 Code & Model Checkpoints"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "out-of-scope",
+      "note": "Not an avatar system. The technical report describes character support in a rendering platform that is not part of the release, and no avatar representation, rig or expression set appears anywhere in the published code or documentation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.14268",
+          "title": "HY-World 2.0 technical report, abstract",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "enabling interactive exploration of 3D worlds with character support"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "- [x] WorldMirror 2.0 Code & Model Checkpoints"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "out-of-scope",
+      "note": "Not an avatar system. The technical report describes character support in a rendering platform that is not part of the release, and no avatar representation, rig or expression set appears anywhere in the published code or documentation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.14268",
+          "title": "HY-World 2.0 technical report, abstract",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "enabling interactive exploration of 3D worlds with character support"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "- [x] WorldMirror 2.0 Code & Model Checkpoints"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "out-of-scope",
+      "note": "Not an avatar system. The technical report describes character support in a rendering platform that is not part of the release, and no avatar representation, rig or expression set appears anywhere in the published code or documentation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/abs/2604.14268",
+          "title": "HY-World 2.0 technical report, abstract",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "enabling interactive exploration of 3D worlds with character support"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "- [x] WorldMirror 2.0 Code & Model Checkpoints"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "out-of-scope",
+      "note": "It simulates nothing. The system produces the geometry another engine would simulate against, and the report is explicit that this is the intent; see the collision row.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/html/2604.14268v1",
+          "title": "HY-World 2.0 technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "To support downstream applications such as collision detection and physics simulation, we further extract a mesh from the optimized 3DGS representation."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "partial",
+      "note": "It manufactures collision geometry and runs no contact test at run time. Two kinds are produced: a navigation mesh built with recastnavigation, used during planning so the virtual camera does not walk through walls, and the fused mesh, extracted expressly so that a downstream engine can do collision and physics against it and deliberately simplified to keep loading cheap. The trainer also writes a bounding box it calls an air wall beside the splats. None of it is a physics engine, and none of it is documented as an interchange form.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://arxiv.org/html/2604.14268v1",
+          "title": "HY-World 2.0 technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "To support downstream applications such as collision detection and physics simulation, we further extract a mesh from the optimized 3DGS representation."
+        },
+        {
+          "url": "https://arxiv.org/html/2604.14268v1",
+          "title": "HY-World 2.0 technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "By leveraging the meshes extracted from 3DGS as underlying collision proxies, our system supports real-time physical feedback and spatial interactions."
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "`third_party/navmesh` needs [recastnavigation](https://github.com/recastnavigation/recastnavigation) (cloned via `--recursive`) for NavMesh-based path planning."
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/world_gs_trainer.py",
+          "title": "HY-World 2.0 Gaussian splatting trainer source",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "\"air_wall\": {"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "out-of-scope",
+      "note": "No bodies, so no links between them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/html/2604.14268v1",
+          "title": "HY-World 2.0 technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "To support downstream applications such as collision detection and physics simulation, we further extract a mesh from the optimized 3DGS representation."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.material",
+      "level": "out-of-scope",
+      "note": "Surfaces carry colour and nothing else; friction and restitution would be assigned by whichever engine imported the mesh.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/html/2604.14268v1",
+          "title": "HY-World 2.0 technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "we adopt view-independent RGB colors"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.determinism",
+      "level": "out-of-scope",
+      "note": "Nothing is simulated, so there is nothing to reproduce across machines. The one reproducibility control in the code fixes the random seeds of the panorama generator, which is a question about generation, not about simulation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| `--reproduce` | `False` | Fix all RNGs for reproducibility |"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "out-of-scope",
+      "note": "No deformable simulation of any kind.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/html/2604.14268v1",
+          "title": "HY-World 2.0 technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "To support downstream applications such as collision detection and physics simulation, we further extract a mesh from the optimized 3DGS representation."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "out-of-scope",
+      "note": "No event, so no region that fires one. The nearest thing is the air wall bounding box written next to the splats, which bounds where a viewer may go rather than announcing that something entered it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/world_gs_trainer.py",
+          "title": "HY-World 2.0 Gaussian splatting trainer source",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "\"air_wall\": {"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "out-of-scope",
+      "note": "A world model that outputs geometry and appearance. Nothing in the released code, the documentation or the technical report touches sound; the pipeline's only media outputs are images, depth and video frames used as intermediates.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "produces 3D world representations (meshes / Gaussian Splattings)"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "out-of-scope",
+      "note": "A world model that outputs geometry and appearance. Nothing in the released code, the documentation or the technical report touches sound; the pipeline's only media outputs are images, depth and video frames used as intermediates.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "produces 3D world representations (meshes / Gaussian Splattings)"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "out-of-scope",
+      "note": "A world model that outputs geometry and appearance. Nothing in the released code, the documentation or the technical report touches sound; the pipeline's only media outputs are images, depth and video frames used as intermediates.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "produces 3D world representations (meshes / Gaussian Splattings)"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "out-of-scope",
+      "note": "A world model that outputs geometry and appearance. Nothing in the released code, the documentation or the technical report touches sound; the pipeline's only media outputs are images, depth and video frames used as intermediates.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "produces 3D world representations (meshes / Gaussian Splattings)"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "out-of-scope",
+      "note": "A world model that outputs geometry and appearance. Nothing in the released code, the documentation or the technical report touches sound; the pipeline's only media outputs are images, depth and video frames used as intermediates.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "produces 3D world representations (meshes / Gaussian Splattings)"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "out-of-scope",
+      "note": "A world model that outputs geometry and appearance. Nothing in the released code, the documentation or the technical report touches sound; the pipeline's only media outputs are images, depth and video frames used as intermediates.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "produces 3D world representations (meshes / Gaussian Splattings)"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "out-of-scope",
+      "note": "Not a session, a server or a protocol. The one network surface in the release is a single-user web demo that can optionally publish a public link; there is no shared world, no participant and no wire format.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Upload images or videos and visualize 3DGS, point clouds, depth maps, normal maps, and camera parameters in your browser."
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| `--share` | `False` | Create a public Gradio link |"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "out-of-scope",
+      "note": "Not a session, a server or a protocol. The one network surface in the release is a single-user web demo that can optionally publish a public link; there is no shared world, no participant and no wire format.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Upload images or videos and visualize 3DGS, point clouds, depth maps, normal maps, and camera parameters in your browser."
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| `--share` | `False` | Create a public Gradio link |"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "out-of-scope",
+      "note": "Not a session, a server or a protocol. The one network surface in the release is a single-user web demo that can optionally publish a public link; there is no shared world, no participant and no wire format.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Upload images or videos and visualize 3DGS, point clouds, depth maps, normal maps, and camera parameters in your browser."
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| `--share` | `False` | Create a public Gradio link |"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.prediction",
+      "level": "out-of-scope",
+      "note": "Not a session, a server or a protocol. The one network surface in the release is a single-user web demo that can optionally publish a public link; there is no shared world, no participant and no wire format.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Upload images or videos and visualize 3DGS, point clouds, depth maps, normal maps, and camera parameters in your browser."
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| `--share` | `False` | Create a public Gradio link |"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "out-of-scope",
+      "note": "Not a session, a server or a protocol. The one network surface in the release is a single-user web demo that can optionally publish a public link; there is no shared world, no participant and no wire format.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Upload images or videos and visualize 3DGS, point clouds, depth maps, normal maps, and camera parameters in your browser."
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| `--share` | `False` | Create a public Gradio link |"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.media",
+      "level": "out-of-scope",
+      "note": "Not a session, a server or a protocol. The one network surface in the release is a single-user web demo that can optionally publish a public link; there is no shared world, no participant and no wire format.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Upload images or videos and visualize 3DGS, point clouds, depth maps, normal maps, and camera parameters in your browser."
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| `--share` | `False` | Create a public Gradio link |"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "out-of-scope",
+      "note": "Not a session, a server or a protocol. The one network surface in the release is a single-user web demo that can optionally publish a public link; there is no shared world, no participant and no wire format.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Upload images or videos and visualize 3DGS, point clouds, depth maps, normal maps, and camera parameters in your browser."
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| `--share` | `False` | Create a public Gradio link |"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "out-of-scope",
+      "note": "Not a session, a server or a protocol. The one network surface in the release is a single-user web demo that can optionally publish a public link; there is no shared world, no participant and no wire format.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Upload images or videos and visualize 3DGS, point clouds, depth maps, normal maps, and camera parameters in your browser."
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| `--share` | `False` | Create a public Gradio link |"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "out-of-scope",
+      "note": "There is no world to join. The two servers in the release are single-user tools — a web demo for reconstruction and a browser viewer for a trained splat scene — each started on a port by the person who owns the machine, with no account, no join and no second participant.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| `--port` | `8081` | Server port |"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Viewer | `show_gs.py` | Interactive browser-based 3DGS viewer (viser + nerfview) |"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "out-of-scope",
+      "note": "Nothing to leave and nowhere to arrive. A world here is a directory of files opened locally, not a place with an entrance.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Each scene directory follows this structure (produced incrementally by stages 1–5):"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "out-of-scope",
+      "note": "A generated world has no name and no address. It is identified by the path of the directory the pipeline wrote it into, which the next stage of the same pipeline reads back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "All stages share a common `--target_path` (scene directory) that accumulates intermediate results:"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "out-of-scope",
+      "note": "Nothing is advertised or found. The only thing fetched over the network is the model's own weights, by repository name from a model host.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Model weights are automatically downloaded from Hugging Face on first run."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "out-of-scope",
+      "note": "Not an identity system. The subject is a model that turns pictures and prompts into a scene file; it names no person, agent or thing and issues no claim about one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "produces 3D world representations (meshes / Gaussian Splattings)"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "out-of-scope",
+      "note": "Not an identity system. The subject is a model that turns pictures and prompts into a scene file; it names no person, agent or thing and issues no claim about one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "produces 3D world representations (meshes / Gaussian Splattings)"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "out-of-scope",
+      "note": "Not an identity system. The subject is a model that turns pictures and prompts into a scene file; it names no person, agent or thing and issues no claim about one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "produces 3D world representations (meshes / Gaussian Splattings)"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "out-of-scope",
+      "note": "Not an identity system. The subject is a model that turns pictures and prompts into a scene file; it names no person, agent or thing and issues no claim about one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "produces 3D world representations (meshes / Gaussian Splattings)"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "out-of-scope",
+      "note": "Not an identity system. The subject is a model that turns pictures and prompts into a scene file; it names no person, agent or thing and issues no claim about one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "produces 3D world representations (meshes / Gaussian Splattings)"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.social",
+      "level": "out-of-scope",
+      "note": "Not an identity system. The subject is a model that turns pictures and prompts into a scene file; it names no person, agent or thing and issues no claim about one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "produces 3D world representations (meshes / Gaussian Splattings)"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "none",
+      "note": "The licence carries real, enforceable terms — a territory exclusion, a ban on using the outputs to improve any other model, and a threshold above which a separate licence must be requested — and none of them can be acted on by a machine at the point of use. Enforcement is entirely contractual, and nothing in the delivered world states which terms apply to it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/License.txt",
+          "title": "Tencent HY-World 2.0 Community License Agreement",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "You must not use the Tencent HY-WORLD 2.0 Works or any Output or results of the Tencent HY-WORLD 2.0 Works to improve any other AI model"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/License.txt",
+          "title": "Tencent HY-World 2.0 Community License Agreement",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "You must not use, reproduce, modify, distribute, or display the Tencent HY-WORLD 2.0 Works, Output or results of the Tencent HY-WORLD 2.0 Works outside the Territory."
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/License.txt",
+          "title": "Tencent HY-World 2.0 Community License Agreement",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "you may request a license for the use of Tencent HY-WORLD 2.0 by submitting the following information to hunyuan3d@tencent.com"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "none",
+      "note": "No world it makes is anywhere. Position is expressed in a frame set by the first input view, and no latitude, longitude, height or Earth-fixed orientation appears in any output or any documented field.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**Extrinsics alignment:** The pipeline automatically normalizes all extrinsics relative to the first view, consistent with training behavior."
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Camera-to-world (c2w), OpenCV convention"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "none",
+      "note": "No coordinate reference system is named anywhere. The only frames the subject declares are camera conventions — OpenCV for poses, and a splat coordinate system on export — neither of which is a reference frame for the Earth.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/world_gs_trainer.py",
+          "title": "HY-World 2.0 Gaussian splatting trainer source",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "unpack_options.to_coord = spz.CoordinateSystem.RUB"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Camera-to-world (c2w), OpenCV convention"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "out-of-scope",
+      "note": "Not a device runtime. Nothing here holds a session on a phone or a headset, so there is no place for content to be fixed to.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "We recommend **CUDA 12.8** and **Python 3.11+**."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "out-of-scope",
+      "note": "There is no second device and no session that persists, so shared anchoring does not arise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "We recommend **CUDA 12.8** and **Python 3.11+**."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.vps",
+      "level": "partial",
+      "note": "It recovers pose from imagery, and only inside its own reconstruction. WorldMirror 2.0 predicts camera-to-world matrices and intrinsics straight from a set of images or a casual video, which is the hard half of visual positioning, and it will accept known poses as a prior. What it cannot do is localise against a map somebody else built: the poses it returns are normalised to the first view of the batch it was handed, so two reconstructions of the same street have no relation to each other.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Powered by **WorldMirror 2.0**, a unified feed-forward model that predicts dense point clouds, depth maps, surface normals, camera parameters, and 3DGS from multi-view images or casual videos in a single forward pass."
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**Extrinsics alignment:** The pipeline automatically normalizes all extrinsics relative to the first view, consistent with training behavior."
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| Camera Pose | `cond_flags[0]` | c2w 4×4 matrix (OpenCV convention) |"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "none",
+      "note": "A world arrives whole or not at all. Nothing is divided into tiles, no bounding volume hierarchy is written, and the only spatial subdivision in the code is a voxel grid used to thin points during export.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**Voxel merging**: Points within each voxel (size controlled by `compress_pts_voxel_size`) are merged via weighted averaging."
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Each scene directory follows this structure (produced incrementally by stages 1–5):"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.indoor",
+      "level": "partial",
+      "note": "It builds a structured account of an interior for its own use and publishes none of it. From a panorama the pipeline derives a point cloud, a mesh, semantic masks and a navigation mesh, and classifies the scene type; the navigation mesh is a real description of where a body can stand and walk. There is no room, wall, opening or storey structure, and the navigation data stays in an undocumented working folder rather than leaving in any interchange form.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/html/2604.14268v1",
+          "title": "HY-World 2.0 technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Given the panoramas, we first employ scene parsing to obtain panoramic point clouds, meshes, semantic masks, and navigation meshes for the subsequent trajectory planning"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "├── navmesh/                            # Stage 1: NavMesh & trajectory planning"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/world_gs_trainer.py",
+          "title": "HY-World 2.0 Gaussian splatting trainer source",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "scene_type = json.load(f)[\"scene_type\"]"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "out-of-scope",
+      "note": "Not a device runtime. The release runs on a workstation with NVIDIA GPUs and offers a command line, a Python interface and two local web pages; no immersive session, controller, hand, eye or haptic path exists in it. The report's interactive character mode belongs to WorldLens, a platform described in the report and absent from the repository.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "&ge;4 GPUs recommended (tested with 8× H20)"
+        },
+        {
+          "url": "https://arxiv.org/abs/2604.14268",
+          "title": "HY-World 2.0 technical report, abstract",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "enabling interactive exploration of 3D worlds with character support"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "out-of-scope",
+      "note": "Not a device runtime. The release runs on a workstation with NVIDIA GPUs and offers a command line, a Python interface and two local web pages; no immersive session, controller, hand, eye or haptic path exists in it. The report's interactive character mode belongs to WorldLens, a platform described in the report and absent from the repository.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "&ge;4 GPUs recommended (tested with 8× H20)"
+        },
+        {
+          "url": "https://arxiv.org/abs/2604.14268",
+          "title": "HY-World 2.0 technical report, abstract",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "enabling interactive exploration of 3D worlds with character support"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "out-of-scope",
+      "note": "Not a device runtime. The release runs on a workstation with NVIDIA GPUs and offers a command line, a Python interface and two local web pages; no immersive session, controller, hand, eye or haptic path exists in it. The report's interactive character mode belongs to WorldLens, a platform described in the report and absent from the repository.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "&ge;4 GPUs recommended (tested with 8× H20)"
+        },
+        {
+          "url": "https://arxiv.org/abs/2604.14268",
+          "title": "HY-World 2.0 technical report, abstract",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "enabling interactive exploration of 3D worlds with character support"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.eye",
+      "level": "out-of-scope",
+      "note": "Not a device runtime. The release runs on a workstation with NVIDIA GPUs and offers a command line, a Python interface and two local web pages; no immersive session, controller, hand, eye or haptic path exists in it. The report's interactive character mode belongs to WorldLens, a platform described in the report and absent from the repository.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "&ge;4 GPUs recommended (tested with 8× H20)"
+        },
+        {
+          "url": "https://arxiv.org/abs/2604.14268",
+          "title": "HY-World 2.0 technical report, abstract",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "enabling interactive exploration of 3D worlds with character support"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "out-of-scope",
+      "note": "Not a device runtime. The release runs on a workstation with NVIDIA GPUs and offers a command line, a Python interface and two local web pages; no immersive session, controller, hand, eye or haptic path exists in it. The report's interactive character mode belongs to WorldLens, a platform described in the report and absent from the repository.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "&ge;4 GPUs recommended (tested with 8× H20)"
+        },
+        {
+          "url": "https://arxiv.org/abs/2604.14268",
+          "title": "HY-World 2.0 technical report, abstract",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "enabling interactive exploration of 3D worlds with character support"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "out-of-scope",
+      "note": "Not a device runtime. The release runs on a workstation with NVIDIA GPUs and offers a command line, a Python interface and two local web pages; no immersive session, controller, hand, eye or haptic path exists in it. The report's interactive character mode belongs to WorldLens, a platform described in the report and absent from the repository.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "&ge;4 GPUs recommended (tested with 8× H20)"
+        },
+        {
+          "url": "https://arxiv.org/abs/2604.14268",
+          "title": "HY-World 2.0 technical report, abstract",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "enabling interactive exploration of 3D worlds with character support"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "out-of-scope",
+      "note": "The subject expresses no world rules. Its own code is Python driving models; what it hands on is geometry and appearance, and any rule about that place would be written in the engine that imported it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "produces 3D world representations (meshes / Gaussian Splattings)"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "none",
+      "note": "A generated world is inert. Nothing in the splat file, the mesh or the metadata says that anything can be pressed, opened, picked up or reacted to; the pipeline's own claim for the output is that it can be explored and imported, not that it does anything. For a map that asks whether interactivity travels with an asset, this is the answer for the whole world-model family so far.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "3DGS, meshes, and point clouds — that are freely explorable, editable, and directly importable into"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Exports to `.ply`, `.spz` (compressed), and mesh (TSDF fusion) formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "out-of-scope",
+      "note": "There is no guest code to isolate. The subject runs its own models on its own machine and produces data.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "produces 3D world representations (meshes / Gaussian Splattings)"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "partial",
+      "note": "An agent works on the world while it is being made, and none lives in it afterwards. Trajectory planning runs a vision-language model, served locally, that picks out targets worth looking at and plans routes to them, with a segmentation model naming what it sees; the report calls this semantic-aware planning. Once the world is exported there is no agent in it and no interface for one to act through.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Uses VLM (Qwen3-VL) to identify interesting targets"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "SAM3 semantic segmentation to guide navigation"
+        },
+        {
+          "url": "https://arxiv.org/html/2604.14268v1",
+          "title": "HY-World 2.0 technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "designed a semantic-aware trajectory planning ( WorldNav ) to guide optimal, collision-free routes for scene exploration."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "out-of-scope",
+      "note": "No guest content, so no budget to enforce on it. The pipeline does bound its own cost — pruning cuts the Gaussian count by roughly three quarters so the result draws in real time — but that is a production decision taken once, not a limit imposed at run time on something else's code.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/html/2604.14268v1",
+          "title": "HY-World 2.0 technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The full configuration retains comparable visual quality while reducing 77% Gaussian count compared to the baseline."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "partial",
+      "note": "The world persists completely and holds no state. Persistence is the subject's headline argument against video world models: the assets are files, they survive, and they can be reopened and re-rendered for nothing. What is missing is the other half of the definition — nothing in such a world can change, so there is no state for a restart to preserve.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| **Playable Duration** | Limited (typically 1 min) | Unlimited — assets persist permanently |"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| **Inference Cost** | Accumulates with every interaction | One-time generation; rendering cost ≈ 0 |"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Each scene directory follows this structure (produced incrementally by stages 1–5):"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "out-of-scope",
+      "note": "No user, no item, nothing held. The subject makes places, not possessions.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "produces 3D world representations (meshes / Gaussian Splattings)"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "out-of-scope",
+      "note": "No user account and no settings that follow anyone. The only options are command-line arguments to a batch job.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| `--port` | `8081` | Server port |"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "none",
+      "note": "Everything is referred to by location. Stages hand work to each other through a shared scene directory and fixed file names, and the model weights are fetched by repository name from a model host with no hash pinned anywhere in the published instructions, so nobody can state which exact weights produced a given world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "All stages share a common `--target_path` (scene directory) that accumulates intermediate results:"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Model weights are automatically downloaded from Hugging Face on first run."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "partial",
+      "note": "There is a documented layout and no package. Both halves publish a directory structure — a scene folder that accumulates panorama, metadata, detected objects, navigation mesh, per-view and per-trajectory results and training data, and a timestamped output folder holding depth, normals, cameras, splats and points — but a folder convention written in a README is not a bundle format: no manifest, no version, no integrity check, nothing that another implementation could be held to.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Each scene directory follows this structure (produced incrementally by stages 1–5):"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "inference_output/"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "├── meta_info.json                      # Scene metadata"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "none",
+      "note": "Model weights are delivered at scale and worlds are not. Checkpoints are hosted on two public model hosts and downloaded automatically on first run; the worlds the system produces have no delivery path at all — no progressive load, no chunking, no host — even though one of the export formats it writes exists specifically to make splats small enough to ship.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| WorldMirror-2 [new] | Multi-view / video &rarr; 3D reconstruction | ~1.2B | 2026 | [Download](https://huggingface.co/tencent/HY-World-2.0/tree/main/HY-WorldMirror-2.0) |"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Model weights are automatically downloaded from Hugging Face on first run."
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Exports to `.ply`, `.spz` (compressed), and mesh (TSDF fusion) formats"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "partial",
+      "note": "Versioning is by release announcement, not by contract. The repository dates each drop, the model zoo lists version 1 and version 2 of the reconstruction model side by side with separate weights, and the licence names a release date; what is missing is any statement of compatibility — nothing says whether a world exported by one version opens under the next, because nothing defines what a world file is.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Open-source World Generation inference code and WorldStereo 2.0 model weights!"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| WorldMirror-1 | Multi-view / video &rarr; 3D reconstruction (legacy) | ~1.2B | 2025 |"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/License.txt",
+          "title": "Tencent HY-World 2.0 Community License Agreement",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Tencent HY-WORLD 2.0 Release Date: April 15, 2026"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "none",
+      "note": "There is no specification, so there is nothing to conform to. The report is thorough about quality — accuracy and completeness against reconstruction benchmarks, camera error, image quality scores, a comparison against a closed commercial system — and none of that tests whether a second implementation would produce a file this one can read. The documentation section that would describe the generation pipeline is published with the words coming soon in place of its content.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "## World Generation\n*Coming soon.*"
+        },
+        {
+          "url": "https://arxiv.org/html/2604.14268v1",
+          "title": "HY-World 2.0 technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "we compare our method with Marble 1.0 (as of March 30, 2026)."
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "### WorldMirror 2.0 — Point Map Reconstruction"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "native",
+      "note": "A whole navigable place from a description or a picture, through a four-stage method, and the repository's own comparison table states the half of the row that matters: the output is real assets, meshes and splats, fully editable, as against pixel videos that cannot be edited.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "syntheses high-fidelity, navigable 3D scenes through a four-stage method"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| **Output** | Pixel videos (non-editable) | Real 3D assets — meshes / 3DGS (fully editable) |"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "none",
+      "note": "The subject defines itself against this row rather than doing it. Its own table contrasts a playable duration limited to about a minute with assets that persist permanently, and an inference cost that accumulates with every interaction against one-time generation; the vendor keeps the interactive-video family in a separate repository.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| **Playable Duration** | Limited (typically 1 min) | Unlimited — assets persist permanently |"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-WorldPlay",
+          "title": "HY-WorldPlay repository (Tencent Hunyuan)",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": null
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "partial",
+      "note": "The reconstruction half takes ordinary pictures or video of a real place and predicts depth, normals, camera parameters, points and splats from them in one pass, which is the same input this row names and a different output. A textured mesh does come out of the wider pipeline; what does not exist is a photogrammetry pipeline of the classical kind, with its calibration and bundle adjustment exposed.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "a unified feed-forward model that simultaneously predicts depth, surface normals, camera parameters, 3D point clouds, and 3DGS attributes in a single forward pass"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "produces 3D world representations (meshes / Gaussian Splattings)"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "native",
+      "note": "Both halves of the system end in Gaussian splats: the reconstruction model predicts splat attributes in one forward pass, and generation optimises a splat scene and writes it. The bundled viewer reads a standard splat PLY with the usual fields, so the data leaves in a form other tools read.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "a unified feed-forward model that simultaneously predicts depth, surface normals, camera parameters, 3D point clouds, and 3DGS attributes in a single forward pass"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "predictions[\"splats\"][\"means\"]      # [B, N, 3] — Gaussian centers"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "none",
+      "note": "A world arrives whole or not at all. Detail is decided once at training time, adaptive pruning cuts the Gaussian count by about three quarters and the mesh is decimated, and the exported files carry no detail hierarchy and no ordering rule.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/html/2604.14268v1",
+          "title": "HY-World 2.0 technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The full configuration retains comparable visual quality while reducing 77% Gaussian count compared to the baseline."
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Geometry-aware point cloud downsampling"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "Tencent's HY-World 2.0 is a source-available world model that makes a navigable place and hands over the assets, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "produces 3D world representations (meshes / Gaussian Splattings)"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "partial",
+      "note": "Point clouds are first-class in the pipeline: predicted, written as a coloured point file and shown in the browser demo beside the splats, with a geometry-aware downsampling step and voxel merging on export. What is absent is any encoding or compression of the project's own, so the points leave in the ordinary uncompressed form.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "# Colored point cloud"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Geometry-aware point cloud downsampling"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "**Voxel merging**: Points within each voxel (size controlled by `compress_pts_voxel_size`) are merged via weighted averaging."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "partial",
+      "note": "One forward pass predicts depth, surface normals and camera parameters together with the points, so the ingredients of this row are all produced. They are produced rather than carried: nothing writes a set of calibrated views with their intrinsics and extrinsics as an interchange another system could reproject.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "a unified feed-forward model that simultaneously predicts depth, surface normals, camera parameters, 3D point clouds, and 3DGS attributes in a single forward pass"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Upload images or videos and visualize 3DGS, point clouds, depth maps, normal maps, and camera parameters in your browser."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "native",
+      "note": "The generated scene is walked, not watched, so every frame is an image from a position no capture camera occupied; the splat and point cloud predictions are what make that possible from a handful of input pictures.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "syntheses high-fidelity, navigable 3D scenes through a four-stage method"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "none",
+      "note": "The world this subject makes does not move. Its own comparison table puts permanence on its side of the line and playable duration on the other, so there is no time-varying capture to carry and no rate to state.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "| **Playable Duration** | Limited (typically 1 min) | Unlimited — assets persist permanently |"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "Tencent's HY-World 2.0 is a source-available world model that makes a navigable place and hands over the assets, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "produces 3D world representations (meshes / Gaussian Splattings)"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "Tencent's HY-World 2.0 is a source-available world model that makes a navigable place and hands over the assets, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "produces 3D world representations (meshes / Gaussian Splattings)"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "Tencent's HY-World 2.0 is a source-available world model that makes a navigable place and hands over the assets, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "produces 3D world representations (meshes / Gaussian Splattings)"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "partial",
+      "note": "Generation is driven by images or video and by a panorama whose projection and blending are stated, and the module exposes its own parameters. There is no interchange format for handing in coarse geometry and no typed scene specification, so an existing authoring pipeline can supply pictures and nothing structural.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The panorama is in **equirectangular projection (ERP)** format with the default output resolution of **1920 × 960** pixels (after removing the blending overlap)"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Upload images or videos and visualize 3DGS, point clouds, depth maps, normal maps, and camera parameters in your browser."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "native",
+      "note": "A generated world leaves as the representations a conventional engine already understands. The pipeline decimates its meshes by quadric edge collapse and optimises them into lightweight topological structures for fast loading, and both meshes and splats are written, which is what lets this subject's output enter an ordinary pipeline at all.",
+      "confidence": "verified",
+      "direction": "write",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "produces 3D world representations (meshes / Gaussian Splattings)"
+        },
+        {
+          "url": "https://arxiv.org/html/2604.14268v1",
+          "title": "HY-World 2.0 technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "To ensure seamless user experiences and rapid scene loading, we optimize these meshes into lightweight topological structures."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "Tencent's HY-World 2.0 is a source-available world model that makes a navigable place and hands over the assets, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "produces 3D world representations (meshes / Gaussian Splattings)"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "native",
+      "note": "The panorama is how a world starts here, and its projection is written down: equirectangular, at a stated default resolution, with a named blending width for seamless left-to-right wrapping. That last parameter is the part most subjects on this row leave to chance.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The panorama is in **equirectangular projection (ERP)** format with the default output resolution of **1920 × 960** pixels (after removing the blending overlap)"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "out-of-scope",
+      "note": "A generative model that produces 3D world representations as meshes or Gaussian splats from images and video. The geometry is generated from uploads rather than read from a device's sensors during a session.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "produces 3D world representations (meshes / Gaussian Splattings)"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "Its pipeline uses semantic masks internally while building a world. Those are working data inside generation, not a channel an application reads to learn what a real surface is.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "produces 3D world representations (meshes / Gaussian Splattings)"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "out-of-scope",
+      "note": "It predicts depth maps as part of producing a world, which is inference over supplied imagery rather than a live metric reading of the room a person is in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "produces 3D world representations (meshes / Gaussian Splattings)"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "The model outputs a world; drawing it against a real view, and hiding it behind real surfaces, belongs to whatever displays the result.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/README.md",
+          "title": "HY-World 2.0 repository README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "produces 3D world representations (meshes / Gaussian Splattings)"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "out-of-scope",
+      "note": "The system generates a world from panoramas and prompts. Presentation, and any blend with a camera view of a room, belongs to whatever opens the result.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.face",
+      "level": "out-of-scope",
+      "note": "Input is images, panoramas and text. No live reading of a user's face or body is taken or delivered.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "partial",
+      "note": "The pipeline really does compute walkable space, and keeps it. Scene parsing turns panoramas into point clouds, meshes, semantic masks and navigation meshes, with a navmesh stage using a third-party navigation library for path planning — all of it in service of planning camera trajectories inside the generator. It is used internally and not published with the world, so whoever opens the output gets geometry and has to work the floor out again.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://arxiv.org/html/2604.14268v1",
+          "title": "HY-World 2.0 technical report",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Given the panoramas, we first employ scene parsing to obtain panoramic point clouds, meshes, semantic masks, and navigation meshes for the subsequent trajectory planning"
+        },
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "`third_party/navmesh` needs [recastnavigation](https://github.com/recastnavigation/recastnavigation) (cloned via `--recursive`) for NavMesh-based path planning."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "out-of-scope",
+      "note": "The project publishes model code and weights as a repository. Nothing in it is a published unit of world logic named for other authors to depend on.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "none",
+      "note": "The generator returns its output to whoever ran it and describes no gate in between: the published module documentation covers the generation stages and their dependencies, with no safety classifier, prompt filter or review step in the pipeline and nothing recording what review an output has had. Source-available code makes any such gate the operator's to add.",
+      "confidence": "unverified",
+      "sources": [
+        {
+          "url": "https://github.com/Tencent-Hunyuan/HY-World-2.0/blob/main/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation module README",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "├── navmesh/                            # Stage 1: NavMesh & trajectory planning"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "A generated interior is not a map of a real place and carries no transform to one.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "Nothing declares a region of the Earth over which a generated world applies.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.metadata",
+      "level": "native",
+      "note": "WorldMirror documents typed per-view and per-Gaussian confidence outputs tied to reconstruction data; these are descriptive model properties, not an ontology or enduring object identity.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/Tencent-Hunyuan/HY-World-2.0/df9988efb87bfc0f4947eb3889411cf957478b06/DOCUMENTATION.md",
+          "title": "HY-World 2.0 documentation",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "predictions[\"splats\"][\"weights\"]    # [B, N]    — Per-Gaussian confidence weights"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "out-of-scope",
+      "note": "Tencent HY-World is assessed here as HY-World 2.0 reconstruction and generation code with mesh and Gaussian outputs. The subject does not issue or exchange trust claims whose establishment a relying party evaluates; reconstruction confidence is a different quantity.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "out-of-scope",
+      "note": "Tencent HY-World is assessed here as HY-World 2.0 reconstruction and generation code with mesh and Gaussian outputs. The subject's scene or model data types are not a vocabulary for identity claims exchanged with a relying party.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "out-of-scope",
+      "note": "Tencent HY-World is assessed here as HY-World 2.0 reconstruction and generation code with mesh and Gaussian outputs. The subject is not an identity-presentation system with pairwise relationship identifiers and correlation guarantees.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.encryption",
+      "level": "out-of-scope",
+      "note": "Tencent HY-World is assessed here as HY-World 2.0 reconstruction and generation code with mesh and Gaussian outputs. Image, geometry and device processing do not define recipient identity keys or confidential identity delivery.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.key-lifecycle",
+      "level": "out-of-scope",
+      "note": "Tencent HY-World is assessed here as HY-World 2.0 reconstruction and generation code with mesh and Gaussian outputs. The subject does not govern identity-control key rotation, revocation or recovery; account administration belongs to its host.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "out-of-scope",
+      "note": "Tencent HY-World is assessed here as HY-World 2.0 reconstruction and generation code with mesh and Gaussian outputs. The subject does not issue portable credentials with a post-issuance status-discovery mechanism.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "out-of-scope",
+      "note": "Tencent HY-World is assessed here as HY-World 2.0 reconstruction and generation code with mesh and Gaussian outputs. Captured appearance and inferred training exposure are not runtime environmental illumination estimates supplied to content.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "out-of-scope",
+      "note": "Tencent HY-World is assessed here as HY-World 2.0 reconstruction and generation code with mesh and Gaussian outputs. Offline calibration targets or reference photos do not expose runtime physical-marker detection with tracked poses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "partial",
+      "note": "WorldNav plans camera trajectories and downstream stages render along them, but the selected guide does not define the full externally exchangeable timestamp/interpolation schema.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/Tencent-Hunyuan/HY-World-2.0/df9988efb87bfc0f4947eb3889411cf957478b06/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation guide",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "VLM-guided camera trajectory planning with obstacle-aware navigation (WorldNav)"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "out-of-scope",
+      "note": "Tencent HY-World is assessed here as HY-World 2.0 reconstruction and generation code with mesh and Gaussian outputs. Editor selection or image masking is not an exposed runtime picking interface that returns the intersected scene object or geometry.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.text",
+      "level": "out-of-scope",
+      "note": "Tencent HY-World is assessed here as HY-World 2.0 reconstruction and generation code with mesh and Gaussian outputs. Prompt strings or command-line parameters are authoring inputs, not a defined runtime character-entry interface for scene applications.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "out-of-scope",
+      "note": "Tencent HY-World is assessed here as HY-World 2.0 reconstruction and generation code with mesh and Gaussian outputs. The selected interface is not a display compositor accepting independently shaped image layers and composition properties.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "out-of-scope",
+      "note": "Tencent HY-World is assessed here as HY-World 2.0 reconstruction and generation code with mesh and Gaussian outputs. Fitted motion and ordinary parenting are not authored node-to-node transform constraints with runtime evaluation rules.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "out-of-scope",
+      "note": "Tencent HY-World is assessed here as HY-World 2.0 reconstruction and generation code with mesh and Gaussian outputs. Image sequences used as reconstruction observations do not reference synchronized audiovisual media as content within a separately authored scene.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "out-of-scope",
+      "note": "Tencent HY-World is assessed here as HY-World 2.0 reconstruction and generation code with mesh and Gaussian outputs. Capture extents or a training region do not report the user's usable physical play area and floor-relative reference.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "out-of-scope",
+      "note": "Tencent HY-World is assessed here as HY-World 2.0 reconstruction and generation code with mesh and Gaussian outputs. The selected reconstruction or sensing interface does not exchange a sound-synthesis model for evaluation during playback.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "out-of-scope",
+      "note": "Tencent HY-World is assessed here as HY-World 2.0 reconstruction and generation code with mesh and Gaussian outputs. The subject does not publish an exchange of identified spatial zones and typed, temporally scoped events; scene bounds or capture locations are not that protocol.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.consent",
+      "level": "out-of-scope",
+      "note": "Tencent HY-World is assessed here as HY-World 2.0 reconstruction and generation code with mesh and Gaussian outputs. An application permission dialog or dataset licence does not carry a subject-bound grant with scope, purpose, validity and withdrawal information.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "out-of-scope",
+      "note": "Tencent HY-World is assessed here as HY-World 2.0 reconstruction and generation code with mesh and Gaussian outputs. Training metrics and processing status are not machine-readable accounts of a recipient evaluating and acting on an arriving subject or claim.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "Tencent HY-World is assessed here as HY-World 2.0 reconstruction and generation code with mesh and Gaussian outputs. The selected subject does not define arrival between independent destinations; local API setup and asset loading are not pre-arrival admission responses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.frame-timing",
+      "level": "out-of-scope",
+      "note": "Tencent HY-World is assessed here as HY-World 2.0 reconstruction and generation code with mesh and Gaussian outputs. Offline fitting or ordinary preview playback does not coordinate application frame submission with a predicted headset display time and matching view poses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "out-of-scope",
+      "note": "Tencent HY-World is assessed here as HY-World 2.0 reconstruction and generation code with mesh and Gaussian outputs. Implementation shaders or learned weights do not make the subject a specified shader language with common execution semantics.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.parametric",
+      "level": "out-of-scope",
+      "note": "Tencent HY-World is assessed here as HY-World 2.0 reconstruction and generation code with mesh and Gaussian outputs. The selected representation is sampled imagery, points, splats or meshes; it does not carry exact parametric curves and surfaces for another system to evaluate.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "out-of-scope",
+      "note": "Tencent HY-World is assessed here as HY-World 2.0 reconstruction and generation code with mesh and Gaussian outputs. Gaussian primitives and optimized point samples are a representation, not exchanged emitters with runtime particle simulation parameters.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.style",
+      "level": "out-of-scope",
+      "note": "Tencent HY-World is assessed here as HY-World 2.0 reconstruction and generation code with mesh and Gaussian outputs. Capture edits and model appearance are not separate metadata-driven rules for selecting scene-feature visibility or color.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "out-of-scope",
+      "note": "Tencent HY-World is assessed here as HY-World 2.0 reconstruction and generation code with mesh and Gaussian outputs. Offline reconstructed geometry is not a sensing runtime that answers physical-environment ray queries with hit poses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "out-of-scope",
+      "note": "Tencent HY-World is assessed here as HY-World 2.0 reconstruction and generation code with mesh and Gaussian outputs. The subject does not expose a musical-instrument device or recorded-event input interface with channels, notes and controllers.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "native",
+      "note": "WorldMirror reconstructs Gaussian attributes from multiview observations; the companion world-composition stage documents Gaussian optimization and its controls. The pinned 2.0 code is distinguished from the newer hosted 2.1 product.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/Tencent-Hunyuan/HY-World-2.0/df9988efb87bfc0f4947eb3889411cf957478b06/hyworld2/worldgen/README.md",
+          "title": "HY-World 2.0 world generation guide",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Gaussian Splatting optimization with depth/normal/mask regularization (custom gsplat backend)"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "via-extension",
+      "note": "HY-World 2.0 WorldRecon provides an optional Gradio research demo with explicit rows and columns, relative column scales, image-gallery dimensions, 500-pixel 3D result regions and callback-driven controls. This is the named demo UI in the pinned author source, not evidence that all HY-World modules expose a shared UI.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/Tencent-Hunyuan/HY-World-2.0/df9988efb87bfc0f4947eb3889411cf957478b06/hyworld2/worldrecon/gradio_app.py",
+          "title": "hyworld hyworld2 worldrecon gradio.app.py",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "with gr.Column(scale=3):"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "native",
+      "note": "The HY-World 2.0 WorldMirror camera_params.json contract associates each camera_id with a 4x4 camera-to-world matrix and matching intrinsics. The documented input and output use this structure, and input extrinsics are normalized relative to the first view. This establishes reconstructible links between identified camera and shared world frames.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/Tencent-Hunyuan/HY-World-2.0/df9988efb87bfc0f4947eb3889411cf957478b06/DOCUMENTATION.md",
+          "title": "hyworld doc",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "4×4 camera-to-world (c2w) transformation matrix, OpenCV coordinate convention"
+        }
+      ],
+      "direction": "both"
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "native",
+      "note": "The pinned HY-World 2.0 WorldGen source includes a gsplat-maskgaussian Adam CUDA optimizer. It explicitly launches an Adam kernel on the current CUDA stream over parameter, gradient and moment tensors. This is non-raster GPU optimization in that named module, not a claim about every family implementation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/Tencent-Hunyuan/HY-World-2.0/df9988efb87bfc0f4947eb3889411cf957478b06/hyworld2/worldgen/third_party/gsplat_maskgaussian/gsplat/cuda/csrc/AdamCUDA.cu",
+          "title": "hyworld hyworld2 worldgen third.party gsplat.maskgaussian gsplat cuda csrc AdamCUDA.cu",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "<<<grid, threads, shmem_size, at::cuda::getCurrentCUDAStream()>>>"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1192 @@
+{
+  "subject_id": "recroom",
+  "summary": "Rec Room was a social virtual world platform with an in-headset building tool and a Unity-based external editor called Rec Room Studio. It closed permanently on 1 June 2026 and its website went offline; its own shutdown notice told creators they could not download a working copy of their rooms, so every world built in it is now both unreachable and unrecoverable. What Rec Room did publish to creators covered its visual scripting language, a container-based scene hierarchy, a per-object authority model and a hard object budget, while the format of a room, the wire protocol, the avatar bone list and the transport for voice were never published at all. The traffic ran one way: the editor ingested assets authored in Unity, Blender and Maya, and nothing runnable ever came back out. The trap for a standards reader is where the documentation lived: Rec Room's own creator site said the editor's documentation was in a private chat server, and the site's documentation hub linked mostly to community-written pages that it explicitly disclaimed. Rec Room is the clearest worked example in this map of what a closed platform costs when its operator stops: the addresses, the inventory, the accounts and the content all ceased to exist on one day.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "native",
+      "note": "The client drew scenes to pixels itself and creators were told to tune draw calls, static batching and occlusion culling in the Unity-based editor, but the pass structure of the runtime renderer was never published, so this is visible only through performance advice.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://web.archive.org/web/20250429135627/https://rec.net/creator/p/rrstudio-performance",
+          "title": "Rec Room Studio Performance Tips (archived rec.net creator documentation)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Employ GPU instancing (draw call) where suitable."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "partial",
+      "note": "Real-time lights existed and creators were given a hard practical ceiling on overlapping lights, but no lighting model, shadow method or baked or probe-based indirect light was ever described in the public documentation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://web.archive.org/web/20250429135453/https://rec.net/creator/p/circuits-performance",
+          "title": "Circuits Performance Tips (archived rec.net creator documentation)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Avoid large amounts of overlapping lights"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "partial",
+      "note": "Only two parts of the definition were documented: occlusion culling in the editor, and automatic per-platform texture downscaling by the service. No level-of-detail chain and no ordering of what is sent first were ever published.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://web.archive.org/web/20250429135627/https://rec.net/creator/p/rrstudio-performance",
+          "title": "Rec Room Studio Performance Tips (archived rec.net creator documentation)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Rec Room automatically adjusts texture sizes for different platforms."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "native",
+      "note": "Rooms were built from nested containers with children, called compound objects, and containers were the only things that could have children; this is a real tree model but it existed only inside Rec Room and was never serialised into anything another tool could read.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://web.archive.org/web/20240106060759/https://rec.net/creator/p/rooms-2.0-compound-objects",
+          "title": "Rooms 2.0 Compound Objects (archived rec.net creator documentation)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A compound object is an object made up of other objects"
+        },
+        {
+          "url": "https://web.archive.org/web/20240106060759/https://rec.net/creator/p/rooms-2.0-compound-objects",
+          "title": "Rooms 2.0 Compound Objects (archived rec.net creator documentation)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Only containers can have children!"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "partial",
+      "note": "Read only, and never with a format of its own: the editor took models authored in Unity, Blender and Maya into Rec Room, and Rec Room's own asset packs arrived as Unity package files, but no file ever carried a Rec Room room back out. At shutdown the operator stated plainly that a working copy of a room could not be downloaded, so nothing another runtime could open ever existed in the outbound direction.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Unfortunately, you cannot download a working copy of your rooms."
+        },
+        {
+          "url": "https://web.archive.org/web/20240524033800/https://rec.net/creator/studio",
+          "title": "Rec Room Studio (archived rec.net creator page)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "not only the Unity editor itself, but the constellation of apps it can import from as well (such as Blender, Photoshop, Maya, etc.)"
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "partial",
+      "note": "Creators supplied source images and were told to stay at or below one thousand and twenty-four pixels square and to prefer powers of two, and the service then re-encoded per platform on its own; the encoded form the client actually consumed was never published.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://web.archive.org/web/20250429135627/https://rec.net/creator/p/rrstudio-performance",
+          "title": "Rec Room Studio Performance Tips (archived rec.net creator documentation)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Rec Room automatically adjusts texture sizes for different platforms. To keep things smooth, stick to textures that are 1024x1024 (1K) or smaller."
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "native",
+      "note": "Repeating an object cheaply was supported and documented, but through the host engine's own graphics instancing and static batching surfaced in the editor rather than through anything Rec Room defined, so it does not travel with content.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://web.archive.org/web/20250429135627/https://rec.net/creator/p/rrstudio-performance",
+          "title": "Rec Room Studio Performance Tips (archived rec.net creator documentation)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Ensure that items flagged as Static and intended for GPU Instancing aren't also flagged for \"Static Batching,\" as this will override GPU instancing."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "none",
+      "note": "Surface appearance went in as editor materials and never came out; nothing Rec Room published describes carrying a material definition to a different renderer, and the shutdown export explicitly could not produce a working copy of the room the materials belonged to.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Unfortunately, you cannot download a working copy of your rooms."
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "none",
+      "note": "No Rec Room creator documentation describes any rights or permission metadata travelling with an asset; what a recipient could do with content was set entirely by the platform's own terms and enforced only inside the platform.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://web.archive.org/web/20260604230233/https://rec.net/creator/p/Documents",
+          "title": "Creator Documents (archived rec.net documentation hub)",
+          "retrieved": "2026-08-23",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "none",
+      "note": "Nothing in the published creator documentation describes a signed record of who made an asset or how; authorship existed only as an account name held by the operator, and that record went away with the service.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://web.archive.org/web/20260604230233/https://rec.net/creator/p/Documents",
+          "title": "Creator Documents (archived rec.net documentation hub)",
+          "retrieved": "2026-08-23",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "none",
+      "note": "Creators could make items to wear on the avatar but never the avatar itself; no portable description of a Rec Room avatar's mesh and appearance was ever published, and no creator-supplied body was accepted.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://web.archive.org/web/20240628173347/https://rec.net/creator/p/fba-deep-dive",
+          "title": "A Look Under the Hoodie: A Technical Deep Dive on Full Body Avatars (archived rec.net creator documentation)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "creators will be able to make their own avatar items to wear and share in Rec Room"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "partial",
+      "note": "Rec Room said it deliberately reworked one skeleton shared by both of its avatar shapes to move closer to what it called the industry standard, which is exactly the right instinct, but it never named that standard and never published the bone list, so nothing outside Rec Room could line up with it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://web.archive.org/web/20240628173347/https://rec.net/creator/p/fba-deep-dive",
+          "title": "A Look Under the Hoodie: A Technical Deep Dive on Full Body Avatars (archived rec.net creator documentation)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "update the skeleton shared between beans and full body avatars to better match the industry standard"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "partial",
+      "note": "Wearable items with fixed slots such as shirts, hats, gloves and shoes were creator-authorable, but the attachment points were never published and the items could be worn only inside Rec Room, so nothing about them survives a move to another world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://web.archive.org/web/20240628173347/https://rec.net/creator/p/fba-deep-dive",
+          "title": "A Look Under the Hoodie: A Technical Deep Dive on Full Body Avatars (archived rec.net creator documentation)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "so it's easier for our creators to make custom shirts, pants, hats, gloves, shoes, etc."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "partial",
+      "note": "Creators could set, add and reflect the velocity of objects from the scripting language, so bodies moved by rule, but the engine, its mass model and its step rate were never named or described in any public document.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://recroom.com/cv2",
+          "title": "Circuits v2 chip reference, Rec Room",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Adds velocity to the input target."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "native",
+      "note": "Trigger volumes were a first-class object with scripting access to the players and objects inside them, and with a filter; they worked only inside the Rec Room runtime.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://recroom.com/cv2",
+          "title": "Circuits v2 chip reference, Rec Room",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Gets all of the players inside a Trigger Volume"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "native",
+      "note": "Sound was placed in the scene as a component on an object with play, stop and volume control from the scripting language; the component's own distance and direction settings were never documented publicly.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://recroom.com/cv2",
+          "title": "Circuits v2 chip reference, Rec Room",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Plays a sound from an SFX Component"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "partial",
+      "note": "The only part of the definition that was ever published is distance falloff, exposed as a per-player voice rolloff distance; how direction was rendered to the ears was never described, and no head-related or ambisonic model is named anywhere in the creator documentation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://web.archive.org/web/20240106060759/https://rec.net/creator/p/rooms-2.0-player-properties",
+          "title": "Rooms 2.0 Player Properties (archived rec.net creator documentation)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Voice Rolloff Distance"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "partial",
+      "note": "Live voice existed and creators could change how far each player's voice carried, but the transport, the codec and the mixing were never published, so no other party could carry or receive that voice.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://web.archive.org/web/20240106060759/https://rec.net/creator/p/rooms-2.0-player-properties",
+          "title": "Rooms 2.0 Player Properties (archived rec.net creator documentation)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Voice Rolloff Distance"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "native",
+      "note": "A genuine two-level authority model was exposed to creators: one authority player per object, and one authority player for the whole room, both readable and testable from the scripting language. It governs only machines running Rec Room; no other party can hold or check authority.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://recroom.com/cv2",
+          "title": "Circuits v2 chip reference, Rec Room",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Outputs the authority player of the input RecRoomObject"
+        },
+        {
+          "url": "https://recroom.com/cv2",
+          "title": "Circuits v2 chip reference, Rec Room",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Returns the player who is the room Authority player"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "partial",
+      "note": "Creators could see the split between the local machine and the authority machine and write logic that ran on one or the other, so replication clearly existed, but which state is shared, how often and in what form was never published.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://recroom.com/cv2",
+          "title": "Circuits v2 chip reference, Rec Room",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Outputs true on the player's machine who has authority"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "partial",
+      "note": "A room was divided into subrooms with a separate player count for each, which bounds how many people share a space, but nothing was published about sending each client only the objects it needs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://web.archive.org/web/20250429154622/https://rec.net/creator/p/player-performance",
+          "title": "Player Performance Tips (archived rec.net creator documentation)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "you can adjust the player count for each subroom"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "partial",
+      "note": "Two clocks were exposed and neither orders events across machines: a coarse universal time, and a precise counter that starts when each player launches the application and is therefore different on every client. No shared session clock was ever documented.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://recroom.com/cv2",
+          "title": "Circuits v2 chip reference, Rec Room",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Gets the amount of seconds since a player launched Rec Room"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "conflicts",
+      "note": "Rooms were named and reached only through the operator's own website and client, with no second resolver and no fallback. When the operator switched off, the website went offline and every Rec Room address ever minted became unresolvable on the same day, which is the failure mode any federated or multi-resolver naming approach exists to prevent.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/schools-out-for-rec-room",
+          "title": "School's Out for Rec Room (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The rec.net website will go offline."
+        },
+        {
+          "url": "https://blog.recroom.com/posts/schools-out-for-rec-room",
+          "title": "School's Out for Rec Room (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Rec Room will be closing down on June 1st 2026 at noon Pacific time."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "partial",
+      "note": "The only identifier for a person was a Rec Room account held by the operator, which no outside party could verify and which nothing else could reference. It stopped existing at shutdown, taking every creator's identity and standing with it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/schools-out-for-rec-room",
+          "title": "School's Out for Rec Room (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "You will no longer be able to login to and play Rec Room"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "none",
+      "note": "No Rec Room documentation describes any way to express a verifiable claim about a person, either issued by Rec Room or accepted from elsewhere; membership tier and player level were internal account attributes only.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://web.archive.org/web/20240524033800/https://rec.net/creator/studio",
+          "title": "Rec Room Studio (archived rec.net creator page)",
+          "retrieved": "2026-08-23",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "none",
+      "note": "Nothing was published about acting on licence terms at the point of use; permission to create and upload was gated by account attributes such as membership and player level, which is access control over the tool, not rights enforcement over content.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://web.archive.org/web/20240524033800/https://rec.net/creator/studio",
+          "title": "Rec Room Studio (archived rec.net creator page)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "For automatic authorization to upload content, these conditions are required: Rec Room Plus membership"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "partial",
+      "note": "Hand position, hand velocity and a single finger direction for each hand were readable from the scripting language, which is a reduced hand pose rather than an articulated one; nothing was published about which devices supplied it or what happened on devices without hands.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://recroom.com/cv2",
+          "title": "Circuits v2 chip reference, Rec Room",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Outputs the Direction of a player's left hand finger"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "none",
+      "note": "Rec Room ran on headsets, consoles, computers and phones, but the published scripting chip list contains nothing that reports which device a player is on, so a room could not adapt to what the client could actually do through the documented surface.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://recroom.com/cv2",
+          "title": "Circuits v2 chip reference, Rec Room",
+          "retrieved": "2026-08-23",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "native",
+      "note": "World rules were expressed in Rec Room's own visual scripting language, with a published chip reference. There was no text language for creators, and the language ran only inside Rec Room, so no rule written in it can be read or run anywhere else.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://recroom.com/cv2",
+          "title": "Circuits v2 chip reference, Rec Room",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Circuits are Rec Room’s visual scripting system."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "native",
+      "note": "Behaviour travelled with the object: circuit boards lived inside the containers that made up a compound object, and deleting the object's contents deleted the circuits with it. This is real interactivity bound to an asset, but the asset never left the platform, so it never helped anyone outside it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://web.archive.org/web/20250429135453/https://rec.net/creator/p/circuits-performance",
+          "title": "Circuits Performance Tips (archived rec.net creator documentation)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "this will delete all the circuits in a compound object"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "partial",
+      "note": "Guest content was isolated by construction, because a creator could only assemble chips from Rec Room's own published set and never supply compiled code, but no isolation model, permission model or limit document was ever published for the runtime.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://recroom.com/cv2",
+          "title": "Circuits v2 chip reference, Rec Room",
+          "retrieved": "2026-08-23",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "native",
+      "note": "Guest content was bounded by a single published hard number, a fifty thousand unit build budget per room, plus a per-subroom player count; the operator ran an opt-in experiment with a higher limit and then withdrew it on the evidence.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://web.archive.org/web/20240603051831/https://rec.net/creator/p/limits-v2-update",
+          "title": "Limits V2 Update (archived rec.net creator documentation)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "our current ink limit (50k) is the optimal point at which we can prevent bad player outcomes"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "partial",
+      "note": "The scripting language had commands for driving a non-player character to a destination and turning it, which is scripted navigation inside the world rather than an interface an autonomous agent could join through; no external agent could connect.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://recroom.com/cv2",
+          "title": "Circuits v2 chip reference, Rec Room",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Commands the AI to path to the input target destination."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "partial",
+      "note": "Rooms and reusable saved objects were stored on the operator's servers and survived restarts, but persistence was entirely server-side with no creator-held copy, which is why the operator could state at shutdown that no working copy could be produced once the servers stopped.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "But without the Rec Room servers operational that is not possible."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "conflicts",
+      "note": "Items and the currency that bought them were issued and held by one operator, could not leave the platform, and were switched off by announcement: tokens simply stopped being spendable on a date. Any approach where a held item travels with its owner collides directly with an inventory that only one company can honour.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/schools-out-for-rec-room",
+          "title": "School's Out for Rec Room (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Rec Room tokens can no longer be spent after June 1st."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "conflicts",
+      "note": "A published room was never a package a creator could hold or run. Even at shutdown, with every incentive to help, the operator could offer only underlying data to help rebuild the experience elsewhere, and only through the computer version of the client. Read-only in one direction: assets went in, a runnable world never came out.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "download the underlying room and invention data in formats that can help you recreate your experience elsewhere"
+        },
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Data export tools are only available in the latest Steam PC update of Rec Room."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "out-of-scope",
+      "note": "There was one implementation, owned by one company, with no specification to test against, so there is nothing an independent implementation could have been proved to match.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://web.archive.org/web/20260604230233/https://rec.net/creator/p/Documents",
+          "title": "Creator Documents (archived rec.net documentation hub)",
+          "retrieved": "2026-08-23",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "out-of-scope",
+      "note": "Rec Room was a self-contained set of virtual rooms with no Earth frame of any kind; nothing in it was ever positioned against the real world.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://web.archive.org/web/20260604230233/https://rec.net/creator/p/Documents",
+          "title": "Creator Documents (archived rec.net documentation hub)",
+          "retrieved": "2026-08-23",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "out-of-scope",
+      "note": "No Earth-referenced coordinates existed anywhere in the platform, so there was no frame to agree on.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://web.archive.org/web/20260604230233/https://rec.net/creator/p/Documents",
+          "title": "Creator Documents (archived rec.net documentation hub)",
+          "retrieved": "2026-08-23",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "out-of-scope",
+      "note": "The platform placed content in its own virtual rooms and never fixed content to a place in the user's real surroundings.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://web.archive.org/web/20260604230233/https://rec.net/creator/p/Documents",
+          "title": "Creator Documents (archived rec.net documentation hub)",
+          "retrieved": "2026-08-23",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "out-of-scope",
+      "note": "With no real-world placement at all, there was nothing to share or persist across devices and sessions in a physical location.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://web.archive.org/web/20260604230233/https://rec.net/creator/p/Documents",
+          "title": "Creator Documents (archived rec.net documentation hub)",
+          "retrieved": "2026-08-23",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.vps",
+      "level": "out-of-scope",
+      "note": "The platform never took camera imagery of the real world as input and had no notion of recovering a real-world pose.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://web.archive.org/web/20260604230233/https://rec.net/creator/p/Documents",
+          "title": "Creator Documents (archived rec.net documentation hub)",
+          "retrieved": "2026-08-23",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "out-of-scope",
+      "note": "Rooms were hand-built spaces with a fixed build budget, not streamed geospatial data, so tiled terrain and city streaming never applied.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://web.archive.org/web/20260604230233/https://rec.net/creator/p/Documents",
+          "title": "Creator Documents (archived rec.net documentation hub)",
+          "retrieved": "2026-08-23",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.indoor",
+      "level": "out-of-scope",
+      "note": "The platform's interiors were invented rather than surveyed, so there was no structured description of a real interior space.",
+      "confidence": "reported",
+      "sources": [
+        {
+          "url": "https://web.archive.org/web/20260604230233/https://rec.net/creator/p/Documents",
+          "title": "Creator Documents (archived rec.net documentation hub)",
+          "retrieved": "2026-08-23",
+          "kind": "primary"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "Rec Room was a hosted platform of hand-built rooms, and it shut down on 2026-06-01, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Unfortunately, you cannot download a working copy of your rooms."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "Rec Room was a hosted platform of hand-built rooms, and it shut down on 2026-06-01, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Unfortunately, you cannot download a working copy of your rooms."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "Rec Room was a hosted platform of hand-built rooms, and it shut down on 2026-06-01, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Unfortunately, you cannot download a working copy of your rooms."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "out-of-scope",
+      "note": "Rec Room was a hosted platform of hand-built rooms, and it shut down on 2026-06-01, and it names no Gaussian splat interchange format and carries no splat data.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Unfortunately, you cannot download a working copy of your rooms."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "out-of-scope",
+      "note": "Rec Room was a hosted platform of hand-built rooms, and it shut down on 2026-06-01, and it delivers no captured scene, progressively by region and detail or otherwise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Unfortunately, you cannot download a working copy of your rooms."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "Rec Room was a hosted platform of hand-built rooms, and it shut down on 2026-06-01, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Unfortunately, you cannot download a working copy of your rooms."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "out-of-scope",
+      "note": "Rec Room was a hosted platform of hand-built rooms, and it shut down on 2026-06-01, and it defines no encoding or compression for a set of points with attributes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Unfortunately, you cannot download a working copy of your rooms."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "Rec Room was a hosted platform of hand-built rooms, and it shut down on 2026-06-01, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Unfortunately, you cannot download a working copy of your rooms."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "out-of-scope",
+      "note": "Rec Room was a hosted platform of hand-built rooms, and it shut down on 2026-06-01, and it produces no image from a viewing position that no capture camera occupied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Unfortunately, you cannot download a working copy of your rooms."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "Rec Room was a hosted platform of hand-built rooms, and it shut down on 2026-06-01, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Unfortunately, you cannot download a working copy of your rooms."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "Rec Room was a hosted platform of hand-built rooms, and it shut down on 2026-06-01, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Unfortunately, you cannot download a working copy of your rooms."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "Rec Room was a hosted platform of hand-built rooms, and it shut down on 2026-06-01, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Unfortunately, you cannot download a working copy of your rooms."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "Rec Room was a hosted platform of hand-built rooms, and it shut down on 2026-06-01, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Unfortunately, you cannot download a working copy of your rooms."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "Rec Room was a hosted platform of hand-built rooms, and it shut down on 2026-06-01, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Unfortunately, you cannot download a working copy of your rooms."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "Rec Room was a hosted platform of hand-built rooms, and it shut down on 2026-06-01, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Unfortunately, you cannot download a working copy of your rooms."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "Rec Room was a hosted platform of hand-built rooms, and it shut down on 2026-06-01, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Unfortunately, you cannot download a working copy of your rooms."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "out-of-scope",
+      "note": "Rec Room was a hosted platform of hand-built rooms, and it shut down on 2026-06-01, and it carries no full 360-degree view of a place as an image with its projection stated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Unfortunately, you cannot download a working copy of your rooms."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "out-of-scope",
+      "note": "The platform shut down on 1 June 2026, and while it ran it was a fully virtual social game built from rooms its players authored. No part of it read the shape of a player's physical space.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/schools-out-for-rec-room",
+          "title": "School's Out for Rec Room (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Rec Room will be closing down on June 1st 2026 at noon Pacific time."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "Nothing in its creator tools named a real surface. Its labels applied to objects, players and rooms inside the game.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/schools-out-for-rec-room",
+          "title": "School's Out for Rec Room (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Rec Room will be closing down on June 1st 2026 at noon Pacific time."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "out-of-scope",
+      "note": "No depth of the real world reached a room's logic; the platform had no camera or depth input for creators.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/schools-out-for-rec-room",
+          "title": "School's Out for Rec Room (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Rec Room will be closing down on June 1st 2026 at noon Pacific time."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "Rooms drew as fully virtual scenes with no passthrough view, so real surfaces never hid virtual content.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/schools-out-for-rec-room",
+          "title": "School's Out for Rec Room (Rec Room operator announcement)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Rec Room will be closing down on June 1st 2026 at noon Pacific time."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "none",
+      "note": "Rec Room closed on 1 June 2026 and its creator documentation went offline with it, so this row cannot be verified against a live source. What was published — the Circuits reference and the creator pages captured in this project's database — describes a wholly virtual room and no blend with a camera view. Recorded unverified.",
+      "confidence": "unverified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data, Rec Room blog",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "But without the Rec Room servers operational that is not possible."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.face",
+      "level": "none",
+      "note": "Nothing in the published creator material described a face or body stream reaching a room's logic; the platform is shut down and the documentation is offline, so absence could not be confirmed against a live source. Recorded unverified.",
+      "confidence": "unverified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data, Rec Room blog",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "But without the Rec Room servers operational that is not possible."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "none",
+      "note": "Rooms had autonomous characters that could be told to path to a destination, so navigation existed inside the platform, but nothing published declared a walkable surface, bounds or arrival points as part of a room, and the rooms themselves can no longer be opened or exported. Recorded unverified against a live source.",
+      "confidence": "unverified",
+      "sources": [
+        {
+          "url": "https://recroom.com/cv2",
+          "title": "Rec Room Circuits V2 reference",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Commands the AI to path to the input target destination."
+        },
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data, Rec Room blog",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Unfortunately, you cannot download a working copy of your rooms."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "none",
+      "note": "Circuits programs and inventions lived inside the platform's own account and room structure. No name was published that another author could resolve, and with the service gone nothing resolves at all — the clearest demonstration on this map of what a name with no permanence is worth.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data, Rec Room blog",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Unfortunately, you cannot download a working copy of your rooms."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "none",
+      "note": "Rec Room ran moderation as an operator, but nothing published to creators described a review standing between finished content and players or a record of it that travelled with content, and the documentation is now offline. Recorded unverified.",
+      "confidence": "unverified",
+      "sources": [
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
+          "title": "Exporting your creation data, Rec Room blog",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "But without the Rec Room servers operational that is not possible."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "Rec Room rooms were virtual; no map of a real place was ever declared or aligned.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "A room was not a service bound to a region of the Earth and declared no coverage area.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "partial",
+      "note": "The historical official circuit index documents button text and pressed-state controls; it does not settle full layout, alignment and presentation semantics.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://recroom.com/cv2",
+          "title": "cv2 — Rec Room",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Button Get Text Outputs a target Button's Text property. Button Set Text Sets an input Button's Text property."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.collection",
+      "level": "native",
+      "note": "The historical official circuit index defines object tags and retrieving every room object with a given tag.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://recroom.com/cv2",
+          "title": "cv2 — Rec Room",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Assigns tags to the input object."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "partial",
+      "note": "The historical circuit index exposes emitter size, speed and start controls; it does not establish exchanged particle-system descriptions.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://recroom.com/cv2",
+          "title": "cv2 — Rec Room",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Emitter Set Color Sets the color for the particles emitted Emitter Set Looping Emitter Set Size Sets the size of the particles emitted"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "partial",
+      "confidence": "verified",
+      "note": "Historical Rec Room Studio documentation embeds and plays video in room scenes. The retained passage does not establish the audio/video synchronization rules used by that scene playback. Rec Room's June 2026 shutdown remains part of the subject boundary.",
+      "sources": [
+        {
+          "url": "https://recroom.com/cv2",
+          "title": "cv2 — Rec Room",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "SFX Play Plays a sound from an SFX Component"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "partial",
+      "confidence": "verified",
+      "note": "The historical circuit API has identified trigger volumes and contained-object summaries; it does not specify exchanged typed event histories with time semantics.",
+      "sources": [
+        {
+          "url": "https://recroom.com/cv2",
+          "title": "cv2 — Rec Room",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "Trigger Volume Get Objects Gets all of the objects inside a Trigger Volume"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "partial",
+      "confidence": "verified",
+      "note": "The historical runtime supports target-dependent look-at behavior, but the index does not declare full transform-constraint evaluation rules.",
+      "sources": [
+        {
+          "url": "https://recroom.com/cv2",
+          "title": "cv2 — Rec Room",
+          "retrieved": "2026-09-10",
+          "kind": "primary",
+          "quote": "AI Look At Command an AI to look at the input target."
+        }
+      ]
+    }
+  ]
+}

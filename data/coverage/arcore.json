@@ -1,0 +1,2547 @@
+{
+  "subject_id": "arcore",
+  "summary": "Google's answer to putting content in a real place is two things that share a name and not much else. ARCore is the phone half, delivered as a Google Play service and at version 1.56.0: it finds planes and depth from the camera, estimates lighting, reads printed images, and through the Geospatial interface recovers where the device is on the Earth by matching camera pixels against a point cloud built from more than fifteen years of Street View, so content can be pinned by latitude, longitude and altitude nearly anywhere Street View has been, and shared between people and between Android and Apple devices with Cloud Anchors that expire. Android XR is the headset and glasses half: an Android platform shipping on a Samsung headset while its software kit is still at Developer Preview 4, with perception built on OpenXR 1.1 and a long list of Google extensions, glTF 2.0 as the only content format, spatial and ambisonic audio, hands and eyes as the default input, and Gemini built into the system. The two halves are not the same product: visual positioning, Earth-referenced anchors and cross-device shared anchors exist only on phones, and on the headset an anchor persists to the app's own private storage and can be shared only with other applications running on that same device. Everything moves one way. The platform reads glTF, OpenEXR skyboxes and stereoscopic video and writes none of them; the only file it produces is a recording of a session as an ordinary video file with extra tracks. Two traps matter for a standards audience. ARCore's world coordinates are valid only inside the frame that produced them, because the world is refitted as tracking improves, so an anchor — not a coordinate — is the only durable address for a place. And the Earth-referenced pose is expressed in Google's own east-up-south frame with altitude above the 1984 world geodetic ellipsoid, with no exchange encoding of any kind, so every crossing into another system is a conversion someone has to write by hand. Conformance is split the same way: Android XR is listed by Khronos as a conformant OpenXR product, while ARCore's device certification requirements are only available to authorized manufacturers behind a portal.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "partial",
+      "note": "The pixel pipeline is split and neither half is the platform's own for app content. ARCore on a phone rasterizes nothing: it hands the app a camera image and poses and the app draws. On Android XR the Jetpack XR runtime does rasterize, but only the fixed path it defines for glTF models, panels and skyboxes; anything else goes through OpenXR, where the app renders into its own swapchains and the system compositor only composes the layers. There is no render graph or pass structure a developer can configure.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app, rendering",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "3D models will be rendered with physically based rendering(PBR) techniques specified in the glTF 2.0 standard"
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/openxr",
+          "title": "Develop with OpenXR on Android XR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Android XR supports apps built with OpenXR through its support for the OpenXR 1.1 specification and select vendor extensions"
+        },
+        {
+          "url": "https://developers.google.com/ar/develop/fundamentals",
+          "title": "ARCore fundamental concepts, user interaction",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "ARCore uses hit testing to take an (x,y) coordinate corresponding to the phone's screen"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "native",
+      "note": "Android XR's OpenXR runtime binds both Vulkan and OpenGL ES, through the Khronos graphics binding extensions, and ARCore on a phone delivers the camera image as an OpenGL texture to be drawn by the app.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/openxr/extensions",
+          "title": "Android XR OpenXR feature overview, XR_KHR_vulkan_enable",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This extension enables the use of the Vulkan graphics API in an OpenXR runtime."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/openxr/extensions",
+          "title": "Android XR OpenXR feature overview, XR_KHR_opengl_es_enable",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This extension must be provided by runtimes supporting applications using OpenGL ES APIs for rendering."
+        },
+        {
+          "url": "https://developers.google.com/ar/reference/java/com/google/ar/core/Pose",
+          "title": "ARCore Java reference, Pose",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Coordinate system is right-handed, like OpenGL conventions."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "native",
+      "note": "Surface appearance is glTF 2.0 physically based rendering, evaluated by the Jetpack XR runtime, with a named list of Khronos material extensions on top: clearcoat, sheen, unlit and material variants.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app, rendering",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "3D models will be rendered with physically based rendering(PBR) techniques specified in the glTF 2.0 standard"
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app, glTF extensions",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "KHR_draco_mesh_compression"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "native",
+      "note": "Two separate lighting systems, one per half. On a phone, Environmental HDR estimates a main directional light, ambient spherical harmonics and a high dynamic range cubemap from the camera image. On a headset, an OpenEXR skybox supplies image-based lighting for models, and there is an OpenXR light estimation extension. Nothing bakes; all of it is real time.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/lighting-estimation",
+          "title": "ARCore Lighting Estimation overview",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Environmental HDR mode uses machine learning to analyze the camera images in real time and synthesize environmental lighting to support realistic rendering of virtual objects."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-environments",
+          "title": "Add spatial environments to your app, skybox lighting",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The Jetpack XR SDK supports spherical skyboxes in the OpenEXR standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.post",
+      "level": "partial",
+      "note": "There is no post-processing framework for an app. The only effects after the main render are compositor-side and are about frame rate, not looks: eye-tracked foveation renders the focal point at higher resolution, and space warp and frame synthesis generate intermediate frames from velocity vectors and depth.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/openxr",
+          "title": "Develop with OpenXR on Android XR, performance features",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Allows an app to render higher resolution content only at the eyes focal point."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/openxr",
+          "title": "Develop with OpenXR on Android XR, space warp",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Uses velocity vectors and depth texture information to generate tween frames"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "none",
+      "note": "No level of detail and no streaming order for app content: a glTF model is loaded whole into memory before it is placed. The only graded geometry anywhere is Streetscape Geometry, whose quality tiers follow the CityGML levels of detail, and that grades Google's source data rather than choosing what to show. Foveation and recommended resolution are pixel controls, not geometry ones.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/java/geospatial/streetscape-geometry",
+          "title": "Streetscape Geometry developer guide, mesh quality",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Levels of detail are described in the CityGML 2.0 standard"
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/openxr",
+          "title": "Develop with OpenXR on Android XR, performance features",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Allows an app to render higher resolution content only at the eyes focal point."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "none",
+      "note": "Nothing about Gaussian splatting or radiance fields appears anywhere in either half. The supported model format is glTF 2.0 with a closed list of extensions, none of which carries splats.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When working with 3D models, the Jetpack XR SDK supports the glTF 2.0 open standard."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app, glTF extensions",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "KHR_draco_mesh_compression"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "partial",
+      "note": "Video in three dimensions is supported, point clouds and volumes are not. The runtime plays side-by-side stereoscopic video and the multi-view high efficiency video coding standard onto surfaces, and it exposes depth maps in metres, but nothing renders a point cloud or a voxel volume for you.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-spatial-video",
+          "title": "Add spatial video to your app",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The MV-HEVC codec standard is optimized and designed for stereoscopic video"
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/depth",
+          "title": "Work with depth in ARCore for Jetpack XR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Measurements contained in these maps are expressed in meters."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "partial",
+      "note": "Text is ordinary Android user interface text drawn on flat spatial panels placed in three dimensions, which is why an unmodified two-dimensional app already reads correctly in a headset. There is no three-dimensional text primitive and no font or layout model of the platform's own.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr",
+          "title": "Develop with the Android XR SDK",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Existing 2D mobile or large-screen apps work by default in Android XR for XR headsets and wired XR glasses—displayed as a 2D panel inside 3D space."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/work-with-entities",
+          "title": "Work with entities in Jetpack SceneCore",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The scene graph aligns with the user's real world and lets you organize 3D entities such as panels and 3D models into a hierarchical structure"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "native",
+      "note": "The viewpoint is the device. ARCore reports the camera as a pose from local space to world space, in the same form as an OpenGL model matrix, and ARCore for Jetpack XR reports the headset's own position and orientation relative to the world origin once device tracking is configured.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/reference/java/com/google/ar/core/Pose",
+          "title": "ARCore Java reference, Pose",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Coordinate system is right-handed, like OpenGL conventions."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/device-pose",
+          "title": "Work with device pose in ARCore for Jetpack XR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "the orientation (pitch, yaw, roll) and a position (X, Y, Z) of the device relative to the world origin"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "native",
+      "note": "Jetpack SceneCore is a scene graph plus an entity component system: entities are organised in a hierarchy that is aligned to the user's real room, and behaviour is added by attaching components rather than by subclassing.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/work-with-entities",
+          "title": "Work with entities in Jetpack SceneCore",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The scene graph aligns with the user's real world and lets you organize 3D entities such as panels and 3D models into a hierarchical structure"
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/work-with-entities",
+          "title": "Work with entities in Jetpack SceneCore, entity component system",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "An entity component system follows the principle of composition over"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "native",
+      "note": "A transform is a quaternion rotation followed by a translation, in a right-handed system with the same conventions as OpenGL. The trap sits underneath: the world space itself is re-fitted as tracking improves, so coordinates are only valid inside the frame that produced them and only an anchor is a durable address for a place.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/reference/java/com/google/ar/core/Pose",
+          "title": "ARCore Java reference, Pose",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Coordinate system is right-handed, like OpenGL conventions."
+        },
+        {
+          "url": "https://developers.google.com/ar/reference/java/com/google/ar/core/Pose",
+          "title": "ARCore Java reference, Pose, world coordinate space",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "every frame should be considered to be in a completely unique world coordinate space"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "native",
+      "note": "The asset container is glTF 2.0, as .gltf or .glb, for both models and environment geometry. It goes one way only: the runtime loads glTF from the app's assets, a uniform resource identifier or raw bytes, and there is no exporter anywhere in either half. The single file the platform does write is not a scene at all: a recorded session, saved as a video file carrying the camera stream, the inertial data and any custom data the app added.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When working with 3D models, the Jetpack XR SDK supports the glTF 2.0 open standard."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-environments",
+          "title": "Add spatial environments to your app",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "It is a composite of a standalone skybox image and glTF-specified geometry."
+        },
+        {
+          "url": "https://developers.google.com/ar/develop/recording-and-playback",
+          "title": "ARCore Recording and Playback overview",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The Recording API stores a camera’s video stream, IMU data, or any other custom metadata you choose to save in an MP4 file."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "native",
+      "note": "Mesh encoding is whatever glTF 2.0 carries, with Draco mesh compression and mesh quantization named as supported extensions.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When working with 3D models, the Jetpack XR SDK supports the glTF 2.0 open standard."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app, glTF extensions",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "KHR_draco_mesh_compression"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "native",
+      "note": "Texture encoding follows glTF, with Basis Universal supercompression, WebP textures and texture transforms all named as supported extensions, which covers the compressed formats a mobile graphics processor wants.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app, glTF extensions, textures",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "KHR_texture_basisu"
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app, glTF extensions",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "KHR_draco_mesh_compression"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "partial",
+      "note": "Materials cross into the platform only as glTF physically based rendering with a fixed list of Khronos extensions. There is no MaterialX anywhere, no node graph, and no way out again, so a material that uses anything outside that list arrives changed or not at all.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app, rendering",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "3D models will be rendered with physically based rendering(PBR) techniques specified in the glTF 2.0 standard"
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app, glTF extensions",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "KHR_draco_mesh_compression"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "partial",
+      "note": "Animation is played, never authored or written. Clips embedded in a glTF model can be started, looped, sought and sped up by name, and the documentation names skeletal animation and material animation through the animation pointer extension as the supported kinds.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/customize-3d-models",
+          "title": "Customize 3D models in your app, animation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Skeletal animations and material animations created with the KHR_animation_pointer glTF extension are supported in the Jetpack XR SDK."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "partial",
+      "note": "Skeletal animation inside a glTF model is supported, so a rig transfers as far as glTF carries it, but the platform defines no bone naming or structure of its own for content. The only agreed skeleton anywhere is for the user's hands, whose joint poses follow the OpenXR conventions.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/customize-3d-models",
+          "title": "Customize 3D models in your app, animation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Skeletal animations and material animations created with the KHR_animation_pointer glTF extension are supported in the Jetpack XR SDK."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/hands",
+          "title": "Work with hands in ARCore for Jetpack XR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Hand joint poses are specified by the OpenXR standards"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "partial",
+      "note": "Blend shapes exist on the perception side and are not documented on the content side: face tracking returns 68 named blend shape values for the user's own face, while the list of supported glTF animation kinds names skeletal and material animation and does not name morph target animation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/face",
+          "title": "Work with face tracking in ARCore for Jetpack XR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A face's possible expressions are a combination of 68 blend shape values"
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/customize-3d-models",
+          "title": "Customize 3D models in your app, animation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Skeletal animations and material animations created with the KHR_animation_pointer glTF extension are supported in the Jetpack XR SDK."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "none",
+      "note": "No instancing. The supported glTF extension list has no mesh instancing extension in it, and nothing in the scene graph documentation offers a cheap repeat of one model.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app, glTF extensions",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "KHR_draco_mesh_compression"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "partial",
+      "note": "Composition is shallow. An app's environment is a composite of one skybox image and one glTF geometry file, and a loaded model's material can be overridden node by node at runtime, but there is no layering, no referencing of one scene from another and no override system that survives to a file.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-environments",
+          "title": "Add spatial environments to your app",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "It is a composite of a standalone skybox image and glTF-specified geometry."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/customize-3d-models",
+          "title": "Customize 3D models in your app, material override",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "setMaterialOverride"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "native",
+      "note": "Metres throughout, and stated as such: pose translations are in metres, plane extents are in metres, and depth measurements are in metres. Since glTF is also metric, imported content is the right size without a scale negotiation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/reference/java/com/google/ar/core/Pose",
+          "title": "ARCore Java reference, Pose, units",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Translation units are meters."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/planes",
+          "title": "Work with planes in ARCore for Jetpack XR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The dimensions of the detected plane, in meters."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/depth",
+          "title": "Work with depth in ARCore for Jetpack XR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Measurements contained in these maps are expressed in meters."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "none",
+      "note": "No rights or licence metadata travels with an asset. A glTF file is loaded for its geometry and materials, and the platform's rights machinery is the app store licence over the whole application, not anything attached to a model.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When working with 3D models, the Jetpack XR SDK supports the glTF 2.0 open standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "none",
+      "note": "Nothing about an asset is signed or attributed. Google Play signs the application bundle it delivers, which says who published the app and nothing at all about who made the model inside it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/package-and-distribute",
+          "title": "Package and distribute apps for Android XR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "An Android App Bundle is a publishing format that includes all your app's compiled code and resources, and defers APK generation and signing to Google Play."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "none",
+      "note": "There is no avatar format. An avatar, if an app has one, is an ordinary glTF model like any other, and neither half of the platform defines what makes one an avatar.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When working with 3D models, the Jetpack XR SDK supports the glTF 2.0 open standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "none",
+      "note": "No avatar skeleton standard. The platform tracks the user's own body by inferring joint positions from the head and hands with inverse kinematics, and tracks hand joints under the OpenXR conventions, but neither is a naming or structure agreement for a character rig that would let animation transfer between worlds.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/openxr/extensions",
+          "title": "Android XR OpenXR feature overview, XR_ANDROID_body_tracking",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Uses IK to determine body position based on head and hands position."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/hands",
+          "title": "Work with hands in ARCore for Jetpack XR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Hand joint poses are specified by the OpenXR standards"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "partial",
+      "note": "Two different face models live inside one subject. On a headset, face tracking returns 68 blend shape values with Google's own names, in the style of facial action coding, each between nought and one, with confidence for three regions. On a phone, Augmented Faces instead returns a 468-point dense mesh with a centre pose and three region poses. Neither is an interchange format: the documentation defines the values and gives no mapping to any published expression or viseme set, so another world needs a conversion table nobody has published, and the two halves do not even agree with each other.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/face",
+          "title": "Work with face tracking in ARCore for Jetpack XR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A face's possible expressions are a combination of 68 blend shape values"
+        },
+        {
+          "url": "https://developers.google.com/ar/develop/augmented-faces",
+          "title": "ARCore Augmented Faces overview",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The 468-point dense 3D face mesh allows you to paint adaptable, detailed textures that accurately follow a face"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "none",
+      "note": "No retargeting anywhere. Animation plays on the rig it was authored for, and moving a clip to a different body is left entirely to the application.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/customize-3d-models",
+          "title": "Customize 3D models in your app, animation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Skeletal animations and material animations created with the KHR_animation_pointer glTF extension are supported in the Jetpack XR SDK."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "none",
+      "note": "No wearable or attachment model. An app can parent a model to a tracked hand joint by hand, but nothing defines attachment points that would survive a transfer to another world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/hands",
+          "title": "Work with hands in ARCore for Jetpack XR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Hand joint poses are specified by the OpenXR standards"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "none",
+      "note": "No avatar level of detail, because there is no avatar representation and no level of detail scheme for models to build one on.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When working with 3D models, the Jetpack XR SDK supports the glTF 2.0 open standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "none",
+      "note": "Nothing binds a figure in the scene to a verified identity. Face and eye data are guarded by runtime permissions on the device and are never presented as a claim about who the user is.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/face",
+          "title": "Work with face tracking in ARCore for Jetpack XR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A face's possible expressions are a combination of 68 blend shape values"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "out-of-scope",
+      "note": "A perception and presentation platform, not a simulator. Neither ARCore nor the Jetpack XR runtime has a dynamics world, and an app that wants rigid bodies brings its own engine.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "out-of-scope",
+      "note": "No collision shapes of its own, though it supplies the raw material for someone else's: depth maps of the real room, detected planes with their outlines, and scene meshes of physical objects, all of which an app's own physics engine can collide against.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/depth",
+          "title": "ARCore Depth API overview, physics",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When you combine depth-based collision with game physics, you can make an experience come to life."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/openxr/extensions",
+          "title": "Android XR OpenXR feature overview, XR_ANDROID_scene_meshing",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This extension is intended to provide meshes that approximately represent the physical objects in the user's environment."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "out-of-scope",
+      "note": "No joints or constraints, because there is no simulation to constrain.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "physics.material",
+      "level": "out-of-scope",
+      "note": "No friction or restitution model. Surface response belongs to whatever engine the app is built on.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "physics.determinism",
+      "level": "out-of-scope",
+      "note": "No simulation, so no determinism claim to make. Perception output is not reproducible in any case: it depends on the camera, the room and the device profile.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "out-of-scope",
+      "note": "No soft bodies or cloth anywhere in the platform.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "out-of-scope",
+      "note": "No trigger volumes. The nearest thing is a component that reports input events on an entity, which is user interaction rather than a region firing when something enters it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/work-with-entities",
+          "title": "Work with entities in Jetpack SceneCore, entity component system",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "An entity component system follows the principle of composition over"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "native",
+      "note": "Sound can be placed at a point in three dimensions and attached to an entity, so a model can be the thing that is heard, and several entities can sound at once from their own positions.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-spatial-audio",
+          "title": "Add spatial audio to your app, positional audio",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A positional audio can be positioned to play from a specific point in 3D space."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-spatial-audio",
+          "title": "Add spatial audio to your app, types available",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Android XR supports positional, stereo, surround sound, and ambisonic audio."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "native",
+      "note": "The spatialization model covers positional sound, stereo and surround, and full-sphere ambisonics in the AmbiX format at first, second and third order. Existing apps that were never written for a headset get their audio spatialized to the panel they are drawn on, without any change.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-spatial-audio",
+          "title": "Add spatial audio to your app",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Android XR supports the AmbiX ambisonic audio format in first-, second- and third-order ambisonics."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-spatial-audio",
+          "title": "Add spatial audio to your app, types available",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Android XR supports positional, stereo, surround sound, and ambisonic audio."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "none",
+      "note": "No room acoustics and no reverb model. The spatial audio guide enumerates what the platform offers — positional, stereo, surround and ambisonic — and nothing there colours a sound by the space it is in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-spatial-audio",
+          "title": "Add spatial audio to your app, types available",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Android XR supports positional, stereo, surround sound, and ambisonic audio."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "none",
+      "note": "Nothing muffles or blocks a sound by geometry, even though the platform knows the geometry: it detects planes and can mesh the room, and none of that reaches the audio path.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-spatial-audio",
+          "title": "Add spatial audio to your app, types available",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Android XR supports positional, stereo, surround sound, and ambisonic audio."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/openxr/extensions",
+          "title": "Android XR OpenXR feature overview, XR_ANDROID_scene_meshing",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This extension is intended to provide meshes that approximately represent the physical objects in the user's environment."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "partial",
+      "note": "Streaming is the ordinary Android media stack rather than anything session-scale: the recommended loader for music and long content is ExoPlayer, which streams over the network and plays in the background.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-spatial-audio",
+          "title": "Add spatial audio to your app, loading audio",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "ExoPlayer : Ideal for loading stereo and surround sound content such as music and video."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "none",
+      "note": "No voice transport between participants. Voice on this platform goes to a machine, not to another person: speech recognition, speech synthesis and a live connection to Gemini.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/gemini",
+          "title": "Enhance your Android XR app with AI using Gemini API",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Gemini makes Android XR experiences easier to use and adds unique capabilities by helping your users understand what they're seeing and taking actions on their behalf."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "none",
+      "note": "Nothing replicates state. Even the one shared feature makes the point: hosting a Cloud Anchor returns an identifier, and the documentation says plainly that distributing it to other users is the app's job.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/cloud-anchors",
+          "title": "ARCore Cloud Anchors overview, how hosting and resolving works",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The app distributes that unique ID to other users."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "none",
+      "note": "No notion of ownership or authority over an object, because there is no shared object.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/cloud-anchors",
+          "title": "ARCore Cloud Anchors overview, how hosting and resolving works",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The app distributes that unique ID to other users."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "none",
+      "note": "No interest management. Nothing is being sent to a client to be filtered.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/cloud-anchors",
+          "title": "ARCore Cloud Anchors overview, how hosting and resolving works",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The app distributes that unique ID to other users."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.prediction",
+      "level": "none",
+      "note": "No prediction or reconciliation. The only latency the platform hides is its own rendering latency, through space warp and frame synthesis in the compositor.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/openxr",
+          "title": "Develop with OpenXR on Android XR, space warp",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Uses velocity vectors and depth texture information to generate tween frames"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "none",
+      "note": "No session transport. The platform's own network traffic is request and response over the web to Google's endpoints, for cloud anchors and for the visual positioning service, and nothing carries a session between participants.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/cloud-anchors",
+          "title": "ARCore Cloud Anchors overview",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Cloud Anchors are anchors that are hosted on the ARCore API cloud endpoint."
+        },
+        {
+          "url": "https://developers.google.com/ar/develop/authorization",
+          "title": "Set up ARCore API authorization",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Keyless authorization uses a token signed to control access to the API."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.media",
+      "level": "partial",
+      "note": "Media arrives, media never leaves. The runtime plays streamed stereoscopic and multi-view video and streamed audio through the ordinary Android media stack, and the live connection to Gemini carries audio in both directions, but there is no participant media path.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-spatial-video",
+          "title": "Add spatial video to your app",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The MV-HEVC codec standard is optimized and designed for stereoscopic video"
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-spatial-audio",
+          "title": "Add spatial audio to your app, loading audio",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "ExoPlayer : Ideal for loading stereo and surround sound content such as music and video."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "none",
+      "note": "No world session to join. A session here is a local perception session on one device, started and configured by one app, with permissions granted by the person holding the device.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/anchors",
+          "title": "Work with anchors in ARCore for Jetpack XR, persistence mode",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "anchor persistence is not enabled by default on XR sessions"
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/depth",
+          "title": "Work with depth in ARCore for Jetpack XR, permissions",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Enabling any depth estimation mode requires the android.permission.SCENE_UNDERSTANDING_FINE runtime permission to be granted to your app."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "none",
+      "note": "No portals and no handoff. Leaving one experience means leaving one Android application; nothing carries state across that boundary.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/package-and-distribute",
+          "title": "Package and distribute apps for Android XR, release tracks",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "the application must include the android.software.xr.api.spatial feature or the android.software.xr.api.openxr in the app manifest"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "none",
+      "note": "No presence or roster. The platform never knows that two people are in the same place, only that two devices resolved the same cloud anchor identifier, and even that is known to the app rather than to the platform.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/cloud-anchors",
+          "title": "ARCore Cloud Anchors overview, how hosting and resolving works",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The app distributes that unique ID to other users."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "partial",
+      "note": "There is no world address, but two weaker forms exist. A model has an address: an intent to Scene Viewer names a glTF or glb file by uniform resource locator and opens it in place. And a page has one: Chrome on the headset supports WebXR, so any web address can be an immersive destination.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/scene-viewer",
+          "title": "Scene Viewer developer guide",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This URL specifies the glTF or glb file that should be loaded into"
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/develop-with-webxr",
+          "title": "Develop with WebXR on Android XR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Chrome on Android XR supports WebXR"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "none",
+      "note": "Nothing discovers worlds, nodes or services. The only catalogue is the app store: a person browses Google Play on the headset and installs an application.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/package-and-distribute",
+          "title": "Package and distribute apps for Android XR, Play Store",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "a user can visit the Play Store on an XR headset and download an app directly to the headset"
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "partial",
+      "note": "Time is local, not shared. OpenXR time can be converted to and from the device's monotonic clock, which is enough to line events up against sensor data on one device and nothing at all for ordering events between machines.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/openxr/extensions",
+          "title": "Android XR OpenXR feature overview, XR_KHR_convert_timespec_time",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This extension provides two functions for converting between timespec monotonic time and XrTime"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "out-of-scope",
+      "note": "A device platform with no account model of its own for content. Identity here is the Google account on the device and the Google Cloud project behind an application, neither of which is a portable identifier for a person or an agent in a world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/authorization",
+          "title": "Set up ARCore API authorization",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Keyless authorization uses a token signed to control access to the API."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "out-of-scope",
+      "note": "No verifiable claim format. The credentials in this platform are service credentials: a signed token or an interface key that proves an application may call Google's cloud endpoint.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/authorization",
+          "title": "Set up ARCore API authorization",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Keyless authorization uses a token signed to control access to the API."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "out-of-scope",
+      "note": "No credential presentation protocol between parties. The one exchange that exists is an application authenticating itself to Google, with a token signed by a service account.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/authorization",
+          "title": "Set up ARCore API authorization",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Keyless authorization uses a token signed to control access to the API."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "none",
+      "note": "Permission is real but local and unreadable elsewhere. Every sensitive perception feature is gated by an Android runtime permission the person grants on the device — hand tracking, face tracking, eye tracking, coarse and fine scene understanding — and nothing about that grant can be read by a party that did not issue it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/depth",
+          "title": "Work with depth in ARCore for Jetpack XR, permissions",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Enabling any depth estimation mode requires the android.permission.SCENE_UNDERSTANDING_FINE runtime permission to be granted to your app."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/face",
+          "title": "Work with face tracking in ARCore for Jetpack XR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A face's possible expressions are a combination of 68 blend shape values"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "none",
+      "note": "No selective disclosure in the credential sense. The platform's only disclosure control is the per-sensor runtime permission, which decides what one application on one device may see and carries nothing to anywhere else.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/depth",
+          "title": "Work with depth in ARCore for Jetpack XR, permissions",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Enabling any depth estimation mode requires the android.permission.SCENE_UNDERSTANDING_FINE runtime permission to be granted to your app."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.social",
+      "level": "out-of-scope",
+      "note": "No reputation and no social graph. The platform has no notion of a relationship between two people.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "out-of-scope",
+      "note": "No rights enforcement at the point of use for content. Rights here bind the developer, not the asset: the additional terms restrict what may be built on the cloud anchor and geospatial interfaces, and the app store binds the buyer, while nothing is checked when a model is drawn.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/terms",
+          "title": "ARCore Additional Terms of Service",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "You will not use the APIs to create a product or service with features that are substantially similar to or that re-create the features of another Google product or service (such as Live View on Google Maps)."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/package-and-distribute",
+          "title": "Package and distribute apps for Android XR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "An Android App Bundle is a publishing format that includes all your app's compiled code and resources, and defers APK generation and signing to Google Play."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "native",
+      "note": "This is the platform's strongest row. The Geospatial interface returns the device's pose against the Earth — latitude, longitude, altitude and an orientation — with an accuracy estimate for each, and any pose in the local session can be converted to and from that Earth-referenced form. Note the frame: the orientation is expressed east, up and south, which is Google's own convention and not the one the Open Geospatial Consortium's pose standard uses, and there is no exchange encoding for it at all.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/java/geospatial/obtain-device-pose",
+          "title": "Determine the device's Geospatial pose",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "An orientation approximating the direction the user is facing in the EUS coordinate system with X+ pointing east, Y+ pointing up, and Z+ pointing south"
+        },
+        {
+          "url": "https://developers.google.com/ar/develop/java/geospatial/anchors",
+          "title": "Geospatial anchors developer guide, anchor types",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "There are three types of Geospatial anchors, which each handle altitude differently"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "partial",
+      "note": "One reference system, fixed, with a known seam. Horizontal position follows the world geodetic system of 1984 and altitude is metres above that ellipsoid, so ground level is not zero; the documentation itself tells developers to convert an elevation obtained from Google's own maps interface, which uses a gravity-based geoid, before comparing it. There is no way to state or negotiate a different reference system.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/java/geospatial/anchors",
+          "title": "Geospatial anchors developer guide for Android",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Altitude is reported in meters above the reference WGS84 ellipsoid such that ground level is not at zero."
+        },
+        {
+          "url": "https://developers.google.com/ar/develop/java/geospatial/anchors",
+          "title": "Geospatial anchors developer guide, altitude sources",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "You must convert the Maps API EGM96 elevation to WGS84 for comparison against the GeospatialPose altitude."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "native",
+      "note": "Fixing content to a place on one device is the core of both halves. On a phone an anchor holds a pose steady as tracking is refitted, and content can also be pinned to a printed image, with up to twenty tracked at once out of a database of up to a thousand. On a headset an anchor can be created free-standing or attached to a tracked plane, and it can be persisted into the app's own private storage under an identifier and reloaded in a later session.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/fundamentals",
+          "title": "ARCore fundamental concepts, anchors and trackables",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When you want to place a virtual object, you need to define an anchor to ensure that ARCore tracks the object's position over time."
+        },
+        {
+          "url": "https://developers.google.com/ar/develop/augmented-images",
+          "title": "ARCore Augmented Images overview",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "ARCore can track up to 20 unique images simultaneously and each database can store up to 1,000 reference images."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/anchors",
+          "title": "Work with anchors in ARCore for Jetpack XR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "By persisting an anchor, your app remembers that anchor's position in its private app data."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "native",
+      "note": "Shared across devices on phones, and not on headsets — the same product name covers two different capabilities. A Cloud Anchor uploads a feature map to Google's endpoint, returns an identifier, and lets an Android or an Apple device in the same room resolve the same place later, with an expiry time that can be extended up to a stated maximum. On Android XR there is no cloud anchor: persistence is to the app's private storage, and the sharing extension shares an anchor with other applications running on the same device.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/cloud-anchors",
+          "title": "ARCore Cloud Anchors overview",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Cloud Anchors are anchors that are hosted on the ARCore API cloud endpoint."
+        },
+        {
+          "url": "https://developers.google.com/ar/develop/cloud-anchors",
+          "title": "ARCore Cloud Anchors overview, cross-platform",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Both Android and iOS users can participate in the same experience and return to them again and again, even weeks or months later."
+        },
+        {
+          "url": "https://developers.google.com/ar/develop/cloud-anchors/management-api",
+          "title": "ARCore Cloud Anchor management API",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "update its expireTime to its maximumExpireTime"
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/anchors",
+          "title": "Work with anchors in ARCore for Jetpack XR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "By persisting an anchor, your app remembers that anchor's position in its private app data."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/openxr/extensions",
+          "title": "Android XR OpenXR feature overview, XR_ANDROID_anchor_sharing_export",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This extension allows applications to share anchors with other running applications."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.vps",
+      "level": "native",
+      "note": "Visual positioning is the reason this subject belongs on the map. Camera pixels are matched against a localization model built from more than fifteen years of Street View imagery, combined into a global point cloud of trillions of points, and the result is a device pose far better than satellite positioning alone. It is a service, not a specification, and the terms of use are part of the capability: you cannot point it at another provider's map, the additional terms forbid building anything that re-creates the features of another Google product, and they bar both the visual positioning interface and cloud anchors from services directed at children.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/geospatial",
+          "title": "ARCore Geospatial API overview",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "matches the recognizable parts of that environment to a localization model provided by Google’s Visual Positioning System (VPS) to determine the precise location of a user’s device"
+        },
+        {
+          "url": "https://developers.google.com/ar/develop/geospatial",
+          "title": "ARCore Geospatial API overview, global localization",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Those parts are then combined across tens of billions of images to compute a 3D point cloud of the global environment."
+        },
+        {
+          "url": "https://developers.google.com/ar/develop/terms",
+          "title": "ARCore Additional Terms of Service",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "You will not use the APIs to create a product or service with features that are substantially similar to or that re-create the features of another Google product or service (such as Live View on Google Maps)."
+        },
+        {
+          "url": "https://developers.google.com/ar/develop/terms",
+          "title": "ARCore Additional Terms of Service, child-directed applications",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "You may not use ARCore Cloud Anchors or ARCore Geospatial API in an API Client"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "partial",
+      "note": "City-scale geometry is streamed, but not as tiles anyone else can read. Streetscape Geometry hands the app meshes of terrain and buildings around the user, derived from Street View, graded by the levels of detail defined in the CityGML standard. They arrive as tracked objects inside a session with vertex and index buffers, never as a tileset with a manifest, so nothing else can consume them and they cannot be cached or served on.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/java/geospatial/streetscape-geometry",
+          "title": "Streetscape Geometry developer guide for Android",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The Streetscape Geometry APIs provide the geometry of terrain, buildings, or other structures in a scene."
+        },
+        {
+          "url": "https://developers.google.com/ar/develop/java/geospatial/streetscape-geometry",
+          "title": "Streetscape Geometry developer guide, mesh quality",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Levels of detail are described in the CityGML 2.0 standard"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.indoor",
+      "level": "partial",
+      "note": "Interiors are described, loosely. On a headset, detected planes carry a semantic label — wall, floor, ceiling or table — with a centre pose, extents in metres and a bounding polygon, and a scene meshing extension approximates the physical objects in the room. That is a running description for one app in one room, not a structured model of a building, and the outdoor semantic labelling on phones states outright that it is not meant for interiors.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk",
+          "title": "Develop with the Jetpack XR SDK, ARCore for Jetpack XR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This library includes motion tracking, persistent anchors, hit testing, and plane identification with semantic labeling (for example, floor, walls, and tabletops)."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/openxr/extensions",
+          "title": "Android XR OpenXR feature overview, XR_ANDROID_scene_meshing",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This extension is intended to provide meshes that approximately represent the physical objects in the user's environment."
+        },
+        {
+          "url": "https://developers.google.com/ar/develop/scene-semantics",
+          "title": "ARCore Scene Semantics API, supported use cases",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Supports outdoor scenes only and is not intended for indoor use cases."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "native",
+      "note": "Immersive session lifecycle is exactly what both halves provide. A perception session is created, configured feature by feature and reconfigured while running, and every capability — device tracking, planes, depth, hands, faces, anchor persistence — is off until the app asks for it and the person grants the matching permission.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/anchors",
+          "title": "Work with anchors in ARCore for Jetpack XR, persistence mode",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "anchor persistence is not enabled by default on XR sessions"
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/depth",
+          "title": "Work with depth in ARCore for Jetpack XR, permissions",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Enabling any depth estimation mode requires the android.permission.SCENE_UNDERSTANDING_FINE runtime permission to be granted to your app."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/openxr",
+          "title": "Develop with OpenXR on Android XR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Android XR supports apps built with OpenXR through its support for the OpenXR 1.1 specification and select vendor extensions"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "native",
+      "note": "Six-degrees-of-freedom motion controllers are supported through OpenXR, tracked for position and movement, with directional pad and button bindings for actions and hover.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/openxr",
+          "title": "Develop with OpenXR on Android XR, supported input devices",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The ability to track the controllers position and movement along with Dpad and button bindings for triggering actions"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "native",
+      "note": "Articulated hand tracking is first class and is the default way to interact. Each hand has a tracking state and a map of joints to poses, and the joint definitions are the OpenXR ones rather than a private set, which is what makes the data portable.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/hands",
+          "title": "Work with hands in ARCore for Jetpack XR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Hand joint poses are specified by the OpenXR standards"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.eye",
+      "level": "native",
+      "note": "Eye tracking gives the position and orientation of the user's eyes through a vendor extension, guarded by its own runtime permission, and gaze can also be used directly as an interaction: looking at a thing and selecting it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/openxr/extensions",
+          "title": "Android XR OpenXR feature overview, XR_ANDROID_eye_tracking",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This extension enables applications to obtain position and orientation of the user's eyes, as well as eye tracking status."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/openxr",
+          "title": "Develop with OpenXR on Android XR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Android XR supports apps built with OpenXR through its support for the OpenXR 1.1 specification and select vendor extensions"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "partial",
+      "note": "Uneven and, on phones, discouraged. A headset controller gets whatever OpenXR's core haptic output provides, since the runtime is conformant to version 1.1, but the platform documents no haptic feature of its own, and ARCore's own performance guidance tells developers to avoid haptic feedback because the vibration disturbs pose estimation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/openxr",
+          "title": "Develop with OpenXR on Android XR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Android XR supports apps built with OpenXR through its support for the OpenXR 1.1 specification and select vendor extensions"
+        },
+        {
+          "url": "https://developers.google.com/ar/develop/runtime",
+          "title": "ARCore performance considerations",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Because device vibrations can temporarily interfere with ARCore's ability to accurately estimate the device's pose, avoid providing haptic feedback"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "native",
+      "note": "Learning what the client can do is a first-class API in three places: spatial capabilities can be queried at any moment and change as the person moves the app between windowed and full space; depth support is queried per rendering mode before use; and the app manifest declares which extended reality feature set an app needs so the store only offers it to devices that have it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/check-spatial-capabilities",
+          "title": "Check for spatial capabilities",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Spatial capabilities can vary across devices and change as users interact with your app or the system."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/package-and-distribute",
+          "title": "Package and distribute apps for Android XR, release tracks",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "the application must include the android.software.xr.api.spatial feature or the android.software.xr.api.openxr in the app manifest"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "out-of-scope",
+      "note": "There is no world scripting language, because a world here is an Android application. Rules are compiled code shipped through a store, or a web page running in Chrome; neither is a script that travels with a scene.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/package-and-distribute",
+          "title": "Package and distribute apps for Android XR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "An Android App Bundle is a publishing format that includes all your app's compiled code and resources, and defers APK generation and signing to Google Play."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/develop-with-webxr",
+          "title": "Develop with WebXR on Android XR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Chrome on Android XR supports WebXR"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "none",
+      "note": "No behaviour graphs and no declarative interactivity that travels with an asset. The supported glTF extension list has no interactivity extension in it, so a model arrives as geometry, materials and animation clips and nothing else.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app, glTF extensions",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "KHR_draco_mesh_compression"
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/customize-3d-models",
+          "title": "Customize 3D models in your app, animation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Skeletal animations and material animations created with the KHR_animation_pointer glTF extension are supported in the Jetpack XR SDK."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "native",
+      "note": "Isolation is the strongest thing this platform inherits from Android. Every application gets its own user identity and process, and the kernel enforces the boundary between applications and the system; on top of that, every perception feature is behind a runtime permission, and a persisted anchor is stored in the app's private data where no other app can read it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://source.android.com/docs/security/app-sandbox",
+          "title": "Android Open Source Project, Application Sandbox",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Android uses the UID to set up a kernel-level Application Sandbox."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/anchors",
+          "title": "Work with anchors in ARCore for Jetpack XR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "By persisting an anchor, your app remembers that anchor's position in its private app data."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/depth",
+          "title": "Work with depth in ARCore for Jetpack XR, permissions",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Enabling any depth estimation mode requires the android.permission.SCENE_UNDERSTANDING_FINE runtime permission to be granted to your app."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "native",
+      "note": "An autonomous agent is built into the platform rather than added to it. Google describes Android XR as the first Android built in the Gemini era, with an assistant that understands what the user is looking at and acts for them, and apps reach the same models through Firebase, including a live conversational connection with function calling so the agent can drive the app.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/gemini",
+          "title": "Enhance your Android XR app with AI using Gemini API",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Gemini makes Android XR experiences easier to use and adds unique capabilities by helping your users understand what they're seeing and taking actions on their behalf."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "partial",
+      "note": "Bounds exist but are advisory or external. An application can give performance hints to the runtime and read back frame times, utilization and frequency, and the store applies a hard download size limit, with asset delivery offered as the way around it. Nothing bounds memory, time or calls for guest content inside a running experience, because there is no guest content.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/openxr/extensions",
+          "title": "Android XR OpenXR feature overview, XR_EXT_performance_settings",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "This extension defines an API for the application to give performance hints to the runtime"
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/package-and-distribute",
+          "title": "Package and distribute apps for Android XR, asset delivery",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Play Asset Delivery is Google Play's solution for delivering large amounts of game assets"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "partial",
+      "note": "What survives a restart is places, not worlds. An anchor can be persisted under an identifier into the app's private storage and reloaded later, and a Cloud Anchor survives on Google's endpoint until its expiry time, which can be pushed out to a stated maximum. Everything else in the scene is the app's own problem.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/anchors",
+          "title": "Work with anchors in ARCore for Jetpack XR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "By persisting an anchor, your app remembers that anchor's position in its private app data."
+        },
+        {
+          "url": "https://developers.google.com/ar/develop/cloud-anchors/management-api",
+          "title": "ARCore Cloud Anchor management API",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "update its expireTime to its maximumExpireTime"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "out-of-scope",
+      "note": "No inventory. The platform holds no items on a person's behalf; purchases are app store entitlements to applications, not things carried into a scene.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/package-and-distribute",
+          "title": "Package and distribute apps for Android XR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "An Android App Bundle is a publishing format that includes all your app's compiled code and resources, and defers APK generation and signing to Google Play."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "none",
+      "note": "Preferences do not follow content. The system holds the person's own environment preference and restores it after another app has changed it, which is device-local state; nothing about accessibility or comfort settings travels with the user to another world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When working with 3D models, the Jetpack XR SDK supports the glTF 2.0 open standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "none",
+      "note": "Nothing is addressed by hash. A model is named by a path, a uniform resource identifier or raw bytes, and a persisted anchor is named by an identifier the runtime hands out, which is a location in the app's own storage rather than a digest of anything.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When working with 3D models, the Jetpack XR SDK supports the glTF 2.0 open standard."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/anchors",
+          "title": "Work with anchors in ARCore for Jetpack XR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "By persisting an anchor, your app remembers that anchor's position in its private app data."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "native",
+      "note": "The runnable package is the Android App Bundle: compiled code and resources uploaded once, with the store generating and signing the actual package for each device configuration.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/package-and-distribute",
+          "title": "Package and distribute apps for Android XR",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "An Android App Bundle is a publishing format that includes all your app's compiled code and resources, and defers APK generation and signing to Google Play."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "native",
+      "note": "Delivery is Google Play, all the way to the headset, with asset delivery for large amounts of content and feature delivery for parts that download on demand or conditionally.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/package-and-distribute",
+          "title": "Package and distribute apps for Android XR, Play Store",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "a user can visit the Play Store on an XR headset and download an app directly to the headset"
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/package-and-distribute",
+          "title": "Package and distribute apps for Android XR, asset delivery",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Play Asset Delivery is Google Play's solution for delivering large amounts of game assets"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "native",
+      "note": "Versioning is the Android release machinery, extended for this platform: two release tracks, a manifest feature declaration that decides which devices are offered the build, and a runtime whose own version moves under the app — ARCore ships as a Google Play service and the current release is 1.56.0. The two halves are at different stages, which a version column cannot show: the headset platform is on sale while its software kit is still at Developer Preview 4.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/package-and-distribute",
+          "title": "Package and distribute apps for Android XR, release tracks",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "the application must include the android.software.xr.api.spatial feature or the android.software.xr.api.openxr in the app manifest"
+        },
+        {
+          "url": "https://github.com/google-ar/arcore-android-sdk/releases/tag/1.56.0",
+          "title": "ARCore SDK for Android release 1.56.0",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "ARCore SDK for Android v1.56.0"
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk",
+          "title": "Develop with the Jetpack XR SDK",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The Android XR SDK has reached Developer Preview 4"
+        },
+        {
+          "url": "https://www.android.com/xr/",
+          "title": "Android XR product page",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Available now on headsets and coming soon to glasses"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "partial",
+      "note": "Conformance is real on one side and closed on the other. Android XR is listed by Khronos as a conformant product for OpenXR versions 1.0 and 1.1, submitted by Google, so an app can test its assumptions against a published specification. ARCore's device requirements are the opposite: certification exists, and the complete list of requirements sits behind an original equipment manufacturer portal that is only available to authorized manufacturers, so nobody outside can prove a device meets it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.khronos.org/conformance/adopters/conformant-products/openxr",
+          "title": "Khronos OpenXR conformant products, Google, Inc. entry",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Android XR"
+        },
+        {
+          "url": "https://developers.google.com/ar/develop/device-certification",
+          "title": "ARCore OEM device certification",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "OEM device manufacturers wishing to certify new devices may refer to the Google AR OEM Portal (only available to authorized OEMs) for a complete list of requirements."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "Google's ARCore and Android XR are a device platform whose two halves are a phone runtime and a headset runtime, and making a whole three-dimensional place from a description or a picture is not an act it performs or specifies.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app, Android XR documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When working with 3D models, the Jetpack XR SDK supports the glTF 2.0 open standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "Google's ARCore and Android XR are a device platform whose two halves are a phone runtime and a headset runtime, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app, Android XR documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When working with 3D models, the Jetpack XR SDK supports the glTF 2.0 open standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "none",
+      "note": "City-scale geometry is served to the application from Google's own source data rather than built from the user's photographs. Nothing in either half turns a set of ordinary pictures of an object into a textured model.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/java/geospatial/streetscape-geometry",
+          "title": "Streetscape Geometry, ARCore documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The Streetscape Geometry APIs provide the geometry of terrain, buildings, or other structures in a scene."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "none",
+      "note": "Nothing about Gaussian splatting or radiance fields appears in either half. The supported model format is glTF 2.0 with a closed list of extensions, and the splat extension is not among them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app, Android XR documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When working with 3D models, the Jetpack XR SDK supports the glTF 2.0 open standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "out-of-scope",
+      "note": "Google's ARCore and Android XR are a device platform whose two halves are a phone runtime and a headset runtime, and it delivers no captured scene, progressively by region and detail or otherwise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app, Android XR documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When working with 3D models, the Jetpack XR SDK supports the glTF 2.0 open standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "none",
+      "note": "Video in three dimensions plays and volumetric video does not. Stereoscopic playback is a pair of views, not a captured three-dimensional scene, and no calibration or mask metadata accompanies it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-spatial-video",
+          "title": "Add spatial video, Android XR documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The MV-HEVC codec standard is optimized and designed for stereoscopic video"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "out-of-scope",
+      "note": "Google's ARCore and Android XR are a device platform whose two halves are a phone runtime and a headset runtime, and it defines no encoding or compression for a set of points with attributes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app, Android XR documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When working with 3D models, the Jetpack XR SDK supports the glTF 2.0 open standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "partial",
+      "note": "Two of the three parts are here and the third is not. The runtime hands the application depth maps in metres, and it plays stereoscopic video coded with the multi-view video standard. What is never exposed is a set of calibrated views with the intrinsics and extrinsics needed to reproject them, so the platform can show a captured pair and cannot hand one on.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/depth",
+          "title": "Depth, Android XR documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "Measurements contained in these maps are expressed in meters."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-spatial-video",
+          "title": "Add spatial video, Android XR documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "The MV-HEVC codec standard is optimized and designed for stereoscopic video"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "out-of-scope",
+      "note": "Google's ARCore and Android XR are a device platform whose two halves are a phone runtime and a headset runtime, and it produces no image from a viewing position that no capture camera occupied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app, Android XR documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When working with 3D models, the Jetpack XR SDK supports the glTF 2.0 open standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "Google's ARCore and Android XR are a device platform whose two halves are a phone runtime and a headset runtime, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app, Android XR documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When working with 3D models, the Jetpack XR SDK supports the glTF 2.0 open standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "Google's ARCore and Android XR are a device platform whose two halves are a phone runtime and a headset runtime, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app, Android XR documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When working with 3D models, the Jetpack XR SDK supports the glTF 2.0 open standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "Google's ARCore and Android XR are a device platform whose two halves are a phone runtime and a headset runtime, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app, Android XR documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When working with 3D models, the Jetpack XR SDK supports the glTF 2.0 open standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "Google's ARCore and Android XR are a device platform whose two halves are a phone runtime and a headset runtime, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app, Android XR documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When working with 3D models, the Jetpack XR SDK supports the glTF 2.0 open standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "Google's ARCore and Android XR are a device platform whose two halves are a phone runtime and a headset runtime, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app, Android XR documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When working with 3D models, the Jetpack XR SDK supports the glTF 2.0 open standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "Google's ARCore and Android XR are a device platform whose two halves are a phone runtime and a headset runtime, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app, Android XR documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When working with 3D models, the Jetpack XR SDK supports the glTF 2.0 open standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "Google's ARCore and Android XR are a device platform whose two halves are a phone runtime and a headset runtime, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app, Android XR documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When working with 3D models, the Jetpack XR SDK supports the glTF 2.0 open standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "out-of-scope",
+      "note": "Google's ARCore and Android XR are a device platform whose two halves are a phone runtime and a headset runtime, and it carries no full 360-degree view of a place as an image with its projection stated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-3d-models",
+          "title": "Add 3D models to your app, Android XR documentation",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "When working with 3D models, the Jetpack XR SDK supports the glTF 2.0 open standard."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "partial",
+      "note": "The room comes back as planes, not as a mesh. ARCore finds horizontal and vertical surfaces from feature point clusters and gives the app each plane's boundary polygon, and ARCore for Jetpack XR reports the same planes with their centre pose, extents in metres and vertices. A full triangle mesh of the surroundings exists only through Google's own OpenXR extension for scene meshing, which is a separate and unratified surface, so the ARCore API alone does not meet the mesh half of this row.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/fundamentals",
+          "title": "ARCore fundamental concepts",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "ARCore looks for clusters of feature points that appear to lie on common horizontal or vertical surfaces, like tables or walls, and makes these surfaces available to your app as geometric planes."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/planes",
+          "title": "Detect planes using ARCore for Jetpack XR",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "label: a semantic description of a given Plane. Could be a WALL, FLOOR, CEILING, or TABLE."
+        },
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1.63 specification, with all registered extensions, 12.74 XR_ANDROID_scene_meshing",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "This extension is intended to provide meshes that approximately represent the physical objects in the user’s environment."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "native",
+      "note": "Scene Semantics returns a label for every pixel of an outdoor camera image across classes such as sky, building, tree, road, sidewalk, vehicle and person, with a confidence value per pixel and a query for how much of the view a label covers. Planes carry a coarser label of their own — wall, floor, ceiling or table — so an application reads real surfaces by name on both paths.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/scene-semantics",
+          "title": "ARCore Scene Semantics API",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The Scene Semantics API provides real-time semantic information, which complements existing geometric information in ARCore."
+        },
+        {
+          "url": "https://developers.google.com/ar/develop/scene-semantics",
+          "title": "ARCore Scene Semantics API",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Given an image of an outdoor scene, the API returns a label for each pixel across a set of useful semantic classes, such a sky, building, tree, road, sidewalk, vehicle, person, and more."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/planes",
+          "title": "Detect planes using ARCore for Jetpack XR",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "label: a semantic description of a given Plane. Could be a WALL, FLOOR, CEILING, or TABLE."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "native",
+      "note": "The Depth API gives a depth image in which each pixel is a measured distance from the camera, stored as 16-bit unsigned integers in millimetres, on phones with no depth sensor as well as on those with one. On Android XR the same reading is offered as raw and smoothed maps whose values are expressed in metres, each with a confidence map.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/depth",
+          "title": "ARCore Depth API overview",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Each pixel in a depth image is associated with a measurement of how far the scene is from the camera."
+        },
+        {
+          "url": "https://developers.google.com/ar/develop/java/depth/developer-guide",
+          "title": "ARCore Depth API developer guide (Java)",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The depth image has a single plane, which stores depth for each pixel as 16-bit unsigned integers."
+        },
+        {
+          "url": "https://developers.google.com/ar/develop/java/depth/developer-guide",
+          "title": "ARCore Depth API developer guide (Java)",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The texture is a normalized format, storing millimeters."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/depth",
+          "title": "Depth estimation with ARCore for Jetpack XR",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Measurements contained in these maps are expressed in meters."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "native",
+      "note": "Occlusion is a named purpose of the Depth API and is shipped as sample shader code that compares the depth image against the rendered object's own depth, so real objects hide virtual ones. The comparison happens in the application's shader rather than in a compositor, but the platform supplies the depth and the method.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/depth",
+          "title": "ARCore Depth API overview",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Occlusion, or accurately rendering a virtual object behind real-world objects, is paramount to an immersive AR experience."
+        },
+        {
+          "url": "https://developers.google.com/ar/develop/depth",
+          "title": "ARCore Depth API overview",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Each pixel in a depth image is associated with a measurement of how far the scene is from the camera."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "native",
+      "note": "Android XR gives the application a dial rather than a switch: passthrough opacity runs from zero, where the virtual environment is whole, to full, where the room hides it, and anything between is a genuine mix. The preference is granted only when the device is in a state where it can be changed and the app holds the passthrough control capability, and setting it to nothing hands control back to the system.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-environments",
+          "title": "Add spatial environments to your app, Android XR for Jetpack XR SDK",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The values for passthrough opacity preference range from 0.0f (zero opacity, where the passthrough surface is not visible) to 1.0f (full opacity, where the passthrough surface hides the spatial environment)."
+        },
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-environments",
+          "title": "Add spatial environments to your app, Android XR for Jetpack XR SDK",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A mixed configuration, where the passthrough surface is not at full opacity, nor is it at zero opacity."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.face",
+      "level": "native",
+      "note": "A tracked face arrives as a live stream with a defined vocabulary — sixty-eight blend shape values making up an expression — on top of the older augmented faces work on phones. It is the sensor side of the row: the application reads the person, and the platform's camera permission carries the privacy terms.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/face",
+          "title": "Face tracking, Android XR for Jetpack XR SDK",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A face's possible expressions are a combination of 68 blend shape values"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "none",
+      "note": "The platform senses the room — planes, depth, meshes — and hands the results to the application, which has to decide for itself what any of it means for standing and walking. Nothing declares a walkable surface, bounds or an arrival point, and nothing of the sort travels with content.",
+      "confidence": "unverified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/face",
+          "title": "Face tracking, Android XR for Jetpack XR SDK",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "A face's possible expressions are a combination of 68 blend shape values"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "out-of-scope",
+      "note": "ARCore and the Jetpack XR SDK are libraries inside one Android application. Naming published units of logic is the package manager and the store's business, not theirs.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "out-of-scope",
+      "note": "The SDK senses and renders; review of what an application ships belongs to Play, not to ARCore, and nothing in the SDK records what review content has had.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "partial",
+      "note": "The alignment is real and the map is Google's alone. A device's camera images are matched against a localization model behind Google's visual positioning system to get a precise pose, which puts every user of the Geospatial API into one shared frame — the strongest de facto alignment on this map. Nothing declares that a map exists, gives it a version or a lifecycle, or publishes a transform to anyone else's map of the same street.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/geospatial",
+          "title": "ARCore Geospatial API overview",
+          "retrieved": "2026-09-04",
+          "kind": "primary",
+          "quote": "matches the recognizable parts of that environment to a localization model provided by Google's Visual Positioning System (VPS) to determine the precise location of a user's device"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "native",
+      "note": "An application can ask whether the visual positioning service is available at a horizontal position before a session even starts, and Google's own guidance is to use the answer to shape the experience — showing an entry point only where it will work. The area is queried rather than published: there is no boundary a client can hold and reason about offline.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/unity-arf/geospatial/check-vps-availability",
+          "title": "Check VPS availability at the device's current location, ARCore",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "You can determine VPS availability at a given horizontal position before the AR session starts and use it to create more specific experiences — for example, to present an \"Enter AR\" button only when VPS is available."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.color",
+      "level": "partial",
+      "note": "Android XR lists XR_FB_color_space support. That named OpenXR route declares the rendered-frame gamut and conversion to the device gamut; its contract expressly leaves gamma correction, luminance and tonemapping unaffected, so complete color/output-range support is not established.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/openxr/extensions",
+          "title": "OpenXR extensions supported by Android XR",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "XR_FB_color_space"
+        },
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "xrSetColorSpaceFB will only affect the color gamut of the output"
+        },
+        {
+          "url": "https://registry.khronos.org/OpenXR/specs/1.1/html/xrspec.html",
+          "title": "OpenXR 1.1 Specification with registered extensions",
+          "retrieved": "2026-09-09",
+          "kind": "primary",
+          "quote": "Luminance, tonemapping, and other aspects of the color space will also remain unaffected."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "out-of-scope",
+      "note": "Google ARCore and Android XR is assessed here as ARCore device sensing plus Android XR application APIs. The subject does not issue or exchange trust claims whose establishment a relying party evaluates; reconstruction confidence is a different quantity.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "out-of-scope",
+      "note": "Google ARCore and Android XR is assessed here as ARCore device sensing plus Android XR application APIs. The subject's scene or model data types are not a vocabulary for identity claims exchanged with a relying party.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "out-of-scope",
+      "note": "Google ARCore and Android XR is assessed here as ARCore device sensing plus Android XR application APIs. The subject is not an identity-presentation system with pairwise relationship identifiers and correlation guarantees.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.encryption",
+      "level": "out-of-scope",
+      "note": "Google ARCore and Android XR is assessed here as ARCore device sensing plus Android XR application APIs. Image, geometry and device processing do not define recipient identity keys or confidential identity delivery.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.key-lifecycle",
+      "level": "out-of-scope",
+      "note": "Google ARCore and Android XR is assessed here as ARCore device sensing plus Android XR application APIs. The subject does not govern identity-control key rotation, revocation or recovery; account administration belongs to its host.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "out-of-scope",
+      "note": "Google ARCore and Android XR is assessed here as ARCore device sensing plus Android XR application APIs. The subject does not issue portable credentials with a post-issuance status-discovery mechanism.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "native",
+      "note": "Jetpack Compose for XR spatial panels and orbiters place existing two-dimensional Compose or Views content in spatial layouts; the supported devices and library stages vary.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk",
+          "title": "Develop with the Jetpack XR SDK",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "UI in a spatial layout."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "native",
+      "note": "ARCore's Environmental HDR mode supplies directional light, ambient spherical harmonics and an HDR cubemap derived from camera images; support and quality remain device-dependent.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/lighting-estimation",
+          "title": "Get the lighting right",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Environmental HDR mode uses machine learning to analyze the camera images in real time and synthesize environmental lighting"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "native",
+      "note": "Augmented Images detects reference-image features and updates the detected image position and orientation each frame within the documented tracking limits.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/augmented-images",
+          "title": "Add dimension to images",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Once ARCore begins tracking an image, it provides estimates for image position\nand orientation each frame."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "partial",
+      "note": "ARCore for Jetpack XR provides a continuous pose-state flow, but the read page does not specify timestamps or interpolation semantics for that flow.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/arcore/device-pose",
+          "title": "Track a device's pose using ARCore for Jetpack XR",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "// 2. Continuously receive updates for the device pose."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "via-extension",
+      "note": "Android XR lists support for OpenXR cube, cylinder, equirectangular and depth composition extensions; applications must use the named extension and supported device route.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/openxr/extensions",
+          "title": "OpenXR extensions supported by Android XR",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "This extension adds an additional layer type that enables direct sampling from cubemaps."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "native",
+      "note": "SceneCore SurfaceEntity combines Media3 playback with defined stereo packing and spatial presentation; MV-HEVC additionally requires compatible Media3 and device decoding.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-spatial-video",
+          "title": "Add spatial video to your app",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The Jetpack XR SDK supports the playback of stereoscopic"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.protection",
+      "level": "partial",
+      "note": "The spatial-video guide supports encrypted media through Android DRM, but the read source does not define general protection signalling for other scene components.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/develop/xr/jetpack-xr-sdk/add-spatial-video",
+          "title": "Add spatial video to your app",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The Jetpack XR SDK supports playback of encrypted video streams using Android's"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "out-of-scope",
+      "note": "Google ARCore and Android XR is assessed here as ARCore device sensing plus Android XR application APIs. The subject does not publish an exchange of identified spatial zones and typed, temporally scoped events; scene bounds or capture locations are not that protocol.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.consent",
+      "level": "out-of-scope",
+      "note": "Google ARCore and Android XR is assessed here as ARCore device sensing plus Android XR application APIs. An application permission dialog or dataset licence does not carry a subject-bound grant with scope, purpose, validity and withdrawal information.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "out-of-scope",
+      "note": "Google ARCore and Android XR is assessed here as ARCore device sensing plus Android XR application APIs. Training metrics and processing status are not machine-readable accounts of a recipient evaluating and acting on an arriving subject or claim.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "Google ARCore and Android XR is assessed here as ARCore device sensing plus Android XR application APIs. The selected subject does not define arrival between independent destinations; local API setup and asset loading are not pre-arrival admission responses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "native",
+      "note": "ARCore projects a screen ray against estimated physical planes or feature points and returns the intersection pose in world space.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/fundamentals",
+          "title": "Fundamental concepts",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "geometric planes or feature points that the ray intersects, along with the pose\nof that intersection in world space."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "out-of-scope",
+      "note": "Google ARCore and Android XR is assessed here as ARCore device sensing plus Android XR application APIs. The subject does not expose a musical-instrument device or recorded-event input interface with channels, notes and controllers.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "out-of-scope",
+      "note": "Google ARCore and Android XR is assessed here as ARCore device sensing plus Android XR application APIs. The selected subject provides device sensing or media generation rather than a radiance-field fitting workflow with trained scene output.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "capture.objectgen",
+      "level": "out-of-scope",
+      "note": "Google ARCore and Android XR is assessed here as ARCore device sensing plus Android XR application APIs. This observation-fitting or device-sensing boundary does not synthesize a separate placeable object from a text or single-image prompt.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "via-extension",
+      "note": "The Android XR SceneCore HitInfo API identifies the hit entity and intersection pose/position for scene pointing. This is the separately named SceneCore preview surface in the approved Android XR scope.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/reference/androidx/xr/scenecore/package-summary",
+          "title": "androidx.xr.scenecore  |  API reference  |  Android Developers",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Information about the hit result of the input ray"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.privacy",
+      "level": "partial",
+      "note": "ARCore's developer requirements mandate disclosure of the service and collected-data use. This is a disclosure requirement; it does not establish an exchanged spatial-coarsening or retention-control payload.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developers.google.com/ar/develop/privacy-requirements",
+          "title": "User privacy requirements  |  ARCore  |  Google for Developers",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "You must disclose the use of Google Play Services for AR (ARCore) and how it collects and processes data"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.bounds",
+      "level": "partial",
+      "note": "The Android XR preview BoundsComponent reports changing bounds for GltfModelEntity. A spatial index usable before detailed geometry is loaded is not established, so only the bounding-volume portion is supported.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/reference/kotlin/androidx/xr/scenecore/BoundsComponent",
+          "title": "BoundsComponent  |  API reference  |  Android Developers",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "The bounds are represented as an axis-aligned bounding box (AABB)."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "partial",
+      "note": "SceneCore ScenePose transforms a relative pose into another declared scene frame. The retained API supplies frame conversion but does not establish a carried linked-frame chain/graph reconstructed by a receiver.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://developer.android.com/reference/kotlin/androidx/xr/scenecore/ScenePose",
+          "title": "ScenePose  |  API reference  |  Android Developers",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Returns a Pose relative to this ScenePose, transformed into a Pose relative to the destination."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1155 @@
+{
+  "subject_id": "c2pa",
+  "summary": "Content Credentials record who made a piece of content and what was done to it, as signed statements bound to the bytes of the file. It is deployed rather than proposed: there is a conformance programme, a public list of conforming products, a published certificate policy and a curated list of trusted signing authorities. Two things a spatial computing group needs to know. First, no three-dimensional asset format appears anywhere in its list of supported formats, so a model cannot carry an embedded manifest at all; the byte-range binding works on any file, but the record has to travel beside the file as a separate manifest, and nothing keeps the two together. Second, the two pieces people most often credit to it are not in it: the verifiable credentials section and the training and data mining assertion were both removed from the core in version 2.0 of January 2024, and now live as separate specifications of another organisation. It records provenance; it does not enforce a licence, and its own principles say it passes no judgement on what it reports.",
+  "coverage": [
+    {
+      "capability_id": "scene.provenance",
+      "level": "native",
+      "note": "Statements about how an asset was made and changed are wrapped into a signed claim and tied to the asset by cryptographic hash.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset and represent a series of trust signals that can be used by a human to improve their view of trustworthiness concerning the asset."
+        },
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "One or more cryptographic hashes that uniquely identifies either the entire asset or a portion thereof."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "out-of-scope",
+      "note": "Defines no asset format of its own, only how to place a manifest inside other people's formats, and the list of well-known formats in version 2.4 names no three-dimensional format, so provenance for a model can only travel as a separate manifest beside it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Here are some well-known file formats and the location for the C2PA Manifest Store in each:"
+        },
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "In some cases, it may not be possible (or practical) to embed a C2PA Manifest Store in an asset."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "native",
+      "note": "Content is referred to by hash throughout: the binding that detects tampering is a hash over the asset's bytes, and it works on any file type whatever its format.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "One or more cryptographic hashes that uniquely identifies either the entire asset or a portion thereof."
+        },
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This approach can be used on any type of asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "partial",
+      "note": "Trust rests on the signer's certificate, which must chain to a list the coalition itself curates; what is missing is any self-controlled identifier, so identity here is centrally governed by design.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The basis of making trust decisions in C2PA, our trust model, is the identity of the signer associated with the cryptographic signing key used to sign a claim in a C2PA Manifest."
+        },
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "A C2PA-managed list of X.509 certificate trust anchors that issue certificates to hardware & software signers that use them to sign claims"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "via-extension",
+      "note": "Verifiable credentials arrive through the identity assertion of the Creator Assertions Working Group, a separate body's ratified specification; the core specification removed its own verifiable credentials section in version 2.0.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://cawg.io/identity/1.3/",
+          "title": "Identity Assertion, version 1.3, DIF Ratified Specification 17 August 2026 (Creator Assertions Working Group)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "An identity claims aggregation MUST meet all requirements for a verifiable credential as described in the W3C Verifiable credentials data model (either version 1.1 or version 2.0)"
+        },
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Removed the \"W3C Verifiable Credentials\" section"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "via-extension",
+      "note": "The only machine-readable permission that travels with an asset is the training and data mining assertion, now a specification of another body rather than of the coalition, and it covers only data mining and model training, not general use, copying or resale.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://cawg.io/training-and-data-mining/1.1/",
+          "title": "Training and Data Mining Assertion, version 1.1, DIF Ratified Specification 16 May 2025 (Creator Assertions Working Group)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Each entry describes whether its use is allowed, notAllowed, or constrained."
+        },
+        {
+          "url": "https://cawg.io/training-and-data-mining/1.1/",
+          "title": "Training and Data Mining Assertion, version 1.1, DIF Ratified Specification 16 May 2025 (Creator Assertions Working Group)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This specification is not a product of the C2PA itself, so it can not use the c2pa. prefix."
+        },
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "Removed the \"Training & Data Mining\" assertion"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "none",
+      "note": "Nothing acts on a term at the point of use; the coalition's own principles say its specifications report only whether what is recorded can be validated, and pass no judgement on it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "C2PA specifications SHOULD NOT provide value judgments about whether a given set of provenance data is 'good' or 'bad,' merely whether the assertions included within can be validated as associated with the underlying asset, correctly formed, and free from tampering."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "partial",
+      "note": "A producer can remove a statement from an inherited record and the removal is itself declared, so history can be withheld in part; what is missing is any choice made at the moment of showing the file, since the decision is baked in when the file is written.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "If any assertions were redacted, then a declaration to that effect is included."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "native",
+      "note": "A conformance programme with published security requirements, a certificate policy and a public list of conforming products, alongside the trust list it governs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://c2pa.org/conformance/",
+          "title": "C2PA Conformance (Coalition for Content Provenance and Authenticity)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "The C2PA Conformance Program provides assurance that products adhere to the Content Credentials specification, and fulfill a set of security requirements to ensure they are producing and validating C2PA data correctly."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "native",
+      "note": "Carries an explicit compatibility policy: a writer declares which version it wrote, and a reader that meets an older version is expected to skip what it does not know rather than reject the whole record.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "C2PA aims to ensure that Content Credentials created under newer versions of the specification remains parseable and validatable when processed by implementations conforming to earlier versions, wherever practical."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "C2PA records that something was generated; it does not generate. The distinction matters here because it is the obvious unmade pairing on this map: three subjects in this lane manufacture photoreal places and sign none of them, and the machinery to sign them already exists as a subject in its own right.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This approach can be used on any type of asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "C2PA Content Credentials attaches a signed record of how a piece of content was made to the content itself, and it never continues a world under a viewer's actions from a learned model; there is no such model here.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This approach can be used on any type of asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "out-of-scope",
+      "note": "C2PA Content Credentials attaches a signed record of how a piece of content was made to the content itself, and turning a set of ordinary photographs into a textured three-dimensional model is not among its jobs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This approach can be used on any type of asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "out-of-scope",
+      "note": "C2PA Content Credentials attaches a signed record of how a piece of content was made to the content itself, and it names no Gaussian splat interchange format and carries no splat data.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This approach can be used on any type of asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "out-of-scope",
+      "note": "C2PA Content Credentials attaches a signed record of how a piece of content was made to the content itself, and it delivers no captured scene, progressively by region and detail or otherwise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This approach can be used on any type of asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "out-of-scope",
+      "note": "C2PA Content Credentials attaches a signed record of how a piece of content was made to the content itself, and it carries no captured, time-varying three-dimensional scene as media, and no camera calibration or mask metadata for one.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This approach can be used on any type of asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "out-of-scope",
+      "note": "C2PA Content Credentials attaches a signed record of how a piece of content was made to the content itself, and it defines no encoding or compression for a set of points with attributes.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This approach can be used on any type of asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "out-of-scope",
+      "note": "C2PA Content Credentials attaches a signed record of how a piece of content was made to the content itself, and it carries no set of calibrated camera views with per-pixel depth, and no intrinsics or extrinsics to reproject them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This approach can be used on any type of asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "out-of-scope",
+      "note": "C2PA Content Credentials attaches a signed record of how a piece of content was made to the content itself, and it produces no image from a viewing position that no capture camera occupied.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This approach can be used on any type of asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "out-of-scope",
+      "note": "C2PA Content Credentials attaches a signed record of how a piece of content was made to the content itself, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This approach can be used on any type of asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "out-of-scope",
+      "note": "C2PA Content Credentials attaches a signed record of how a piece of content was made to the content itself, and it holds no captured scene that could be made to answer the light of the place it lands in.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This approach can be used on any type of asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "out-of-scope",
+      "note": "C2PA Content Credentials attaches a signed record of how a piece of content was made to the content itself, and there is no capture here to crop, delete from or recolour, and no export for such an edit to survive.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This approach can be used on any type of asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "C2PA Content Credentials attaches a signed record of how a piece of content was made to the content itself, and there is no generated world here to change by describing the change or pointing at a region.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This approach can be used on any type of asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "C2PA Content Credentials attaches a signed record of how a piece of content was made to the content itself, and nothing here accepts a specification of a world that should be made.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This approach can be used on any type of asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "out-of-scope",
+      "note": "C2PA Content Credentials attaches a signed record of how a piece of content was made to the content itself, and it derives no collision mesh, drawing mesh, panorama or video from a splat or radiance-field world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This approach can be used on any type of asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "C2PA Content Credentials attaches a signed record of how a piece of content was made to the content itself, and it carries no agent's actions in or out as time-sampled data with an embodiment, a frame and units.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This approach can be used on any type of asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "out-of-scope",
+      "note": "C2PA Content Credentials attaches a signed record of how a piece of content was made to the content itself, and it carries no full 360-degree view of a place as an image with its projection stated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "This approach can be used on any type of asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "out-of-scope",
+      "note": "A provenance standard: signed assertions bound to an asset so a person can judge how it was made. It says where content came from, not what shape the room around a device is.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset and represent a series of trust signals that can be used by a human to improve their view of trustworthiness concerning the asset."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "Its assertions name actions and ingredients in a content history, not classes of real surface.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset and represent a series of trust signals that can be used by a human to improve their view of trustworthiness concerning the asset."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "out-of-scope",
+      "note": "It carries no depth measurement; a manifest describes the asset, not the scene in front of a camera.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset and represent a series of trust signals that can be used by a human to improve their view of trustworthiness concerning the asset."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "Composition and drawing are outside a provenance standard entirely.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "C2PA Technical Specification, Content Credentials, version 2.4 (April 2026)",
+          "retrieved": "2026-08-23",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset and represent a series of trust signals that can be used by a human to improve their view of trustworthiness concerning the asset."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "out-of-scope",
+      "note": "Content Credentials travel with an asset. They say nothing about how a runtime blends its drawing with a camera view of the room.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.face",
+      "level": "out-of-scope",
+      "note": "C2PA records what a camera or tool did to an asset. It delivers no live face or body stream to an application.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "out-of-scope",
+      "note": "Provenance data has no scene in it, so no walkable surface, bounds or arrival points.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "out-of-scope",
+      "note": "Assertion labels are a registered vocabulary for describing an asset, not names for published units of world logic.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "partial",
+      "note": "C2PA answers the interoperable half of this row and none of the rest. A receiving system can read a manifest, check the signature and the credential behind it, check each assertion, and show a person what has been asserted about the content — which is exactly the machinery a world would need to tell what an arriving asset has already been through. What C2PA never does is perform a review or name a reviewer: it carries claims, and whether a claim means the content was reviewed is left to whoever wrote the assertion.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.2/specs/C2PA_Specification.html",
+          "title": "C2PA Specification 2.2",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A Manifest Consumer, such as a C2PA validator, helps users to establish the trustworthiness of the asset by first validating the digital signature and its associated credential."
+        },
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.2/specs/C2PA_Specification.html",
+          "title": "C2PA Specification 2.2",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "An assertion is labelled data, typically (though not required to be) in a CBOR-based structure which represents a declaration about an asset."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "No map of a place is declared by a provenance manifest, and no transform between maps.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "An asset's credentials say where it was captured at most; they declare no area over which a service or dataset applies.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "deliver.extension",
+      "level": "native",
+      "note": "C2PA defines assertion labels, schema/version extension rules and backward handling of deprecated constructs; new provenance assertions can extend the model.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "existing ones may be marked as deprecated"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.color",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires declaring the color interpretation and output range of images, textures, and rendering surfaces so receivers can perform the required conversions. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.metadata",
+      "level": "native",
+      "note": "The c2pa.metadata assertion carries supported structured Exif, IPTC, Schema.org and XMP fields about an asset; it does not imply arbitrary scene ontology or geometry exchange.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "c2pa.metadata only allows a fixed set of schemas & values"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "native",
+      "note": "C2PA 2.4 binds provenance assertions about creation, edit actions and capture details to signer credentials and validation results, giving a relying party evidence for assessing claim establishment. It does not guarantee the truth of assertions or a uniform assurance level.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "represent a series of trust signals that can be used by a human to improve their view of trustworthiness"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "native",
+      "note": "Claims and assertions have named constructs and normative CDDL structures; the specification separately states that running schema validation is not required or recommended.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "CDDL Rules and Type Definitions in the CDDL schemas for C2PA constructs are normative."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.thumbnail",
+      "level": "native",
+      "note": "Thumbnail assertions package previews associated with the asset or its ingredients, available to consumers without rendering the asset's three-dimensional contents.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "thumbnail of the asset or its ingredients"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "native",
+      "note": "The validation procedure checks signing-certificate revocation information, with time-stamp rules for historical validity; this is signer credential status rather than revocation of each content assertion.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Upon receipt of the claim, stapled OCSP responses shall be validated according to section 3.2 of RFC 6960."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires layout and presentation of two-dimensional interface regions, including their size, alignment, and relationship to a display or scene. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires runtime estimates of environmental illumination made available to content for lighting or reflections. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires detecting recognized physical markers or images and reporting their tracked pose relative to a runtime reference space. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.resolve",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires resolving scene resource identifiers against a context or resolver so the referenced resources can subsequently be accessed. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.trajectory",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires time-associated pose sequences or streams describing an object's changing location and orientation, with any interpolation rules declared separately. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires picking scene content from pointing input and reporting the intersected object or geometry to the application. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.text",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires receiving character or string entry through a defined input interface, separate from interpreting physical controller actions. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires submitting distinct shaped image layers to a display compositor with their placement and composition properties. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.bounds",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires bounding volumes associated with scene content, organized for spatial rejection, traversal, or selection before detailed geometry is loaded. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.collection",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires named or rule-defined sets of scene objects that consumers can use as targets for scene operations. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires authored runtime relationships that constrain one node's transform using another node and defined evaluation rules. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires referencing timed audiovisual media inside a scene and defining the synchronization needed to present it as scene content. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires runtime-reported physical play-area bounds and floor-relative reference information available to an application. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires generating audio during playback from an exchanged synthesis model, supporting data, and changing control parameters. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires interchanging linked poses and transforms as chains or graphs so related frames can be reconstructed consistently. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires interchanging identified spatial zones, typed events scoped to them, and summaries with defined spatial and temporal meaning. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "partial",
+      "note": "The repository-receipt assertion records ingestion acknowledgment, but this is narrower than a recipient's general evaluation-and-action account; it does not establish such a decision receipt.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "proof that a C2PA Manifest has been ingested by a C2PA Manifest Repository."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires a destination's pre-arrival approval or refusal response, including any validity limit and optional explanatory information. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires dispatching programmable non-raster GPU workloads against resources available through the graphics-compute API. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.frame-timing",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires coordinating frame submission with predicted display timing and the view poses associated with that time. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires a specified shader source language and execution semantics enabling implementations to consume the same shader program. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.parametric",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires carrying parametric curves and surfaces in mathematical form so a receiver can evaluate or tessellate them. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires exchanging particle-system emitters and simulation/rendering parameters that a receiving runtime evaluates. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance-recovery",
+      "level": "native",
+      "note": "Soft bindings, including content fingerprints and watermarks, let consumers locate a manifest after embedded association is lost; recovery depends on a supported algorithm and repository.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "one or more soft bindings that enable its discovery in a manifest repository."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.style",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires separately expressed styling rules that select feature visibility, color, or other supported display properties from content metadata. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.variant",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires named alternatives of an asset's authored configuration, with a defined selection mechanism. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.voxel",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires interchanging spatial cell volumes and their properties, including updates, as a scene representation. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires asking a sensing runtime for ray intersections with its estimate of physical surroundings and receiving hit poses. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires receiving typed musical instrument events with channel, note or control identifiers and values through a documented device or recorded-event input interface. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires reconstructing a radiance field or Gaussian representation from observed images and camera information, including optimization controls and a trained scene usable for subsequent view synthesis. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.objectgen",
+      "level": "out-of-scope",
+      "note": "The subject reviewed here is scoped as follows: C2PA 2.4 specifies content provenance assertions, signed claims and validation. This row requires producing an individual three-dimensional object from a text or image prompt, with geometry or another renderable representation available for placement in a separately authored scene. That function belongs to a different layer than this subject's declared function; supplying data to such a system does not perform or specify the operation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://spec.c2pa.org/specifications/specifications/2.4/specs/C2PA_Specification.html",
+          "title": "Content Credentials : C2PA Technical Specification :: C2PA Specifications",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "These statements, called assertions, make up the provenance of a given asset"
+        }
+      ]
+    }
+  ]
+}

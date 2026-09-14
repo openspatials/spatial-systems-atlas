@@ -1,0 +1,2138 @@
+{
+  "subject_id": "brush",
+  "summary": "Brush is a Gaussian splat reconstruction engine written in Rust on the Burn machine-learning framework, licensed Apache-2.0, and it is the one trainer in this group that actually runs where the pictures are taken: the same code trains on Windows, macOS and Linux, on AMD, Intel and NVIDIA cards, on an Android phone, and inside a browser tab, because it targets WebGPU rather than CUDA. It takes a COLMAP or Nerfstudio dataset in and writes a splat PLY out, reads back both plain and SuperSplat-compressed PLY, streams a splat from a web address while it loads, and can bake several decimated levels of one scene as separate files. For a standards audience the interesting parts are at the edges. Time exists only as playback: a folder or zip of numbered PLY files, or a private 'PLY with delta frames' variant written for two research projects, neither of which is a published format. The coordinate frame is the input's frame and nothing in the exported file says which frame that is, a point the release notes state plainly. There is no scale, no licence field, no authorship record and no mesh: what comes out is a cloud of Gaussians and nothing else, so every question about rights, units and provenance is left to whatever carries the file. The project is a fork of a Google Research repository and says in its own README that it is not an official Google product.",
+  "coverage": [
+    {
+      "capability_id": "render.raster",
+      "level": "partial",
+      "note": "Brush carries a complete splat rasteriser of its own, written against WebGPU and driven by the Burn framework, with its own radix sort and a mip filter borrowed from Mip-Splatting. What it does not carry is anything above one draw: no render graph, no pass structure, and no place for ordinary geometry beside the splats.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, Mip-Splatting",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The 2D mip filter from Mip-Splatting is now implemented, with a `render_mode` flag and a UI toggle."
+        },
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, opening section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush on the other hand produces simple dependency free binaries, runs on nearly all devices, without any setup."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.gpu-api",
+      "level": "native",
+      "note": "The whole engine targets WebGPU, which is what lets one binary run on AMD, Intel and NVIDIA cards, on Android and inside a browser tab. The cost is stated in the README: on the web only Chrome 134 and later on Windows and macOS work today.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Web build section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "WebGPU is still an upcoming standard, and as such, only Chrome 134+ on Windows and macOS is currently supported."
+        },
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, opening section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush on the other hand produces simple dependency free binaries, runs on nearly all devices, without any setup."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.material",
+      "level": "out-of-scope",
+      "note": "There is no surface material anywhere in the pipeline. Appearance is spherical-harmonic coefficients and an opacity carried by each Gaussian, and the library hands those coefficients out as raw GPU buffers.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, embedding and web demos",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Hosts get zero-copy access to the WebGPU buffers backing the transforms / SH coefficients / opacities, so they can bind them straight into their own render pipelines without ever round-tripping splat data through CPU."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lighting",
+      "level": "out-of-scope",
+      "note": "Light is whatever was in the room when the photographs were taken, baked into the colour of each Gaussian. Brush models no lights and reads none.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, opening section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush on the other hand produces simple dependency free binaries, runs on nearly all devices, without any setup."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.post",
+      "level": "out-of-scope",
+      "note": "No post-processing stack. The viewer offers background controls and a DPI-aware draw, which is presentation, not an effect chain.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, Mip-Splatting",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The 2D mip filter from Mip-Splatting is now implemented, with a `render_mode` flag and a UI toggle."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.lod",
+      "level": "partial",
+      "note": "Brush can bake N decimated levels of a trained scene, each written as its own PLY with a _lodN suffix, and it streams a file progressively while it loads. Nothing in either file says which level it is or in what order the levels should arrive: the level is in the file name and the stream order is byte order.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, LOD baking",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "After training, Brush can optionally generate N lower-detail levels by iteratively decimating splats and refining against downscaled images."
+        },
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, loading from a URL",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Load data from a URL. If possible the data will be streamed in, and the splat will update in real-time."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.splat",
+      "level": "native",
+      "note": "Drawing Gaussian splats is the entire product, natively and on hardware that has no CUDA anywhere near it, including a phone and a browser tab.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Training section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush takes in COLMAP data or datasets in the Nerfstudio format. Training is fully supported natively, on mobile, and in a browser."
+        },
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, opening section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush on the other hand produces simple dependency free binaries, runs on nearly all devices, without any setup."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.volumetric",
+      "level": "partial",
+      "note": "It plays a captured scene that changes over time, as a folder or zip of numbered PLY files or as a delta-frame variant, so volumetric playback is real. Point clouds and voxels are not drawn as such; a point cloud is only ever an initialisation for training.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Viewer section on dynamic splats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush also can load .zip of splat files to display them as an animation, or a special ply that includes delta frames"
+        }
+      ]
+    },
+    {
+      "capability_id": "render.text",
+      "level": "out-of-scope",
+      "note": "No text rendering of any kind; the only text is the desktop interface's own.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, Mip-Splatting",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The 2D mip filter from Mip-Splatting is now implemented, with a `render_mode` flag and a UI toggle."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.camera",
+      "level": "partial",
+      "note": "Cameras arrive as training data in COLMAP or Nerfstudio form, and the viewer has orbit, first-person and flythrough controls with an initial pose settable from URL parameters. There is no portable viewpoint model in what it writes: the export is splats only.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Training section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush takes in COLMAP data or datasets in the Nerfstudio format. Training is fully supported natively, on mobile, and in a browser."
+        },
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.graph",
+      "level": "out-of-scope",
+      "note": "A trained scene is one flat set of Gaussians. There is no tree, no node and no parent-child relationship to carry.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.transform",
+      "level": "partial",
+      "note": "Brush rotates the scene during training so the ground is flat, then deliberately writes the export in the input data's own frame, and puts nothing in the file to say which frame that is. The release notes name this as unfinished and offer writing metadata into the splat as one possible fix.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, up-axis handling",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Note: The exported ply will however still match your input data."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.container",
+      "level": "partial",
+      "note": "PLY is the only container. It reads plain and SuperSplat-compressed PLY and writes plain PLY, and there is no glTF, no USD and no path to either.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Viewer section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "It can load .ply & .compressed.ply files."
+        },
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.geometry",
+      "level": "out-of-scope",
+      "note": "No meshes are read, made or written. A splat trainer never produces triangles.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.texture",
+      "level": "out-of-scope",
+      "note": "No textures. Colour lives in per-Gaussian spherical harmonics, not in images.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, embedding and web demos",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Hosts get zero-copy access to the WebGPU buffers backing the transforms / SH coefficients / opacities, so they can bind them straight into their own render pipelines without ever round-tripping splat data through CPU."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.material-x",
+      "level": "out-of-scope",
+      "note": "There is no material to exchange, so nothing can be lost or preserved on the way out.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, embedding and web demos",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Hosts get zero-copy access to the WebGPU buffers backing the transforms / SH coefficients / opacities, so they can bind them straight into their own render pipelines without ever round-tripping splat data through CPU."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.animation",
+      "level": "partial",
+      "note": "Animation exists only as something Brush reads: a numbered sequence of complete PLY files, or a private per-frame delta variant written for two research projects. It authors no clips and exports no animation.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Viewer section on dynamic splats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush also can load .zip of splat files to display them as an animation, or a special ply that includes delta frames"
+        },
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, dynamic splats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Add support for viewing dynamic splats"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.skeleton",
+      "level": "out-of-scope",
+      "note": "No bones, no binding, no rig. Reconstruction produces an unstructured cloud.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.morph",
+      "level": "out-of-scope",
+      "note": "No blend shapes or morph targets are modelled or carried.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "out-of-scope",
+      "note": "Every Gaussian is stored once and drawn once; there is no repeated-object idea to make cheap.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.compose",
+      "level": "out-of-scope",
+      "note": "One dataset trains into one splat file. Nothing references, layers or overrides anything else.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Training section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush takes in COLMAP data or datasets in the Nerfstudio format. Training is fully supported natively, on mobile, and in a browser."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.units",
+      "level": "none",
+      "note": "Nothing states scale. Brush inherits whatever arbitrary scale the input reconstruction had and writes it out unchanged and unlabelled, so a captured room may be two metres or two hundred and the file cannot say.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, up-axis handling",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Note: The exported ply will however still match your input data."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.licence",
+      "level": "none",
+      "note": "No licence field is written or read. What a recipient may do with a capture of someone's living room is nowhere in the file.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.provenance",
+      "level": "none",
+      "note": "No authorship record and no signature. The export carries positions, rotations, scales, opacities and colour coefficients, and no statement of who made it or from what.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.body",
+      "level": "out-of-scope",
+      "note": "Brush reconstructs places and objects. It has no avatar concept, though it can play back four-dimensional head captures somebody else produced.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Viewer section on dynamic splats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush also can load .zip of splat files to display them as an animation, or a special ply that includes delta frames"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.skeleton",
+      "level": "out-of-scope",
+      "note": "No bone naming and no skeleton, so nothing about animation transfer arises.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.expression",
+      "level": "out-of-scope",
+      "note": "No named expressions or visemes exist anywhere in the pipeline.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.retarget",
+      "level": "out-of-scope",
+      "note": "There is no rig on either side of a transfer, so retargeting has nothing to work on.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.wearable",
+      "level": "out-of-scope",
+      "note": "No attachment points and no wearables.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.lod",
+      "level": "out-of-scope",
+      "note": "The LOD baking is scene-wide decimation, not a reduced avatar; there is no avatar to reduce.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, LOD baking",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "After training, Brush can optionally generate N lower-detail levels by iteratively decimating splats and refining against downscaled images."
+        }
+      ]
+    },
+    {
+      "capability_id": "avatar.identity",
+      "level": "out-of-scope",
+      "note": "No identity binding of any kind; the tool never sees a person as a person.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.rigid",
+      "level": "out-of-scope",
+      "note": "Nothing is simulated. A trained splat is a static cloud handed to whatever renders it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.collision",
+      "level": "out-of-scope",
+      "note": "No collision shapes are derived or exported, and no mesh exists that one could be derived from.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.joint",
+      "level": "out-of-scope",
+      "note": "No bodies and therefore no links between them.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.material",
+      "level": "out-of-scope",
+      "note": "No friction, restitution or surface response is modelled.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.determinism",
+      "level": "out-of-scope",
+      "note": "There is no simulation to reproduce. Training is stochastic and the tool makes no claim that two runs agree.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, opening section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush on the other hand produces simple dependency free binaries, runs on nearly all devices, without any setup."
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.soft",
+      "level": "out-of-scope",
+      "note": "Nothing deformable is modelled.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "physics.trigger",
+      "level": "out-of-scope",
+      "note": "No regions, no events, no event model.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.source",
+      "level": "out-of-scope",
+      "note": "A capture carries no sound. Brush records images and camera poses only.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Training section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush takes in COLMAP data or datasets in the Nerfstudio format. Training is fully supported natively, on mobile, and in a browser."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.spatial",
+      "level": "out-of-scope",
+      "note": "No spatialisation model, because there is no audio.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Training section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush takes in COLMAP data or datasets in the Nerfstudio format. Training is fully supported natively, on mobile, and in a browser."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.room",
+      "level": "out-of-scope",
+      "note": "Brush reconstructs how a room looks and says nothing about how it sounds.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Training section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush takes in COLMAP data or datasets in the Nerfstudio format. Training is fully supported natively, on mobile, and in a browser."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.occlusion",
+      "level": "out-of-scope",
+      "note": "No acoustic model exists to occlude.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Training section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush takes in COLMAP data or datasets in the Nerfstudio format. Training is fully supported natively, on mobile, and in a browser."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.stream",
+      "level": "out-of-scope",
+      "note": "No audio is delivered by anything in the project.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Training section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush takes in COLMAP data or datasets in the Nerfstudio format. Training is fully supported natively, on mobile, and in a browser."
+        }
+      ]
+    },
+    {
+      "capability_id": "audio.voice",
+      "level": "out-of-scope",
+      "note": "There is no session and no participants, so no voice to carry.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Training section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush takes in COLMAP data or datasets in the Nerfstudio format. Training is fully supported natively, on mobile, and in a browser."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.replication",
+      "level": "out-of-scope",
+      "note": "Nobody shares a Brush scene live. It trains a file; a session is somebody else's problem.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, opening section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush on the other hand produces simple dependency free binaries, runs on nearly all devices, without any setup."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.authority",
+      "level": "out-of-scope",
+      "note": "No shared state means no authority to assign.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, opening section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush on the other hand produces simple dependency free binaries, runs on nearly all devices, without any setup."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.interest",
+      "level": "out-of-scope",
+      "note": "There are no clients to filter for.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, loading from a URL",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Load data from a URL. If possible the data will be streamed in, and the splat will update in real-time."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.prediction",
+      "level": "out-of-scope",
+      "note": "No live traffic and no latency to hide.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, loading from a URL",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Load data from a URL. If possible the data will be streamed in, and the splat will update in real-time."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.transport",
+      "level": "out-of-scope",
+      "note": "The only network use is fetching a dataset or a splat from a web address, which is asset delivery rather than session traffic.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, loading from a URL",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Load data from a URL. If possible the data will be streamed in, and the splat will update in real-time."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.media",
+      "level": "out-of-scope",
+      "note": "No live audio or video is carried in either direction.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, loading from a URL",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Load data from a URL. If possible the data will be streamed in, and the splat will update in real-time."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.session",
+      "level": "out-of-scope",
+      "note": "There is no world to join and no authentication of anybody to anything.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, opening section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush on the other hand produces simple dependency free binaries, runs on nearly all devices, without any setup."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.handoff",
+      "level": "out-of-scope",
+      "note": "No portals and no arrival with state.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, opening section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush on the other hand produces simple dependency free binaries, runs on nearly all devices, without any setup."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.presence",
+      "level": "out-of-scope",
+      "note": "Nothing tracks who is where.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, opening section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush on the other hand produces simple dependency free binaries, runs on nearly all devices, without any setup."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.address",
+      "level": "out-of-scope",
+      "note": "A splat can be pointed at by its ordinary web address through a URL parameter, which names a file rather than a place; Brush defines no addressing scheme.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, loading from a URL",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Load data from a URL. If possible the data will be streamed in, and the splat will update in real-time."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.discovery",
+      "level": "out-of-scope",
+      "note": "Nothing is discovered. You bring your own dataset or your own address.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, loading from a URL",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Load data from a URL. If possible the data will be streamed in, and the splat will update in real-time."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.time",
+      "level": "out-of-scope",
+      "note": "No shared clock. Playback of a frame sequence runs at whatever rate the viewer is set to, which is a local matter.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Viewer section on dynamic splats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush also can load .zip of splat files to display them as an animation, or a special ply that includes delta frames"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.root",
+      "level": "out-of-scope",
+      "note": "No identifier for a person, agent or thing appears anywhere.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.credential",
+      "level": "out-of-scope",
+      "note": "No verifiable claims are expressed or consumed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.exchange",
+      "level": "out-of-scope",
+      "note": "No presentation protocol; nothing is ever asked of a counterparty.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.capability",
+      "level": "out-of-scope",
+      "note": "No permission model. The tool runs locally on files the operator already has.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, opening section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush on the other hand produces simple dependency free binaries, runs on nearly all devices, without any setup."
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.privacy",
+      "level": "out-of-scope",
+      "note": "Nothing is disclosed selectively because no claims travel with a capture.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.social",
+      "level": "out-of-scope",
+      "note": "No relationships and no standing are represented.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.rights",
+      "level": "out-of-scope",
+      "note": "No licence terms are carried, so none can be enforced at the point of use.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose",
+      "level": "none",
+      "note": "A capture of a real place comes out with no position on the Earth. Brush neither reads nor writes any geospatial pose, which is a real absence for a tool whose input is photographs of somewhere.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.crs",
+      "level": "none",
+      "note": "No coordinate reference system is named at any point. The frame is the input reconstruction's own, unstated.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, up-axis handling",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Note: The exported ply will however still match your input data."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-local",
+      "level": "out-of-scope",
+      "note": "There is no device session and nothing to anchor content to.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, opening section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush on the other hand produces simple dependency free binaries, runs on nearly all devices, without any setup."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.anchor-shared",
+      "level": "out-of-scope",
+      "note": "No shared or persistent anchors; the tool has no notion of a place that two devices agree on.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, opening section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush on the other hand produces simple dependency free binaries, runs on nearly all devices, without any setup."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.vps",
+      "level": "out-of-scope",
+      "note": "No localisation from imagery. Camera poses are an input, solved by COLMAP or by the phone app that made the dataset.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Training section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush takes in COLMAP data or datasets in the Nerfstudio format. Training is fully supported natively, on mobile, and in a browser."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.tiles",
+      "level": "out-of-scope",
+      "note": "No tiling scheme. Large scenes are one file, or several files that a person names.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, LOD baking",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "After training, Brush can optionally generate N lower-detail levels by iteratively decimating splats and refining against downscaled images."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.indoor",
+      "level": "out-of-scope",
+      "note": "Indoor space is reconstructed as appearance, never as a structured description of rooms, doors or floors.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Training section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush takes in COLMAP data or datasets in the Nerfstudio format. Training is fully supported natively, on mobile, and in a browser."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.session",
+      "level": "out-of-scope",
+      "note": "No immersive session lifecycle. The viewer is a window, not a headset runtime.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, opening section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush on the other hand produces simple dependency free binaries, runs on nearly all devices, without any setup."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.controller",
+      "level": "out-of-scope",
+      "note": "Mouse, keyboard and touch drive the viewer; no controller pose is consumed.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, Mip-Splatting",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The 2D mip filter from Mip-Splatting is now implemented, with a `render_mode` flag and a UI toggle."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.hand",
+      "level": "out-of-scope",
+      "note": "No hand tracking anywhere in the tool; hands appear in a capture only as photographed geometry.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, Mip-Splatting",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The 2D mip filter from Mip-Splatting is now implemented, with a `render_mode` flag and a UI toggle."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.eye",
+      "level": "out-of-scope",
+      "note": "No gaze input and no eye data of any kind, so none of the privacy constraints around it arise.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, Mip-Splatting",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The 2D mip filter from Mip-Splatting is now implemented, with a `render_mode` flag and a UI toggle."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.haptic",
+      "level": "out-of-scope",
+      "note": "No touch feedback is produced; the viewer draws pixels and nothing else.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, Mip-Splatting",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The 2D mip filter from Mip-Splatting is now implemented, with a `render_mode` flag and a UI toggle."
+        }
+      ]
+    },
+    {
+      "capability_id": "input.devcaps",
+      "level": "partial",
+      "note": "Brush does discover what the graphics device can do, because it has to: WebGPU dispatch limits are handled so that resolutions above 2048 work, and intersection and splat limits were raised for larger scenes. This is the engine adapting to its own device, not a capability description any other party can read.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, web compatibility",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "WebGPU's workgroup dispatch limit is handled correctly, so resolutions above 2048 work"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.script",
+      "level": "out-of-scope",
+      "note": "No scripting runtime. The command line and the library interface are the only ways to drive it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, embedding and web demos",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Hosts get zero-copy access to the WebGPU buffers backing the transforms / SH coefficients / opacities, so they can bind them straight into their own render pipelines without ever round-tripping splat data through CPU."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.behaviour",
+      "level": "out-of-scope",
+      "note": "No behaviour graph travels with a capture; a splat file carries appearance only.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.sandbox",
+      "level": "out-of-scope",
+      "note": "Untrusted content is not a category here. The browser sandbox that holds the web build is the browser's, not Brush's.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Web build section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "WebGPU is still an upcoming standard, and as such, only Chrome 134+ on Windows and macOS is currently supported."
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.agent",
+      "level": "out-of-scope",
+      "note": "No agents act inside anything Brush produces.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.budget",
+      "level": "out-of-scope",
+      "note": "Training knobs bound the tool's own memory and time; there is no guest content to budget.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, LOD baking",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "After training, Brush can optionally generate N lower-detail levels by iteratively decimating splats and refining against downscaled images."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.world",
+      "level": "out-of-scope",
+      "note": "Nothing runs, so nothing survives a restart. Training configurations can be saved and loaded, which is a tool preference.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, Mip-Splatting",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The 2D mip filter from Mip-Splatting is now implemented, with a `render_mode` flag and a UI toggle."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.inventory",
+      "level": "out-of-scope",
+      "note": "No items and no holder.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.prefs",
+      "level": "out-of-scope",
+      "note": "Interface layout and settings persist locally and follow nobody anywhere.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, Mip-Splatting",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The 2D mip filter from Mip-Splatting is now implemented, with a `render_mode` flag and a UI toggle."
+        }
+      ]
+    },
+    {
+      "capability_id": "persist.content-addr",
+      "level": "out-of-scope",
+      "note": "Splats are referred to by file path or web address, never by hash. No content addressing is offered.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, loading from a URL",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Load data from a URL. If possible the data will be streamed in, and the splat will update in real-time."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.bundle",
+      "level": "out-of-scope",
+      "note": "The output is one asset file, not a runnable experience, so there is nothing to package.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.cdn",
+      "level": "out-of-scope",
+      "note": "Brush consumes from any ordinary static web host and delivers nothing itself.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, loading from a URL",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Load data from a URL. If possible the data will be streamed in, and the splat will update in real-time."
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.version",
+      "level": "out-of-scope",
+      "note": "No versioning of what it writes. A retrained scene is a new file with whatever name you give it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.conformance",
+      "level": "none",
+      "note": "There is no conformance test, and the honest reason is that there is no specification to conform to: the PLY layout for splats is a convention. The repository does test that its own writer and reader agree, including the ordering of spherical-harmonic coefficients, which is a round trip rather than a conformance claim.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, export round-trip tests",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "async fn test_roundtrip_sh_coefficient_ordering() {"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.worldgen",
+      "level": "out-of-scope",
+      "note": "Nothing is generated from a prompt or a picture. Brush reconstructs what the camera saw and invents no geometry.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Training section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush takes in COLMAP data or datasets in the Nerfstudio format. Training is fully supported natively, on mobile, and in a browser."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.sim-learned",
+      "level": "out-of-scope",
+      "note": "There is no learned world model continuing anything; the trained model is a static scene representation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Training section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush takes in COLMAP data or datasets in the Nerfstudio format. Training is fully supported natively, on mobile, and in a browser."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.photogrammetry",
+      "level": "partial",
+      "note": "Brush turns a set of ordinary photographs into a three-dimensional scene, and it does so on a phone or in a browser, which almost nothing else in this group does. Two parts of the definition are missing: it does not solve camera poses itself, requiring a COLMAP or Nerfstudio dataset, and the result is a splat cloud rather than a textured model.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Training section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush takes in COLMAP data or datasets in the Nerfstudio format. Training is fully supported natively, on mobile, and in a browser."
+        },
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, image masking",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A folder of images called 'masks'. This ignores parts of the image that are masked out."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.splat-format",
+      "level": "native",
+      "note": "Splat PLY is the native currency: plain PLY in and out, SuperSplat-compressed PLY in, with the single export entry point in the source writing PLY and nothing else. No SPZ, no SOG, no glTF carriage.",
+      "confidence": "verified",
+      "direction": "both",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Viewer section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "It can load .ply & .compressed.ply files."
+        },
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, Import/export",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Support SuperSplat compressed ply format"
+        },
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.stream",
+      "level": "partial",
+      "note": "A splat loads progressively from a web address and updates as it arrives, which is the useful half. The missing half is any notion of region or level in the stream: bytes arrive in file order, and the baked detail levels are separate files chosen by name.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, loading from a URL",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Load data from a URL. If possible the data will be streamed in, and the splat will update in real-time."
+        },
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, LOD baking",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "After training, Brush can optionally generate N lower-detail levels by iteratively decimating splats and refining against downscaled images."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.volumetric-video",
+      "level": "partial",
+      "note": "Brush plays time-varying captures and cannot make one. A zip or folder of numbered PLY files is played as an animation, and a delta-frame PLY variant exists for two named research projects, but training itself is static.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Viewer section on dynamic splats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush also can load .zip of splat files to display them as an animation, or a special ply that includes delta frames"
+        },
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, dynamic splats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Add support for viewing dynamic splats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.point-cloud",
+      "level": "partial",
+      "note": "A sparse point cloud is read as the starting point for training, and a scene will initialise from a single PLY in the dataset if one is there. Nothing is written as a point cloud: the output is Gaussians.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Training section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush takes in COLMAP data or datasets in the Nerfstudio format. Training is fully supported natively, on mobile, and in a browser."
+        },
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.multiview-depth",
+      "level": "none",
+      "note": "Calibrated views go in, per-pixel depth does not. Brush consumes images and poses, and the phone captures that feed it throw their depth away at the door.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Training section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush takes in COLMAP data or datasets in the Nerfstudio format. Training is fully supported natively, on mobile, and in a browser."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.novel-view",
+      "level": "native",
+      "note": "Producing an image from a viewpoint no camera occupied is what the trained model is for, and the viewer does it interactively while training is still running.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Training section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush takes in COLMAP data or datasets in the Nerfstudio format. Training is fully supported natively, on mobile, and in a browser."
+        },
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, Mip-Splatting",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The 2D mip filter from Mip-Splatting is now implemented, with a `render_mode` flag and a UI toggle."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.4d",
+      "level": "partial",
+      "note": "Time is playback only, and the shape of it is telling: a numbered flipbook of complete frames, or a private delta-frame PLY written for the Cat4D and Cap4D projects with an export script shared by one of those authors. Nothing Brush writes has a time axis.",
+      "confidence": "verified",
+      "direction": "read",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Viewer section on dynamic splats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush also can load .zip of splat files to display them as an animation, or a special ply that includes delta frames"
+        },
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, dynamic splats",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Add support for viewing dynamic splats"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.relight",
+      "level": "none",
+      "note": "A captured scene keeps the light it was photographed in. No relighting path exists, and no separated material or lighting terms are produced that another system could relight from.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, embedding and web demos",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Hosts get zero-copy access to the WebGPU buffers backing the transforms / SH coefficients / opacities, so they can bind them straight into their own render pipelines without ever round-tripping splat data through CPU."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.edit",
+      "level": "none",
+      "note": "Editing happens before training or elsewhere. Masks and transparent images exclude parts of the input photographs, and cropping or deleting parts of a trained splat is left to other tools such as the SuperSplat editor whose compressed format Brush reads.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, image masking",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "A folder of images called 'masks'. This ignores parts of the image that are masked out."
+        },
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, Import/export",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Support SuperSplat compressed ply format"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-edit",
+      "level": "out-of-scope",
+      "note": "Nothing is generated, so nothing can be regenerated from a description.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Training section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush takes in COLMAP data or datasets in the Nerfstudio format. Training is fully supported natively, on mobile, and in a browser."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.gen-control",
+      "level": "out-of-scope",
+      "note": "There is no generating system to control. The specification of the scene is the photographs.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Training section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush takes in COLMAP data or datasets in the Nerfstudio format. Training is fully supported natively, on mobile, and in a browser."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.derived-asset",
+      "level": "none",
+      "note": "No mesh, no point cloud, no conventional asset of any kind comes out of a trained scene. The only derived products are decimated splat levels, which are still splats.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, LOD baking",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "After training, Brush can optionally generate N lower-detail levels by iteratively decimating splats and refining against downscaled images."
+        },
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.action-io",
+      "level": "out-of-scope",
+      "note": "No agent actions, poses or control signals are carried in or out.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.panorama",
+      "level": "none",
+      "note": "No panoramic input or output. Datasets are perspective images with poses, and a 360 capture would have to be cut into perspective views by something else first.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Training section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush takes in COLMAP data or datasets in the Nerfstudio format. Training is fully supported natively, on mobile, and in a browser."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.mesh",
+      "level": "out-of-scope",
+      "note": "Brush does not sense the space around a device; it reconstructs from a dataset that has already been captured.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Training section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush takes in COLMAP data or datasets in the Nerfstudio format. Training is fully supported natively, on mobile, and in a browser."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.semantics",
+      "level": "out-of-scope",
+      "note": "Nothing is labelled. A wall and a sofa are the same thing to the trainer.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.depth",
+      "level": "out-of-scope",
+      "note": "No depth sensor is read and no depth is inferred as an output.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Training section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush takes in COLMAP data or datasets in the Nerfstudio format. Training is fully supported natively, on mobile, and in a browser."
+        }
+      ]
+    },
+    {
+      "capability_id": "sense.occlusion",
+      "level": "out-of-scope",
+      "note": "Virtual content is never mixed with a live camera view, so nothing occludes anything.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, opening section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush on the other hand produces simple dependency free binaries, runs on nearly all devices, without any setup."
+        }
+      ]
+    },
+    {
+      "capability_id": "render.passthrough",
+      "level": "out-of-scope",
+      "note": "No passthrough. The Android build is an ordinary application window, not a mixed-reality layer.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, Android build section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "adb shell am start -n com.splats.app/.MainActivity"
+        }
+      ]
+    },
+    {
+      "capability_id": "input.face",
+      "level": "out-of-scope",
+      "note": "No face or body tracking is consumed as input.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, Mip-Splatting",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "The 2D mip filter from Mip-Splatting is now implemented, with a `render_mode` flag and a UI toggle."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.navmesh",
+      "level": "out-of-scope",
+      "note": "Nothing says where a body may stand. A trained scene has no floor as far as the file is concerned.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "logic.namespace",
+      "level": "out-of-scope",
+      "note": "No published unit of logic and therefore no naming problem.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "deliver.moderation",
+      "level": "out-of-scope",
+      "note": "Nothing stands between a capture and its viewer: training and viewing both happen on the operator's own machine.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/README.md",
+          "title": "Brush README, opening section",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Brush on the other hand produces simple dependency free binaries, runs on nearly all devices, without any setup."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.map-align",
+      "level": "out-of-scope",
+      "note": "No map of a place is declared, versioned or aligned to anything.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/CHANGELOG.md",
+          "title": "Brush release notes, up-axis handling",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "Note: The exported ply will however still match your input data."
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.coverage",
+      "level": "out-of-scope",
+      "note": "No geographic area is declared for a capture, because no geography is recorded at all.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/ArthurBrussee/brush/blob/main/crates/brush-serde/src/export.rs",
+          "title": "Brush source, the one export entry point",
+          "retrieved": "2026-09-06",
+          "kind": "primary",
+          "quote": "pub async fn splat_to_ply(splats: Splats, up_axis: Option<Vec3>) -> Result<Vec<u8>, ExportError> {"
+        }
+      ]
+    },
+    {
+      "capability_id": "identity.assurance",
+      "level": "out-of-scope",
+      "note": "Brush is assessed here as Gaussian reconstruction and a splat preview/viewer with posed-image inputs. The subject does not issue or exchange trust claims whose establishment a relying party evaluates; reconstruction confidence is a different quantity.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.schema",
+      "level": "out-of-scope",
+      "note": "Brush is assessed here as Gaussian reconstruction and a splat preview/viewer with posed-image inputs. The subject's scene or model data types are not a vocabulary for identity claims exchanged with a relying party.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.unlinkable",
+      "level": "out-of-scope",
+      "note": "Brush is assessed here as Gaussian reconstruction and a splat preview/viewer with posed-image inputs. The subject is not an identity-presentation system with pairwise relationship identifiers and correlation guarantees.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.encryption",
+      "level": "out-of-scope",
+      "note": "Brush is assessed here as Gaussian reconstruction and a splat preview/viewer with posed-image inputs. Image, geometry and device processing do not define recipient identity keys or confidential identity delivery.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.key-lifecycle",
+      "level": "out-of-scope",
+      "note": "Brush is assessed here as Gaussian reconstruction and a splat preview/viewer with posed-image inputs. The subject does not govern identity-control key rotation, revocation or recovery; account administration belongs to its host.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.status",
+      "level": "out-of-scope",
+      "note": "Brush is assessed here as Gaussian reconstruction and a splat preview/viewer with posed-image inputs. The subject does not issue portable credentials with a post-issuance status-discovery mechanism.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.lighting",
+      "level": "out-of-scope",
+      "note": "Brush is assessed here as Gaussian reconstruction and a splat preview/viewer with posed-image inputs. Captured appearance and inferred training exposure are not runtime environmental illumination estimates supplied to content.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.marker",
+      "level": "out-of-scope",
+      "note": "Brush is assessed here as Gaussian reconstruction and a splat preview/viewer with posed-image inputs. Offline calibration targets or reference photos do not expose runtime physical-marker detection with tracked poses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.pointing",
+      "level": "out-of-scope",
+      "note": "Brush is assessed here as Gaussian reconstruction and a splat preview/viewer with posed-image inputs. Editor selection or image masking is not an exposed runtime picking interface that returns the intersected scene object or geometry.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.text",
+      "level": "out-of-scope",
+      "note": "Brush is assessed here as Gaussian reconstruction and a splat preview/viewer with posed-image inputs. Prompt strings or command-line parameters are authoring inputs, not a defined runtime character-entry interface for scene applications.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.layer",
+      "level": "out-of-scope",
+      "note": "Brush is assessed here as Gaussian reconstruction and a splat preview/viewer with posed-image inputs. The selected interface is not a display compositor accepting independently shaped image layers and composition properties.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.constraint",
+      "level": "out-of-scope",
+      "note": "Brush is assessed here as Gaussian reconstruction and a splat preview/viewer with posed-image inputs. Fitted motion and ordinary parenting are not authored node-to-node transform constraints with runtime evaluation rules.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.timed-media",
+      "level": "out-of-scope",
+      "note": "Brush is assessed here as Gaussian reconstruction and a splat preview/viewer with posed-image inputs. Image sequences used as reconstruction observations do not reference synchronized audiovisual media as content within a separately authored scene.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.play-space",
+      "level": "out-of-scope",
+      "note": "Brush is assessed here as Gaussian reconstruction and a splat preview/viewer with posed-image inputs. Capture extents or a training region do not report the user's usable physical play area and floor-relative reference.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "audio.procedural",
+      "level": "out-of-scope",
+      "note": "Brush is assessed here as Gaussian reconstruction and a splat preview/viewer with posed-image inputs. The selected reconstruction or sensing interface does not exchange a sound-synthesis model for evaluation during playback.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "geo.zone-event",
+      "level": "out-of-scope",
+      "note": "Brush is assessed here as Gaussian reconstruction and a splat preview/viewer with posed-image inputs. The subject does not publish an exchange of identified spatial zones and typed, temporally scoped events; scene bounds or capture locations are not that protocol.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.consent",
+      "level": "out-of-scope",
+      "note": "Brush is assessed here as Gaussian reconstruction and a splat preview/viewer with posed-image inputs. An application permission dialog or dataset licence does not carry a subject-bound grant with scope, purpose, validity and withdrawal information.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "identity.receipt",
+      "level": "out-of-scope",
+      "note": "Brush is assessed here as Gaussian reconstruction and a splat preview/viewer with posed-image inputs. Training metrics and processing status are not machine-readable accounts of a recipient evaluating and acting on an arriving subject or claim.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "net.admission",
+      "level": "out-of-scope",
+      "note": "Brush is assessed here as Gaussian reconstruction and a splat preview/viewer with posed-image inputs. The selected subject does not define arrival between independent destinations; local API setup and asset loading are not pre-arrival admission responses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.frame-timing",
+      "level": "out-of-scope",
+      "note": "Brush is assessed here as Gaussian reconstruction and a splat preview/viewer with posed-image inputs. Offline fitting or ordinary preview playback does not coordinate application frame submission with a predicted headset display time and matching view poses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.shader-lang",
+      "level": "out-of-scope",
+      "note": "Brush is assessed here as Gaussian reconstruction and a splat preview/viewer with posed-image inputs. Implementation shaders or learned weights do not make the subject a specified shader language with common execution semantics.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.parametric",
+      "level": "out-of-scope",
+      "note": "Brush is assessed here as Gaussian reconstruction and a splat preview/viewer with posed-image inputs. The selected representation is sampled imagery, points, splats or meshes; it does not carry exact parametric curves and surfaces for another system to evaluate.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.particle",
+      "level": "out-of-scope",
+      "note": "Brush is assessed here as Gaussian reconstruction and a splat preview/viewer with posed-image inputs. Gaussian primitives and optimized point samples are a representation, not exchanged emitters with runtime particle simulation parameters.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "scene.style",
+      "level": "out-of-scope",
+      "note": "Brush is assessed here as Gaussian reconstruction and a splat preview/viewer with posed-image inputs. Capture edits and model appearance are not separate metadata-driven rules for selecting scene-feature visibility or color.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "sense.hit-test",
+      "level": "out-of-scope",
+      "note": "Brush is assessed here as Gaussian reconstruction and a splat preview/viewer with posed-image inputs. Offline reconstructed geometry is not a sensing runtime that answers physical-environment ray queries with hit poses.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "input.event-device",
+      "level": "out-of-scope",
+      "note": "Brush is assessed here as Gaussian reconstruction and a splat preview/viewer with posed-image inputs. The subject does not expose a musical-instrument device or recorded-event input interface with channels, notes and controllers.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "capture.radiance-training",
+      "level": "native",
+      "note": "Brush fits Gaussian scenes from COLMAP or Nerfstudio observations, supports transparency/exclusion masks, and previews the optimization; the pinned development source is not proof of a released binary.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/ArthurBrussee/brush/063945e797e0b3b7fd60b0feb7b9010385dd4bda/README.md",
+          "title": "Brush README",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "Training is fully supported natively, on mobile, and in a browser."
+        }
+      ]
+    },
+    {
+      "capability_id": "capture.objectgen",
+      "level": "out-of-scope",
+      "note": "Brush is assessed here as Gaussian reconstruction and a splat preview/viewer with posed-image inputs. This observation-fitting or device-sensing boundary does not synthesize a separate placeable object from a text or single-image prompt.",
+      "confidence": "verified",
+      "sources": []
+    },
+    {
+      "capability_id": "render.ui",
+      "level": "native",
+      "note": "The pinned Brush application source builds a horizontal scene/sidebar arrangement and vertical sidebar panes with explicit proportional shares: training 0.12, dataset 0.53 and bottom tabs 0.35. Tab and pane behavior is implemented through egui_tiles. This supplies actual interface sizing, alignment and relation to the scene display.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/ArthurBrussee/brush/063945e797e0b3b7fd60b0feb7b9010385dd4bda/apps/brush-app/src/ui/app.rs",
+          "title": "brush apps brush app src ui app.rs",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "sidebar.shares.set_share(training_pane, 0.12);"
+        }
+      ]
+    },
+    {
+      "capability_id": "geo.pose-graph",
+      "level": "native",
+      "note": "Brush reads Nerfstudio frame records containing an image-associated transform_matrix. Its parser explicitly interprets these as camera-to-world transforms and converts OpenGL camera conventions before constructing each view. This establishes links from identified image/camera frames to a shared world frame; it does not claim arbitrary rig-constraint exchange.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/ArthurBrussee/brush/063945e797e0b3b7fd60b0feb7b9010385dd4bda/crates/brush-dataset/src/formats/nerfstudio.rs",
+          "title": "brush crates brush dataset src formats nerfstudio.rs",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "NeRF 'transform_matrix' is a camera-to-world transform"
+        }
+      ],
+      "direction": "read"
+    },
+    {
+      "capability_id": "render.compute",
+      "level": "native",
+      "note": "Brush dispatches CubeCL prefix-sum scan and add kernels with explicit launch grids, cube dimensions and input/output GPU tensors. These non-raster array-processing operations use its compute backend and are separate from drawing splats.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/ArthurBrussee/brush/063945e797e0b3b7fd60b0feb7b9010385dd4bda/crates/brush-prefix-sum/src/lib.rs",
+          "title": "brush crates brush prefix sum src lib.rs",
+          "retrieved": "2026-09-11",
+          "kind": "primary",
+          "quote": "kernels::prefix_sum_scan_kernel::launch("
+        }
+      ]
+    }
+  ]
+}
