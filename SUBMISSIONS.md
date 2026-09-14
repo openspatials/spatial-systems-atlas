@@ -63,13 +63,12 @@ enforces a limit of five submissions an hour per address, creates the issue here
 REST API, and stores the optional email address in a private Cloudflare key-value namespace keyed
 by issue number. The browser never sees the GitHub token.
 
-**Token note.** The function currently authenticates with a token that carries the `repo` scope
-across every repository the account can reach. That is wider than this repository needs. A
-fine-grained personal access token with Issues read and write on `openspatials/spatial-tech-map`
-alone should replace it. Replacing it is one command:
+**The token.** `GITHUB_TOKEN` is a Cloudflare Pages secret on the project `openspatials-com`. It
+must be a fine-grained personal access token carrying one permission — Issues, read and write — on
+`openspatials/spatial-tech-map` and no other repository. That is the whole of what the function
+does with it: open an issue, and set labels that already exist here. Setting or rotating the token
+is one command, and nothing else changes, because the function reads the same secret name:
 
 ```
 wrangler pages secret put GITHUB_TOKEN --project-name=openspatials-com
 ```
-
-Nothing else changes; the function reads the same secret name.
