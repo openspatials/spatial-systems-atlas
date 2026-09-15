@@ -18,6 +18,7 @@ import { SubjectView } from './SubjectView.tsx'
 import { CompareView } from './CompareView.tsx'
 import { GroupsView } from './GroupsView.tsx'
 import { RelationsView } from './RelationsView.tsx'
+import { VERSION } from '../version.ts'
 import { RowPanel } from './RowPanel.tsx'
 import { Comment } from './Comment.tsx'
 
@@ -305,6 +306,10 @@ export function Shell({ model }: { model: Model }) {
               ))}
             </aside>
           </div>
+
+          <footer style={S.footer}>
+            <span>Version {VERSION}</span>
+          </footer>
         </main>
       </div>
 
@@ -503,6 +508,7 @@ const S = {
   main: { flex: 1, minWidth: 0, maxWidth: '100%', display: 'flex', flexDirection: 'column', overflowX: 'hidden' } as const,
   questionBar: { display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap', padding: '14px 16px 8px' } as const,
   question: { margin: 0, fontFamily: 'var(--fl)', fontWeight: 700, fontSize: 21, letterSpacing: '-.01em', flex: 1, minWidth: 260 } as const,
+  footer: { padding: '18px 16px 22px', borderTop: '1px solid var(--rule)', fontFamily: 'var(--fm)', fontSize: 10.5, letterSpacing: '.04em', color: 'var(--faint)' } as const,
   scopeLine: { display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center', padding: '0 16px 10px' } as const,
   scopeChip: { fontFamily: 'var(--fl)', fontSize: 11.5, border: '1px solid var(--rule)', borderRadius: 'var(--r)', padding: '3px 9px', background: 'var(--panel)' } as const,
   disclosure: { fontFamily: 'var(--fl)', fontSize: 11.5, background: 'transparent', border: 0, color: 'var(--ac)', cursor: 'pointer', textDecoration: 'underline', padding: 0 } as const,
