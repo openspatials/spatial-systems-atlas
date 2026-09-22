@@ -7,7 +7,7 @@
 // the two published pages, so nothing here is fetched.
 //
 // What the form does. It posts to /msf/map/api/submit on this site, which files the submission as
-// a public issue on github.com/openspatials/spatial-tech-map and hands back the issue's number and
+// a public issue on github.com/openspatials/spatial-systems-atlas and hands back the issue's number and
 // address. The email address is optional, is never written into the issue, and is kept privately
 // so a maintainer can reply.
 //
@@ -19,8 +19,8 @@
   "use strict";
 
   var ENDPOINT = "/msf/map/api/submit";
-  var LIST = "https://github.com/openspatials/spatial-tech-map/issues";
-  var NEW_ISSUE = "https://github.com/openspatials/spatial-tech-map/issues/new/choose";
+  var LIST = "https://github.com/openspatials/spatial-systems-atlas/issues";
+  var NEW_ISSUE = "https://github.com/openspatials/spatial-systems-atlas/issues/new/choose";
   // The public half of the Cloudflare Turnstile widget. A site key is meant to be read by
   // anybody; the secret half never leaves the function.
   var SITEKEY = "0x4AAAAAAEqgjvsSDXAjf2mv";

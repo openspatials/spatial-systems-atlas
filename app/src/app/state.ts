@@ -14,8 +14,7 @@ import type { Basis, LaneId, Model, Query, RowFilter } from '../design-model.ts'
 import { shareUrl } from '../design-model.ts'
 
 export type ViewId = 'subject' | 'compare' | 'groups' | 'relations'
-export type Theme = 'paper' | 'neutral'
-export type Density = 'comfortable' | 'compact'
+export type Theme = 'light' | 'dark'
 export type SidebarMode = 'pinned' | 'open' | 'collapsed'
 
 export interface DetailTarget {
@@ -43,7 +42,6 @@ export interface AppState {
 
   // Preferences. Not analysis, so they never travel in the address.
   theme: Theme
-  density: Density
   sidebar: SidebarMode
 }
 
@@ -70,7 +68,6 @@ export type Action =
   | { type: 'detail'; detail: DetailTarget | null }
   | { type: 'preset'; state: Partial<AppState>; name: string }
   | { type: 'theme'; theme: Theme }
-  | { type: 'density'; density: Density }
   | { type: 'sidebar'; mode: SidebarMode }
   | { type: 'replace'; state: AppState }
 
@@ -136,8 +133,6 @@ export function reducer(state: AppState, action: Action): AppState {
     // Preferences. They change nothing about what is counted.
     case 'theme':
       return { ...state, theme: action.theme }
-    case 'density':
-      return { ...state, density: action.density }
     case 'sidebar':
       return { ...state, sidebar: action.mode }
 
@@ -173,9 +168,44 @@ export function initialState(model: Model): AppState {
     detail: null,
     presetName: preset.name,
     presetEdited: false,
-    theme: 'paper',
-    density: 'comfortable',
+    theme: 'light',
     sidebar: 'pinned',
+  }
+}
+
+// ---------------------------------------------------------------------------
+// The theme is a preference, so it lives in the browser, never in the address.
+// A first visit follows the reader's system setting; an explicit choice is kept.
+// ---------------------------------------------------------------------------
+
+const THEME_KEY = 'spatial-systems-atlas.theme'
+
+/** The reader's explicit choice, if they have made one. */
+export function storedTheme(): Theme | null {
+  try {
+    const v = window.localStorage.getItem(THEME_KEY)
+    return v === 'light' || v === 'dark' ? v : null
+  } catch {
+    return null
+  }
+}
+
+/** What the system asks for. Light when the browser cannot say. */
+export function systemTheme(): Theme {
+  try {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  } catch {
+    return 'light'
+  }
+}
+
+export const preferredTheme = (): Theme => storedTheme() ?? systemTheme()
+
+export function rememberTheme(theme: Theme): void {
+  try {
+    window.localStorage.setItem(THEME_KEY, theme)
+  } catch {
+    // Storage blocked: the choice holds for this visit only.
   }
 }
 
@@ -223,17 +253,32 @@ export function decode(search: string, model: Model, base: AppState): AppState {
   const focusParam = p.get('of')
   const focus = focusParam && on.includes(focusParam) ? focusParam : (on[0] ?? null)
 
+  const view = pick(p.get('view'), VIEWS, 'subject')
+  const basis = pick(p.get('basis'), BASES, 'prod')
+  const lane = pick(p.get('lane'), LANES, null as LaneId | null)
+
+  const matched = PRESETS.find((preset) => {
+    const pOn = presetSubjects(preset, model)
+    return preset.view === view
+      && preset.filter === filter
+      && (preset.lane ?? null) === lane
+      && pOn.length === on.length
+      && [...pOn].sort().every((id, i) => id === [...on].sort()[i])
+  })
+
   return {
     ...base,
-    view: pick(p.get('view'), VIEWS, 'subject'),
+    view,
     on,
     focus,
     filter,
     hasEntry,
-    basis: pick(p.get('basis'), BASES, 'prod'),
-    lane: pick(p.get('lane'), LANES, null as LaneId | null),
+    basis,
+    lane,
     relGroup: p.get('group') ?? base.relGroup,
     detail,
+    presetName: matched?.name ?? '',
+    presetEdited: false,
   }
 }
 

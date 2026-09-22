@@ -1,6 +1,6 @@
 {
   "subject_id": "gltf21",
-  "summary": "A planned backward-compatible revision of the glTF core, announced on 2026-06-11 and still being written. Its purpose is to let one file deliver a whole assembled scene instead of a single model: a file may reference other glTF files and instantiate them, package them inside itself, carry simple shapes such as boxes and spheres, and hang bounding volumes on nodes. Only those four features have draft specification text, and only on the working group's draft-2.1 branch; the published Khronos registry still has no 2.1 document, and no primary source states a ratification target date. Everything else on the announced list - thumbnails, a 64-bit binary container, unique identifiers, promoted extensions, wider number types, and dropping multiple scenes - is announced only, and is scored partial here for that reason. The shape work is the one to watch: the same box, sphere, capsule, cylinder and plane vocabulary that the physics and collision extensions were going to supply now sits in the core, and the working group has stated that the pending KHR_implicit_shapes extension is superseded by it - though that extension's pull request is still open and the extension registry has not been changed to say so. This is also the format that the international scene description standard extends: MPEG-I Scene Description, ISO/IEC 23090-14:2025, defines no scene format of its own and states in its own abstract that its extensions are provided for ISO/IEC 12113, which is glTF 2.0 - so the two overlap across the whole asset side, with glTF owning the container, geometry, materials and animation and the MPEG part owning timed media on top, and with interactivity now being defined twice, once by each body. Those MPEG extensions are pinned to glTF 2.0, so a core revision is something that standard has to catch up with rather than something it inherits.",
+  "summary": "A planned backward-compatible revision of the glTF core, announced on 2026-06-11 and still being written. Its purpose is to let one file deliver a whole assembled scene instead of a single model: a file may reference other glTF files and instantiate them, package them inside itself, carry simple shapes such as boxes and spheres, and hang bounding volumes on nodes. Seven of the announced features have draft specification text - those four, plus thumbnails, the 64-bit binary container and the deprecation of multiple scenes, merged on 2026-08-28 - and only on the working group's draft-2.1 branch; the published Khronos registry still has no 2.1 document, and no primary source states a ratification target date. Everything else on the announced list - unique identifiers, promoted extensions and wider number types - is announced only, and is scored partial here for that reason. The shape work is the one to watch: the same box, sphere, capsule, cylinder and plane vocabulary that the physics and collision extensions were going to supply now sits in the core, and the working group has stated that the pending KHR_implicit_shapes extension is superseded by it - though that extension's pull request is still open and the extension registry has not been changed to say so. This is also the format that the international scene description standard extends: MPEG-I Scene Description, ISO/IEC 23090-14:2025, defines no scene format of its own and states in its own abstract that its extensions are provided for ISO/IEC 12113, which is glTF 2.0 - so the two overlap across the whole asset side, with glTF owning the container, geometry, materials and animation and the MPEG part owning timed media on top, and with interactivity now being defined twice, once by each body. Those MPEG extensions are pinned to glTF 2.0, so a core revision is something that standard has to catch up with rather than something it inherits.",
   "coverage": [
     {
       "capability_id": "scene.container",
@@ -381,7 +381,7 @@
     {
       "capability_id": "logic.behaviour",
       "level": "partial",
-      "note": "Not in the 2.1 core. KHR_interactivity carries behaviour graphs, is written against 2.0, and was submitted for ratification on 2026-07-16 - submitted is not ratified; 2.1's new files array does list behaviour graphs among the file types it expects to reference.",
+      "note": "Not in the 2.1 core. KHR_interactivity carries behaviour graphs, is written against 2.0, and is now ratified - the registry lists it among the ratified Khronos extensions - but nothing in the 2.1 core text takes it in; 2.1's new files array does list behaviour graphs among the file types it expects to reference.",
       "confidence": "verified",
       "sources": [
         {
@@ -393,10 +393,10 @@
         },
         {
           "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/main/extensions/README.md",
-          "title": "glTF Extension Registry, in-progress table",
-          "retrieved": "2026-08-22",
+          "title": "glTF Extension Registry, Ratified Khronos Extensions",
+          "retrieved": "2026-09-19",
           "kind": "primary",
-          "quote": null
+          "quote": "* [KHR_interactivity](2.0/Khronos/KHR_interactivity/Specification.adoc)"
         },
         {
           "url": "https://www.khronos.org/blog/introducing-gltf-2.1-with-complex-scenes",
@@ -603,7 +603,7 @@
     {
       "capability_id": "capture.splat-format",
       "level": "partial",
-      "note": "Splats travel in glTF through KHR_gaussian_splatting, which is ratified but written against 2.0, so 2.1 inherits it rather than defining anything of its own. The 64-bit container that a large capture needs is announced for 2.1 and has no draft text.",
+      "note": "Splats travel in glTF through KHR_gaussian_splatting, which is ratified but written against 2.0, so 2.1 inherits it rather than defining anything of its own. The 64-bit container that a large capture needs has had draft text on the draft-2.1 branch since 2026-08-28 - binary format version 3 with a 16-byte header - and no published document.",
       "confidence": "verified",
       "sources": [
         {
@@ -626,6 +626,20 @@
           "retrieved": "2026-08-22",
           "kind": "primary",
           "quote": "The items listed are felt to show enough consensus to be considered for future ratification."
+        },
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/draft-2.1/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 Specification, GLB File Format Specification, Binary Header (draft-2.1 branch)",
+          "retrieved": "2026-09-19",
+          "kind": "primary",
+          "quote": "For binary format version 3, the 16-byte header consists of two 4-byte entries and one 8-byte entry: uint32 magic, uint32 version, uint64 length"
+        },
+        {
+          "url": "https://github.com/KhronosGroup/glTF/commits/draft-2.1",
+          "title": "glTF repository, draft-2.1 branch commit history",
+          "retrieved": "2026-09-19",
+          "kind": "primary",
+          "quote": "Draft changes for 64-bit Upgrade to Binary Format in glTF 2.1 (#2628)"
         }
       ]
     },
@@ -1364,6 +1378,36 @@
           "retrieved": "2026-09-11",
           "kind": "primary",
           "quote": "The node hierarchy **MUST** be a set of disjoint strict trees."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.containment",
+      "level": "out-of-scope",
+      "note": "glTF 2.1 extends the 2.0 transmission format with new features for materials, lighting, and interactivity hooks. It remains a file format. It defines no runtime hosting and no containment of running third-party experiences.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/draft-2.1/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 Specification (draft-2.1 branch)",
+          "retrieved": "2026-09-18",
+          "kind": "primary",
+          "quote": "glTF defines an extensible publishing format for the efficient transmission and loading of 3D content."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.world-coupling",
+      "level": "out-of-scope",
+      "note": "glTF 2.1 is a file format. It carries no networking protocol, no world state, and no mechanism for one scene to mutate another. Unattended coupling between worlds is outside the format's scope.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/KhronosGroup/glTF/draft-2.1/specification/2.1/Specification.adoc",
+          "title": "glTF 2.1 Specification (draft-2.1 branch)",
+          "retrieved": "2026-09-18",
+          "kind": "primary",
+          "quote": "glTF defines an extensible publishing format for the efficient transmission and loading of 3D content."
         }
       ]
     }

@@ -5,6 +5,33 @@ Newest first. One section per pass. Every number here can be re-derived from
 
 ---
 
+## 2026-09-19 — two composability rows published, and the September maintenance pass folded
+
+Two capabilities approved on 2026-09-18 reach the public map: **World-to-world coupling**
+`net.world-coupling` and **Scene containment** `scene.containment`, both scored across all 57
+subjects. The fortnightly maintenance pass re-read 49 verification flags against current primary
+sources: 27 confirmed errors corrected, 6 claims re-scored where the world changed after they were
+written (each note now carries the 2026-09-19 retrieval date), 1 recorded as undetermined, and the
+flags no public source can settle left as they were. Nine cells changed level; every one says in
+its note which part of the definition is still missing.
+
+Examples: the glTF registry lists 27 ratified extensions and KHR_interactivity is one of them;
+OpenXR is at 1.1.63; the Verifiable Credentials family has six companion Recommendations, not four;
+C2PA 2.4 carries a depth-map assertion; Rec Room added avatar and creation-data exports at shutdown.
+
+### The numbers
+
+    capabilities              162  ->  164
+    claims                  6,882  ->  6,996      (114 added, 0 removed, 194 changed)
+    sources                 1,932  ->  1,963
+    must / should / none  52/87/23 ->  54/87/23
+    lanes         U1 30  U2 25  U3 29  U4 18  ->  U1 30  U2 26  U3 31  U4 19
+
+Production deployment f088df00. Evidence and per-cell dispositions:
+`.dev/ai/subtask-comms/2026-09-19-21-23-55Z-maintenance-pass-result.md` in the msf-wg-tool repository.
+
+---
+
 ## 2026-09-06, later still — captured content is first-class, and five capture rows become musts
 
 The owner answered question 5 of `infrastructure-wg/model/INTEROPERABILITY-BOUNDARIES.md`: **yes,

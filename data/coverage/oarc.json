@@ -1,6 +1,6 @@
 {
   "subject_id": "oarc",
-  "summary": "Open AR Cloud is a volunteer-run association that publishes the Open Spatial Computing Platform: a set of protocols and reference services for finding out where you are, finding what services and content are near you, and addressing a place so another system can reach it. Its strongest work is the part almost nothing else on this map covers. It gives every anchor, service and content bundle a stable address under a domain name authority with a normative resolution order and a required web fallback, which is the resolution step the OGC geospatial pose standard explicitly leaves out; it defines a request and response for recovering a pose from camera imagery and ships an open implementation of it; and it treats durable, shared, world-locked anchors as a first-class thing to publish and update. It is not a runtime and does not pretend to be. There is no rendering, no material, no animation, no avatar, no physics and no sound anywhere in it; the word avatar and the word physics occur nowhere in the current specification, and the only occurrence of audio is a Python package name in a build file. It does not hold content either: its own documentation says the platform connects users to resources operated by content providers, so licence terms, rights enforcement and delivery guarantees all sit outside it. The map should know that the platform is really two generations of work under one name. The original services, spatial service discovery and spatial content discovery, are web interfaces at version 1.0 over a peer-to-peer log database, and the reference client that uses them still describes the platform as an early prototype. SpatialDDS, the 2026 protocol, is a much larger specification over the OMG data bus, at version 1.7 dated 2026-08-23, with a 1.8 draft in the same repository; its own versioning clause suspends backward compatibility for the whole 1.x series and 1.7 broke the wire in eight places. Its conformance appendix tests whether public datasets map onto the schema, and states plainly that it does not test interoperability between implementations. Two traps for anyone citing this subject. The association's public timeline claims a GeoPose 1.0 standard release in 2021 and a ratified spatial content discovery protocol in 2023, and neither claim is supported by a primary source: the OGC standard records approval in 2022 and publication in 2023, and the content discovery repository still calls its record format a base version expected to evolve. The same timeline claims an OSCP 3.0 released in 2024 with full edge computing support, and no specification, tag or repository for any such release exists in the association's public code. Take the repositories and the specification text over the website.",
+  "summary": "Open AR Cloud is a volunteer-run association that publishes the Open Spatial Computing Platform: a set of protocols and reference services for finding out where you are, finding what services and content are near you, and addressing a place so another system can reach it. Its strongest work is the part almost nothing else on this map covers. It gives every anchor, service and content bundle a stable address under a domain name authority with a normative resolution order and a required web fallback, which is the resolution step the OGC geospatial pose standard explicitly leaves out; it defines a request and response for recovering a pose from camera imagery and ships an open implementation of it; and it treats durable, shared, world-locked anchors as a first-class thing to publish and update. It is not a runtime and does not pretend to be. There is no rendering, no material, no animation, no avatar, no physics and no sound anywhere in it; the word avatar and the word physics occur nowhere in the current specification, and the only occurrence of audio is a Python package name in a build file. It does not hold content either: its own documentation says the platform connects users to resources operated by content providers, so licence terms, rights enforcement and delivery guarantees all sit outside it. The map should know that the platform is really two generations of work under one name. The original services, spatial service discovery and spatial content discovery, are web interfaces at version 1.0 over a peer-to-peer log database, and the reference client that uses them still describes the platform as an early prototype. SpatialDDS, the 2026 protocol, is a much larger specification over the OMG data bus, at version 1.7 dated 2026-08-23, with a 1.8 draft in the same repository; its own versioning clause suspends backward compatibility for the whole 1.x series and 1.7 broke the wire in eleven places. Its conformance appendix tests whether public datasets map onto the schema, and states plainly that it does not test interoperability between implementations. Two traps for anyone citing this subject. The association's public timeline claims a GeoPose 1.0 standard release in 2021 and a ratified spatial content discovery protocol in 2023, and neither claim is supported by a primary source: the OGC standard records approval in 2022 and publication in 2023, and the content discovery repository still calls its record format a base version expected to evolve. The same timeline claims an OSCP 3.0 released in 2024 with full edge computing support, and no specification, tag or repository for any such release exists in the association's public code. Take the repositories and the specification text over the website.",
   "coverage": [
     {
       "capability_id": "render.raster",
@@ -1883,7 +1883,7 @@
     {
       "capability_id": "deliver.version",
       "level": "partial",
-      "note": "The machinery is thorough and the promise is suspended. Profiles are versioned as major and minor, participants advertise supported ranges, consumers take the highest compatible minor, types are appendable, and topic names change only on a major bump so subscribers survive minor updates. Against that, the specification suspends the compatibility contract for the whole of the current series, and version 1.7 duly broke the wire in eight places, including widening a time field and changing instance keys.",
+      "note": "The machinery is thorough and the promise is suspended. Profiles are versioned as major and minor, participants advertise supported ranges, consumers take the highest compatible minor, types are appendable, and topic names change only on a major bump so subscribers survive minor updates. Against that, the specification suspends the compatibility contract for the whole of the current series, and version 1.7, dated 2026-08-23, duly broke the wire in eleven places, including widening a time field and changing instance keys; an undated 1.8 draft is already in the repository, so it may break again.",
       "confidence": "verified",
       "sources": [
         {
@@ -1903,9 +1903,16 @@
         {
           "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/CHANGELOG.md",
           "title": "SpatialDDS specification changelog",
-          "retrieved": "2026-09-04",
+          "retrieved": "2026-09-19",
           "kind": "primary",
           "quote": "Backward compatibility with 1.6 is **not** preserved."
+        },
+        {
+          "url": "https://github.com/OpenArCloud/SpatialDDS-spec/blob/main/SpatialDDS-1.8-full.md",
+          "title": "SpatialDDS 1.8 draft (full text)",
+          "retrieved": "2026-09-19",
+          "kind": "primary",
+          "quote": "**Version**: 1.8 (Draft)"
         }
       ]
     },
@@ -2755,6 +2762,36 @@
           "retrieved": "2026-09-11",
           "kind": "primary",
           "quote": "enum ColorSpace { @value(0) SRGB, @value(1) REC709, @value(2) REC2020, @value(10) LINEAR };"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.containment",
+      "level": "none",
+      "note": "Open AR Cloud defines a spatial computing platform for shared augmented reality, including spatial anchoring, content discovery, and persistent AR content. It places content in the real world but does not define how one experience hosts another's running logic inside it with containment boundaries.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/docs/index.md",
+          "title": "Welcome to spARcl - documentation index",
+          "retrieved": "2026-09-18",
+          "kind": "primary",
+          "quote": "spARcl provides spatial computing services for shared augmented reality experiences."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.world-coupling",
+      "level": "none",
+      "note": "Open AR Cloud defines shared spatial anchoring and persistent AR content discovery. Its persistence model addresses placing content in real-world locations, not coupling state between virtual worlds with nobody present. Cross-world unattended state mutation is not part of the platform.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/OpenArCloud/sparcl/blob/main/docs/index.md",
+          "title": "Welcome to spARcl - documentation index",
+          "retrieved": "2026-09-18",
+          "kind": "primary",
+          "quote": "spARcl provides spatial computing services for shared augmented reality experiences."
         }
       ]
     }

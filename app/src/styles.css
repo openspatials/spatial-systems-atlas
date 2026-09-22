@@ -15,8 +15,9 @@
   color-scheme: light dark;
 }
 
+/* Before the app starts, follow the system; once it runs, follow the theme it sets. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme]) {
     --ink: #e9ebee;
     --ink-soft: #a4abb4;
     --paper: #15171a;
@@ -31,6 +32,22 @@
     --scope: #9aa2ac;
     --unassessed: #3a4047;
   }
+}
+
+:root[data-theme='dark'] {
+  --ink: #e9ebee;
+  --ink-soft: #a4abb4;
+  --paper: #15171a;
+  --paper-soft: #1c1f23;
+  --line: #33383e;
+  --accent: #8fd3d6;
+  --native: #4fd1c5;
+  --extension: #56b6d8;
+  --partial: #e0b252;
+  --absent: #f08d84;
+  --conflict: #f26d61;
+  --scope: #9aa2ac;
+  --unassessed: #3a4047;
 }
 
 * {

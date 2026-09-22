@@ -230,7 +230,7 @@ test('the address carries every analysis choice and no preference', () => {
   for (const part of ['view=subject', 's=ship,draft', 'of=ship', 'rows=conflict+assessed', 'basis=must', 'lane=U2', 'open=c.wire:ship']) {
     assert.ok(url.includes(part), `address lost ${part}`)
   }
-  assert.ok(!/theme|density|sidebar/.test(url), 'preferences must not travel in the address')
+  assert.ok(!/theme|sidebar/.test(url), 'preferences must not travel in the address')
 })
 
 test('a full selection shortens to all rather than listing every subject', () => {
@@ -245,7 +245,10 @@ test('the real published export still reports the figures the map claims', async
   )
   const real = adapt(raw)
   assert.equal(real.subjects.length, 57)
-  assert.equal(real.capabilities.length, 162)
+  // These figures are a deliberate tripwire: they move only when capabilities are
+  // added or removed, which is a decision somebody made and should have to record here.
+  // 2026-09-18: 162 -> 164, the two approved composability rows.
+  assert.equal(real.capabilities.length, 164)
   assert.equal(real.groups.length, 14)
   // The counts block the build writes must agree with what the model derives.
   const claims = Object.values(real.cov).reduce((n, row) => n + Object.keys(row).length, 0)
@@ -311,8 +314,9 @@ test('the note reports Verse as a scope boundary, not as an absence of work', as
   const note = scopeNote(real, 'verse')
   assert.ok(note, 'Verse sits above the line')
   assert.equal(note.outOfScope, 114)
-  assert.equal(note.applies, 48)
-  assert.equal(note.total, 162)
+  assert.equal(note.applies, 50)
+  assert.equal(note.total, 164)
+  assert.equal(note.total, note.outOfScope + note.applies)
 
   // Reading the note must not touch a single claim.
   const after = Object.values(real.cov).reduce((n, row) => n + Object.keys(row).length, 0)

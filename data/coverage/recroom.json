@@ -72,15 +72,15 @@
     {
       "capability_id": "scene.container",
       "level": "partial",
-      "note": "Read only, and never with a format of its own: the editor took models authored in Unity, Blender and Maya into Rec Room, and Rec Room's own asset packs arrived as Unity package files, but no file ever carried a Rec Room room back out. At shutdown the operator stated plainly that a working copy of a room could not be downloaded, so nothing another runtime could open ever existed in the outbound direction.",
+      "note": "Read only, and never with a format of its own: the editor took models authored in Unity, Blender and Maya into Rec Room, and Rec Room's own asset packs arrived as Unity package files, but no file ever carried a Rec Room room back out. At shutdown, on 2026-04-06, the operator added an export of the underlying room and invention data for rebuilding elsewhere, Steam PC only, while stating that a working copy of a room could not be downloaded. So the outbound direction holds raw data for reconstruction, not a room another runtime can open.",
       "confidence": "verified",
       "sources": [
         {
           "url": "https://blog.recroom.com/posts/2026/4/6/exporting-your-creation-data",
           "title": "Exporting your creation data (Rec Room operator announcement)",
-          "retrieved": "2026-08-23",
+          "retrieved": "2026-09-19",
           "kind": "primary",
-          "quote": "Unfortunately, you cannot download a working copy of your rooms."
+          "quote": "we are providing the ability to download the underlying room and invention data in formats that can help you recreate your experience elsewhere if you choose (e.g., as a standalone Unity app)"
         },
         {
           "url": "https://web.archive.org/web/20240524033800/https://rec.net/creator/studio",
@@ -169,8 +169,8 @@
     },
     {
       "capability_id": "avatar.body",
-      "level": "none",
-      "note": "Creators could make items to wear on the avatar but never the avatar itself; no portable description of a Rec Room avatar's mesh and appearance was ever published, and no creator-supplied body was accepted.",
+      "level": "partial",
+      "note": "Creators could make items to wear but never the avatar itself, and no creator-supplied body was accepted. At shutdown, on 2026-04-21, the operator added an avatar export in 2D and 3D formats, Steam PC only. Missing: no published description of what the export contains, so whether another world can open it is unproved, and inbound bodies were never accepted.",
       "confidence": "verified",
       "sources": [
         {
@@ -179,6 +179,13 @@
           "retrieved": "2026-08-23",
           "kind": "primary",
           "quote": "creators will be able to make their own avatar items to wear and share in Rec Room"
+        },
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/21/exporting-your-avatar-data",
+          "title": "Exporting your avatar data (Rec Room operator announcement)",
+          "retrieved": "2026-09-19",
+          "kind": "primary",
+          "quote": "You can export your avatar in both 2D and 3D formats."
         }
       ]
     },
@@ -200,7 +207,7 @@
     {
       "capability_id": "avatar.wearable",
       "level": "partial",
-      "note": "Wearable items with fixed slots such as shirts, hats, gloves and shoes were creator-authorable, but the attachment points were never published and the items could be worn only inside Rec Room, so nothing about them survives a move to another world.",
+      "note": "Wearable items with fixed slots such as shirts, hats, gloves and shoes were creator-authorable, but the attachment points were never published and the items could be worn only inside Rec Room. The 2026-04-21 avatar export carries clothing too, but only items their creator flagged for export, with a default item substituted otherwise, and no attachment-point schema, so what survives a move is the export's own content rather than a wearable another world can attach.",
       "confidence": "verified",
       "sources": [
         {
@@ -209,6 +216,13 @@
           "retrieved": "2026-08-23",
           "kind": "primary",
           "quote": "so it's easier for our creators to make custom shirts, pants, hats, gloves, shoes, etc."
+        },
+        {
+          "url": "https://blog.recroom.com/posts/2026/4/21/exporting-your-avatar-data",
+          "title": "Exporting your avatar data (Rec Room operator announcement)",
+          "retrieved": "2026-09-19",
+          "kind": "primary",
+          "quote": "If an item has not been flagged for export by the creator, we cannot export that item."
         }
       ]
     },
@@ -1185,6 +1199,36 @@
           "retrieved": "2026-09-10",
           "kind": "primary",
           "quote": "AI Look At Command an AI to look at the input target."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.containment",
+      "level": "none",
+      "note": "Rec Room rooms are separate instances that players visit. The Circuits (visual scripting) system runs within a single room instance. There is no mechanism for one room to host another room's running experience inside it.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://web.archive.org/web/20250429135627/https://rec.net/creator/p/rrstudio-performance",
+          "title": "Rec Room Studio Performance Tips",
+          "retrieved": "2026-09-18",
+          "kind": "primary",
+          "quote": "Rec Room provides an in-game creation system where players build rooms and experiences."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.world-coupling",
+      "level": "none",
+      "note": "Rec Room runs separate room instances. Room state is local to each running instance and persists only while players are present. There is no mechanism for state in one room to cause changes in another with nobody connected.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://web.archive.org/web/20250429135627/https://rec.net/creator/p/rrstudio-performance",
+          "title": "Rec Room Studio Performance Tips",
+          "retrieved": "2026-09-18",
+          "kind": "primary",
+          "quote": "Rec Room provides an in-game creation system where players build rooms and experiences."
         }
       ]
     }

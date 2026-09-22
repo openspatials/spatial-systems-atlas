@@ -1847,7 +1847,7 @@
     {
       "capability_id": "logic.agent",
       "level": "native",
-      "note": "This is the strongest agent story on the map and it is shipping. Rule-based NPCs have published state machines, perception and hire-and-patrol behaviours, and creators can write their own behaviour in Verse. Above them sit personas: a Scene Graph persona component puts a large language model into a character that players talk to by voice, with Epic naming the models it uses and stating that player audio is not stored or used for training.",
+      "note": "This is the strongest agent story on the map and it is shipping. Rule-based NPCs have published state machines, perception and hire-and-patrol behaviours, and creators can write their own behaviour in Verse. Above them sit personas: a Scene Graph persona component puts a large language model into a character that players talk to by voice, with Epic naming the models it uses and stating that player audio is not stored or used for training. As of 2026-09-19 the maturity of that persona route is undetermined: Epic's own page for LLM Conversations still stands and tags itself experimental, while the Scene Graph experimental-features index no longer lists it, and no public source says whether it was promoted or withdrawn.",
       "confidence": "verified",
       "sources": [
         {
@@ -1870,6 +1870,13 @@
           "retrieved": "2026-09-04",
           "kind": "primary",
           "quote": "A common way to visualize states is through a Finite-State Machine (FSM)."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/scene-graph-experimental-features-in-fortnite",
+          "title": "Epic Developer Community: Scene Graph Experimental Features",
+          "retrieved": "2026-09-19",
+          "kind": "primary",
+          "quote": "The features listed in this page are Experimental. Topics: Skeletal Animation in Scene Graph; Ability System"
         }
       ]
     },
@@ -2680,6 +2687,57 @@
           "retrieved": "2026-09-11",
           "kind": "primary",
           "quote": "alternate origin than the default parent entity"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.containment",
+      "level": "native",
+      "note": "Fortnite's Scene Graph (beta) structures island content as hierarchical entities, where entities nest with clear parent relationships. Prefabs compose within prefabs. With Verse scripting, contained entities carry their own logic and lifecycle, and the Scene Graph event propagation — SendUp toward root, SendDown through children, with consumption halting propagation — defines how messages cross the containment boundary.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://www.fortnite.com/news/publish-fortnite-islands-created-with-scene-graph-now-in-beta",
+          "title": "Publish Fortnite Islands Created with Scene Graph, Now in Beta",
+          "retrieved": "2026-09-18",
+          "kind": "primary",
+          "quote": "Scene Graph introduces a new way to structure your project's content in UEFN, enabling you to rapidly construct rich, detailed environments."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/using-prefabs-and-galleries-in-fortnite-creative",
+          "title": "Using Prefabs and Galleries in Fortnite Creative",
+          "retrieved": "2026-09-18",
+          "kind": "primary",
+          "quote": "A prefab is a prefabricated structure that could be a piece of furniture, like a chair or a table, a fully-furnished building, or anything in between."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/using-prefabs-and-galleries-in-fortnite-creative",
+          "title": "Using Prefabs and Galleries in Fortnite Creative",
+          "retrieved": "2026-09-18",
+          "kind": "primary",
+          "quote": "Repeating elements can be converted into Prefabs, simplifying management and enabling easy variation."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.world-coupling",
+      "level": "none",
+      "note": "Fortnite Creative islands use Verse persistence, which is per-player: state loads when a player joins and cannot be mutated while nobody is connected. An island's state changes only when players are present. There is no documented mechanism for state in one island to cause changes in another island with no participant present.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/scenegraph/entity",
+          "title": "Verse API, scenegraph entity",
+          "retrieved": "2026-09-18",
+          "kind": "primary",
+          "quote": "The parent entity controls the lifetime of its child entities and components."
+        },
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/fortnite/using-prefabs-and-galleries-in-fortnite-creative",
+          "title": "Using Prefabs and Galleries in Fortnite Creative",
+          "retrieved": "2026-09-18",
+          "kind": "primary",
+          "quote": "Repeating elements can be converted into Prefabs, simplifying management and enabling easy variation."
         }
       ]
     }

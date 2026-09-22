@@ -18,7 +18,7 @@ Two ways, and they land in the same place.
 1. **From the map.** Every map page carries a round comment button in the bottom right corner. It
    opens a small form: what kind of submission, a title, the body, and an optional email address.
    Pressing Submit files the issue here and shows you its number and its address.
-2. **Here on GitHub.** Open [a new issue](https://github.com/openspatials/spatial-tech-map/issues/new/choose)
+2. **Here on GitHub.** Open [a new issue](https://github.com/openspatials/spatial-systems-atlas/issues/new/choose)
    and pick one of the three forms.
 
 ## Submissions are public
@@ -65,7 +65,7 @@ by issue number. The browser never sees the GitHub token.
 
 **The token.** `GITHUB_TOKEN` is a Cloudflare Pages secret on the project `openspatials-com`. It
 must be a fine-grained personal access token carrying one permission — Issues, read and write — on
-`openspatials/spatial-tech-map` and no other repository. That is the whole of what the function
+`openspatials/spatial-systems-atlas` and no other repository. That is the whole of what the function
 does with it: open an issue, and set labels that already exist here. Setting or rotating the token
 is one command, and nothing else changes, because the function reads the same secret name:
 

@@ -59,7 +59,7 @@ Reply with the numbers to approve; each approved Later item becomes a work order
 - All of these are written as orders and held; the owner dispatches them at a lower effort level.
 
 ## Owner answers, 2026-09-04T23:06:02Z
-- Submissions: the organisation exists, https://github.com/openspatials/spatial-tech-map ; the comment button floats bottom right, a modal files the issue itself (title and body required, email optional and never published), the modal then points to the submission; the email link on the C4 page is replaced in that same update, not before (WO-061 rewritten).
+- Submissions: the organisation exists, https://github.com/openspatials/spatial-systems-atlas ; the comment button floats bottom right, a modal files the issue itself (title and body required, email optional and never published), the modal then points to the submission; the email link on the C4 page is replaced in that same update, not before (WO-061 rewritten).
 - Pilot: avatar portability confirmed (WO-066).
 - Breadth batch 1 replaced by the owner's list: AR support (Apple, Google, Niantic), Open AR Cloud, Verse and Fortnite with its editor, world models (NVIDIA Cosmos, World Labs Marble, Tencent Hunyuan World 2.0), volumetric capture (MPEG V3C/MIV, 4D Gaussian splatting and splat formats); new kinds and chip groups; lanes may propose new capabilities (WO-067). The earlier list becomes batch 2.
 

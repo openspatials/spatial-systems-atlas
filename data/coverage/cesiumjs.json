@@ -1758,8 +1758,8 @@
     },
     {
       "capability_id": "capture.4d",
-      "level": "out-of-scope",
-      "note": "CesiumJS is a library for 3D globes and 2D maps, and the reference implementation of the tiling standard it created, and it carries no captured scene that changes over time, and states no rate at which one should be played back.",
+      "level": "partial",
+      "note": "CesiumJS is a library for 3D globes and 2D maps, and it carries one timed capture route: TimeDynamicPointCloud plays back point-cloud frames tied to time intervals and a clock, prefetches frames ahead of the clock and skips the ones that arrive late. Missing: that is a bounded timed point-cloud route, not general volumetric-video exchange, with no calibration carriage and no lossless playback guarantee.",
       "confidence": "verified",
       "sources": [
         {
@@ -1768,6 +1768,13 @@
           "retrieved": "2026-08-22",
           "kind": "primary",
           "quote": "CesiumJS is a JavaScript library for creating 3D globes and 2D maps in a web browser"
+        },
+        {
+          "url": "https://cesium.com/learn/cesiumjs/ref-doc/TimeDynamicPointCloud.html",
+          "title": "CesiumJS reference documentation, TimeDynamicPointCloud",
+          "retrieved": "2026-09-19",
+          "kind": "primary",
+          "quote": "Provides playback of time-dynamic point cloud data."
         }
       ]
     },
@@ -1864,7 +1871,7 @@
     {
       "capability_id": "capture.panorama",
       "level": "partial",
-      "note": "A prepared environment map lights tilesets and models, so a 360-degree view is consumed as a light source. There is no equirectangular scene backdrop and no projection field on the image; the globe is the background here.",
+      "note": "A prepared environment map lights tilesets and models, and an EquirectangularPanorama displays imagery in equirectangular format as a scene panorama, with a CubeMapPanorama beside it. Missing: the projection is fixed by the class rather than stated on the image, and there is no capture or calibration workflow.",
       "confidence": "verified",
       "direction": "read",
       "sources": [
@@ -1874,6 +1881,13 @@
           "retrieved": "2026-08-22",
           "kind": "primary",
           "quote": "Properties for managing image-based lighting on tilesets and models."
+        },
+        {
+          "url": "https://cesium.com/learn/cesiumjs/ref-doc/EquirectangularPanorama.html",
+          "title": "CesiumJS reference documentation, EquirectangularPanorama",
+          "retrieved": "2026-09-19",
+          "kind": "primary",
+          "quote": "A Panorama that displays imagery in equirectangular format in a scene."
         }
       ]
     },
@@ -2315,6 +2329,36 @@
         }
       ],
       "direction": "read"
+    },
+    {
+      "capability_id": "scene.containment",
+      "level": "none",
+      "note": "CesiumJS is a geospatial viewer for 3D Tiles, terrain and imagery. It renders tiled geospatial datasets on a globe. It does not host interactive experiences with independent logic, and has no concept of one experience running inside another.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/CesiumGS/cesium/blob/main/packages/engine/Source/Scene/Scene.js",
+          "title": "CesiumJS source: Scene.js",
+          "retrieved": "2026-09-18",
+          "kind": "primary",
+          "quote": "CesiumJS provides a JavaScript library for creating 3D globes and maps."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.world-coupling",
+      "level": "out-of-scope",
+      "note": "CesiumJS is a client-side geospatial viewer with no inter-world networking. It has no world-state mechanism and no concept of coupling between worlds.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/CesiumGS/cesium/blob/main/packages/engine/Source/Scene/Scene.js",
+          "title": "CesiumJS source: Scene.js",
+          "retrieved": "2026-09-18",
+          "kind": "primary",
+          "quote": "CesiumJS provides a JavaScript library for creating 3D globes and maps."
+        }
+      ]
     }
   ]
 }

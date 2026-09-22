@@ -20,9 +20,9 @@ page a visitor sees today. Recreated for comparison as
 `app/design-candidate/MSF Map - today.dc.html`, which is a rendering of this line
 rather than a version of its own.
 
-**1.1 — the matrix page.** The tidy-up of 1.0. Live at
-`https://openspatials.com/msf/map/matrix/`. Also one self-contained file from the
-same build.
+**1.1 — the matrix page.** The tidy-up of 1.0. Was live at
+`https://openspatials.com/msf/map/matrix/`, now a 301 redirect to `/msf/map/`
+(WO-100, 2026-09-18). Also one self-contained file from the same build.
 
 **1.2 — the first redesign.** `app/design-candidate/MSF Map - redesign.dc.html`.
 Frozen at the owner's instruction and kept as the record of what changed between
@@ -44,10 +44,14 @@ without one. Only 1.4 has builds.
 interface, deployed 2026-09-15 as deployment `7ebe4b7f`. The page prints its own
 version at the bottom, so this file can go stale and the page cannot.
 
-`/msf/map/matrix/` still serves **1.1** and prints no version, because versioning
-did not exist when it was built. It is the one page left that cannot identify
-itself. `/msf/map/v1/` is the frozen 2026-09-04 snapshot and is meant to stay
-exactly as it is.
+`/msf/map/matrix/` redirects to `/msf/map/` with a 301, since 2026-09-18
+(deployment `8279c9d1`, WO-100). The matrix page was version 1.1, the tidy-up of
+the original atlas. The current interface's Compare display does everything it
+did, so it was retired the same way the c4 and atlas addresses were: a permanent
+redirect, not a removal, because working-group material links to it.
+
+`/msf/map/v1/` is the frozen 2026-09-04 snapshot and is meant to stay exactly as
+it is.
 
 Every deploy keeps a copy of what the site served beforehand, so any version
 can be put back.

@@ -11,9 +11,6 @@ import type { Capability, Model } from '../design-model.ts'
 import { cellStyle, describe, read } from './marks.ts'
 import type { Action, AppState } from './state.ts'
 
-/** At most this many columns; beyond it the grid stops being readable. */
-const MAX_COLUMNS = 14
-
 type Row =
   | { kind: 'group'; id: string; name: string }
   | { kind: 'capability'; id: string; capability: Capability }
@@ -24,8 +21,7 @@ export function CompareView({ model, state, dispatch, rows }: {
   dispatch: React.Dispatch<Action>
   rows: Capability[]
 }) {
-  const columns = state.on.slice(0, MAX_COLUMNS)
-  const hidden = state.on.length - columns.length
+  const columns = state.on
   const [cursor, setCursor] = useState<{ row: number; col: number }>({ row: 0, col: 0 })
   const gridRef = useRef<HTMLDivElement>(null)
 
@@ -76,7 +72,7 @@ export function CompareView({ model, state, dispatch, rows }: {
         <span style={s.eyebrow}>Compare</span>
         <span style={s.hint}>
           {rows.length} rows × {columns.length} {columns.length === 1 ? 'subject' : 'subjects'} · arrow keys move, Enter opens the row
-          {hidden > 0 && ` · ${hidden} more selected than this grid shows`}
+          {columns.length > 10 && ' · scroll right for more'}
         </span>
       </div>
 
@@ -89,7 +85,7 @@ export function CompareView({ model, state, dispatch, rows }: {
             const subject = model.bySubject.get(id)
             return (
               <div key={id} role="columnheader" style={s.colHead} title={`${subject?.name} · reach ${subject?.reach} rows`}>
-                <span style={s.colName}>{subject?.name ?? id}</span>
+                <span style={s.colName} title={subject?.name}>{subject?.name ?? id}</span>
                 <span style={s.colReach}>{subject?.reach}</span>
               </div>
             )

@@ -1,15 +1,15 @@
 // Comment submission against the real endpoint.
 //
 // Posts to the same endpoint as tool/board/submit.js: /msf/map/api/submit.
-// The submission becomes a public issue on github.com/openspatials/spatial-tech-map.
+// The submission becomes a public issue on github.com/openspatials/spatial-systems-atlas.
 // The email address is optional, never written into the issue, and kept privately
 // so a maintainer can reply.
 
 import { useEffect, useRef, useState } from 'react'
 
 const ENDPOINT = '/msf/map/api/submit'
-const ISSUES = 'https://github.com/openspatials/spatial-tech-map/issues'
-const NEW_ISSUE = 'https://github.com/openspatials/spatial-tech-map/issues/new/choose'
+const ISSUES = 'https://github.com/openspatials/spatial-systems-atlas/issues'
+const NEW_ISSUE = 'https://github.com/openspatials/spatial-systems-atlas/issues/new/choose'
 const SITEKEY = '0x4AAAAAAEqgjvsSDXAjf2mv'
 const TURNSTILE_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'
 

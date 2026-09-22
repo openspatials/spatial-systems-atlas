@@ -11,7 +11,8 @@ import { LANE_LABEL, coverage, countedIds, matchCount, matchingRows, measuredCap
 import { LEGEND, THEMES, cellStyle, read } from './marks.ts'
 import { exportOptions } from './exports.ts'
 import {
-  PRESETS, decode, encode, initialState, presetSubjects, queryOf, reducer,
+  PRESETS, decode, encode, initialState, preferredTheme, presetSubjects, queryOf, reducer,
+  rememberTheme, storedTheme,
 } from './state.ts'
 import type { AppState, Preset, ViewId } from './state.ts'
 import { SubjectView } from './SubjectView.tsx'
@@ -51,11 +52,10 @@ const BASES: Array<{ id: Basis; label: string }> = [
 export function Shell({ model }: { model: Model }) {
   const total = model.subjects.length
   const [state, dispatch] = useReducer(reducer, model, (m) => {
-    const base = initialState(m)
+    const base = { ...initialState(m), theme: preferredTheme() }
     return decode(window.location.hash, m, base)
   })
   const [morePresets, setMorePresets] = useState(false)
-  const [copied, setCopied] = useState(false)
   const [countingOpen, setCountingOpen] = useState(false)
   const [narrow, setNarrow] = useState(() => window.innerWidth < 1100)
   const [exportOpen, setExportOpen] = useState(false)
@@ -72,7 +72,6 @@ export function Shell({ model }: { model: Model }) {
       selfWritten.current = next
       window.history.replaceState(null, '', next)
     }
-    setCopied(false)
   }, [state, total])
 
   useEffect(() => {
@@ -98,7 +97,22 @@ export function Shell({ model }: { model: Model }) {
     for (const [name, value] of Object.entries(THEMES[state.theme])) {
       root.style.setProperty(name, value)
     }
+    // Native controls, scrollbars and the base stylesheet follow the chosen
+    // theme, not the system one.
+    root.dataset.theme = state.theme
+    root.style.colorScheme = state.theme
   }, [state.theme])
+
+  // Until the reader chooses, the theme keeps following the system setting.
+  useEffect(() => {
+    let media: MediaQueryList
+    try { media = window.matchMedia('(prefers-color-scheme: dark)') } catch { return }
+    const onChange = () => {
+      if (!storedTheme()) dispatch({ type: 'theme', theme: media.matches ? 'dark' : 'light' })
+    }
+    media.addEventListener('change', onChange)
+    return () => media.removeEventListener('change', onChange)
+  }, [])
 
   // Escape unwinds one layer at a time, innermost first.
   useEffect(() => {
@@ -126,10 +140,10 @@ export function Shell({ model }: { model: Model }) {
     })
   }, [model])
 
-  const copyLink = () => {
-    const url = `${window.location.origin}${window.location.pathname}#${encode(state, total)}`
-    navigator.clipboard?.writeText(url).catch(() => {})
-    setCopied(true)
+  const nextTheme = state.theme === 'dark' ? 'light' : 'dark'
+  const toggleTheme = () => {
+    rememberTheme(nextTheme)
+    dispatch({ type: 'theme', theme: nextTheme })
   }
 
   const scope = [
@@ -159,32 +173,15 @@ export function Shell({ model }: { model: Model }) {
     <div style={S.root}>
       <header style={S.header}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-          <span style={S.wordmark}>MSF Map</span>
-          <span style={S.eyebrow}>Infrastructure WG · spatial computing</span>
+          <span style={S.wordmark}>Spatial Systems Atlas</span>
+          <span style={S.eyebrow}>Convergence / Interoperability Matrix</span>
         </div>
-
-        <div style={S.presetChip}>
-          <span style={S.tinyLabel}>Preset</span>
-          <strong style={{ fontFamily: 'var(--fl)', fontSize: 12 }}>{state.presetName}</strong>
-          {state.presetEdited && <span style={S.editedFlag}>edited</span>}
-        </div>
-
-        <code style={S.address} title="The address carries the question. Copy it to share this exact view.">
-          {`#${encode(state, total)}`}
-        </code>
-        <button type="button" style={S.link} onClick={copyLink}>
-          {copied ? 'Copied' : 'Copy link'}
-        </button>
 
         <div style={{ marginLeft: 'auto', display: 'flex', gap: 8, alignItems: 'center', position: 'relative' }}>
-          <div style={S.segmented}>
-            {(['paper', 'neutral'] as const).map((t) => (
-              <button key={t} type="button" style={S.segment(state.theme === t)}
-                onClick={() => dispatch({ type: 'theme', theme: t })}>
-                {t === 'paper' ? 'Paper' : 'Neutral'}
-              </button>
-            ))}
-          </div>
+          <button type="button" style={S.themeToggle} onClick={toggleTheme}
+            aria-label={`Switch to ${nextTheme} theme`} title={`Switch to ${nextTheme} theme`}>
+            <ThemeIcon theme={state.theme} />
+          </button>
 
           <button type="button" style={S.small(exportOpen)} aria-expanded={exportOpen}
             onClick={() => { setExportOpen(!exportOpen); setExportNote(null) }}>
@@ -318,6 +315,23 @@ export function Shell({ model }: { model: Model }) {
           onClose={() => dispatch({ type: 'detail', detail: null })} />
       )}
     </div>
+  )
+}
+
+/** Shows the theme in use: a sun in light, a moon in dark. */
+function ThemeIcon({ theme }: { theme: 'light' | 'dark' }) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+      {theme === 'dark' ? (
+        <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+      ) : (
+        <>
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+        </>
+      )}
+    </svg>
   )
 }
 
@@ -499,17 +513,14 @@ const S = {
   wordmark: { fontFamily: 'var(--fl)', fontWeight: 700, fontSize: 13, letterSpacing: '.14em', textTransform: 'uppercase' } as const,
   eyebrow: { fontFamily: 'var(--fm)', fontSize: 9, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--faint)' } as const,
   tinyLabel: { fontFamily: 'var(--fl)', fontWeight: 700, fontSize: 9.5, letterSpacing: '.15em', textTransform: 'uppercase', color: 'var(--faint)' } as const,
-  presetChip: { display: 'flex', alignItems: 'center', gap: 8, padding: '4px 10px', border: '1px solid var(--rule)', borderRadius: 'var(--r)', background: 'var(--bg)' } as const,
-  editedFlag: { fontFamily: 'var(--fm)', fontSize: 9, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--warn)', border: '1px solid var(--warn)', borderRadius: 'var(--r)', padding: '0 4px' } as const,
-  address: { fontFamily: 'var(--fm)', fontSize: 10.5, color: 'var(--soft)', background: 'var(--bg)', border: '1px solid var(--rule)', borderRadius: 'var(--r)', padding: '4px 8px', maxWidth: 460, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } as const,
-  link: { fontFamily: 'var(--fl)', fontSize: 11.5, background: 'transparent', border: 0, color: 'var(--ac)', cursor: 'pointer', textDecoration: 'underline' } as const,
+  themeToggle: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 28, height: 28, padding: 0, background: 'transparent', color: 'var(--ink)', border: '1px solid var(--rule)', borderRadius: 'var(--r)', cursor: 'pointer' } as const,
   segmented: { display: 'flex', border: '1px solid var(--ruleS)', borderRadius: 'var(--r)', overflow: 'hidden' } as const,
   segment: (on: boolean) => ({ fontFamily: 'var(--fl)', fontWeight: 600, fontSize: 12, background: on ? 'var(--ink)' : 'transparent', color: on ? 'var(--bg)' : 'var(--ink)', border: 0, padding: '6px 13px', cursor: 'pointer' } as const),
   main: { flex: 1, minWidth: 0, maxWidth: '100%', display: 'flex', flexDirection: 'column', overflowX: 'hidden' } as const,
   questionBar: { display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap', padding: '14px 16px 8px' } as const,
   question: { margin: 0, fontFamily: 'var(--fl)', fontWeight: 700, fontSize: 21, letterSpacing: '-.01em', flex: 1, minWidth: 260 } as const,
   footer: { padding: '18px 16px 22px', borderTop: '1px solid var(--rule)', fontFamily: 'var(--fm)', fontSize: 10.5, letterSpacing: '.04em', color: 'var(--faint)' } as const,
-  scopeLine: { display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center', padding: '0 16px 10px' } as const,
+  scopeLine: { display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center', padding: '0 16px 10px', color: 'var(--soft)' } as const,
   scopeChip: { fontFamily: 'var(--fl)', fontSize: 11.5, border: '1px solid var(--rule)', borderRadius: 'var(--r)', padding: '3px 9px', background: 'var(--panel)' } as const,
   disclosure: { fontFamily: 'var(--fl)', fontSize: 11.5, background: 'transparent', border: 0, color: 'var(--ac)', cursor: 'pointer', textDecoration: 'underline', padding: 0 } as const,
   counting: { margin: '0 16px 10px', maxWidth: '78ch', fontSize: 13, color: 'var(--soft)', fontStyle: 'italic' } as const,

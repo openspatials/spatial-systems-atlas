@@ -1,7 +1,4 @@
-// The visual vocabulary: the two identities, and the mark for every claim.
-//
-// Neither identity has been chosen, so both are built and switchable, exactly
-// as the accepted design candidate has them.
+// The visual vocabulary: the light and dark palettes, and the mark for every claim.
 //
 // The seven support meanings each get their own mark, and the permanent legend
 // is drawn from this same table so the legend can never drift from the data.
@@ -11,7 +8,7 @@ import { confOf, levelOf } from '../design-model.ts'
 import type { Theme } from './state.ts'
 
 export const THEMES: Record<Theme, Record<string, string>> = {
-  paper: {
+  light: {
     '--bg': '#ECEBE4', '--panel': '#F7F6F1', '--sunk': '#E2E1D8',
     '--ink': '#1B1D1A', '--soft': '#55584E', '--faint': '#7E8177',
     '--rule': '#C7C5B8', '--ruleS': '#A9A79A',
@@ -23,17 +20,20 @@ export const THEMES: Record<Theme, Record<string, string>> = {
     '--fm': "'IBM Plex Mono',monospace",
     '--r': '2px',
   },
-  neutral: {
-    '--bg': '#F4F5F7', '--panel': '#FFFFFF', '--sunk': '#EDEFF2',
-    '--ink': '#15181C', '--soft': '#525A63', '--faint': '#858D97',
-    '--rule': '#E3E6EA', '--ruleS': '#C7CCD3',
-    '--ac': '#186A80', '--acF': '#DAEAF0',
-    '--warn': '#6B7280', '--warnF': '#E7E9EC',
-    '--bad': '#B3261E', '--badF': '#FBE9E7', '--lane': '#3B6B45',
-    '--fl': "'Helvetica Neue',Helvetica,Arial,sans-serif",
-    '--fb': "'Helvetica Neue',Helvetica,Arial,sans-serif",
-    '--fm': "ui-monospace,'SF Mono',Menlo,monospace",
-    '--r': '6px',
+  // The same identity at night: same type and radius, only the colours change.
+  // Every text colour clears WCAG AA on --bg, --panel and --sunk, and each
+  // mark keeps its own hue so no two meanings collapse into one.
+  dark: {
+    '--bg': '#161814', '--panel': '#1F211D', '--sunk': '#2A2C27',
+    '--ink': '#ECEBE4', '--soft': '#BDBFB4', '--faint': '#9A9D92',
+    '--rule': '#3D4038', '--ruleS': '#62655B',
+    '--ac': '#7FC3CF', '--acF': '#1C3F46',
+    '--warn': '#D9AE6A', '--warnF': '#453722',
+    '--bad': '#F2897C', '--badF': '#4A2420', '--lane': '#93C98A',
+    '--fl': "'IBM Plex Sans Condensed',sans-serif",
+    '--fb': "'IBM Plex Serif',Georgia,serif",
+    '--fm': "'IBM Plex Mono',monospace",
+    '--r': '2px',
   },
 }
 

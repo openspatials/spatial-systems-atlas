@@ -1,4 +1,6 @@
-# Spatial Tech Map
+# Spatial Systems Atlas
+
+**Convergence / Interoperability Matrix**
 
 An evidence-backed map of what spatial-computing systems actually do.
 
@@ -123,8 +125,8 @@ No permission needed, no conditions, no credit required. See `LICENSE`.
 What I would like, and it is a request rather than a condition: if this ends up
 in something you make, mention where it came from.
 
-    Spatial Tech Map by Grig Bilham
-    https://github.com/openspatials/spatial-tech-map
+    Spatial Systems Atlas by Grig Bilham
+    https://github.com/openspatials/spatial-systems-atlas
     https://openspatials.com/msf/map/
 
 If you quote a figure, give the date you took it as well. The map is rebuilt as

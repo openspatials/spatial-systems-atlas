@@ -859,8 +859,8 @@
     },
     {
       "capability_id": "avatar.body",
-      "level": "out-of-scope",
-      "note": "The fabric describes a place, not a person. The public node classes are root, celestial, terrestrial, physical, panel and light, and there is no skinned mesh, skeleton or appearance description anywhere; the terrestrial property block carries a single avatar flag byte, which is a marker and not a body format. The local row records a fact no public source states: the fabric renderer contract this project built against cannot express a skinned avatar at all, which is why embodiment was kept in a separate lane.",
+      "level": "partial",
+      "note": "The fabric describes a place, not a person: the public node classes are root, celestial, terrestrial, physical, panel and light, and the terrestrial property block carries a single avatar flag byte, which is a marker and not a body format. The renderer beside it is another matter. The Sneeze renderer source, at its September 2026 commit, loads skinned glTF - joints, weights and inverse-bind matrices - fills a humanoid bone map from the VRM extensions and retargets VRM animation onto it, so a portable avatar can be drawn. Missing: the fabric itself still carries no avatar description, and that source is newer than both the July 2026 binary and the fork the Forum pinned, so which shipped artifact can do this is unproved. The local row below predates the renderer source and recorded the earlier contract.",
       "confidence": "verified",
       "sources": [
         {
@@ -876,6 +876,13 @@
           "retrieved": "2026-08-22",
           "kind": "local-evidence",
           "quote": "the fabric RENDERER contract cannot express a skinned avatar"
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/Sneeze/blob/0f2e43ddccf49ae328a13eb38e1536bb457e28f7/src/deps/gltf/Gltf.md",
+          "title": "Sneeze renderer, glTF loader notes (pinned commit)",
+          "retrieved": "2026-09-19",
+          "kind": "primary",
+          "quote": "records skins (`JOINTS_0` / `WEIGHTS_0` plus inverse-bind matrices, including when those attributes are Draco-compressed)"
         }
       ]
     },
@@ -1506,6 +1513,36 @@
         }
       ],
       "direction": "read"
+    },
+    {
+      "capability_id": "scene.containment",
+      "level": "partial",
+      "note": "RP1 Spatial Fabric treats a place as a document with a URL and has native scene composition, letting spatial documents reference and layer content from multiple sources. This nests structural content. But the specification does not define a containment boundary protocol for how a hosted third-party running experience's logic, lifecycle, and messages are bounded within the containing world.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/Sneeze/blob/main/src/context/msf/MsfFile.md",
+          "title": "Sneeze MSF module note",
+          "retrieved": "2026-09-18",
+          "kind": "primary",
+          "quote": "RP1 Spatial Fabric describes a place in three dimensions as a document with a URL."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.world-coupling",
+      "level": "none",
+      "note": "RP1 defines spatial documents as web resources with scene composition. Its fabric model addresses how spatial content is composed and navigated, but not how state in one spatial document could mutate another's state with nobody accessing either. Unattended cross-world coupling is not part of the specification.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/Sneeze/blob/main/src/context/msf/MsfFile.md",
+          "title": "Sneeze MSF module note",
+          "retrieved": "2026-09-18",
+          "kind": "primary",
+          "quote": "RP1 Spatial Fabric describes a place in three dimensions as a document with a URL."
+        }
+      ]
     }
   ]
 }

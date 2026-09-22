@@ -223,7 +223,7 @@
     {
       "capability_id": "avatar.identity",
       "level": "native",
-      "note": "The binding is real but it is generic, and a working group should know which half is standardised. The specification defines a typed pointer array: every pointer must carry a type and a target, the pointers sit inside the bytes the signature covers, and an evaluator meeting a pointer type it does not recognise must record it and must not act on it. It names no avatar pointer. The avatar meaning comes from a published fixture set and from a third-party implementation, both of which use the pointer name portableIdentity.avatar. So a destination can check that this person really claims this avatar, and it learns nothing about what the avatar file contains.",
+      "note": "The binding is real but it is generic, and a working group should know which half is standardised. The specification defines a typed pointer array: every pointer must carry a type and a target, the pointers sit inside the bytes the signature covers, and an evaluator meeting a pointer type it does not recognise must record it and must not act on it. It names no avatar pointer. The avatar meaning comes from usage: the published cookbook's complete manifest, Example 22, carries an avatar as a generic mediaRef pointer whose target is an avatar file, and a third-party implementation defaults to the pointer name portableIdentity.avatar for the published XR fixtures. So a destination can check that this person really claims this avatar, and it learns nothing about what the avatar file contains.",
       "confidence": "verified",
       "sources": [
         {
@@ -246,6 +246,13 @@
           "retrieved": "2026-09-04",
           "kind": "primary",
           "quote": "//! The pointer name the published Universal Manifest XR fixtures use\n\t\t//! for an avatar asset. Used when a deployment names none.\n\t\tconstexpr const char *kDefaultAvatarPointer = \"portableIdentity.avatar\";"
+        },
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/cookbook/",
+          "title": "Universal Manifest v0.4 Cookbook, Example 22, complete signed manifest",
+          "retrieved": "2026-09-19",
+          "kind": "primary",
+          "quote": "\"@type\": \"mediaRef\", \"target\": \"https://cdn.example/alice/avatar.glb\""
         }
       ]
     },
@@ -464,7 +471,7 @@
     {
       "capability_id": "deliver.version",
       "level": "partial",
-      "note": "Versioning is explicit and the honesty about its cost is unusual. Each version has its own document set, its own context URL and its own conformance fixtures, v0.3 is named as the stable published reference and v0.4 as the production-candidate milestone, and the specification states outright that while the line is still 0.x a minor bump may include breaking changes in a new version folder. So a reader can always tell which vocabulary it is holding. What there is not is a negotiation mechanism or a deprecation policy: an evaluator either accepts a context value or does not.",
+      "note": "Versioning is explicit and the honesty about its cost is unusual. Each version has its own document set, its own context URL and its own conformance fixtures, v0.3 is named as the stable published reference and v0.4 as the production-candidate milestone, and the specification states outright that while the line is still 0.x a minor bump may include breaking changes in a new version folder. So a reader can always tell which vocabulary it is holding. What there is not is a negotiation mechanism: an evaluator either accepts a context value or does not. A deprecation policy does exist, in the optional extension: profile identifiers move through active, deprecated and sunset states in a registry published apart from the specification, an evaluator should warn on a deprecated profile but must not reject a manifest for it until the profile is sunset at a major-version boundary, and an identifier is never reused after deprecation.",
       "confidence": "verified",
       "sources": [
         {
@@ -487,6 +494,13 @@
           "retrieved": "2026-09-04",
           "kind": "primary",
           "quote": "\t\tconstexpr const char *kManifestContextV03 = \"https://universalmanifest.net/ns/v0.3\";\n\t\tconstexpr const char *kManifestContextV04 = \"https://universalmanifest.net/ns/v0.4\";"
+        },
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/ext-opt/",
+          "title": "Universal Manifest v0.4 Optional Extension (EXT-OPT), profile registry",
+          "retrieved": "2026-09-19",
+          "kind": "primary",
+          "quote": "each entry contains the identifier, name, version, status ( \"active\" , \"deprecated\" , \"sunset\" ), specification URI, and registration date"
         }
       ]
     },
@@ -1633,6 +1647,36 @@
           "retrieved": "2026-09-09",
           "kind": "primary",
           "quote": "each a statement about the manifest subject issued by the manifest signer or an external party."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.containment",
+      "level": "out-of-scope",
+      "note": "Universal Manifest is a discovery and description format for virtual worlds and spatial content. It describes what a world contains and how to reach it. It has no runtime, no scene graph, and no concept of one experience hosting another.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-18",
+          "kind": "primary",
+          "quote": "The Universal Manifest specification defines a machine-readable document that describes a spatial experience or virtual world."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.world-coupling",
+      "level": "out-of-scope",
+      "note": "Universal Manifest is a discovery format. It carries no networking for live state and no mechanism for one world to affect another.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://universalmanifest.net/spec/v0.4/core/",
+          "title": "Universal Manifest v0.4 Base Specification",
+          "retrieved": "2026-09-18",
+          "kind": "primary",
+          "quote": "The Universal Manifest specification defines a machine-readable document that describes a spatial experience or virtual world."
         }
       ]
     }

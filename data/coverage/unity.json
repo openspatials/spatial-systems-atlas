@@ -2238,6 +2238,36 @@
         }
       ],
       "direction": "both"
+    },
+    {
+      "capability_id": "scene.containment",
+      "level": "partial",
+      "note": "Unity's additive scene loading (LoadSceneMode.Additive) loads another scene with its own GameObjects, MonoBehaviours and physics into the current world. Each loaded scene runs its own scripts within the shared update loop. But Unity defines no formal containment boundary — no event propagation protocol between host and contained scenes, no consumption rule, and no stated boundary for third-party experience isolation.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/ScriptReference/SceneManagement.LoadSceneMode.Additive.html",
+          "title": "Unity Scripting API: LoadSceneMode.Additive",
+          "retrieved": "2026-09-18",
+          "kind": "primary",
+          "quote": "Loads a Scene without unloading currently loaded Scenes. The additively loaded Scene appears in the Hierarchy window while another is active."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.world-coupling",
+      "level": "none",
+      "note": "Unity's networking (Netcode for GameObjects, Netcode for Entities) replicates state within a single game session. Cross-world state coupling — where one Unity world mutates another's state with nobody in either — is not a built-in capability. Developers can build it with application code, but the engine defines no such mechanism.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://docs.unity3d.com/ScriptReference/SceneManagement.LoadSceneMode.Additive.html",
+          "title": "Unity Scripting API: LoadSceneMode.Additive",
+          "retrieved": "2026-09-18",
+          "kind": "primary",
+          "quote": "Loads a Scene without unloading currently loaded Scenes. The additively loaded Scene appears in the Hierarchy window while another is active."
+        }
+      ]
     }
   ]
 }

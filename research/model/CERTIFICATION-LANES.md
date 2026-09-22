@@ -11,7 +11,7 @@ source_work_order: /Users/grig/work/spatial-computing-research-projects-msf/repo
 created_by: project steward
 depends_on: infrastructure-wg/model/INTEROPERABILITY-BOUNDARIES.md (WO-msf-wg-tool-20260904-064, approved by the owner 2026-09-06T13:51:17Z); infrastructure-wg/tests/PILOT-AVATAR-PORTABILITY.md (WO-msf-wg-tool-20260904-066)
 updated: 2026-09-11T07:51:29Z
-data_basis: 162 capabilities in 14 groups and 57 subjects. Membership derives from accepted capabilities.csv metadata. Integrated coverage contains 6,882 accepted claims and 1,932 sources, including 1,579 accepted claims for the 45 additions; 986 new subject-capability pairs remain explicitly unscored.
+data_basis: 164 capabilities in 14 groups and 57 subjects. Membership derives from accepted capabilities.csv metadata. Integrated coverage contains 6,996 accepted claims and 1,943 sources, including 1,693 accepted claims for the 47 additions; 986 new subject-capability pairs remain explicitly unscored.
 data_basis_2026_09_06: "infrastructure-wg/data/territory.db read 2026-09-06T19:27Z — 46 subjects, 117 capabilities, 4,016 claims, 1,507 sources; sha256 81dbf0dbec1a6f07653885d2a0d6134fc8955a0e07c0c362d3666ffa02522ca9, written by the rebuild of WO-msf-wg-tool-20260906-074, which applied the owner's answer to question 5 of the boundaries page: 40 must, 62 should, 15 none, lanes U1 22, U2 19, U3 20, U4 12. Lane 1 gained five rows and no other lane moved. Every number in lane 1 was re-derived against that database. The earlier basis line follows."
 data_basis_previous: "infrastructure-wg/data/territory.db read 2026-09-06T18:19Z — 46 subjects, 117 capabilities, 4,016 claims, 1,507 sources; sha256 9f4dd1aaab7bdbb625cf9769b495c5a2f4d1b9b07f333a1a4f9637b9ce7fb096, written 2026-09-06T18:08Z by the reconcile rebuild of WO-msf-wg-tool-20260906-073, whose 35 must, 67 should and 15 none match the boundaries table row for row. Every lane number on this page was re-derived against that database and none of them moved: the 28 capabilities added on 2026-09-06 are 21 shoulds and 7 nones, so no lane gained or lost a row. The page was first written against the database of 2026-09-06T14:10Z — 89 capabilities, 2,728 claims, 1,436 sources, sha256 25ab2eb7f0082bf0b0b6bf98d724d05c1122c48fcce54908f19667e093964143"
 project_root: /Users/grig/work/spatial-computing-research-projects-msf/repo/msf-wg-tool
@@ -55,11 +55,11 @@ in it:
   pretends otherwise.
 - **Recorded support**, from the integrated accepted scores across 57 subjects: how many systems have it built in, how many reach it
   through an extension, how many are partial, and the systems named where there are few enough to
-  name. The 45 additions have completed source acceptance; unsupported cells remain unscored.
+  name. The 47 additions have completed source acceptance; unsupported cells remain unscored.
 
-**A lane holds must rows only.** The boundaries page classifies all 162 capabilities as must, should or
-none: must means at least one use case fails outright unless two independent systems agree. Fifty-two of
-the 162 are musts. A lane is
+**A lane holds must rows only.** The boundaries page classifies all 164 capabilities as must, should or
+none: must means at least one use case fails outright unless two independent systems agree. Fifty-four of
+the 164 are musts. A lane is
 the set of rows that would stop the use case, because a test suite that starts with the rows that
 merely degrade the experience will never be finished. The should rows are not lost; they are the
 second pass, and the boundaries page still holds them.
@@ -67,17 +67,17 @@ second pass, and the boundaries page still holds them.
 | Lane | Use case | Rows | Route |
 |---|---|---|---|
 | 1 Content portability | U1 An asset moves between tools with no hand fixes | 30 | `/msf/map/#lane=content` |
-| 2 Avatar portability | U2 An avatar, its items and its expressions travel | 25 | `/msf/map/#lane=avatar` |
-| 3 World-to-world travel | U3 A person travels through a portal and stays themselves | 29 | `/msf/map/#lane=travel` |
-| 4 Agent participation | U4 An agent joins a world, acts, and pays | 18 | `/msf/map/#lane=agent` |
+| 2 Avatar portability | U2 An avatar, its items and its expressions travel | 26 | `/msf/map/#lane=avatar` |
+| 3 World-to-world travel | U3 A person travels through a portal and stays themselves | 31 | `/msf/map/#lane=travel` |
+| 4 Agent participation | U4 An agent joins a world, acts, and pays | 19 | `/msf/map/#lane=agent` |
 
-The four lanes hold 102 places between them, filled by 52 distinct capabilities. Every must row belongs to at least one lane. The approved additions contribute 12 new must rows and 29 lane places. The five captured-content rows made must by the owner on 2026-09-06 remain in U1.
+The four lanes hold 106 places between them, filled by 54 distinct capabilities. Every must row belongs to at least one lane. The approved additions contribute 14 new must rows and 33 lane places. The five captured-content rows made must by the owner on 2026-09-06 remain in U1.
 
 All new test entries below are proposed tests. None was executed as part of this metadata preparation, and membership does not establish runtime conformance.
 
 ## How to read the numbers
 
-Current membership covers 162 capabilities and 57 subjects. Current support tables below derive from all 6,882 integrated claims; all 5,303 prior claims are unchanged. The historical tables and interpretations retain their 2026-09-06 basis of 46 subjects. No final lane percentage or single-subject count is inferred for the expanded scope.
+Current membership covers 164 capabilities and 57 subjects. Current support tables below derive from all 6,996 integrated claims; all 5,303 prior claims are unchanged. The historical tables and interpretations retain their 2026-09-06 basis of 46 subjects. No final lane percentage or single-subject count is inferred for the expanded scope.
 
 Two words are used exactly as the map's own row rules use them, so this page and the site cannot
 disagree. The rules are in `infrastructure-wg/board/predicates.js`.
@@ -234,7 +234,7 @@ is a captured-content row. The five have no test anywhere today.
 
 **The use case.** A person's avatar, with its equipped items and expressions, is readable and drawn by every system it enters.
 
-**The bundle.** 25 must-interoperate capabilities. **The route.** `/msf/map/#lane=avatar`
+**The bundle.** 26 must-interoperate capabilities. **The route.** `/msf/map/#lane=avatar`
 
 **Historical lane description — 2026-09-06.** The following description records the earlier bundle; the current membership and proposed tests follow.
 
@@ -272,6 +272,7 @@ from travel — the portal, and the identity root behind it.
 | Pose series and live pose streams `geo.trajectory` | Two receivers reconstruct the same ordered location and orientation samples from a pose sequence with a declared time base and reference frame. | Proposed test: send timestamped pose samples with known frame and ordering to two receivers; compare the decoded samples and their times. Evaluate interpolation only when the fixture separately declares its rule. |
 | Linked pose structures `geo.pose-graph` | Two receivers reconstruct the same related coordinate frames from exchanged pose links and declared transform meanings. | Proposed test: exchange a pose chain and graph with known frame links; compare each reconstructed frame with the reference transforms, and check the declared handling of an unresolved link. |
 | Consent carried with the subject `identity.consent` | Two recipients interpret the scope, purpose, validity and withdrawal information of a carried permission grant for the same proposed use. | Proposed test: send grant fixtures with permitted and excluded purposes, an expired validity period and withdrawn permission; compare both recipients' interpretation with the fixture contract, without claiming the grant was validly obtained. |
+| Experience containment `scene.containment` | The containing runtime hosts another party's experience with its own logic and lifecycle, and both parties agree on what the contained experience may perceive, change and create within the container. | Proposed test: run one experience fixture inside two independent containing runtimes and compare what the contained experience perceives, what state it changes, and what the container restricts, against the containment contract declared by each host. |
 
 ### Recorded support — 57 subjects, accepted integration of 2026-09-11
 
@@ -304,6 +305,7 @@ These are recorded claims, not independent implementation counts or conformance 
 | Pose series and live pose streams `geo.trajectory` | 18 | 7 | 10 | Accepted source claims; no runtime conformance claim |
 | Linked pose structures `geo.pose-graph` | 23 | 9 | 2 | Accepted source claims; no runtime conformance claim |
 | Consent carried with the subject `identity.consent` | 1 | 0 | 5 | Accepted source claims; no runtime conformance claim |
+| Experience containment `scene.containment` | 2 | 0 | 12 | Fortnite Creative and the Unreal Editor for Fortnite, Verse |
 
 ### Historical support and interpretation — 2026-09-06, 46 subjects
 
@@ -343,7 +345,7 @@ first.
 
 **The use case.** A person moves from one world to another through a portal, keeping identity, inventory, preferences and the session's continuity.
 
-**The bundle.** 29 must-interoperate capabilities. **The route.** `/msf/map/#lane=travel`
+**The bundle.** 31 must-interoperate capabilities. **The route.** `/msf/map/#lane=travel`
 
 **Historical lane description — 2026-09-06.** The following description records the earlier bundle; the current membership and proposed tests follow.
 
@@ -384,6 +386,8 @@ them.
 | Linked pose structures `geo.pose-graph` | Two receivers reconstruct the same related coordinate frames from exchanged pose links and declared transform meanings. | Proposed test: exchange a pose chain and graph with known frame links; compare each reconstructed frame with the reference transforms, and check the declared handling of an unresolved link. |
 | Consent carried with the subject `identity.consent` | Two recipients interpret the scope, purpose, validity and withdrawal information of a carried permission grant for the same proposed use. | Proposed test: send grant fixtures with permitted and excluded purposes, an expired validity period and withdrawn permission; compare both recipients' interpretation with the fixture contract, without claiming the grant was validly obtained. |
 | Deciding whether to admit an arrival `net.admission` | The origin and destination interpret the same pre-arrival approval or refusal and its validity limit without requiring disclosure of private decision rules. | Proposed test: exchange approval, refusal and expired-approval responses between independent origin and destination implementations; compare the interpreted outcome and validity while keeping authentication and session setup separate. |
+| Experience containment `scene.containment` | The containing runtime hosts another party's experience with its own logic and lifecycle, and both parties agree on what the contained experience may perceive, change and create within the container. | Proposed test: run one experience fixture inside two independent containing runtimes and compare what the contained experience perceives, what state it changes, and what the container restricts, against the containment contract declared by each host. |
+| Unattended world coupling `net.world-coupling` | A state change in one world causes the declared effect in another with no participant present in either, and both ends agree on who held authority, in what order changes applied, and that settlement is final. | Proposed test: trigger a coupling event in one world with no participant in either and compare the resulting state in the coupled world against the declared effect, checking that authority, ordering and settlement match the coupling contract. |
 
 ### Recorded support — 57 subjects, accepted integration of 2026-09-11
 
@@ -420,6 +424,8 @@ These are recorded claims, not independent implementation counts or conformance 
 | Linked pose structures `geo.pose-graph` | 23 | 9 | 2 | Accepted source claims; no runtime conformance claim |
 | Consent carried with the subject `identity.consent` | 1 | 0 | 5 | Accepted source claims; no runtime conformance claim |
 | Deciding whether to admit an arrival `net.admission` | 1 | 0 | 2 | Accepted source claims; no runtime conformance claim |
+| Experience containment `scene.containment` | 2 | 0 | 12 | Fortnite Creative and the Unreal Editor for Fortnite, Verse |
+| Unattended world coupling `net.world-coupling` | 0 | 0 | 0 | No native, extension or partial support recorded |
 
 ### Historical support and interpretation — 2026-09-06, 46 subjects
 
@@ -461,7 +467,7 @@ today.
 
 **The use case.** A software agent joins a world, acts in it, and pays for what it uses.
 
-**The bundle.** 18 must-interoperate capabilities. **The route.** `/msf/map/#lane=agent`
+**The bundle.** 19 must-interoperate capabilities. **The route.** `/msf/map/#lane=agent`
 
 **Historical lane description — 2026-09-06.** The following description records the earlier bundle; the current membership and proposed tests follow.
 
@@ -492,6 +498,7 @@ half of the use case about paying has no row on the map at all.
 | Credential status and revocation `identity.status` | Two receivers discover and interpret a credential's status through the same declared status mechanism, independently of expiry and signing-key status. | Proposed test: check credential fixtures with active, suspended and revoked status plus an unavailable status response; compare the discovered status and failure handling with the declared mechanism. |
 | Consent carried with the subject `identity.consent` | Two recipients interpret the scope, purpose, validity and withdrawal information of a carried permission grant for the same proposed use. | Proposed test: send grant fixtures with permitted and excluded purposes, an expired validity period and withdrawn permission; compare both recipients' interpretation with the fixture contract, without claiming the grant was validly obtained. |
 | Deciding whether to admit an arrival `net.admission` | The origin and destination interpret the same pre-arrival approval or refusal and its validity limit without requiring disclosure of private decision rules. | Proposed test: exchange approval, refusal and expired-approval responses between independent origin and destination implementations; compare the interpreted outcome and validity while keeping authentication and session setup separate. |
+| Unattended world coupling `net.world-coupling` | A state change in one world causes the declared effect in another with no participant present in either, and both ends agree on who held authority, in what order changes applied, and that settlement is final. | Proposed test: trigger a coupling event in one world with no participant in either and compare the resulting state in the coupled world against the declared effect, checking that authority, ordering and settlement match the coupling contract. |
 
 ### Recorded support — 57 subjects, accepted integration of 2026-09-11
 
@@ -517,6 +524,7 @@ These are recorded claims, not independent implementation counts or conformance 
 | Credential status and revocation `identity.status` | 2 | 2 | 0 | Accepted source claims; no runtime conformance claim |
 | Consent carried with the subject `identity.consent` | 1 | 0 | 5 | Accepted source claims; no runtime conformance claim |
 | Deciding whether to admit an arrival `net.admission` | 1 | 0 | 2 | Accepted source claims; no runtime conformance claim |
+| Unattended world coupling `net.world-coupling` | 0 | 0 | 0 | No native, extension or partial support recorded |
 
 ### Historical support and interpretation — 2026-09-06, 46 subjects
 
@@ -550,11 +558,11 @@ payment row to put that on until the commerce rows are added
 | Lane | Current must rows | Prior rows with baseline scores | Added rows with accepted score dispositions |
 |---|---|---|---|
 | Content portability (U1) | 30 | 22 | 8 |
-| Avatar portability (U2) | 25 | 19 | 6 |
-| World-to-world travel (U3) | 29 | 20 | 9 |
-| Agent participation (U4) | 18 | 12 | 6 |
+| Avatar portability (U2) | 26 | 19 | 7 |
+| World-to-world travel (U3) | 31 | 20 | 11 |
+| Agent participation (U4) | 19 | 12 | 7 |
 
-There are 102 lane places and 52 distinct must rows. The accepted support tables now include every approved must row; a zero means no claim at that level is recorded. A recorded subject claim alone does not demonstrate agreement between independent implementations.
+There are 106 lane places and 54 distinct must rows. The accepted support tables now include every approved must row; a zero means no claim at that level is recorded. A recorded subject claim alone does not demonstrate agreement between independent implementations.
 
 ## Historical cross-lane findings — 2026-09-06
 
@@ -639,13 +647,13 @@ flagged and the coverage metric restricted to them. The addresses are the four i
 top of this page. A route flags rows, it does not hide the rest: the reader sees the lane inside the
 whole map, because a lane the reader cannot see in context is a filter, not a lane.
 
-The maintained `infrastructure-wg/board/atlas.html` source contains all four lane routes and a startup guard that checks their sizes against the metadata. The candidate constants are U1 30, U2 25, U3 29 and U4 18; the guard remains in place. This preparation does not establish integrated browser behavior or deployment. Final integrated browser QA remains required.
+The maintained `infrastructure-wg/board/atlas.html` source contains all four lane routes and a startup guard that checks their sizes against the metadata. The candidate constants are U1 30, U2 26, U3 31 and U4 19; the guard remains in place. This preparation does not establish integrated browser behavior or deployment. Final integrated browser QA remains required.
 
 ## How the counts were made
 
-Current lane membership is derived from `capabilities.csv`: a row belongs when `interop` is `must` and `interop_uses` includes that lane's use case. Every current conformance table matches those memberships: 102 places, 52 distinct rows. The source CSV retains the prior 117 records and appends the 45 accepted additions.
+Current lane membership is derived from `capabilities.csv`: a row belongs when `interop` is `must` and `interop_uses` includes that lane's use case. Every current conformance table matches those memberships: 106 places, 54 distinct rows. The source CSV retains the prior 117 records and appends the 47 accepted additions.
 
-The current recorded-support tables use the 6,882 integrated claims across 57 subjects. The 1,579 additions passed independent source acceptance; all 5,303 prior claim objects remain unchanged. No conformance result is inferred from these source-backed claims.
+The current recorded-support tables use the 6,996 integrated claims across 57 subjects. The 1,693 additions passed independent source acceptance; all 5,303 prior claim objects remain unchanged. No conformance result is inferred from these source-backed claims.
 
 The SQL below preserves the historical query examples. It illustrates the method; the current support tables were recalculated from the integrated accepted inputs, and the canonical database is rebuilt by the existing loader.
 

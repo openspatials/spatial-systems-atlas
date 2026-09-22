@@ -1,5 +1,8 @@
 # How to score a subject against the territory map
 
+**Write to this directory, `tool/data/`. Never to `spatial-tech-map/data/`, which
+is a generated export that the next sync erases.**
+
 You are filling one subject's row in a comparison matrix for the Metaverse Standards Forum
 Infrastructure Working Group. The map's purpose: say which standard or tool does what, where two of
 them overlap, and where nothing reaches. A false claim here is worse than a missing one.

@@ -1076,16 +1076,16 @@
     },
     {
       "capability_id": "geo.anchor-shared",
-      "level": "none",
-      "note": "Anchors do not persist and cannot be shared. The documentation states plainly that they cannot be referenced between sessions, and the anchor source has no persistence calls at all; an option only keeps the local list alive after the session ends.",
+      "level": "partial",
+      "note": "Anchors persist within one web origin but are not shared. The anchor system documents persistent handles with request, enumerate, restore and delete calls, marked experimental, supported mainly in one headset browser, and open to eviction by the user agent. Missing: nothing carries an anchor to another device, another person or another operator, which is the half of this row that matters.",
       "confidence": "verified",
       "sources": [
         {
           "url": "https://doc.babylonjs.com/features/featuresDeepDive/webXR/webXRARFeatures",
-          "title": "Augmented reality features, anchors",
-          "retrieved": "2026-08-22",
+          "title": "Augmented reality features, persistent anchors (experimental)",
+          "retrieved": "2026-09-19",
           "kind": "primary",
-          "quote": "as anchors cannot be referenced between sessions"
+          "quote": "A persistent anchor has an origin-scoped string handle that a supporting runtime can use to restore the anchor in a later session."
         }
       ]
     },
@@ -1849,8 +1849,8 @@
     },
     {
       "capability_id": "input.face",
-      "level": "none",
-      "note": "Babylon's WebXR feature set follows what the Device API exposes, and no face or body stream is among it. The engine can drive blend shapes on a mesh from data an application supplies, which is a stored-expression row, not a sensor.",
+      "level": "partial",
+      "note": "Babylon's WebXR feature set follows what the Device API exposes. A body-tracking feature does take runtime-provided body joints - up to 83 of them each frame - and can drive a rigged mesh from them, on the few devices that offer the stream; no face stream is among the features. The engine can drive blend shapes on a mesh from data an application supplies, which is a stored-expression row, not a sensor. Missing: the face half of this row, and any device-independent guarantee of the body half.",
       "confidence": "verified",
       "sources": [
         {
@@ -1859,6 +1859,13 @@
           "retrieved": "2026-09-06",
           "kind": "primary",
           "quote": "Options interface for the background remover plugin"
+        },
+        {
+          "url": "https://doc.babylonjs.com/features/featuresDeepDive/webXR/WebXRSelectedFeatures/WebXRBodyTracking",
+          "title": "Babylon.js documentation, WebXR Body Tracking Feature",
+          "retrieved": "2026-09-19",
+          "kind": "primary",
+          "quote": "Some XR devices can track the full pose of the user's body — not just their hands and head"
         }
       ]
     },
@@ -2337,6 +2344,36 @@
         }
       ],
       "direction": "both"
+    },
+    {
+      "capability_id": "scene.containment",
+      "level": "partial",
+      "note": "Babylon.js can append external scenes into a running scene via SceneLoader.Append, which adds meshes, lights, particle systems and cameras to an existing scene. Loaded content runs within the host scene's render and physics loop. But Babylon.js defines no containment boundary protocol — no event propagation rule, no stated boundary for how contained logic interacts with the host.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/typedoc/classes/BABYLON.SceneLoader",
+          "title": "SceneLoader, Babylon.js Documentation",
+          "retrieved": "2026-09-18",
+          "kind": "primary",
+          "quote": "Class used to load scene content. The Append static method takes an existing scene and appends a new scene to the existing one."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.world-coupling",
+      "level": "out-of-scope",
+      "note": "Babylon.js is a client-side rendering engine with no built-in inter-world networking. It has no world-state mechanism and no concept of coupling between worlds. Inter-world coupling is outside the engine's scope.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://doc.babylonjs.com/typedoc/classes/BABYLON.SceneLoader",
+          "title": "SceneLoader, Babylon.js Documentation",
+          "retrieved": "2026-09-18",
+          "kind": "primary",
+          "quote": "Class used to load scene content. The Append static method takes an existing scene and appends a new scene to the existing one."
+        }
+      ]
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "subject_id": "gltf",
-  "summary": "The settled way to hand a three-dimensional model from one tool to another. Everything about the shape of a thing and how its surface looks is finished, ratified and in the core: meshes, textures, a physically based material model, animation curves, skinning, morph targets, cameras, metres and a fixed axis convention. Everything about how a thing behaves is not. The whole specification text contains the word physics once, as a made-up name in an example, and the word audio zero times. Extensions carry the rest, so the level here follows a rule: native means the ratified core text, via-extension means a named extension the Khronos board has actually ratified, and partial means a named extension whose draft text is public but which is not ratified. Twenty-three extensions are ratified. Physics, audio and interactivity are not among them. One trap for a standards audience: this format has skins and joints but no agreed bone names, so an animation authored for one avatar will not play on another without a convention this specification does not supply.",
+  "summary": "The settled way to hand a three-dimensional model from one tool to another. Everything about the shape of a thing and how its surface looks is finished, ratified and in the core: meshes, textures, a physically based material model, animation curves, skinning, morph targets, cameras, metres and a fixed axis convention. Everything about how a thing behaves is not. The whole specification text contains the word physics once, as a made-up name in an example, and the word audio zero times. Extensions carry the rest, so the level here follows a rule: native means the ratified core text, via-extension means a named extension the Khronos board has actually ratified, and partial means a named extension whose draft text is public but which is not ratified. Twenty-seven extensions are ratified, twenty-four from Khronos and three multi-vendor, and KHR_interactivity is among them. Physics and audio are not. One trap for a standards audience: this format has skins and joints but no agreed bone names, so an animation authored for one avatar will not play on another without a convention this specification does not supply.",
   "coverage": [
     {
       "capability_id": "scene.container",
@@ -353,16 +353,16 @@
     },
     {
       "capability_id": "logic.behaviour",
-      "level": "partial",
-      "note": "KHR_interactivity has public draft text merged in the repository at release candidate stage, and was submitted for ratification on 2026-07-16. Submitted is not ratified, and the registry still lists it as in progress.",
+      "level": "via-extension",
+      "note": "KHR_interactivity is ratified: the extension registry lists it among the ratified Khronos extensions, after its submission for ratification on 2026-07-16. It carries behaviour graphs in an extension rather than in the core text, so under this subject's rule the level is via-extension.",
       "confidence": "verified",
       "sources": [
         {
           "url": "https://github.com/KhronosGroup/glTF/blob/main/extensions/README.md",
-          "title": "glTF 2.0 Extension Registry, in-progress table",
-          "retrieved": "2026-08-23",
+          "title": "glTF 2.0 Extension Registry, Ratified Khronos Extensions",
+          "retrieved": "2026-09-19",
           "kind": "primary",
-          "quote": "| KHR_interactivity | Release Candidate |"
+          "quote": "* [KHR_interactivity](2.0/Khronos/KHR_interactivity/Specification.adoc)"
         },
         {
           "url": "https://www.khronos.org/news/press/",
@@ -1508,6 +1508,36 @@
           "retrieved": "2026-09-11",
           "kind": "primary",
           "quote": "Reference to the glTF node that was selected by the user"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.containment",
+      "level": "out-of-scope",
+      "note": "glTF is a file format for geometry, materials, animations and extensions. It defines no runtime, no executable logic, and no concept of one experience hosting another. Containment is a runtime question the format does not reach.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html",
+          "title": "glTF 2.0 Specification",
+          "retrieved": "2026-09-18",
+          "kind": "primary",
+          "quote": "glTF defines an extensible, common publishing format for 3D content tools and services that streamlines authoring workflows and enables interoperable use of content across the industry."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.world-coupling",
+      "level": "out-of-scope",
+      "note": "glTF defines a transmission format for 3D assets. It has no networking layer, no world state, and no mechanism through which one scene could affect another. Coupling between worlds is outside the format's scope.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html",
+          "title": "glTF 2.0 Specification",
+          "retrieved": "2026-09-18",
+          "kind": "primary",
+          "quote": "glTF defines an extensible, common publishing format for 3D content tools and services that streamlines authoring workflows and enables interoperable use of content across the industry."
         }
       ]
     }

@@ -1511,16 +1511,16 @@
     },
     {
       "capability_id": "capture.panorama",
-      "level": "out-of-scope",
-      "note": "Unreal Engine is a general engine whose capture-adjacent features arrive as engine plugins, and it carries no full 360-degree view of a place as an image with its projection stated.",
+      "level": "via-extension",
+      "note": "The HDRI Backdrop plugin takes a spherical HDR image in latitude-longitude projection and uses it as a backdrop and a real-time light source, so a 360-degree view with its projection stated is consumed. It is a plugin, not core, and a visualisation tool rather than a panorama capture workflow; it carries no splats, multi-plane images or calibrated multiview depth.",
       "confidence": "verified",
       "sources": [
         {
-          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/nanite-virtualized-geometry-in-unreal-engine",
-          "title": "Nanite Virtualized Geometry in Unreal Engine",
-          "retrieved": "2026-08-22",
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/hdri-backdrop-visualization-tool-in-unreal-engine",
+          "title": "HDRI Backdrop Visualization Tool in Unreal Engine",
+          "retrieved": "2026-09-19",
           "kind": "primary",
-          "quote": "Data is streamed in on demand so that only visible detail needs to reside in memory."
+          "quote": "Import a spherical HDR image that uses latitude and longitude into the Content Browser"
         }
       ]
     },
@@ -2065,6 +2065,36 @@
         }
       ],
       "direction": "both"
+    },
+    {
+      "capability_id": "scene.containment",
+      "level": "partial",
+      "note": "Unreal Engine's Level Streaming and World Partition load sub-levels with their own actors, blueprints, and gameplay into a persistent world. Data Layers can swap content by event. Sub-levels run their own logic. But there is no formal containment boundary protocol — no event propagation or consumption rule defining how a contained experience's messages interact with the host's.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/world-partition-in-unreal-engine",
+          "title": "World Partition in Unreal Engine",
+          "retrieved": "2026-09-18",
+          "kind": "primary",
+          "quote": "World Partition is an automatic data management and distance-based level streaming system that provides a solution for large world management."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.world-coupling",
+      "level": "none",
+      "note": "Unreal Engine's replication system synchronises state within a single game session between server and clients. Cross-world coupling — where one Unreal world mutates another's state with nobody connected — is not a built-in capability. The engine's networking assumes a single authoritative server with connected clients.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/world-partition-in-unreal-engine",
+          "title": "World Partition in Unreal Engine",
+          "retrieved": "2026-09-18",
+          "kind": "primary",
+          "quote": "World Partition is an automatic data management and distance-based level streaming system that provides a solution for large world management."
+        }
+      ]
     }
   ]
 }

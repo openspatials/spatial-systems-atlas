@@ -1906,7 +1906,7 @@
     {
       "capability_id": "capture.worldgen",
       "level": "partial",
-      "note": "Roblox ships a first-party generative model and it makes objects, not places. The service generates three-dimensional objects from text prompts, up to a multi-part model whose parts a caller names, and it runs inside an experience at run time. Nothing generates a whole place, and what comes out is a Roblox model instance rather than a scene a receiver elsewhere could keep.",
+      "note": "Roblox ships two first-party generative routes. GenerationService makes objects, not places: three-dimensional objects from text prompts, up to a multi-part model whose parts a caller names, inside an experience at run time. Build, rolling out by region from New Zealand as of 2026-09-19, makes whole playable, publishable games from a text description, but 2D and 2.5D only. So nothing yet generates a whole three-dimensional place, and what comes out of either route is Roblox content rather than a scene a receiver elsewhere could keep.",
       "confidence": "verified",
       "sources": [
         {
@@ -1915,6 +1915,13 @@
           "retrieved": "2026-09-06",
           "kind": "primary",
           "quote": "Service that allows developers to generate 3D objects from text prompts."
+        },
+        {
+          "url": "https://create.roblox.com/docs/en-us/ai/build",
+          "title": "Create games with Build, Roblox Creator Hub",
+          "retrieved": "2026-09-19",
+          "kind": "primary",
+          "quote": "Build currently focuses on 2D and 2.5D games."
         }
       ]
     },
@@ -2092,8 +2099,8 @@
     },
     {
       "capability_id": "capture.gen-edit",
-      "level": "out-of-scope",
-      "note": "Roblox is a hosted platform with its own engine, its own asset types and a first-party generative model, and there is no generated world here to change by describing the change or pointing at a region.",
+      "level": "partial",
+      "note": "Build accepts follow-up changes in words to a game it generated, each counted as a prompt, and the game stays live while it is changed; as of 2026-09-19 it is 2D and 2.5D only and rolling out by region. Missing: no pointing at a region, no growing past the original edges, and no stated retention of earlier versions.",
       "confidence": "verified",
       "sources": [
         {
@@ -2102,6 +2109,13 @@
           "retrieved": "2026-08-23",
           "kind": "primary",
           "quote": "glTF export supports the following types of 3D data: Meshes, Textures, Rigging and skinning data, Vertex colors, Cages, Dynamic head FACS data."
+        },
+        {
+          "url": "https://create.roblox.com/docs/en-us/ai/build",
+          "title": "Create games with Build, Roblox Creator Hub",
+          "retrieved": "2026-09-19",
+          "kind": "primary",
+          "quote": "Every message you send to Build counts as one prompt, including follow-up changes."
         }
       ]
     },
@@ -2692,6 +2706,36 @@
           "retrieved": "2026-09-10",
           "kind": "primary",
           "quote": "Poses are arranged in a [Keyframe](/docs/reference/engine/classes/Keyframe.md) based on joint hierarchy. This means, the Pose's [CFrame](/docs/reference/engine/datatypes/CFrame.md) is applied to the motor connecting the part associated"
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.containment",
+      "level": "none",
+      "note": "Roblox experiences run in isolated server environments. A universe can contain multiple places that share data through DataStore, and TeleportService moves players between them. But one experience does not host another experience's running logic inside it — each runs in its own sandboxed server process with no embedding.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/cloud-services/data-stores",
+          "title": "Data stores, Roblox Creator Hub",
+          "retrieved": "2026-09-18",
+          "kind": "primary",
+          "quote": "Data stores are a server-side storage solution for saving persistent data across sessions."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.world-coupling",
+      "level": "none",
+      "note": "Roblox has DataStore for per-experience persistent state and MessagingService for cross-server communication within one experience. But cross-experience coupling is not built in, and servers only run while players are present. There is no mechanism for state in one experience to cause changes in another with nobody connected to either.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://create.roblox.com/docs/cloud-services/data-stores",
+          "title": "Data stores, Roblox Creator Hub",
+          "retrieved": "2026-09-18",
+          "kind": "primary",
+          "quote": "Data stores are a server-side storage solution for saving persistent data across sessions."
         }
       ]
     }

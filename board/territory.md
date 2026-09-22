@@ -2,12 +2,12 @@
 
 Every mark below is one claim held in a database and tied to a source. This file is the map read straight through: capabilities down the side, subjects across the top.
 
-- Claims: 6,882
+- Claims: 6,996
 - Subjects: 57
-- Capabilities: 162 in 14 groups
-- Sources: 1,932
+- Capabilities: 164 in 14 groups
+- Sources: 1,963
 - Recorded conflicts: 64
-- Built from the territory database as it stood at 2026-09-14T01:43:45Z
+- Built from the territory database as it stood at 2026-09-22T22:28:13Z
 
 ## Legend
 
@@ -96,6 +96,7 @@ The notes behind each claim, and the sources each claim rests on, are in `territ
 | Declarative styling carried apart from the content | should |  |  | – | ● |  |  |  |  |  |  | ● |  |  |  |  |  | – | – |  | – |  | – |  | – | ● | – |  | – | – | – |  | – |  | – | – |  |  |  | – | – | – | – | – | – | – | – | – | – | – | – |  | ● |  |  | – | – | – |
 | Selectable variants of an asset | should | ● |  |  | ● | ● | ● |  |  |  |  | ● | ◐ |  |  |  |  | – | – |  | – |  | – |  | – |  | – |  | ● | – | – |  | – |  | – | – | ◐ | ⊕ |  |  |  |  |  |  |  |  |  |  |  |  |  | ⊕ |  | ● | ⊕ | – |  |  |
 | Voxel volumes | must |  |  |  |  |  |  |  |  |  |  | ◐ |  |  |  |  |  | – | – |  | – |  | – |  |  |  | – | ◐ | – | – | – |  | – |  | – | – | ⊕ |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | ◐ |  |  | – |  |  |
+| Experience containment | must | ○ | ○ | – | ◐ | ◐ | ◐ | ● | ○ | ○ | ◐ | ○ | ○ | ◐ | ◐ | ○ | ○ | – | – | – | ○ | – | – | ◐ | – | – | – | ○ | ◐ | – | – | – | – | ● | – | – | ◐ | – | – | – | – | – | – | – | – | – | – | – | – | – | – | ◐ | ○ | ◐ | ◐ | – | – | – |
 
 - **Scene graph model** (format) - The tree or graph of objects and their relationships.
 - **Transforms and coordinate convention** (format) - Handedness, axis order, and how transforms compose.
@@ -124,12 +125,13 @@ The notes behind each claim, and the sources each claim rests on, are in `territ
 - **Declarative styling carried apart from the content** (format) - Separately expressed styling rules that select feature visibility, color, or other supported display properties from content metadata.
 - **Selectable variants of an asset** (format) - Named alternatives of an asset's authored configuration, with a defined selection mechanism.
 - **Voxel volumes** (format) - Interchanging spatial cell volumes and their properties, including updates, as a scene representation.
+- **Experience containment** (format) - Whether a runtime can host another party's experience as a running thing, with its own logic and lifecycle, inside a containing world.
 
 ## Avatars
 
 | Capability | Boundary | Apple ARKit and RealityKit | Google ARCore and Android XR | Niantic Lightship | Godot | Unity | Unreal Engine | Fortnite Creative and the Unreal Editor for Fortnite | Horizon Worlds | Rec Room | Resonite | Roblox | VRChat | Open Metaverse Browser | RP1 Spatial Fabric | TeleportXR | Web of Worlds | C2PA Content Credentials | Decentralized Identifiers | IEEE 2874 Spatial Web | Inter-World Portaling System | MPEG-I Avatar Representation Format | MPEG-I Immersive Audio | MPEG-I Scene Description | MPEG-I Visual Volumetric Video-based Coding (V3C, V-PCC and MIV) | OGC 3D Tiles (Community Standard) | OGC GeoPose | Open AR Cloud (Open Spatial Computing Platform) | OpenUSD Core Specification | OpenXR | Universal Manifest | VRM | Verifiable Credentials Data Model | Verse | WebGPU | WebXR Device API | X3D (ISO/IEC 19775-1) | glTF | glTF 2.1 | 4D Gaussian splatting and splat formats | Dynamic and four-dimensional Gaussian splat implementations | Splat-to-avatar research families | Brush | Jawset Postshot | KIRI Engine | Meta Horizon Hyperscape Capture | NVIDIA Omniverse NuRec and 3DGRUT | Nerfstudio and gsplat | OpenSplat | Polycam | Scaniverse | Babylon.js | CesiumJS | PlayCanvas | Three.js | NVIDIA Cosmos | Tencent Hunyuan World 2.0 | World Labs Marble |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Avatar body format | must | ◐ | ○ | – | ⊕ | ○ | ⊕ | ◐ | ✕ | ○ | ✕ | ● | ✕ | – | – | ◐ | ◐ |  |  |  | ○ | ● |  | ◐ | – |  |  | – |  | – | ○ | ● |  | – | – | – | ● | ○ |  | – | – | ◐ | – | – | ◐ | – | – | – | – | – | – | ⊕ | – | ○ | ○ | – | – | – |
+| Avatar body format | must | ◐ | ○ | – | ⊕ | ○ | ⊕ | ◐ | ✕ | ◐ | ✕ | ● | ✕ | – | ◐ | ◐ | ◐ |  |  |  | ○ | ● |  | ◐ | – |  |  | – |  | – | ○ | ● |  | – | – | – | ● | ○ |  | – | – | ◐ | – | – | ◐ | – | – | – | – | – | – | ⊕ | – | ○ | ○ | – | – | – |
 | Avatar skeleton standard | must | ◐ | ○ | – | ◐ | ● | ◐ | ◐ | ○ | ◐ | ◐ | ● | ◐ | ◐ |  |  |  |  |  |  |  | ◐ |  | ◐ | – |  |  | – |  | ◐ |  | ● |  | – | – | ◐ | ● | ○ | ○ | – | – | ○ | – | – | ○ | – | – | – | – | – | – | ○ | – | ○ | ○ | – | – | – |
 | Facial expression standard | must | ◐ | ◐ | – | ◐ | ○ | ◐ | ○ | ○ |  | ✕ | ◐ | ◐ | ○ |  |  |  |  |  |  |  | ◐ |  |  | – |  |  | – |  | ◐ |  | ● |  | – | – | ○ |  |  |  | – | – | ◐ | – | – | – | – | – | – | – | – | – | ○ | – | ○ | ○ | – | – | – |
 | Animation retargeting | should | ◐ | ○ | – | ● | ● | ● | ● | ○ |  | ○ | ● | ● | ○ |  |  |  |  |  |  |  | ◐ |  |  | – |  |  | – |  | – |  | ⊕ |  | – | – | – |  |  |  | – | – | ◐ | – | – | – | – | – | – | – | – | – | ● | – | ○ | ⊕ | – | – | – |
@@ -202,6 +204,7 @@ The notes behind each claim, and the sources each claim rests on, are in `territ
 | Discovery | should | ⊕ | ○ | ◐ | ○ | ◐ | ⊕ | ● | ◐ |  | ● | ● | ◐ | ○ | ○ | ○ | ○ |  | ◐ | ◐ | ○ |  |  |  | – |  |  | ● |  | – |  |  |  | – | – | – |  |  |  | – | – | – | – | – | ◐ | ○ | – | – | – | ◐ | ◐ | ○ | – | ○ |  | – | – | ◐ |
 | Clock and time model | should | ○ | ◐ | – | ○ | ⊕ | ◐ | ● | ○ | ◐ | ◐ | ● |  | ◐ | ◐ | ◐ |  |  |  |  | ◐ |  |  |  | ◐ |  | ◐ | ◐ |  | – |  |  |  | ◐ | – | – | ◐ |  |  | – | ◐ | – | – | – | – | – | ◐ | – | – | – | – | ○ | ◐ | ○ | ○ | – | – | – |
 | Deciding whether to admit an arrival | must | – | – | – |  |  |  |  | ◐ |  | ◐ |  |  |  |  |  |  | – | – |  | ● | – | – | – | – | – | – |  | – | – |  | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – |
+| Unattended world coupling | must | ○ | ○ | – | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | – | – | – | ○ | – | – | – | – | – | – | ○ | – | – | – | – | – | ○ | – | – | ○ | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – |
 
 - **State replication** (protocol) - Which state is shared, how often, and in what form.
 - **Authority and ownership** (protocol) - Who decides the truth for a given object.
@@ -216,6 +219,7 @@ The notes behind each claim, and the sources each claim rests on, are in `territ
 - **Discovery** (protocol) - Finding worlds, nodes or services without knowing them in advance.
 - **Clock and time model** (protocol) - Shared time so events order consistently.
 - **Deciding whether to admit an arrival** (protocol) - A destination's pre-arrival approval or refusal response, including any validity limit and optional explanatory information.
+- **Unattended world coupling** (protocol) - Whether state in one world can cause change in another with no participant present in either.
 
 ## Identity, trust & rights
 
@@ -260,7 +264,7 @@ The notes behind each claim, and the sources each claim rests on, are in `territ
 | Geospatial pose | must | ● | ● | ● | ○ | ○ | ⊕ | – | – | – | – | – | – | ○ | ○ | ○ | ✕ |  |  |  | ○ |  |  |  | – | ◐ | ● | ● |  | ⊕ | ○ |  |  | – | – | ○ | ● |  |  | ○ | – | – | ○ | ◐ | – | ○ | ◐ | ○ | ◐ | ◐ | ◐ | ◐ | ● | ○ | – | ○ | ○ | – |
 | Coordinate reference systems | must | ◐ | ◐ | ◐ |  | ○ | ⊕ | – | – | – | – | – | – | ○ |  |  | ○ |  |  |  | ○ |  |  | ○ | ◐ | ● | ◐ | ◐ |  | ⊕ |  |  |  | – | – | – | ● |  | ○ | ○ | – | – | ○ | ○ | – | ○ | ◐ | ○ | ◐ | ○ | ○ | ◐ | ● | ○ |  | – | ○ | – |
 | Local anchors | none | ● | ● | ● | ● | ⊕ | ⊕ | – | ○ | – | – | – | – |  |  |  |  |  |  |  |  |  | ◐ | ◐ | – |  |  | ◐ |  | ⊕ |  |  |  | – | – | ⊕ |  |  |  | – | – | – | – | ◐ | – | ○ | – | – | – | – | – | ● | – | ● | ◐ | – | – | – |
-| Shared and persistent anchors | must | ● | ● | ● | ◐ | ◐ | ⊕ | – | ○ | – | – | – | – |  |  |  |  |  |  |  |  |  |  |  | – |  | ◐ | ● |  | ◐ |  |  |  | – | – | ◐ |  |  |  | – | – | – | – | – | – | ○ | – | – | – | – | ◐ | ○ | ◐ | ◐ | ○ | – | – | – |
+| Shared and persistent anchors | must | ● | ● | ● | ◐ | ◐ | ⊕ | – | ○ | – | – | – | – |  |  |  |  |  |  |  |  |  |  |  | – |  | ◐ | ● |  | ◐ |  |  |  | – | – | ◐ |  |  |  | – | – | – | – | – | – | ○ | – | – | – | – | ◐ | ◐ | ◐ | ◐ | ○ | – | – | – |
 | Visual positioning | should | ● | ● | ● | ○ | ○ |  | – | – | – | – | – | – |  |  |  |  |  |  |  |  |  |  |  | – |  | – | ● |  | ⊕ |  |  |  | – | – | ○ |  |  |  | – | – | – | – | – | – | – | – | – | – | – | ◐ | ○ | – | ○ |  | ◐ | ◐ | – |
 | Tiled terrain and city streaming | must | ○ | ◐ | ○ |  | ○ | ⊕ | – | – | – | – | – | – |  |  |  |  |  |  |  |  |  |  |  | – | ● | – | ● |  | – |  |  |  | – | – | – | ● |  |  | ◐ | – | – | – | – | – | – | ◐ | – | ◐ | – | – | ⊕ | ● | ⊕ | – | – | ○ | – |
 | Indoor mapping | should | ⊕ | ◐ | ◐ | ◐ | ◐ |  | – | – | – | – | – | – |  |  |  |  |  |  |  |  |  |  |  | – | – |  | ◐ |  | ◐ |  |  |  | – | – | ◐ |  |  |  | – | – | – | – | – | ◐ | ◐ | ◐ | – | – | ◐ | ◐ | ◐ | ○ | ○ |  | – | ◐ | ○ |
@@ -289,7 +293,7 @@ The notes behind each claim, and the sources each claim rests on, are in `territ
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Real-world reconstruction | should | ● | ◐ | ● | ◐ | ⊕ | ● | – | – | – | – | – | – | ○ | ○ | ○ | – | – | – | – | – | – | – | – | – | – | – | ◐ | – | ⊕ | – | – | – | – | – | ⊕ | – | – | – | – | – | – | – | – | ◐ | ◐ | ◐ | ◐ | – | ◐ | ◐ | ● | – | ● | ◐ | – | – | – |
 | Semantic labelling of the real world | should | ● | ● | ● | ◐ | ⊕ | ◐ | – | – | – | – | – | – | ○ | ○ | ○ | – | – | – | – | – | – | – | – | – | – | – | ◐ | – | ⊕ | – | – | – | – | – | ⊕ | – | – | – | – | ◐ | ◐ | – | – | ◐ | – | ● | – | – | ◐ | – | ● | – | ● | ○ | – | – | – |
-| Real-world depth | should | ● | ● | ● | ○ | ⊕ | ◐ | – | – | – | – | – | – | ○ | ○ | ○ | – | – | – | – | – | – | – | – | – | – | – | ◐ | – | ⊕ | – | – | – | – | – | ⊕ | – | – | – | – | ◐ | – | – | – | ◐ | ○ | ● | ◐ | – | ◐ | ◐ | ● | – | ● | ● | – | – | – |
+| Real-world depth | should | ● | ● | ● | ○ | ⊕ | ◐ | – | – | – | – | – | – | ○ | ○ | ○ | – | ◐ | – | – | – | – | – | – | – | – | – | ◐ | – | ⊕ | – | – | – | – | – | ⊕ | – | – | – | – | ◐ | – | – | – | ◐ | ○ | ● | ◐ | – | ◐ | ◐ | ● | – | ● | ● | – | – | – |
 | Real-world occlusion | none | ● | ● | ◐ | ○ | ⊕ | ● | – | – | – | – | – | – | ○ | ○ | ○ | – | – | – | – | – | – | – | – | – | – | – | – | – | ⊕ | – | – | – | – | – | ○ | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | ● | – | ◐ | ◐ | – | – | – |
 | Real-world lighting estimation | none | ● | ● |  |  | ⊕ | ● |  |  |  |  |  |  |  |  |  |  | – | – |  | – | – | – | – | – | – | – |  | – | ⊕ | – | – | – |  | – | ⊕ | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | ⊕ |  | ● | ⊕ | – | – | – |
 | Marker and image tracking | should | ● | ● |  | ● | ⊕ | ◐ |  |  |  |  |  |  |  |  |  |  | – | – |  | – | – | – | – | – | – | – |  | – | ⊕ | – | – | – |  | – |  | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | ⊕ |  | ● |  | – | – | – |
@@ -317,7 +321,7 @@ The notes behind each claim, and the sources each claim rests on, are in `territ
 | Eye tracking | should | ◐ | ● | – | ◐ | ⊕ | ⊕ | ○ | ○ |  | ● | ○ | ● |  |  |  |  |  |  |  |  |  |  |  | – |  |  | – |  | ⊕ |  |  |  | – | – | ○ |  |  |  | – | – | ◐ | – | – | – | ◐ | – | – | – | – | – | ● | – | ○ | ○ | – | – | – |
 | Haptics | should | ⊕ | ◐ | – | ● | ● | ● | ○ | ○ |  | ◐ | ● | ● |  |  |  |  |  |  |  |  |  |  | ◐ | – |  |  | – |  | ● |  |  |  | – | – | ⊕ |  |  |  | – | – | – | – | – | – | – | – | – | – | – | – | ◐ | – | ◐ | ○ | – | – | – |
 | Device capability discovery | should | ● | ● | ◐ | ◐ | ◐ | ◐ | ● | ● | ○ | ◐ | ● | ◐ | ○ |  | ◐ | ○ |  |  |  | ◐ |  |  |  | – |  |  | ◐ |  | ● |  |  |  | – | ◐ | ● |  |  |  | – | ◐ | ◐ | ◐ | ◐ | ◐ | ◐ | ◐ | ◐ | ◐ | ◐ | ◐ | ● | ◐ | ● | ◐ | – | – | – |
-| Face and body tracking as input | should | ● | ● | ○ | ● | ⊕ | ⊕ | ○ | ○ | ○ | ● | ◐ | ◐ | – | – | ○ | – | – | – | – | – | – | – | – | – | – | – | – | – | ○ | – | – | – | – | – | ○ | ○ | – | – | – | – | ◐ | – | – | – | – | – | – | – | – | – | ○ | – | ○ | ○ | – | – | – |
+| Face and body tracking as input | should | ● | ● | ○ | ● | ⊕ | ⊕ | ○ | ○ | ○ | ● | ◐ | ◐ | – | – | ○ | – | – | – | – | – | – | – | – | – | – | – | – | – | ○ | – | – | – | – | – | ○ | ○ | – | – | – | – | ◐ | – | – | – | – | – | – | – | – | – | ◐ | – | ○ | ○ | – | – | – |
 | Pointing and selection against content | none | ● | ⊕ | – | ● | ● | ⊕ | ◐ | ● |  | ● | ● | ◐ |  |  |  |  | – | – |  | – | – | – |  | – |  | – | – | – |  | – |  | – |  | – | ◐ | ⊕ | ⊕ |  | – |  | – | – | – | – |  | – | – | – | – | – | ● | ● | ⊕ | ● | – | – | – |
 | Text entry | none |  |  | – | ● | ● | ● |  |  |  | ● | ● | ● |  |  |  |  | – | – |  | – | – | – | – | – | – | – | – | – | ⊕ | – | – | – |  | – |  | ⊕ | – | – | – | – | – | – | – | – | – | – | – | – | – | – | ⊕ |  |  |  | – | – | – |
 | Musical event-device input | should | – | – | – | ◐ |  | ⊕ |  |  |  | ◐ |  | ● |  |  |  |  | – | – |  | – | – | – | – | – | – | – | – | – |  | – | – | – |  | – |  |  | – | – | – | – | – | – | – | – | – | – | – | – | – | – |  |  |  |  | – | – | – |
@@ -338,7 +342,7 @@ The notes behind each claim, and the sources each claim rests on, are in `territ
 | Capability | Boundary | Apple ARKit and RealityKit | Google ARCore and Android XR | Niantic Lightship | Godot | Unity | Unreal Engine | Fortnite Creative and the Unreal Editor for Fortnite | Horizon Worlds | Rec Room | Resonite | Roblox | VRChat | Open Metaverse Browser | RP1 Spatial Fabric | TeleportXR | Web of Worlds | C2PA Content Credentials | Decentralized Identifiers | IEEE 2874 Spatial Web | Inter-World Portaling System | MPEG-I Avatar Representation Format | MPEG-I Immersive Audio | MPEG-I Scene Description | MPEG-I Visual Volumetric Video-based Coding (V3C, V-PCC and MIV) | OGC 3D Tiles (Community Standard) | OGC GeoPose | Open AR Cloud (Open Spatial Computing Platform) | OpenUSD Core Specification | OpenXR | Universal Manifest | VRM | Verifiable Credentials Data Model | Verse | WebGPU | WebXR Device API | X3D (ISO/IEC 19775-1) | glTF | glTF 2.1 | 4D Gaussian splatting and splat formats | Dynamic and four-dimensional Gaussian splat implementations | Splat-to-avatar research families | Brush | Jawset Postshot | KIRI Engine | Meta Horizon Hyperscape Capture | NVIDIA Omniverse NuRec and 3DGRUT | Nerfstudio and gsplat | OpenSplat | Polycam | Scaniverse | Babylon.js | CesiumJS | PlayCanvas | Three.js | NVIDIA Cosmos | Tencent Hunyuan World 2.0 | World Labs Marble |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Scripting runtime | none | ● | – | – | ● | ● | ● | ● | ◐ | ● | ◐ | ● | ✕ | ● | ● | – | ○ |  |  |  | – |  |  |  | – | ◐ |  | – | – | – |  | – |  | ● | – | – | ● | – |  | – | – | – | – | – | – | – | – | – | – | – | – | ◐ | ○ | ● | ○ | – | – | – |
-| Behaviour graphs and interactivity | must | ● | ○ | – | ○ | ⊕ | ◐ | ● | ✕ | ● | ● | ◐ | ✕ | ◐ | ○ |  |  |  |  |  |  |  |  | ◐ | – |  |  | ○ |  | – |  | ○ |  | ✕ | – | – | ● | ◐ | ◐ | – | – | – | – | – | – | – | – | – | – | – | – | ● | ○ | ○ | ○ | ○ | ○ | – |
+| Behaviour graphs and interactivity | must | ● | ○ | – | ○ | ⊕ | ◐ | ● | ✕ | ● | ● | ◐ | ✕ | ◐ | ○ |  |  |  |  |  |  |  |  | ◐ | – |  |  | ○ |  | – |  | ○ |  | ✕ | – | – | ● | ⊕ | ◐ | – | – | – | – | – | – | – | – | – | – | – | – | ● | ○ | ○ | ○ | ○ | ○ | – |
 | Sandboxing and isolation | should | ○ | ● | – | ○ | ○ | ○ | ◐ | ◐ | ◐ | ◐ | ● | ● | ◐ | ◐ |  |  |  |  |  |  |  |  |  | – | ○ |  | ◐ | ○ | – |  |  |  | ◐ | ◐ | ◐ | ◐ |  |  | – | – | – | – | – | – | – | – | – | – | – | – | ◐ | ◐ | ○ | ○ | ◐ | – | – |
 | Agent integration | must | ◐ | ● | – | – | ⊕ | ● | ● | ● | ◐ | ◐ | ◐ | ◐ | ○ |  | ◐ | ○ |  |  | ◐ | – |  |  |  | – |  |  | ◐ |  | – | ◐ |  |  | – | – | – |  |  |  | – | – | – | – | – | – | – | ◐ | – | – | – | – | ◐ | – | ○ |  | ◐ | ◐ | ○ |
 | Resource budgets | should | ○ | ◐ | – |  | ○ | ○ | ● | ● | ● | ○ | ◐ | ● | ○ | ○ |  |  |  |  |  |  |  |  |  | – |  |  | ○ |  | – |  |  |  | ○ | ◐ | – |  |  |  | – | ◐ | – | – | ◐ | – | – | – | – | ◐ | – | – | ◐ | ● | ○ | ○ | – | – | – |
@@ -402,14 +406,14 @@ The notes behind each claim, and the sources each claim rests on, are in `territ
 | Point cloud encoding | must | ○ | – | ◐ | ○ | ⊕ | ⊕ | ○ | – | – | ◐ | ○ | – | – | – | – | – | – | – | – | – | – | – | ◐ | ● | ◐ | – | ◐ | ○ | – | – | – | – | – | – | – | ◐ | ◐ | ◐ | ◐ | – | – | ◐ | ◐ | ◐ | – | ◐ | ◐ | ◐ | ● | ◐ | ○ | ◐ | ◐ | ⊕ | ○ | ◐ | ○ |
 | Multi-view plus depth | must | – | ◐ | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | ○ | ● | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | ◐ | ◐ | ○ | ○ | ◐ | ◐ | ● | ◐ | ○ | ◐ | ◐ | – | – | – | – | – | ◐ | – |
 | Novel view synthesis | none | ● | – | ○ | – | – | – | – | – | – | ● | – | – | – | – | – | – | – | – | – | – | – | – | – | ◐ | – | – | – | – | – | – | – | – | – | – | – | – | – | – | ● | ● | ● | ● | ● | ● | ● | ● | ● | ● | ● | ● | ● | ● | ● | ⊕ | ● | ● | ● |
-| Time-varying capture | must | – | – | – | – | ⊕ | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | ● | ○ | – | – | – | – | – | – | – | – | – | – | – | ○ | – | ○ | ◐ | ◐ | ◐ | ○ | ⊕ | ○ | ◐ | ◐ | ○ | ○ | ○ | – | – | ◐ | – | ◐ | ○ | ○ |
+| Time-varying capture | must | – | – | – | – | ⊕ | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | ● | ○ | – | – | – | – | – | – | – | – | – | – | – | ○ | – | ○ | ◐ | ◐ | ◐ | ○ | ⊕ | ○ | ◐ | ◐ | ○ | ○ | ○ | – | ◐ | ◐ | – | ◐ | ○ | ○ |
 | Relighting captured content | none | ○ | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | ○ | – | – | – | – | – | – | – | – | – | – | – | – | ◐ | ◐ | ◐ | ○ | ◐ | ○ | ○ | ◐ | ○ | ◐ | ○ | ○ | ○ | ○ | – | – | ◐ | – | – | – | ○ |
 | Editing a capture after the fact | none | – | – | – | – | – | ⊕ | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | ◐ | ◐ | – | ○ | ● | ● | ◐ | ● | ○ | ◐ | ● | ◐ | – | – | ⊕ | – | – | – | ◐ |
-| Generative editing of a world | none | – | – | – | – | – | – | – | ○ | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | ◐ | – | – | – | – | – | – | – | – | ○ | – | ● |
+| Generative editing of a world | none | – | – | – | – | – | – | – | ○ | – | – | ◐ | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | ◐ | – | – | – | – | – | – | – | – | ○ | – | ● |
 | Control over what gets generated | should | – | – | – | – | – | – | – | ◐ | – | – | ◐ | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | ◐ | – | – | – | – | – | – | – | – | – | – | – | – | – | ◐ | ◐ | ● |
 | Deriving conventional assets from a generated scene | should | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | ○ | ○ | ◐ | ○ | ○ | ● | ○ | ● | ◐ | ○ | ● | ● | – | – | – | – | ○ | ● | ● |
 | Action and control exchange | should | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | ◐ | – | – | – | – | ◐ | – | – | – | – | – | – | – | – | ● | – | – |
-| Panoramic scene imagery | should | ◐ | – | – | ● | ● | – | – | ◐ | – | – | ◐ | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | ◐ | ○ | ○ | – | – | – | ○ | – | ◐ | – | – | ○ | ○ | ◐ | ◐ | ◐ | ◐ | ● | ● | – | ● | ● |
+| Panoramic scene imagery | should | ◐ | – | – | ● | ● | ⊕ | – | ◐ | – | – | ◐ | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | ◐ | ○ | ○ | – | – | – | ○ | – | ◐ | – | – | ○ | ○ | ◐ | ◐ | ◐ | ◐ | ● | ● | – | ● | ● |
 | Radiance-field reconstruction | none |  | – | – |  |  |  |  |  |  |  |  |  |  |  |  |  | – | – |  | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | ● | ● | ● | ● | ● | ● |  | ● | ● | ● | ● | ◐ |  |  | ○ |  | – | ● | ◐ |
 | Generation of individual 3D objects | none |  | – | – |  |  |  |  | ● |  |  | ● |  |  |  |  |  | – | – |  | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – |  | ● | – | – |  | – | ⊕ | ⊕ | – | ● | – |  |  |  |  | ○ |  |  |
 

@@ -41,4 +41,6 @@ The original order asked the working group whether remote rendering belongs in s
 
 This prepares the decision and finishes the authorized local research. It does not invent a group answer, upgrade a held proposal or claim that shared-corpus publication occurred.
 
-Next step: record the actual scope answer in the existing order; the fact sheet is ready for either choice.
+## Decision recorded 2026-09-18
+
+Cloud rendering stays descriptive. Model A1 is retained as bounded context only. No new capability row, no `render.remote` proposal reopened, no interoperability contract defined. The map records what exists; it does not author an agreement the working group would then have to ratify.
