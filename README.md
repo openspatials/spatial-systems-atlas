@@ -4,8 +4,8 @@
 
 An evidence-backed map of what spatial-computing systems actually do.
 
-57 subjects scored against 162 capabilities in 14 groups: 6,882 claims drawn from
-1,932 distinct sources, with 64 recorded conflicts and 22 unverified claims
+57 subjects scored against 164 capabilities in 14 groups: 6,996 claims drawn from
+1,963 distinct sources, with 64 recorded conflicts and 22 unverified claims
 counted separately rather than blurred into the rest.
 
 Every claim here is tied to a source you can open. That is the point of it. The
@@ -63,7 +63,7 @@ months reporting 1,749 claims while the database held 6,882.
 cd app
 npm install
 npm run dev
-npm test        # 45 tests over the counting rules and the published figures
+npm test        # 50 tests over the counting rules and the published figures
 ```
 
 The tests are worth reading before the code. They state the rules the map lives
