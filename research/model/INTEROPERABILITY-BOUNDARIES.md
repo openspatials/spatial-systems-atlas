@@ -9,13 +9,11 @@ revised: "2026-09-06T19:27:08Z — WO-msf-wg-tool-20260906-074 applied the owner
 revised_previous: 2026-09-06T18:20:00Z — WO-msf-wg-tool-20260906-073 scored the 28 capabilities added on 2026-09-06 and re-derived every count from 117 rows in 14 groups. The 89 rows the owner approved on 2026-09-06 are unchanged, word for word.
 project: msf-wg-tool
 workstream: infrastructure-wg-map
-source_work_order: /Users/grig/work/spatial-computing-research-projects-msf/repo/msf-wg-tool/.dev/ai/workorders/2026-09-04-21-42-57Z-WO-msf-wg-tool-20260904-064-interoperability-boundaries.md
 created_by: project steward
 source: infrastructure-wg/meetings/2026-09-04-meeting-notes.md (F5) — Don Brutzman on tests 00:19:54–00:24:35 and 00:32:53; Grig Bilham 00:35:04–00:36:29 ("defining those boundaries would help define where the tests are")
 updated: 2026-09-11T07:51:29Z
-data_basis: 175 capabilities in 15 groups and 66 subjects (2026-10-20). Membership derives from accepted capabilities.csv metadata. Integrated coverage contains 10,659 claims and 2,687 sources; 891 subject-capability pairs remain unscored.
+data_basis: 175 capabilities in 15 groups and 66 subjects (2026-10-25). Membership derives from accepted capabilities.csv metadata. Integrated coverage contains 11,539 claims and 3,061 sources; 11 subject-capability pairs remain unscored.
 data_basis_2026_09_06: infrastructure-wg/data/territory.db as of 2026-09-06 (46 subjects, 117 capabilities, 4,016 claims, 1,507 sources). The 89 rows were first scored against the database of 2026-09-04T10:03:30Z (35 subjects, 1,749 claims, 1,057 sources); the reach figures on this page have been re-derived against the current database and the two that moved are marked.
-project_root: /Users/grig/work/spatial-computing-research-projects-msf/repo/msf-wg-tool
 project_code_note: Omitted because the project registry has no uppercase alias; the frontmatter standard directs omission rather than invention.
 ---
 

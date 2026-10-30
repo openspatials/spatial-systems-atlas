@@ -100,6 +100,11 @@ def build(con):
                 (sid, c["capability_id"], c["level"], c.get("note"), c.get("confidence", "unverified"),
                  direction)).lastrowid
             for s in c.get("sources", []):
+                # The database is published, so a source address must be a public one or a
+                # plain description; a file path on the maintainer's machine is refused.
+                if (s.get("url") or "").startswith(("/", "~", "file:")):
+                    sys.exit(f"{os.path.basename(path)}: {c['capability_id']} cites a path on this "
+                             f"machine; give its public address or a plain description")
                 # Every source entry becomes its own row. One claim may cite one address twice
                 # for two different sentences; evidence is keyed by its own row id, so the
                 # second quote lands instead of being ignored as a repeat of the first.

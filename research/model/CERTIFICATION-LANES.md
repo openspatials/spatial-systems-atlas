@@ -7,14 +7,12 @@ status: draft for steward review
 created: 2026-09-06T14:02:41Z
 project: msf-wg-tool
 workstream: infrastructure-wg-map
-source_work_order: /Users/grig/work/spatial-computing-research-projects-msf/repo/msf-wg-tool/.dev/ai/workorders/2026-09-04-21-42-57Z-WO-msf-wg-tool-20260904-065-certification-lanes.md
 created_by: project steward
 depends_on: infrastructure-wg/model/INTEROPERABILITY-BOUNDARIES.md (WO-msf-wg-tool-20260904-064, approved by the owner 2026-09-06T13:51:17Z); infrastructure-wg/tests/PILOT-AVATAR-PORTABILITY.md (WO-msf-wg-tool-20260904-066)
 updated: 2026-09-11T07:51:29Z
 data_basis: 164 capabilities in 14 groups and 57 subjects. Membership derives from accepted capabilities.csv metadata. Integrated coverage contains 6,996 accepted claims and 1,943 sources, including 1,693 accepted claims for the 47 additions; 986 new subject-capability pairs remain explicitly unscored.
 data_basis_2026_09_06: "infrastructure-wg/data/territory.db read 2026-09-06T19:27Z — 46 subjects, 117 capabilities, 4,016 claims, 1,507 sources; sha256 81dbf0dbec1a6f07653885d2a0d6134fc8955a0e07c0c362d3666ffa02522ca9, written by the rebuild of WO-msf-wg-tool-20260906-074, which applied the owner's answer to question 5 of the boundaries page: 40 must, 62 should, 15 none, lanes U1 22, U2 19, U3 20, U4 12. Lane 1 gained five rows and no other lane moved. Every number in lane 1 was re-derived against that database. The earlier basis line follows."
 data_basis_previous: "infrastructure-wg/data/territory.db read 2026-09-06T18:19Z — 46 subjects, 117 capabilities, 4,016 claims, 1,507 sources; sha256 9f4dd1aaab7bdbb625cf9769b495c5a2f4d1b9b07f333a1a4f9637b9ce7fb096, written 2026-09-06T18:08Z by the reconcile rebuild of WO-msf-wg-tool-20260906-073, whose 35 must, 67 should and 15 none match the boundaries table row for row. Every lane number on this page was re-derived against that database and none of them moved: the 28 capabilities added on 2026-09-06 are 21 shoulds and 7 nones, so no lane gained or lost a row. The page was first written against the database of 2026-09-06T14:10Z — 89 capabilities, 2,728 claims, 1,436 sources, sha256 25ab2eb7f0082bf0b0b6bf98d724d05c1122c48fcce54908f19667e093964143"
-project_root: /Users/grig/work/spatial-computing-research-projects-msf/repo/msf-wg-tool
 project_code_note: Omitted because the project registry has no uppercase alias; the frontmatter standard directs omission rather than invention.
 ---
 

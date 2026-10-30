@@ -242,7 +242,7 @@
           "quote": "\tprotocol/conventions\n\tprotocol/state_machine\n\tprotocol/signaling\n\tprotocol/avatar_manifest\n\tprotocol/service\n\tprotocol/data_transfer\n\tprotocol/http\n\tprotocol/video\n\tprotocol/video_metadata\n\tprotocol/geometry_payload\n\tprotocol/client_nodes\n\tprotocol/audio\n\tprotocol/input\n\tprotocol/asset_portability\n\tprotocol/reconnection\n\tprotocol/local_control"
         },
         {
-          "url": "/Users/grig/work/spatial-computing-research-projects-msf/repo/open-spatial-lab/docs/ecosystem/layers/iwps.md",
+          "url": "Open Spatial Lab ecosystem layer note: IWPS (not published)",
           "title": "IWPS entity document, specification table",
           "retrieved": "2026-08-22",
           "kind": "local-evidence",
@@ -826,7 +826,7 @@
           "quote": "\tprotocol/avatar_manifest"
         },
         {
-          "url": "/Users/grig/work/spatial-computing-research-projects-msf/repo/open-spatial-lab/docs/ecosystem/layers/teleportxr.md",
+          "url": "Open Spatial Lab ecosystem layer note: TeleportXR (not published)",
           "title": "TeleportXR entity document, section 6",
           "retrieved": "2026-08-22",
           "kind": "local-evidence",
@@ -3639,6 +3639,28 @@
           "retrieved": "2026-10-20",
           "kind": "primary",
           "quote": "On connection, the server tells the client which control inputs it expects, and it's up to the client to match these up to its own hardware."
+        }
+      ]
+    },
+    {
+      "capability_id": "scene.instancing",
+      "level": "native",
+      "note": "A node record carries only a mesh resource uid, and the mesh is sent once as its own chunk, so many nodes can name one mesh; the specification never says so in words, but the reference client groups static draws of one mesh and material into a single instanced draw with a per-node matrix. The evidence is the data layout plus the reference client, not a stated rule of the protocol.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/teleportxr/Teleport/blob/f247f206778c31bd3c91ac90eedd55770874de3d/docs/protocol/geometry_payload.rst",
+          "title": "TeleportXR geometry_payload.rst (teleportxr/Teleport, f247f20), Mesh component",
+          "retrieved": "2026-10-22",
+          "kind": "primary",
+          "quote": "Mesh resource uid. Must be non-zero; the mesh itself is sent as a separate Mesh or MeshPointer chunk."
+        },
+        {
+          "url": "https://github.com/teleportxr/Teleport/blob/f247f206778c31bd3c91ac90eedd55770874de3d/ClientRender/InstanceRenderer.cpp",
+          "title": "Teleport ClientRender/InstanceRenderer.cpp (teleportxr/Teleport, f247f20)",
+          "retrieved": "2026-10-22",
+          "kind": "primary",
+          "quote": "We will instance-render groups of draws that have the same mesh, pass and material, and which are static."
         }
       ]
     }

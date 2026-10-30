@@ -870,7 +870,7 @@ Six, in the order I would take them.
 *Companion to the architecture map board.*
 
 **Before quoting anything from this document at a standards meeting, read**
-`/Users/grig/work/spatial-computing-research-projects-msf/repo/msf-wg-tool/infrastructure-wg/sources/DO-NOT-REPEAT.md`.
+`research/sources/DO-NOT-REPEAT.md`.
 It lists the figures in this family's research that are misattributed, arithmetically wrong, or
 stale, and the parts of this map that are description rather than findings.
 

@@ -6,7 +6,6 @@ status: complete
 created: 2026-09-11T01:01:26Z
 project: msf-wg-tool
 project_code: msf-wg-tool
-project_root: /Users/grig/work/spatial-computing-research-projects-msf/repo/msf-wg-tool
 workstream: infrastructure-wg-map
 created_by: map-delivery-worker
 requested_by: owner
@@ -18,7 +17,7 @@ privacy_scope: project-readable
 
 Prepared 2026-09-11. This replaces the **currency claims**, not the historical record, in the two standards documents dated 2025-10-31. Each row identifies the date on which its source was checked. Those dates are not a claim of a fresh September 11 standards census.
 
-The retained evidence is the [August 20 freshness report](../../.dev/ai/subtask-comms/2026-08-20-standards-freshness-check-result.md), qualified by [VERIFIED-CORRECTIONS.md](VERIFIED-CORRECTIONS.md) and the accepted [September 9 primary-source register](../../.dev/ai/reports/2026-09-09-23-31-22Z-standards-review/source-register.md). The latter distinguishes normative text, drafts, catalog metadata and unread paid text. It takes precedence where the older report overreached, notably for C2PA, IEEE 2874 and VC companions. Source-scope tracing does not set Map scores.
+The retained evidence is the August 20 freshness report (not published), qualified by [VERIFIED-CORRECTIONS.md](VERIFIED-CORRECTIONS.md) and the accepted September 9 primary-source register (not published). The latter distinguishes normative text, drafts, catalog metadata and unread paid text. It takes precedence where the older report overreached, notably for C2PA, IEEE 2874 and VC companions. Source-scope tracing does not set Map scores.
 
 | Subject | Version, status and date supported by retained evidence | Checked | Correction to the 2025 document / primary source |
 |---|---|---|---|
@@ -46,9 +45,9 @@ Safe to retain with dates: established core editions such as glTF 2.0, OpenXR 1.
 
 ## Disposition of all 17 historical gaps
 
-The old list is a set of 2025 research questions, **not seventeen empty cells in the current Map**. The [current capability export](../board/territory.json) has 162 capabilities in 14 groups at this check. The [accepted boundary implementation](../../.dev/ai/subtask-comms/2026-09-04-21-42-57Z-wo-064-boundaries-result.md) and [accepted capability expansion](../../.dev/ai/subtask-comms/2026-09-06-13-52-39Z-wo-071-capabilities-result.md) supersede the early overlay. No old gap warrants a new capability merely because its title differs.
+The old list is a set of 2025 research questions, **not seventeen empty cells in the current Map**. The [current capability export](../../board/territory.json) has 162 capabilities in 14 groups at this check. The accepted boundary implementation (not published) and accepted capability expansion (not published) supersede the early overlay. No old gap warrants a new capability merely because its title differs.
 
-The mapping below names questions, not support levels. [Current scope reports](../data/scope/) and the [September proposal review](../../.dev/ai/reports/2026-09-09-23-31-22Z-standards-review/proposal-review.md) qualify the sources. The [lab overlap table](STACK-OVERLAP.md) separates retained implementation receipts from documented scope.
+The mapping below names questions, not support levels. Current scope reports (not published) and the September proposal review (not published) qualify the sources. The [lab overlap table](STACK-OVERLAP.md) separates retained implementation receipts from documented scope.
 
 | 2025 gap | Existing Map questions | Disposition and boundary |
 |---|---|---|

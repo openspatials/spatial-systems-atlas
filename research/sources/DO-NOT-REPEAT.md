@@ -252,4 +252,4 @@ sections 14 to 20 of the corrections file. Until they are, do not read a coverag
 of them.
 
 Full extraction with per-claim source attribution:
-`/Users/grig/work/spatial-computing-research-projects-msf/repo/msf-wg-tool/.dev/ai/subtask-comms/2026-08-20-architecture-map-extraction-result.md`
+the maintainers' working notes (not published)

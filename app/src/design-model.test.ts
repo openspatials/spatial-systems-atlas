@@ -322,8 +322,9 @@ test('the note reports Verse as a scope boundary, not as an absence of work', as
   assert.ok(note, 'Verse sits above the line')
   // 2026-10-20: the four commerce and trust rows are out of scope for a programming language.
   // 2026-10-20: so are the seven wave 2 rows (agent authoring, world export, the five VDC rows).
-  assert.equal(note.outOfScope, 125)
-  assert.equal(note.applies, 50)
+  // 2026-10-23: 125 -> 134 after wave 4 answered Verse's blank cells, mostly out of scope.
+  assert.equal(note.outOfScope, 134)
+  assert.equal(note.applies, 41)
   assert.equal(note.total, 175)
   assert.equal(note.total, note.outOfScope + note.applies)
 
@@ -342,5 +343,6 @@ test('the note reports Verse as a scope boundary, not as an absence of work', as
   // 2026-10-20: 29 -> 38 after wave 2 added formats and protocols where most rows do not apply
   // (STAC, WebAssembly, OAuth, Vibe Jam, OMI glTF extensions, JSON-LD) and answered blank cells.
   // 2026-10-20: 38 -> 39 after wave 3 answered the remaining must-agree cells.
-  assert.equal(marked.length, 39)
+  // 2026-10-23: 39 -> 42 after wave 4 answered the remaining blank cells.
+  assert.equal(marked.length, 42)
 })

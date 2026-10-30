@@ -97,7 +97,7 @@ body project pages, and publisher records. Two sources could not be reached and 
 on them is marked unverified in the underlying result files, not repeated here.
 
 Underlying results:
-`/Users/grig/work/spatial-computing-research-projects-msf/repo/msf-wg-tool/.dev/ai/subtask-comms/`
+the maintainers' working notes (not published)
 
 ## 4. Eight claims in our own standards research are wrong
 

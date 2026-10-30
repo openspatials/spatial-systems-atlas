@@ -6,7 +6,6 @@ status: complete
 created: 2026-09-11T01:01:26Z
 project: msf-wg-tool
 project_code: msf-wg-tool
-project_root: /Users/grig/work/spatial-computing-research-projects-msf/repo/msf-wg-tool
 workstream: infrastructure-wg-map
 created_by: map-delivery-worker
 requested_by: owner
@@ -18,7 +17,7 @@ privacy_scope: project-readable
 
 Prepared 2026-09-11. Model A1 has a citable implementation example: Unreal Engine Pixel Streaming. This fact sheet is Map-local. It does not establish a working-group decision to standardize remote rendering, and it does not change the parent research corpus or the published board.
 
-The [September 10 accepted Unreal scope trace](../data/scope/unreal.md) covers Pixel Streaming as item E102. Its source receipts were retrieved on September 10; the three primary pages below were also read through the web tool on September 11. These are documentation reads, with no running streaming session or measured headset trial.
+The September 10 accepted Unreal scope trace (not published) covers Pixel Streaming as item E102. Its source receipts were retrieved on September 10; the three primary pages below were also read through the web tool on September 11. These are documentation reads, with no running streaming session or measured headset trial.
 
 | Question | Supported statement | Limit |
 |---|---|---|
@@ -32,7 +31,7 @@ The [September 10 accepted Unreal scope trace](../data/scope/unreal.md) covers P
 
 ## Current Map placement and the remaining decision
 
-Existing questions such as `net.media`, `net.transport`, `net.session`, `input.session` and `input.devcaps` can describe parts of a remote session. A complete remote-view contract would need more than those parts. The [September 9 proposal review](../../.dev/ai/reports/2026-09-09-23-31-22Z-standards-review/proposal-review.md) retains the proposed `render.remote` hold. The September 10 Unreal trace explicitly preserves that hold and records **no new owner decision**. `render.remote` is absent from the current 117-capability export; Pixel Streaming documentation does not authorize adding it.
+Existing questions such as `net.media`, `net.transport`, `net.session`, `input.session` and `input.devcaps` can describe parts of a remote session. A complete remote-view contract would need more than those parts. The September 9 proposal review (not published) retains the proposed `render.remote` hold. The September 10 Unreal trace explicitly preserves that hold and records **no new owner decision**. `render.remote` is absent from the current 117-capability export; Pixel Streaming documentation does not authorize adding it.
 
 The original order asked the working group whether remote rendering belongs in scope. No answer to that specific question was found in the exact order, current roadmap, accepted boundary result or accepted Unreal trace. The concrete choices remain:
 

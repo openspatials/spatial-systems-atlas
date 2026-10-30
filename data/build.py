@@ -204,9 +204,20 @@ def fill(text, where):
 
 tips_path = os.path.join(D, "tooltips", "tooltips.json")
 tips = {}
+# The note sources are published with this folder, so a path on the maintainer's
+# machine must not be one of them. Written without a literal path, so this line
+# does not trip the same check in the public repository.
+_LONG = "|".join(re.escape("/" + p + "/") for p in ("Users", "Volumes", "home", "private", "var/folders"))
+MACHINE_PATH = re.compile(r"(?<![\w./~-])(?:" + _LONG + r")"
+                          + r"|(?:^|(?<=[\s\"'`(\[<=]))(?:" + re.escape("~" + "/") + "|" + re.escape("$" + "HOME/") + r")"
+                          + r"|" + re.escape("file:" + "//") + r"(?:" + _LONG + r")", re.MULTILINE)
 if os.path.exists(tips_path):
     with open(tips_path) as fh:
         for k, v in json.load(fh).items():
+            for s in (v.get("sources") or []) if isinstance(v, dict) else []:
+                if isinstance(s, str) and MACHINE_PATH.search(s):
+                    raise SystemExit(f"tooltip {k} cites a path on this machine; give its public "
+                                     f"address or a plain description: {s[:120]}")
             text = v.get("tooltip") if isinstance(v, dict) else v
             if text:
                 tips[k] = fill(text, f"tooltip {k}")

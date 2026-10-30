@@ -4,8 +4,8 @@
 
 An evidence-backed map of what spatial-computing systems actually do.
 
-66 subjects scored against 175 capabilities in 15 groups: 10,659 claims drawn from
-2,687 distinct sources, with 62 recorded conflicts and 141 unverified claims
+66 subjects scored against 175 capabilities in 15 groups: 11,539 claims drawn from
+3,061 distinct sources, with 62 recorded conflicts and 250 unverified claims
 counted separately rather than blurred into the rest.
 
 Every claim here is tied to a source you can open. That is the point of it. The
