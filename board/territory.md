@@ -5,9 +5,9 @@ Every mark below is one claim held in a database and tied to a source. This file
 - Claims: 11,539
 - Subjects: 66
 - Capabilities: 175 in 15 groups
-- Sources: 3,061
+- Sources: 3,059
 - Recorded conflicts: 62
-- Built from the territory database as it stood at 2026-10-27T06:47:56Z
+- Built from the territory database as it stood at 2026-10-31T09:58:39Z
 
 ## Legend
 

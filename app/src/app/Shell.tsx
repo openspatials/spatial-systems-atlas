@@ -22,6 +22,7 @@ import { RelationsView } from './RelationsView.tsx'
 import { VERSION } from '../version.ts'
 import { RowPanel } from './RowPanel.tsx'
 import { Comment } from './Comment.tsx'
+import { Updates } from './Updates.tsx'
 
 const VIEWS: Array<{ id: ViewId; label: string }> = [
   { id: 'subject', label: 'Subject' },
@@ -216,6 +217,7 @@ export function Shell({ model }: { model: Model }) {
             </div>
           )}
 
+          <Updates />
           <Comment />
         </div>
       </header>
@@ -312,7 +314,12 @@ export function Shell({ model }: { model: Model }) {
             </aside>
           </div>
 
-          <footer style={S.footer}>
+          <footer style={{ ...S.footer, display: 'flex', flexDirection: 'column', gap: 4 }}>
+            <span>Spatial Systems Atlas by Grig Bilham</span>
+            <span>
+              Cite as: Bilham, G. (2026). Spatial Systems Atlas [Data set and interface].
+              {' '}https://openspatials.com/msf/atlas/ (accessed {new Date().toISOString().slice(0, 10)}).
+            </span>
             <span>Version {VERSION}</span>
           </footer>
         </main>
