@@ -11,18 +11,24 @@ import { LANE_LABEL, coverage, countedIds, matchCount, matchingRows, measuredCap
 import { LEGEND, THEMES, cellStyle, read } from './marks.ts'
 import { exportOptions } from './exports.ts'
 import {
-  PRESETS, decode, encode, initialState, preferredTheme, presetSubjects, queryOf, reducer,
-  rememberTheme, storedTheme,
+  PANEL_IDS, PANEL_WIDTH, PRESETS, clampPanelWidth, decode, encode, initialState, preferredTheme,
+  presetQuestion, presetSubjects, queryOf, reducer, rememberPanelWidth, rememberPanels, rememberTheme, storedPanelWidth,
+  storedPanels, storedTheme,
 } from './state.ts'
-import type { AppState, Preset, ViewId } from './state.ts'
+import type { AppState, PanelId, Preset, ViewId } from './state.ts'
 import { SubjectView } from './SubjectView.tsx'
 import { CompareView } from './CompareView.tsx'
 import { GroupsView } from './GroupsView.tsx'
 import { RelationsView } from './RelationsView.tsx'
-import { VERSION } from '../version.ts'
+import { Footer } from './Footer.tsx'
+import { PREVIEW } from '../preview.ts'
 import { RowPanel } from './RowPanel.tsx'
 import { Comment } from './Comment.tsx'
 import { Updates } from './Updates.tsx'
+import { CANDIDATES, readCandidateFlag, writeCandidateFlag } from './explore-model.ts'
+import type { CandidateId } from './explore-model.ts'
+import { MapView } from './MapView.tsx'
+import { LineupView } from './LineupView.tsx'
 
 const VIEWS: Array<{ id: ViewId; label: string }> = [
   { id: 'subject', label: 'Subject' },
@@ -56,11 +62,47 @@ export function Shell({ model }: { model: Model }) {
     const base = { ...initialState(m), theme: preferredTheme() }
     return decode(window.location.hash, m, base)
   })
-  const [morePresets, setMorePresets] = useState(false)
+  // A link to a preset behind "More" opens the list, so the selected preset shows.
+  const [morePresets, setMorePresets] = useState(() =>
+    PRESETS.some((p) => p.more && p.name === state.presetName))
   const [countingOpen, setCountingOpen] = useState(false)
   const [narrow, setNarrow] = useState(() => window.innerWidth < 1100)
+  // The tool rail's sections. On a narrow screen the panel floats over the
+  // display, so it opens closed there and its changes are not kept as the
+  // reader's wide-screen choice.
+  const [panels, setPanels] = useState<PanelId[]>(() =>
+    window.innerWidth < 1100 ? [] : (storedPanels() ?? PANEL_IDS))
+  const [panelWidth, setPanelWidth] = useState(storedPanelWidth)
+  const togglePanel = useCallback((id: PanelId) => {
+    setPanels((prev) => {
+      const next = PANEL_IDS.filter((p) => (p === id ? !prev.includes(p) : prev.includes(p)))
+      if (window.innerWidth >= 1100) rememberPanels(next)
+      return next
+    })
+  }, [])
   const [exportOpen, setExportOpen] = useState(false)
   const [exportNote, setExportNote] = useState<string | null>(null)
+
+  // Candidate displays appear only with `?candidates` in
+  // the address, so the live default is unchanged. Which one is open travels in
+  // the same query parameter; the analysis address (the hash) is untouched.
+  const [candidateFlag] = useState(() => PREVIEW ? readCandidateFlag(window.location.search) : readCandidateFlag(''))
+  const [candidate, setCandidate] = useState<CandidateId | null>(candidateFlag.open)
+  const openCandidate = useCallback((id: CandidateId | null) => {
+    setCandidate(id)
+    if (candidateFlag.enabled) {
+      window.history.replaceState(null, '', writeCandidateFlag(window.location.search, id) + window.location.hash)
+    }
+  }, [candidateFlag.enabled])
+  const focusFromCandidate = useCallback((id: string) => {
+    openCandidate(null)
+    dispatch({ type: 'focus', id })
+  }, [openCandidate])
+  const groupFromCandidate = useCallback((id: string) => {
+    openCandidate(null)
+    dispatch({ type: 'rel-group', id })
+    dispatch({ type: 'view', view: 'relations' })
+  }, [openCandidate])
 
   // The address this app wrote itself. replaceState fires no event, so a
   // one-shot ignore flag would be set and never consumed, and would swallow the
@@ -128,11 +170,11 @@ export function Shell({ model }: { model: Model }) {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
       if (state.detail) dispatch({ type: 'detail', detail: null })
-      else if (state.sidebar === 'open') dispatch({ type: 'sidebar', mode: 'collapsed' })
+      else if (narrow && panels.length) setPanels([])
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [state.detail, state.sidebar])
+  }, [state.detail, narrow, panels.length])
 
   const query = queryOf(state)
   const rows = useMemo(() => matchingRows(model, query), [model, query])
@@ -142,12 +184,19 @@ export function Shell({ model }: { model: Model }) {
 
   const applyPreset = useCallback((p: Preset) => {
     const on = presetSubjects(p, model)
+    // A preset chooses the display, so it closes a candidate display.
+    openCandidate(null)
     dispatch({
       type: 'preset',
       name: p.name,
-      state: { on, view: p.view, filter: p.filter, lane: p.lane ?? null, focus: p.focus ?? on[0] },
+      // A preset writes the whole analysis, so the basis and the assessed-only
+      // switch return to their defaults too.
+      state: {
+        on, view: p.view, filter: p.filter, lane: p.lane ?? null, focus: p.focus ?? on[0],
+        basis: 'prod', hasEntry: false,
+      },
     })
-  }, [model])
+  }, [model, openCandidate])
 
   const nextTheme = state.theme === 'dark' ? 'light' : 'dark'
   const toggleTheme = () => {
@@ -163,20 +212,18 @@ export function Shell({ model }: { model: Model }) {
       (state.lane ? ` · lane ${LANE_LABEL[state.lane]}` : ''),
   ]
 
-  const question = {
-    subject: state.focus
-      ? `What does ${model.bySubject.get(state.focus)?.name} cover — and who covers what it does not?`
-      : 'Pick a subject to start',
+  // While a preset is selected the heading is its question. The moment the
+  // reader changes the selection the preset is gone and the heading is generic.
+  const question = (candidate && CANDIDATES.find((c) => c.id === candidate)?.question) || presetQuestion(state.presetName) || {
+    subject: !state.focus
+      ? 'Pick a subject to start'
+      : 'What does the subject in focus cover — and who covers what it does not?',
     compare: state.on.length === 1
       ? `What does the one selected subject cover?`
       : `Where do these ${state.on.length} subjects agree, differ, and leave a gap?`,
-    groups: 'Which parts of the map are covered, and which are thin?',
+    groups: 'What the spatial web covers, and where it is thin',
     relations: 'Inside one group, who supports which capability?',
   }[state.view]
-
-  // On a narrow screen the sidebar cannot hold its own column, so it shows as
-  // the rail unless the reader has deliberately opened it, and then it floats.
-  const rail = state.sidebar === 'collapsed' || (narrow && state.sidebar === 'pinned')
 
   return (
     <div style={S.root}>
@@ -230,7 +277,9 @@ export function Shell({ model }: { model: Model }) {
 
       <div style={{ display: 'flex', alignItems: 'flex-start', minHeight: 0, flex: 1, maxWidth: '100%' }}>
         <Sidebar
-          model={model} state={state} dispatch={dispatch} rail={rail}
+          model={model} state={state} dispatch={dispatch}
+          panels={panels} togglePanel={togglePanel} floating={narrow}
+          width={panelWidth} setWidth={setPanelWidth}
           morePresets={morePresets} setMorePresets={setMorePresets}
           applyPreset={applyPreset} rowsShown={rows.length}
         />
@@ -238,12 +287,23 @@ export function Shell({ model }: { model: Model }) {
         <main style={S.main}>
           <div style={S.questionBar}>
             <h1 style={S.question}>{question}</h1>
-            <div style={S.segmented}>
+            <div style={S.segmented} role="group" aria-label="Display">
               {VIEWS.map((v, i) => (
-                <button key={v.id} type="button" aria-pressed={state.view === v.id}
-                  style={{ ...S.segment(state.view === v.id), borderRight: i < 3 ? '1px solid var(--ruleS)' : 0 }}
-                  onClick={() => dispatch({ type: 'view', view: v.id })}>
+                <button key={v.id} type="button" aria-pressed={!candidate && state.view === v.id}
+                  className="segment" style={S.segment(!candidate && state.view === v.id, i > 0)}
+                  onClick={() => {
+                    if (candidate) openCandidate(null)
+                    if (!candidate || state.view !== v.id) dispatch({ type: 'view', view: v.id })
+                  }}>
                   {v.label}
+                </button>
+              ))}
+              {candidateFlag.enabled && CANDIDATES.map((c) => (
+                <button key={c.id} type="button" aria-pressed={candidate === c.id}
+                  className="segment" style={{ ...S.segment(candidate === c.id, true), fontStyle: 'italic' }}
+                  title="Candidate display, shown only with ?candidates in the address"
+                  onClick={() => openCandidate(c.id)}>
+                  {c.label}
                 </button>
               ))}
             </div>
@@ -287,18 +347,25 @@ export function Shell({ model }: { model: Model }) {
                   ].filter(Boolean).join(', ') + '. Nothing is hidden by the subjects you picked.'}
                   fixLabel="Show every capability again"
                   fix={() => { dispatch({ type: 'filter', filter: 'all' }); dispatch({ type: 'lane', lane: null }); dispatch({ type: 'has-entry', value: false }) }} />
+              ) : candidate === 'map' ? (
+                <MapView model={model} state={state} dispatch={dispatch} rows={rows}
+                  onFocusSubject={focusFromCandidate} onOpenGroup={groupFromCandidate} />
+              ) : candidate === 'lineup' ? (
+                <LineupView model={model} state={state} dispatch={dispatch} rows={rows}
+                  onFocusSubject={focusFromCandidate} />
               ) : state.view === 'subject' ? (
                 <SubjectView model={model} state={state} dispatch={dispatch} rows={rows} />
               ) : state.view === 'compare' ? (
                 <CompareView model={model} state={state} dispatch={dispatch} rows={rows} />
               ) : state.view === 'groups' ? (
-                <GroupsView model={model} state={state} dispatch={dispatch} />
+                <GroupsView model={model} state={state} dispatch={dispatch} rows={rows} />
               ) : (
                 <RelationsView model={model} state={state} dispatch={dispatch} rows={rows} />
               )}
             </div>
 
-            <aside style={narrow ? S.legendStrip : S.legend} aria-label="Reading the marks">
+            {/* A candidate display carries its own key and card in this column. */}
+            {!candidate && <aside style={narrow ? S.legendStrip : S.legend} aria-label="Reading the marks">
               <span style={S.legendHead}>Reading the marks</span>
               {LEGEND.map((entry) => (
                 <div key={entry.label} style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
@@ -311,17 +378,10 @@ export function Shell({ model }: { model: Model }) {
                   </span>
                 </div>
               ))}
-            </aside>
+            </aside>}
           </div>
 
-          <footer style={{ ...S.footer, display: 'flex', flexDirection: 'column', gap: 4 }}>
-            <span>Spatial Systems Atlas by Grig Bilham</span>
-            <span>
-              Cite as: Bilham, G. (2026). Spatial Systems Atlas [Data set and interface].
-              {' '}https://openspatials.com/msf/atlas/ (accessed {new Date().toISOString().slice(0, 10)}).
-            </span>
-            <span>Version {VERSION}</span>
-          </footer>
+          <Footer style={S.footer} />
         </main>
       </div>
 
@@ -360,11 +420,33 @@ function Empty({ title, why, fixLabel, fix }: { title: string; why: string; fixL
   )
 }
 
-function Sidebar({ model, state, dispatch, rail, morePresets, setMorePresets, applyPreset, rowsShown }: {
+/** The tool rail's buttons, in rail order. The icon is drawn by RailIcon. */
+const RAIL: Array<{ id: PanelId; label: string; section: string }> = [
+  { id: 'presets', label: 'Presets', section: 'Presets' },
+  { id: 'subjects', label: 'Subjects', section: 'Subjects compared' },
+  { id: 'rows', label: 'Rows', section: 'Rows shown' },
+  { id: 'counting', label: 'Counting', section: 'What the percentages count' },
+  { id: 'lane', label: 'Lane', section: 'Use-case lane' },
+]
+
+/**
+ * The tool rail and the column of sections it shows. Each rail button shows or
+ * hides one section; several may be on at once and they stack in rail order.
+ * With none on, the column is gone and the display takes the width. Below
+ * 1100px the column floats over the display instead of taking a column.
+ */
+function Sidebar({
+  model, state, dispatch, panels, togglePanel, floating, width, setWidth,
+  morePresets, setMorePresets, applyPreset, rowsShown,
+}: {
   model: Model
   state: AppState
   dispatch: React.Dispatch<import('./state.ts').Action>
-  rail: boolean
+  panels: PanelId[]
+  togglePanel: (id: PanelId) => void
+  floating: boolean
+  width: number
+  setWidth: (w: number) => void
   morePresets: boolean
   setMorePresets: (v: boolean) => void
   applyPreset: (p: Preset) => void
@@ -372,149 +454,243 @@ function Sidebar({ model, state, dispatch, rail, morePresets, setMorePresets, ap
 }) {
   const [find, setFind] = useState('')
 
-  if (rail) {
-    return (
-      <div style={S.rail}>
-        <button type="button" style={S.railToggle} title="Open filters and options"
-          onClick={() => dispatch({ type: 'sidebar', mode: 'pinned' })}>»</button>
-        {[
-          ['SUBJ', String(state.on.length)],
-          ['ROWS', String(rowsShown)],
-          ['BASIS', state.basis === 'prod' ? 'P' : state.basis === 'all' ? 'A' : 'M'],
-          ['LANE', state.lane ?? '—'],
-        ].map(([k, v]) => (
-          <div key={k} style={S.railItem}><span style={S.railKey}>{k}</span><strong>{v}</strong></div>
-        ))}
-      </div>
-    )
-  }
-
   const presets = PRESETS.filter((p) => morePresets || !p.more)
   const query = queryOf(state)
   const q = find.trim().toLowerCase()
 
-  return (
-    <div style={S.sidebar(state.sidebar)}>
-      <div style={S.sidebarHead}>
-        <span style={S.tinyLabel}>Controls</span>
-        <span style={{ marginLeft: 'auto', fontSize: 10.5, color: 'var(--faint)' }}>
-          {state.sidebar === 'pinned' ? 'pinned' : 'floating'}
-        </span>
-        <button type="button" style={S.small(state.sidebar === 'pinned')}
-          title={state.sidebar === 'pinned' ? 'Unpin — the panel floats over the display' : 'Pin — the panel keeps its own column'}
-          onClick={() => dispatch({ type: 'sidebar', mode: state.sidebar === 'pinned' ? 'open' : 'pinned' })}>
-          {state.sidebar === 'pinned' ? 'Pinned' : 'Pin'}
+  const badge: Record<PanelId, string | null> = {
+    presets: null,
+    subjects: String(state.on.length),
+    rows: String(rowsShown),
+    counting: state.basis === 'prod' ? 'P' : state.basis === 'all' ? 'A' : 'M',
+    lane: state.lane,
+  }
+
+  const sections: Record<PanelId, React.ReactNode> = {
+    presets: (
+      <>
+        {presets.map((p) => (
+          <button key={p.name} type="button" style={S.presetRow(p.name === state.presetName)}
+            aria-pressed={p.name === state.presetName} onClick={() => applyPreset(p)}>
+            <strong style={{ fontFamily: 'var(--fl)', fontSize: 12 }}>{p.name}</strong>
+            <span style={{ fontSize: 11, color: 'var(--faint)' }}>{p.scope}</span>
+          </button>
+        ))}
+        <button type="button" style={S.disclosure} onClick={() => setMorePresets(!morePresets)}>
+          {morePresets ? 'Fewer' : 'More'}
         </button>
-        <button type="button" style={S.small(false)} title="Collapse to the rail"
-          onClick={() => dispatch({ type: 'sidebar', mode: 'collapsed' })}>«</button>
-      </div>
-
-      <div style={S.sidebarBody}>
-        <Section label="Presets">
-          {presets.map((p) => (
-            <button key={p.name} type="button" style={S.presetRow(p.name === state.presetName)}
-              onClick={() => applyPreset(p)}>
-              <strong style={{ fontFamily: 'var(--fl)', fontSize: 12 }}>{p.name}</strong>
-              <span style={{ fontSize: 11, color: 'var(--faint)' }}>{p.scope}</span>
-            </button>
-          ))}
-          <button type="button" style={S.disclosure} onClick={() => setMorePresets(!morePresets)}>
-            {morePresets ? 'Fewer' : 'More'}
-          </button>
-        </Section>
-
-        <Section label={`Subjects compared — ${state.on.length}/${model.subjects.length}`}>
-          <input style={S.input} placeholder="Find a subject" value={find}
-            onChange={(e) => setFind(e.target.value)} aria-label="Find a subject" />
-          <div style={{ display: 'flex', gap: 6, margin: '6px 0' }}>
-            <button type="button" style={S.small(false)}
-              onClick={() => dispatch({ type: 'set-on', on: model.subjects.map((s) => s.id) })}>All on</button>
-            <button type="button" style={S.small(false)}
-              onClick={() => dispatch({ type: 'set-on', on: [] })}>None</button>
-          </div>
-          {model.displayGroups.map((g) => {
-            const members = g.subjects
-              .map((id) => model.bySubject.get(id))
-              .filter((s) => s && (!q || s.name.toLowerCase().includes(q)))
-            if (members.length === 0) return null
-            const onCount = g.subjects.filter((id) => state.on.includes(id)).length
-            const allOn = onCount === g.subjects.length
-            return (
-              <div key={g.id} style={{ marginBottom: 8 }}>
-                <button type="button" style={S.groupHead} className="subject-group-head"
-                  onClick={() => dispatch({
-                    type: 'set-on',
-                    on: allOn
-                      ? state.on.filter((id) => !g.subjects.includes(id))
-                      : [...new Set([...state.on, ...g.subjects])],
-                  })}>
-                  <span>{allOn ? '■' : onCount ? '▣' : '□'}</span>
-                  <span style={{ flex: 1, textAlign: 'left' }}>{g.name}</span>
-                  <span style={{ color: 'var(--faint)' }}>{onCount}/{g.subjects.length}</span>
-                </button>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 4 }}>
-                  {members.map((s) => (
-                    <span key={s!.id} style={{ display: 'inline-flex' }}>
-                      <button type="button" style={S.subjectChip(state.on.includes(s!.id))}
-                        title={state.on.includes(s!.id) ? 'Remove from the comparison' : 'Add to the comparison'}
-                        onClick={() => dispatch({ type: 'toggle-subject', id: s!.id })}>
-                        {s!.name}
-                      </button>
-                      <button type="button" style={S.focusArrow}
-                        title={`Put ${s!.name} in focus — everything else selected becomes its comparison`}
-                        onClick={() => dispatch({ type: 'focus', id: s!.id })}>→</button>
-                    </span>
-                  ))}
-                </div>
+      </>
+    ),
+    subjects: (
+      <>
+        <input style={S.input} placeholder="Find a subject" value={find}
+          onChange={(e) => setFind(e.target.value)} aria-label="Find a subject" />
+        <div style={{ display: 'flex', gap: 6, margin: '6px 0' }}>
+          <button type="button" style={S.small(false)}
+            onClick={() => dispatch({ type: 'set-on', on: model.subjects.map((s) => s.id) })}>All on</button>
+          <button type="button" style={S.small(false)}
+            onClick={() => dispatch({ type: 'set-on', on: [] })}>None</button>
+        </div>
+        {model.displayGroups.map((g) => {
+          const members = g.subjects
+            .map((id) => model.bySubject.get(id))
+            .filter((s) => s && (!q || s.name.toLowerCase().includes(q)))
+          if (members.length === 0) return null
+          const onCount = g.subjects.filter((id) => state.on.includes(id)).length
+          const allOn = onCount === g.subjects.length
+          return (
+            <div key={g.id} style={{ marginBottom: 8 }}>
+              <button type="button" style={S.groupHead} className="subject-group-head"
+                onClick={() => dispatch({
+                  type: 'set-on',
+                  on: allOn
+                    ? state.on.filter((id) => !g.subjects.includes(id))
+                    : [...new Set([...state.on, ...g.subjects])],
+                })}>
+                <span>{allOn ? '■' : onCount ? '▣' : '□'}</span>
+                <span style={{ flex: 1, textAlign: 'left' }}>{g.name}</span>
+                <span style={{ color: 'var(--faint)' }}>{onCount}/{g.subjects.length}</span>
+              </button>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 4 }}>
+                {members.map((s) => (
+                  <span key={s!.id} style={{ display: 'inline-flex' }}>
+                    <button type="button" style={S.subjectChip(state.on.includes(s!.id))}
+                      title={state.on.includes(s!.id) ? 'Remove from the comparison' : 'Add to the comparison'}
+                      onClick={() => dispatch({ type: 'toggle-subject', id: s!.id })}>
+                      {s!.name}
+                    </button>
+                    <button type="button" style={S.focusArrow}
+                      title={`Put ${s!.name} in focus — everything else selected becomes its comparison`}
+                      onClick={() => dispatch({ type: 'focus', id: s!.id })}>→</button>
+                  </span>
+                ))}
               </div>
-            )
-          })}
-        </Section>
-
-        <Section label="Rows shown">
-          {FILTERS.map((f) => (
-            <button key={f.id} type="button" style={S.choiceRow(state.filter === f.id)}
-              onClick={() => dispatch({ type: 'filter', filter: f.id })}>
-              <span>{state.filter === f.id ? '●' : '○'}</span>
-              <span style={{ flex: 1, textAlign: 'left' }}>{f.label}</span>
-              <span style={{ color: 'var(--faint)' }}>{matchCount(model, query, f.id)}</span>
-            </button>
-          ))}
-          <button type="button" style={S.choiceRow(state.hasEntry)}
-            onClick={() => dispatch({ type: 'has-entry', value: !state.hasEntry })}>
-            <span>{state.hasEntry ? '■' : '□'}</span>
-            <span style={{ flex: 1, textAlign: 'left' }}>Only rows somebody has assessed</span>
+            </div>
+          )
+        })}
+      </>
+    ),
+    rows: (
+      <>
+        {FILTERS.map((f) => (
+          <button key={f.id} type="button" style={S.choiceRow(state.filter === f.id)}
+            onClick={() => dispatch({ type: 'filter', filter: f.id })}>
+            <span>{state.filter === f.id ? '●' : '○'}</span>
+            <span style={{ flex: 1, textAlign: 'left' }}>{f.label}</span>
+            <span style={{ color: 'var(--faint)' }}>{matchCount(model, query, f.id)}</span>
           </button>
-        </Section>
+        ))}
+        <button type="button" style={S.choiceRow(state.hasEntry)}
+          onClick={() => dispatch({ type: 'has-entry', value: !state.hasEntry })}>
+          <span>{state.hasEntry ? '■' : '□'}</span>
+          <span style={{ flex: 1, textAlign: 'left' }}>Only rows somebody has assessed</span>
+        </button>
+      </>
+    ),
+    counting: (
+      <>
+        {BASES.map((b) => (
+          <button key={b.id} type="button" style={S.choiceRow(state.basis === b.id)}
+            onClick={() => dispatch({ type: 'basis', basis: b.id })}>
+            <span>{state.basis === b.id ? '●' : '○'}</span>
+            <span style={{ flex: 1, textAlign: 'left' }}>{b.label}</span>
+          </button>
+        ))}
+        <p style={S.note}>Changes the percentages only. The rows on screen do not change.</p>
+      </>
+    ),
+    lane: (
+      <>
+        {([null, 'U1', 'U2', 'U3', 'U4'] as Array<LaneId | null>).map((lane) => (
+          <button key={lane ?? 'none'} type="button" style={S.choiceRow(state.lane === lane)}
+            onClick={() => dispatch({ type: 'lane', lane })}>
+            <span>{state.lane === lane ? '●' : '○'}</span>
+            <span style={{ flex: 1, textAlign: 'left' }}>{lane ? LANE_LABEL[lane] : 'No lane'}</span>
+            <span style={{ color: 'var(--faint)' }}>{lane ? model.lanes[lane].n : ''}</span>
+          </button>
+        ))}
+      </>
+    ),
+  }
 
-        <Section label="What the percentages count">
-          {BASES.map((b) => (
-            <button key={b.id} type="button" style={S.choiceRow(state.basis === b.id)}
-              onClick={() => dispatch({ type: 'basis', basis: b.id })}>
-              <span>{state.basis === b.id ? '●' : '○'}</span>
-              <span style={{ flex: 1, textAlign: 'left' }}>{b.label}</span>
-            </button>
-          ))}
-          <p style={S.note}>Changes the percentages only. The rows on screen do not change.</p>
-        </Section>
+  // A floating panel must leave the rail and a sliver of the display visible.
+  const maxWidth = floating ? Math.max(PANEL_WIDTH.min, window.innerWidth - 64 - 24) : PANEL_WIDTH.max
+  const shown = Math.min(width, maxWidth)
 
-        <Section label="Use-case lane">
-          {([null, 'U1', 'U2', 'U3', 'U4'] as Array<LaneId | null>).map((lane) => (
-            <button key={lane ?? 'none'} type="button" style={S.choiceRow(state.lane === lane)}
-              onClick={() => dispatch({ type: 'lane', lane })}>
-              <span>{state.lane === lane ? '●' : '○'}</span>
-              <span style={{ flex: 1, textAlign: 'left' }}>{lane ? LANE_LABEL[lane] : 'No lane'}</span>
-              <span style={{ color: 'var(--faint)' }}>{lane ? model.lanes[lane].n : ''}</span>
+  return (
+    <div style={S.sideWrap}>
+      <nav style={S.rail} aria-label="Panels">
+        {RAIL.map((r) => {
+          const on = panels.includes(r.id)
+          return (
+            <button key={r.id} type="button" className="rail-button" style={S.railButton(on)}
+              aria-pressed={on} aria-controls={on ? `panel-${r.id}` : undefined}
+              title={`${on ? 'Hide' : 'Show'} ${r.section}`}
+              onClick={() => togglePanel(r.id)}>
+              <RailIcon id={r.id} />
+              <span style={S.railLabel}>{r.label}</span>
+              {badge[r.id] && <span style={S.railBadge} aria-label={`currently ${badge[r.id]}`}>{badge[r.id]}</span>}
             </button>
-          ))}
-        </Section>
-      </div>
+          )
+        })}
+      </nav>
+
+      {panels.length > 0 && (
+        <div style={S.panel(shown, floating)} aria-label="Controls" role="region">
+          <div style={S.panelBody}>
+            {RAIL.filter((r) => panels.includes(r.id)).map((r) => (
+              <Section key={r.id} id={`panel-${r.id}`}
+                label={r.id === 'subjects' ? `${r.section} — ${state.on.length}/${model.subjects.length}` : r.section}>
+                {sections[r.id]}
+              </Section>
+            ))}
+          </div>
+          <ResizeHandle width={shown} max={maxWidth} setWidth={setWidth} />
+        </div>
+      )}
     </div>
   )
 }
 
-const Section = ({ label, children }: { label: string; children: React.ReactNode }) => (
-  <section style={{ padding: '10px 12px', borderBottom: '1px solid var(--rule)' }}>
+/**
+ * The drag handle on the panel column's right edge. Drag, or Left and Right
+ * arrows in 16px steps; double-click returns to the default width.
+ */
+function ResizeHandle({ width, max, setWidth }: { width: number; max: number; setWidth: (w: number) => void }) {
+  const [dragging, setDragging] = useState(false)
+  const start = useRef<{ x: number; w: number } | null>(null)
+  const clamp = (w: number) => Math.min(max, clampPanelWidth(w))
+  const commit = (w: number) => {
+    const next = clamp(w)
+    setWidth(next)
+    rememberPanelWidth(next)
+  }
+
+  return (
+    <div role="separator" aria-orientation="vertical" aria-label="Resize the panel column"
+      aria-valuemin={PANEL_WIDTH.min} aria-valuemax={max} aria-valuenow={width}
+      tabIndex={0} title="Drag to resize · double-click to reset"
+      className={`panel-resize${dragging ? ' dragging' : ''}`} style={S.resize}
+      onPointerDown={(e) => {
+        e.preventDefault()
+        e.currentTarget.setPointerCapture(e.pointerId)
+        start.current = { x: e.clientX, w: width }
+        setDragging(true)
+      }}
+      onPointerMove={(e) => {
+        if (!start.current) return
+        setWidth(clamp(start.current.w + e.clientX - start.current.x))
+      }}
+      onPointerUp={(e) => {
+        if (!start.current) return
+        commit(start.current.w + e.clientX - start.current.x)
+        start.current = null
+        setDragging(false)
+      }}
+      onPointerCancel={() => { start.current = null; setDragging(false) }}
+      onDoubleClick={() => commit(PANEL_WIDTH.initial)}
+      onKeyDown={(e) => {
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+          e.preventDefault()
+          commit(width + (e.key === 'ArrowRight' ? PANEL_WIDTH.step : -PANEL_WIDTH.step))
+        } else if (e.key === 'Home' || e.key === 'End') {
+          e.preventDefault()
+          commit(e.key === 'Home' ? PANEL_WIDTH.min : max)
+        }
+      }}
+    />
+  )
+}
+
+/** Simple line icons for the rail. */
+function RailIcon({ id }: { id: PanelId }) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+      {id === 'presets' && <path d="M6 3h12v18l-6-4.5L6 21z" />}
+      {id === 'subjects' && (
+        <>
+          <rect x="3.5" y="3.5" width="7" height="7" rx="1" />
+          <rect x="13.5" y="3.5" width="7" height="7" rx="1" />
+          <rect x="3.5" y="13.5" width="7" height="7" rx="1" />
+          <rect x="13.5" y="13.5" width="7" height="7" rx="1" />
+        </>
+      )}
+      {id === 'rows' && <path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01" />}
+      {id === 'counting' && (
+        <>
+          <path d="M19 5L5 19" />
+          <circle cx="7" cy="7" r="2.5" />
+          <circle cx="17" cy="17" r="2.5" />
+        </>
+      )}
+      {id === 'lane' && <path d="M6 21L9 3M18 21L15 3M12 4v3M12 10.5v3M12 17v3" />}
+    </svg>
+  )
+}
+
+const Section = ({ id, label, children }: { id?: string; label: string; children: React.ReactNode }) => (
+  <section id={id} aria-label={label} style={{ padding: '10px 12px', borderBottom: '1px solid var(--rule)' }}>
     <span style={S.tinyLabel}>{label}</span>
     <div style={{ marginTop: 6 }}>{children}</div>
   </section>
@@ -529,8 +705,11 @@ const S = {
   eyebrow: { fontFamily: 'var(--fm)', fontSize: 9, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--faint)' } as const,
   tinyLabel: { fontFamily: 'var(--fl)', fontWeight: 700, fontSize: 9.5, letterSpacing: '.15em', textTransform: 'uppercase', color: 'var(--faint)' } as const,
   themeToggle: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 28, height: 28, padding: 0, background: 'transparent', color: 'var(--ink)', border: '1px solid var(--rule)', borderRadius: 'var(--r)', cursor: 'pointer' } as const,
-  segmented: { display: 'flex', border: '1px solid var(--ruleS)', borderRadius: 'var(--r)', overflow: 'hidden' } as const,
-  segment: (on: boolean) => ({ fontFamily: 'var(--fl)', fontWeight: 600, fontSize: 12, background: on ? 'var(--ink)' : 'transparent', color: on ? 'var(--bg)' : 'var(--ink)', border: 0, padding: '6px 13px', cursor: 'pointer' } as const),
+  // One container owns the only outer border and the rounded corners. Segments
+  // carry no border of their own, only a 1px divider on their left, written as
+  // longhands so React never mixes a shorthand with a side on re-render.
+  segmented: { display: 'inline-flex', alignItems: 'stretch', border: '1px solid var(--ruleS)', borderRadius: 6, overflow: 'hidden', background: 'var(--panel)' } as const,
+  segment: (on: boolean, divider: boolean) => ({ fontFamily: 'var(--fl)', fontWeight: 600, fontSize: 12, lineHeight: '18px', background: on ? 'var(--ink)' : 'transparent', color: on ? 'var(--bg)' : 'var(--ink)', borderStyle: 'solid', borderColor: 'var(--ruleS)', borderWidth: divider ? '0 0 0 1px' : 0, borderRadius: 0, margin: 0, padding: '6px 14px', cursor: 'pointer' } as const),
   main: { flex: 1, minWidth: 0, maxWidth: '100%', display: 'flex', flexDirection: 'column', overflowX: 'hidden' } as const,
   questionBar: { display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap', padding: '14px 16px 8px' } as const,
   question: { margin: 0, fontFamily: 'var(--fl)', fontWeight: 700, fontSize: 21, letterSpacing: '-.01em', flex: 1, minWidth: 260 } as const,
@@ -542,14 +721,15 @@ const S = {
   legendStrip: { width: '100%', display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '9px 16px', padding: '9px 12px', background: 'var(--panel)', border: '1px solid var(--rule)', borderRadius: 'var(--r)', marginBottom: 10 } as const,
   legend: { flex: '0 0 186px', width: 186, display: 'flex', flexDirection: 'column', gap: 9, position: 'sticky', top: 12, padding: '11px 12px', background: 'var(--panel)', border: '1px solid var(--rule)', borderRadius: 'var(--r)' } as const,
   legendHead: { fontFamily: 'var(--fl)', fontWeight: 700, fontSize: 9.5, letterSpacing: '.15em', textTransform: 'uppercase', color: 'var(--faint)' } as const,
-  sidebar: (mode: string) => ({ flex: '0 0 300px', width: 300, borderRight: '1px solid var(--ruleS)', background: mode === 'pinned' ? 'var(--bg)' : 'var(--panel)', boxShadow: mode === 'open' ? '6px 0 18px rgba(0,0,0,.14)' : 'none', position: 'sticky', top: 0, alignSelf: 'flex-start', maxHeight: '100vh', display: 'flex', flexDirection: 'column', minHeight: 0, zIndex: 5 } as const),
-  sidebarHead: { display: 'flex', alignItems: 'center', gap: 6, padding: '8px 12px', borderBottom: '1px solid var(--rule)' } as const,
-  sidebarBody: { overflowY: 'auto', minHeight: 0 } as const,
-  rail: { flex: '0 0 52px', width: 52, borderRight: '1px solid var(--ruleS)', background: 'var(--panel)', display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'center', padding: '10px 0', position: 'sticky', top: 0, alignSelf: 'flex-start' } as const,
-  railToggle: { fontFamily: 'var(--fl)', fontSize: 13, background: 'var(--ink)', color: 'var(--bg)', border: 0, borderRadius: 'var(--r)', padding: '4px 8px', cursor: 'pointer' } as const,
-  railItem: { display: 'flex', flexDirection: 'column', alignItems: 'center', fontFamily: 'var(--fm)', fontSize: 11 } as const,
-  railKey: { fontSize: 8, letterSpacing: '.08em', color: 'var(--faint)' } as const,
-  presetRow: (on: boolean) => ({ display: 'flex', flexDirection: 'column', gap: 1, textAlign: 'left', width: '100%', background: on ? 'var(--acF)' : 'transparent', border: `1px solid ${on ? 'var(--ac)' : 'var(--rule)'}`, borderRadius: 'var(--r)', padding: '5px 8px', cursor: 'pointer', marginBottom: 4 } as const),
+  sideWrap: { display: 'flex', position: 'sticky', top: 0, alignSelf: 'flex-start', height: '100vh', zIndex: 20, flex: '0 0 auto' } as const,
+  rail: { flex: '0 0 64px', width: 64, height: '100%', borderRight: '1px solid var(--ruleS)', background: 'var(--panel)', display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'center', padding: '8px 0', overflowY: 'auto', overflowX: 'hidden' } as const,
+  railButton: (on: boolean) => ({ position: 'relative', width: 58, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, padding: '8px 2px 6px', margin: 0, background: on ? 'var(--acF)' : 'transparent', color: on ? 'var(--ac)' : 'var(--soft)', borderStyle: 'solid', borderWidth: 1, borderColor: on ? 'var(--ac)' : 'transparent', borderRadius: 6, cursor: 'pointer' } as const),
+  railLabel: { fontFamily: 'var(--fl)', fontWeight: 600, fontSize: 9, letterSpacing: '.03em', textTransform: 'uppercase', lineHeight: 1.1, maxWidth: '100%' } as const,
+  railBadge: { position: 'absolute', top: 3, right: 3, minWidth: 15, padding: '0 3px', fontFamily: 'var(--fm)', fontSize: 8.5, lineHeight: '13px', textAlign: 'center', color: 'var(--soft)', background: 'var(--bg)', border: '1px solid var(--rule)', borderRadius: 7 } as const,
+  panel: (width: number, floating: boolean) => ({ position: floating ? 'absolute' : 'relative', left: floating ? 64 : undefined, top: 0, flex: `0 0 ${width}px`, width, height: '100%', background: floating ? 'var(--panel)' : 'var(--bg)', borderRight: '1px solid var(--ruleS)', boxShadow: floating ? '6px 0 18px rgba(0,0,0,.18)' : 'none', display: 'flex', flexDirection: 'column', minHeight: 0 } as const),
+  panelBody: { overflowY: 'auto', minHeight: 0, flex: 1 } as const,
+  resize: { position: 'absolute', top: 0, right: -5, width: 9, height: '100%', cursor: 'col-resize', zIndex: 2, touchAction: 'none' } as const,
+  presetRow: (on: boolean) => ({ display: 'flex', flexDirection: 'column', gap: 1, textAlign: 'left', width: '100%', background: on ? 'var(--acF)' : 'transparent', border: `1px solid ${on ? 'var(--ac)' : 'var(--rule)'}`, borderRadius: 'var(--r)', padding: '5px 8px', cursor: 'pointer', marginBottom: 4, color: 'var(--ink)' } as const),
   choiceRow: (on: boolean) => ({ display: 'flex', alignItems: 'baseline', gap: 6, width: '100%', textAlign: 'left', background: on ? 'var(--acF)' : 'transparent', border: `1px solid ${on ? 'var(--ac)' : 'transparent'}`, borderRadius: 'var(--r)', padding: '4px 6px', cursor: 'pointer', fontFamily: 'var(--fl)', fontSize: 12 } as const),
   groupHead: { display: 'flex', gap: 6, width: '100%', alignItems: 'center', background: 'transparent', border: 0, cursor: 'pointer', fontFamily: 'var(--fl)', fontWeight: 700, fontSize: 10.5, letterSpacing: '.1em', textTransform: 'uppercase', padding: '2px 0' } as const,
   subjectChip: (on: boolean) => ({ fontFamily: 'var(--fl)', fontWeight: 600, fontSize: 11, background: on ? 'var(--ink)' : 'transparent', color: on ? 'var(--bg)' : 'var(--soft)', border: '1px solid var(--rule)', borderRight: 0, borderRadius: 'var(--r) 0 0 var(--r)', padding: '3px 7px', cursor: 'pointer', maxWidth: '17ch', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } as const),

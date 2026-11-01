@@ -51,7 +51,7 @@ C2PA 2.4 carries a depth-map assertion; Rec Room added avatar and creation-data 
     lanes         U1 30  U2 25  U3 29  U4 18  ->  U1 30  U2 26  U3 31  U4 19
 
 Production deployment f088df00. Evidence and per-cell dispositions:
-`.dev/ai/subtask-comms/2026-09-19-21-23-55Z-maintenance-pass-result.md` in the msf-wg-tool repository.
+the maintainers' working notes (not published).
 
 ---
 
@@ -145,7 +145,7 @@ bundles, the same 35 capabilities in the same 68 places, and the same restricted
 document gained is the correction that goes with the wider map: **eighteen rows now rest on a single
 system, not eight**, and six of the eighteen are musts — the same six as before.
 
-Three of the steward's four expectations did not survive the rule, and the boundaries page now says
+Three of the maintainers' four expectations did not survive the rule, and the boundaries page now says
 so in its own section. World sensing's occlusion row is a none, because whether a real wall hides a
 virtual chair is decided on the device that sees the wall. Control over what gets generated is a
 should, not a none, because the specification of the world to make can arrive from another tool as

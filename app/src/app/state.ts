@@ -15,7 +15,13 @@ import { shareUrl } from '../design-model.ts'
 
 export type ViewId = 'subject' | 'compare' | 'groups' | 'relations'
 export type Theme = 'light' | 'dark'
-export type SidebarMode = 'pinned' | 'open' | 'collapsed'
+
+/**
+ * The sections the tool rail shows or hides, in rail order. Several can be on at
+ * once; they stack in this order. Which are on is a per-viewer preference.
+ */
+export type PanelId = 'presets' | 'subjects' | 'rows' | 'counting' | 'lane'
+export const PANEL_IDS: PanelId[] = ['presets', 'subjects', 'rows', 'counting', 'lane']
 
 export interface DetailTarget {
   cid: string
@@ -37,12 +43,15 @@ export interface AppState {
   /** Which group is expanded in the subject display. */
   openGroups: Record<string, boolean>
   detail: DetailTarget | null
+  /**
+   * The preset the view currently is. Empty the moment the reader changes
+   * anything the preset wrote, so a preset is never shown as selected over a
+   * view that no longer matches it.
+   */
   presetName: string
-  presetEdited: boolean
 
   // Preferences. Not analysis, so they never travel in the address.
   theme: Theme
-  sidebar: SidebarMode
 }
 
 /** Everything the counting rules read, taken from the state. */
@@ -68,14 +77,13 @@ export type Action =
   | { type: 'detail'; detail: DetailTarget | null }
   | { type: 'preset'; state: Partial<AppState>; name: string }
   | { type: 'theme'; theme: Theme }
-  | { type: 'sidebar'; mode: SidebarMode }
   | { type: 'replace'; state: AppState }
 
-/** Marks the view as departed from its preset. Preferences never do this. */
+/** The view has departed from its preset, so no preset is selected any more. Preferences never do this. */
 const edited = (s: AppState, next: Partial<AppState>): AppState => ({
   ...s,
   ...next,
-  presetEdited: true,
+  presetName: '',
 })
 
 export function reducer(state: AppState, action: Action): AppState {
@@ -128,13 +136,11 @@ export function reducer(state: AppState, action: Action): AppState {
     // A preset writes the whole view at once, and is the only control besides
     // the switcher permitted to move between displays.
     case 'preset':
-      return { ...state, ...action.state, presetName: action.name, presetEdited: false, detail: null }
+      return { ...state, ...action.state, presetName: action.name, detail: null }
 
     // Preferences. They change nothing about what is counted.
     case 'theme':
       return { ...state, theme: action.theme }
-    case 'sidebar':
-      return { ...state, sidebar: action.mode }
 
     case 'replace':
       return action.state
@@ -153,23 +159,26 @@ const FILTERS: RowFilter[] = ['all', 'overlap', 'thin', 'gap', 'conflict', 'conn
 const BASES: Basis[] = ['prod', 'all', 'must']
 const LANES: LaneId[] = ['U1', 'U2', 'U3', 'U4']
 
+/**
+ * The opening view is the whole map: every subject, the Groups display, every
+ * row, no focus and no lane. It is not a preset, so no preset is shown as
+ * selected and the heading stays generic. One look at coverage across all the
+ * groups comes before choosing a question.
+ */
 export function initialState(model: Model): AppState {
-  const preset = PRESETS[0]
   return {
-    view: preset.view,
-    focus: preset.focus ?? preset.on[0],
-    on: preset.on,
-    filter: preset.filter,
+    view: 'groups',
+    focus: null,
+    on: model.subjects.map((s) => s.id),
+    filter: 'all',
     hasEntry: false,
     basis: 'prod',
-    lane: preset.lane ?? null,
+    lane: null,
     relGroup: model.groups[0]?.id ?? '',
     openGroups: {},
     detail: null,
-    presetName: preset.name,
-    presetEdited: false,
+    presetName: '',
     theme: 'light',
-    sidebar: 'pinned',
   }
 }
 
@@ -208,6 +217,59 @@ export function rememberTheme(theme: Theme): void {
     // Storage blocked: the choice holds for this visit only.
   }
 }
+
+// ---------------------------------------------------------------------------
+// The tool rail: which sections are on, and how wide their column is. Both are
+// per-viewer preferences, kept in the browser and never in the address.
+// ---------------------------------------------------------------------------
+
+const PANELS_KEY = 'spatial-systems-atlas.panels'
+const PANEL_WIDTH_KEY = 'spatial-systems-atlas.panel-width'
+
+export const PANEL_WIDTH = { min: 240, max: 560, initial: 300, step: 16 } as const
+
+export const clampPanelWidth = (w: number): number =>
+  Number.isFinite(w) ? Math.round(Math.min(PANEL_WIDTH.max, Math.max(PANEL_WIDTH.min, w))) : PANEL_WIDTH.initial
+
+/**
+ * Reads a stored section list. Anything that is not a list of known sections,
+ * including values an older build may have left behind, reads as nothing stored.
+ */
+export function parsePanels(raw: string | null): PanelId[] | null {
+  if (raw === null) return null
+  try {
+    const v: unknown = JSON.parse(raw)
+    if (!Array.isArray(v)) return null
+    return PANEL_IDS.filter((id) => v.includes(id))
+  } catch {
+    return null
+  }
+}
+
+function readPref(key: string): string | null {
+  try {
+    return window.localStorage.getItem(key)
+  } catch {
+    return null
+  }
+}
+
+function writePref(key: string, value: string): void {
+  try {
+    window.localStorage.setItem(key, value)
+  } catch {
+    // Storage blocked: the choice holds for this visit only.
+  }
+}
+
+export const storedPanels = (): PanelId[] | null => parsePanels(readPref(PANELS_KEY))
+export const rememberPanels = (panels: PanelId[]): void => writePref(PANELS_KEY, JSON.stringify(panels))
+
+export function storedPanelWidth(): number {
+  const raw = readPref(PANEL_WIDTH_KEY)
+  return raw === null ? PANEL_WIDTH.initial : clampPanelWidth(Number(raw))
+}
+export const rememberPanelWidth = (w: number): void => writePref(PANEL_WIDTH_KEY, String(clampPanelWidth(w)))
 
 /** The query half of the address, in the shape shareUrl writes. */
 export function encode(state: AppState, total: number): string {
@@ -257,11 +319,17 @@ export function decode(search: string, model: Model, base: AppState): AppState {
   const basis = pick(p.get('basis'), BASES, 'prod')
   const lane = pick(p.get('lane'), LANES, null as LaneId | null)
 
+  // An address names a preset only when it is exactly what that preset writes.
+  // Anything the reader changed afterwards (focus, basis, the assessed-only
+  // switch) means it is no longer that preset.
   const matched = PRESETS.find((preset) => {
     const pOn = presetSubjects(preset, model)
     return preset.view === view
       && preset.filter === filter
       && (preset.lane ?? null) === lane
+      && basis === 'prod'
+      && !hasEntry
+      && (view !== 'subject' || focus === (preset.focus ?? pOn[0]))
       && pOn.length === on.length
       && [...pOn].sort().every((id, i) => id === [...on].sort()[i])
   })
@@ -278,7 +346,6 @@ export function decode(search: string, model: Model, base: AppState): AppState {
     relGroup: p.get('group') ?? base.relGroup,
     detail,
     presetName: matched?.name ?? '',
-    presetEdited: false,
   }
 }
 
@@ -287,36 +354,114 @@ export function decode(search: string, model: Model, base: AppState): AppState {
 // ---------------------------------------------------------------------------
 
 export interface Preset {
+  /** Plain name in the presets list. */
   name: string
+  /** The question the preset answers. It is the heading while the preset is selected. */
+  question: string
+  /** One line under the name saying what the preset shows. */
   scope: string
+  /** Subject ids. Empty means every subject, unless `mostConflicts` picks them. */
   on: string[]
   view: ViewId
   filter: RowFilter
   focus?: string
   lane?: LaneId
-  /** Shown only behind the "More" disclosure, which the owner will populate. */
+  /**
+   * Pick the subjects from the data instead: the N with the most recorded
+   * conflicts, ties in map order. Keeps Compare readable while staying true as
+   * the record changes.
+   */
+  mostConflicts?: number
+  /** Shown only behind the "More" disclosure. */
   more?: boolean
 }
 
+// The presets (2026-11-01). Each preset answers a question a real
+// reader asks; none centres on one format. Compare presets hold 8 subjects or fewer.
 export const PRESETS: Preset[] = [
-  { name: 'glTF beside its neighbours', scope: 'glTF, OpenUSD, X3D, glTF 2.1, VRM',
-    on: ['gltf', 'usd', 'x3d', 'gltf21', 'vrm'], view: 'subject', filter: 'all', focus: 'gltf' },
-  { name: "The Forum's own", scope: '6 MSF standards and projects',
-    on: ['omb', 'rp1', 'teleportxr', 'wow', 'iwps', 'um'], view: 'compare', filter: 'all' },
-  { name: 'World-to-world travel', scope: '29 must-agree rows · lane U3',
-    on: ['wow', 'rp1', 'iwps', 'omb', 'teleportxr'], view: 'compare', filter: 'interop', lane: 'U3' },
-  { name: 'Web of Worlds, and what blocks it', scope: 'WoW against the standards it has to meet',
-    on: ['wow', 'gltf', 'usd', 'openxr', 'webxr', 'geopose'], view: 'subject', filter: 'interop', focus: 'wow' },
-  { name: 'Recorded conflicts', scope: 'every subject · the conflict rows', more: true,
-    on: [], view: 'compare', filter: 'conflict' },
-  { name: 'Where nobody has built it', scope: 'no built-in or extension support', more: true,
+  { name: 'What has to be agreed',
+    question: 'Where can worlds not work together until there is a shared answer?',
+    scope: 'Every subject · the rows that must interoperate',
+    on: [], view: 'groups', filter: 'interop' },
+  { name: 'Where nobody has built it yet',
+    question: 'Where has nobody built it yet?',
+    scope: 'Every subject · rows nobody has built in or by extension',
     on: [], view: 'groups', filter: 'gap' },
-  { name: 'Avatar portability', scope: '25 must-agree rows · lane U2', more: true,
-    on: ['vrm', 'usd', 'gltf', 'wow', 'vrchat'], view: 'compare', filter: 'interop', lane: 'U2' },
-  { name: 'Engines against the formats', scope: 'Unity, Unreal, Godot, Three.js', more: true,
+  { name: 'Where the sources disagree',
+    question: 'Where do the sources disagree?',
+    scope: 'The 8 subjects with the most recorded conflicts · conflict rows',
+    on: [], mostConflicts: 8, view: 'compare', filter: 'conflict' },
+  { name: 'Moving 3D content between tools and worlds',
+    question: 'What breaks when a 3D asset leaves the tool it was made in?',
+    scope: 'Formats and engines · must-interoperate rows · content portability lane',
+    on: ['gltf', 'usd', 'x3d', 'mpeg-scene', '3dtiles', 'unity', 'unreal', 'threejs'],
+    view: 'compare', filter: 'interop', lane: 'U1' },
+  { name: 'Carrying your avatar with you',
+    question: 'Who supports a portable avatar, and what is still missing?',
+    scope: 'Avatar formats and platforms · must-interoperate rows · avatar portability lane',
+    on: ['vrm', 'mpeg-arf', 'gltf', 'usd', 'vrchat', 'roblox', 'resonite', 'wow'],
+    view: 'compare', filter: 'interop', lane: 'U2' },
+  { name: 'Travelling between worlds',
+    question: 'What does a crossing between worlds need, and who provides it?',
+    scope: 'Portals and world links · must-interoperate rows · world-to-world travel lane',
+    on: ['wow', 'iwps', 'rp1', 'omb', 'teleportxr', 'vibejam', 'horizon'],
+    view: 'compare', filter: 'interop', lane: 'U3' },
+  { name: 'AI agents inside worlds',
+    question: 'What does an AI agent need to act in a world, and which platforms offer it today?',
+    scope: 'Agent and identity standards beside platforms · agent participation lane',
+    on: ['mcp', 'oauth', 'did', 'vc', 'roblox', 'unity', 'unreal', 'arrival'],
+    view: 'compare', filter: 'interop', lane: 'U4' },
+  { name: 'The open web stack', more: true,
+    question: 'What can a browser do with no app store and no install?',
+    scope: 'Browser standards and web engines · every row',
+    on: ['webxr', 'webgpu', 'wasm', 'threejs', 'babylonjs', 'playcanvas', 'gltf', 'jsonld'],
+    view: 'compare', filter: 'all' },
+  { name: 'Real places and maps', more: true,
+    question: 'What does it take to anchor content to a real place?',
+    scope: 'Location standards, map engines and phone AR · every row',
+    on: ['geopose', '3dtiles', 'spatialdds', 'oarc', 'stac', 'cesiumjs', 'arcore', 'arkit'],
+    view: 'compare', filter: 'all' },
+  { name: 'Capturing the real world', more: true,
+    question: 'How do photos and video become worlds?',
+    scope: 'Capture methods, tools and world models · every row',
+    on: ['4dgs', 'dynsplat', 'nurec', 'nerfstudio', 'polycam', 'scaniverse', 'hyperscape', 'marble'],
+    view: 'compare', filter: 'all' },
+  { name: 'Identity, trust and who made what', more: true,
+    question: 'Who are you, and who made what, across worlds?',
+    scope: 'Identity, credential and provenance standards · every row',
+    on: ['did', 'vc', 'c2pa', 'oauth', 'um'], view: 'compare', filter: 'all' },
+  { name: 'Closed platforms against open formats', more: true,
+    question: 'Where do walled platforms meet open standards, and where do they not?',
+    scope: 'Five platforms beside three open standards · must-interoperate rows',
+    on: ['roblox', 'vrchat', 'horizon', 'fortnite', 'recroom', 'gltf', 'vrm', 'webxr'],
+    view: 'compare', filter: 'interop' },
+  { name: 'Engines against the formats', more: true,
+    question: 'Which formats do the engines support, and how far?',
+    scope: 'Unity, Unreal, Godot, Three.js beside glTF and OpenUSD · every row',
     on: ['unity', 'unreal', 'godot', 'threejs', 'gltf', 'usd'], view: 'compare', filter: 'all' },
+  { name: "The Forum's own projects", more: true,
+    question: "What do the Forum's own standards and projects cover, and where are they thin?",
+    scope: '6 Forum standards and projects · every row',
+    on: ['omb', 'rp1', 'teleportxr', 'wow', 'iwps', 'um'], view: 'compare', filter: 'all' },
 ]
 
-/** A preset with an empty subject list means every subject. */
+/** Recorded conflict cells per subject, most first; ties keep map order. */
+function mostConflicted(model: Model, n: number): string[] {
+  const count = (id: string) =>
+    model.capabilities.filter((c) => model.cov[id]?.[c.id]?.[0] === 'c').length
+  return model.subjects
+    .map((s, i) => ({ id: s.id, i, n: count(s.id) }))
+    .filter((x) => x.n > 0)
+    .sort((a, b) => b.n - a.n || a.i - b.i)
+    .slice(0, n)
+    .map((x) => x.id)
+}
+
+/** The subjects a preset switches on. An empty list means every subject. */
 export const presetSubjects = (preset: Preset, model: Model): string[] =>
-  preset.on.length ? preset.on : model.subjects.map((s) => s.id)
+  preset.mostConflicts ? mostConflicted(model, preset.mostConflicts)
+    : preset.on.length ? preset.on : model.subjects.map((s) => s.id)
+
+/** The heading: the selected preset's question, or the generic heading. */
+export const presetQuestion = (presetName: string): string | null =>
+  PRESETS.find((p) => p.name === presetName)?.question ?? null

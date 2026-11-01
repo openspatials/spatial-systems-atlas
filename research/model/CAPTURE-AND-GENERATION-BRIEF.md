@@ -6,8 +6,7 @@ status: draft for working group review
 created: 2026-09-06T20:40:00Z
 project: msf-wg-tool
 workstream: infrastructure-wg-map
-work_order: WO-msf-wg-tool-20260906-075
-author: project steward
+author: the maintainers
 data_basis: infrastructure-wg/data/territory.db read 2026-09-06T20:35Z — 57 subjects, 117 capability rows (now 162), 5,303 claims (now 6,882), 1,575 sources (now 1,932), 7,333 quotes (now 8,544); sha256 6d3e76e9dcb96fd7b324ecca93ee913d321d6a64454187916cdddb3fa1024923. Eleven subjects were added by this work order — nine capture and generation tools and two research families — each scored against all rows from public primary sources read on 2026-09-06. Every count on this page is derived from that database, not typed by hand. The database has since gained 45 capabilities and the counts have grown; the body figures are accurate for the 2026-09-06 read.
 ---
 

@@ -15,6 +15,8 @@ type Update = {
 }
 
 const UPDATES: Update[] = [
+  { date: '1 November 2026', text: 'A new row for non-visual sensory effects (wind, scent, light, motion), a new menu and layout, and new starting views.',
+    subjects: 66, capabilities: 176, claims: 11605, sources: 3069 },
   { date: '30 October 2026', text: 'The open data now matches the live Atlas, with broken links fixed.',
     subjects: 66, capabilities: 175, claims: 11539, sources: 3061 },
   { date: '26 October 2026', text: 'More evidence added across the Atlas.',

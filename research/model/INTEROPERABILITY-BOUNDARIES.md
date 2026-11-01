@@ -2,17 +2,17 @@
 gas_schema: gas.doc.v1
 legacy_document_type: decision-input
 type: decision
-title: Interoperability boundaries — which of the 175 capabilities must interoperate at all
+title: Interoperability boundaries — which of the 176 capabilities must interoperate at all
 status: draft for owner review
 created: 2026-09-04T21:42:57Z
-revised: "2026-09-06T19:27:08Z — WO-msf-wg-tool-20260906-074 applied the owner's answer to question 5: captured content is first-class, so Splat data interchange format, Volumetric video capture and playback, Point cloud encoding, Multi-view plus depth and Time-varying capture are must rows under U1, and every count on this page is re-derived at 40 must, 62 should and 15 none."
-revised_previous: 2026-09-06T18:20:00Z — WO-msf-wg-tool-20260906-073 scored the 28 capabilities added on 2026-09-06 and re-derived every count from 117 rows in 14 groups. The 89 rows the owner approved on 2026-09-06 are unchanged, word for word.
+revised: "2026-09-06T19:27:08Z — applied the owner's answer to question 5: captured content is first-class, so Splat data interchange format, Volumetric video capture and playback, Point cloud encoding, Multi-view plus depth and Time-varying capture are must rows under U1, and every count on this page is re-derived at 40 must, 62 should and 15 none."
+revised_previous: 2026-09-06T18:20:00Z — the 2026-09-06 scoring pass scored the 28 capabilities added on 2026-09-06 and re-derived every count from 117 rows in 14 groups. The 89 rows the owner approved on 2026-09-06 are unchanged, word for word.
 project: msf-wg-tool
 workstream: infrastructure-wg-map
-created_by: project steward
+created_by: the maintainers
 source: infrastructure-wg/meetings/2026-09-04-meeting-notes.md (F5) — Don Brutzman on tests 00:19:54–00:24:35 and 00:32:53; Grig Bilham 00:35:04–00:36:29 ("defining those boundaries would help define where the tests are")
 updated: 2026-09-11T07:51:29Z
-data_basis: 175 capabilities in 15 groups and 66 subjects (2026-10-25). Membership derives from accepted capabilities.csv metadata. Integrated coverage contains 11,539 claims and 3,061 sources; 11 subject-capability pairs remain unscored.
+data_basis: 176 capabilities in 15 groups and 66 subjects (2026-11-01). Membership derives from accepted capabilities.csv metadata. Integrated coverage contains 11,539 claims and 3,061 sources; 11 subject-capability pairs remain unscored.
 data_basis_2026_09_06: infrastructure-wg/data/territory.db as of 2026-09-06 (46 subjects, 117 capabilities, 4,016 claims, 1,507 sources). The 89 rows were first scored against the database of 2026-09-04T10:03:30Z (35 subjects, 1,749 claims, 1,057 sources); the reach figures on this page have been re-derived against the current database and the two that moved are marked.
 project_code_note: Omitted because the project registry has no uppercase alias; the frontmatter standard directs omission rather than invention.
 ---
@@ -20,7 +20,7 @@ project_code_note: Omitted because the project registry has no uppercase alias; 
 # Interoperability boundaries
 
 The map says who has what. It does not say where two systems have to agree. This page decides that,
-once, for all 175 capabilities, so that the test work has a target and the certification lanes have a
+once, for all 176 capabilities, so that the test work has a target and the certification lanes have a
 scope. It is the first step the meeting asked for, and nothing about tests is settled until it is
 agreed.
 
@@ -247,15 +247,16 @@ The prior 117 rows retain their approved wording, including dated reach observat
 | Live data binding `net.live-data` | Networking & session | connect | should | U1 | A digital twin can still be shown without a shared binding, but each data source must be wired by hand; the Atlas's four use cases do not yet include digital twins, so the row is recorded against content that moves. |
 | Activity and learning records `persist.activity-record` | Persistence & storage | connect | should | U3 | Training still finishes without a portable record, but the result stays in one vendor's dashboard instead of travelling with the person. |
 | Physiological signals as input `input.physiological` | Input & devices | build | should | U3 | Sensors and experiences come from different vendors; without a shared signal description each adaptation is wired to one device, though the experience still runs without it. |
+| Non-visual sensory effects `render.sensory-effect` | Rendering & presentation | connect | should | U1 | Content still plays without a shared effect description, but its wind, scent, light and motion cues are lost or wired to one installation (ISO/IEC 23005, MPEG-V). |
 
 
 ## Current counts
 
-Of the 175 capabilities in 15 groups (re-derived from `tool/data/capabilities.csv`, on 2026-10-20, after the five rows contributed by the Virtual Dimension Center): **56 must**, **95 should**, **24 none**.
+Of the 176 capabilities in 15 groups (re-derived from `tool/data/capabilities.csv`, on 2026-11-01, after the sixth row contributed by the Virtual Dimension Center, non-visual sensory effects): **56 must**, **96 should**, **24 none**.
 
 | Group | must | should | none |
 |---|---|---|---|
-| Rendering & presentation | 0 | 11 | 7 |
+| Rendering & presentation | 0 | 12 | 7 |
 | Scene & assets | 13 | 15 | 0 |
 | Avatars | 5 | 2 | 0 |
 | Physics & simulation | 0 | 6 | 1 |
@@ -386,7 +387,7 @@ the stack — the same two lists, with four rows moved from the first to the sec
 
 ## How the counts were made
 
-The current classification table and counts derive from `infrastructure-wg/data/capabilities.csv`: 175 rows, with exact `interop`, `interop_uses` and `interop_reason` values. The prior 117 records are preserved; the 45 additions match their accepted metadata. Lane membership is `interop=must` plus the named use case in `interop_uses`.
+The current classification table and counts derive from `infrastructure-wg/data/capabilities.csv`: 176 rows, with exact `interop`, `interop_uses` and `interop_reason` values. The prior 117 records are preserved; the 45 additions match their accepted metadata. Lane membership is `interop=must` plus the named use case in `interop_uses`.
 
 The SQL below records the earlier reach-measurement method. Current coverage must be derived from the accepted integrated data; this metadata preparation does not refresh those measurements.
 
@@ -425,7 +426,7 @@ SELECT count(*) FROM (
 
 - It does not say who should write the missing standard, or which existing one should win.
 - It does not rank the must rows against each other; that is the certification lanes' work
-  (WO-msf-wg-tool-20260904-065).
+ .
 - It does not define a single test. It defines what is worth testing, which the meeting asked for
   first.
 - It does not touch the database, the pages or the coverage metric on its own. Those follow a
@@ -472,7 +473,7 @@ the third metric selector follow (task 3 of the work order). The five rows of qu
 through that chain already: the column, the mark, the filter, the atlas route and the restricted
 metric all carry the answer.
 
-## What the steward expected, and what the rule gave
+## What the maintainers expected, and what the rule gave
 
 The order that scored these 28 rows carried an expectation, to be checked and not assumed. Three
 parts of it did not survive the rule, and saying so is the point of writing the expectation down.
@@ -506,7 +507,7 @@ parts of it did not survive the rule, and saying so is the point of writing the 
 One expectation held: the splat and captured-media rows are shoulds under U1, which is what the
 approved page already said about `render.splat` and `render.volumetric`. Question 5 above was the
 place to overturn all of this at once, and the owner has now done so in part. **What survives the
-answer:** the use cases. The five rows that moved to must serve U1 and only U1, so the steward's
+answer:** the use cases. The five rows that moved to must serve U1 and only U1, so the maintainers'
 original expectation that they served U2 as well is still wrong, and the sensing rows, the streaming
 row and `sense.occlusion` are all where the rule put them. **What the answer overturned:** the value
 on those five rows, and the sentence above that called their shoulds the one expectation that held.

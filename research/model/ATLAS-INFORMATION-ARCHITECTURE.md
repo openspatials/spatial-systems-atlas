@@ -6,8 +6,8 @@ status: draft for attempt three
 created: 2026-09-04T13:56:54Z
 project: msf-wg-tool
 workstream: infrastructure-wg-map
-author: project steward
-data_basis: infrastructure-wg/data/territory.db as of 2026-09-13 (57 subjects, 162 capabilities, 6,882 claims, 1,932 sources, 64 conflicts, 22 unverified claims). Originally written against 35 subjects and the first 89 rows on 2026-09-04T05:42Z; re-derived on 2026-09-06 when the map held 117 rows in 14 groups; all counts on this page re-derived 2026-09-13 by WO-msf-wg-tool-20260913-089.
+author: the maintainers
+data_basis: infrastructure-wg/data/territory.db as of 2026-09-13 (57 subjects, 162 capabilities, 6,882 claims, 1,932 sources, 64 conflicts, 22 unverified claims). Originally written against 35 subjects and the first 89 rows on 2026-09-04T05:42Z; re-derived on 2026-09-06 when the map held 117 rows in 14 groups; all counts on this page re-derived 2026-09-13.
 ---
 
 # The atlas

@@ -255,7 +255,9 @@ test('the real published export still reports the figures the map claims', async
   // commerce group, and the trust registry in identity (order 063, owner approval 2026-10-19).
   // 2026-10-20: 168 -> 175: agent authoring, whole-world export, and the five rows contributed by
   // the Virtual Dimension Center (wave 2, owner approval).
-  assert.equal(real.capabilities.length, 175)
+  // 2026-11-01: 175 -> 176: non-visual sensory effects (render.sensory-effect, MPEG-V), the sixth
+  // Virtual Dimension Center row, on the owner's word.
+  assert.equal(real.capabilities.length, 176)
   assert.equal(real.groups.length, 15)
   // The counts block the build writes must agree with what the model derives.
   const claims = Object.values(real.cov).reduce((n, row) => n + Object.keys(row).length, 0)
@@ -323,9 +325,10 @@ test('the note reports Verse as a scope boundary, not as an absence of work', as
   // 2026-10-20: the four commerce and trust rows are out of scope for a programming language.
   // 2026-10-20: so are the seven wave 2 rows (agent authoring, world export, the five VDC rows).
   // 2026-10-23: 125 -> 134 after wave 4 answered Verse's blank cells, mostly out of scope.
-  assert.equal(note.outOfScope, 134)
+  // 2026-11-01: 134 -> 135 and 175 -> 176: the sensory-effects row is out of scope for Verse.
+  assert.equal(note.outOfScope, 135)
   assert.equal(note.applies, 41)
-  assert.equal(note.total, 175)
+  assert.equal(note.total, 176)
   assert.equal(note.total, note.outOfScope + note.applies)
 
   // Reading the note must not touch a single claim.

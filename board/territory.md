@@ -2,12 +2,12 @@
 
 Every mark below is one claim held in a database and tied to a source. This file is the map read straight through: capabilities down the side, subjects across the top.
 
-- Claims: 11,539
+- Claims: 11,605
 - Subjects: 66
-- Capabilities: 175 in 15 groups
-- Sources: 3,059
+- Capabilities: 176 in 15 groups
+- Sources: 3,069
 - Recorded conflicts: 62
-- Built from the territory database as it stood at 2026-10-31T09:58:39Z
+- Built from the territory database as it stood at 2026-11-01T22:40:55Z
 
 ## Legend
 
@@ -47,6 +47,7 @@ The notes behind each claim, and the sources each claim rests on, are in `territ
 | Frame pacing and predicted display time | should | ◐ | ● | – | ● | ● | ◐ | ● | ○ | ◐ | ○ | ○ | ○ | ○ | ○ | ○ | ◐ | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | ● | – | – | – | – | – | – | – | – | ● | – | – | – | – | ◐ | – | – |  | – | – | – | – | – | – | – | ● | ○ | ● | ● | – | – | – |
 | Portable shader language | should | ◐ | ○ | – | ● | ● | ● | ◐ | ○ | ○ | ○ | ○ | ○ | ◐ | ◐ | ◐ | – | – | – | – | – | – | – | – | – | – | ○ | – | – | – | – | – | – | – | – | – | – | – | – | ○ | – | – | – | ● | – | ⊕ | ◐ | ◐ | – | – | – | – | – | – | – | – | – | – | – | – | ● | ● | ● | ● | – | – | – |
 | Remote (split) rendering | none | ⊕ | ◐ | – | ○ | ◐ | ⊕ | ○ | ○ | ● | ○ | ○ | ○ | ○ | – | – | ◐ | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | ◐ | – | ○ | ◐ | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | – | ○ | ◐ | ● | – | – | – | – | – | – | – | – | – | – |
+| Non-visual sensory effects | should | ○ | ○ | – | ○ | ○ | ◐ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | ○ | – | – | – | – | – | – | – | – | – | ○ | – | – | – | – | – | ○ | – | – | ○ | – | – | – | – | – | – | – | – | ○ | ○ | ○ | ○ | – | – | – | – | – | – | – | – | – | – | – | – | ○ | – | ○ | ○ | – | – | – |
 
 - **Rasterization pipeline** (format) - Turning scene geometry into pixels, including the render graph and pass structure.
 - **Graphics interface binding** (format) - Which low-level graphics interface the renderer targets.
@@ -66,6 +67,7 @@ The notes behind each claim, and the sources each claim rests on, are in `territ
 - **Frame pacing and predicted display time** (protocol) - Coordinating frame submission with predicted display timing and the view poses associated with that time.
 - **Portable shader language** (format) - A specified shader source language and execution semantics enabling implementations to consume the same shader program.
 - **Remote (split) rendering** (protocol) - Rendering a view on a server from the client's predicted pose and streaming the frames back for display, so a device shows content it could not draw itself.
+- **Non-visual sensory effects** (protocol) - Wind, scent, light, heat, fog and the movement of a motion seat, described with the content by the effect intended and rendered on whatever effect devices the viewer has, adapted to their capability and the viewer's preferences.
 
 ## Scene & assets
 

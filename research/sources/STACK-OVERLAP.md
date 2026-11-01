@@ -7,7 +7,7 @@ created: 2026-09-11T01:01:26Z
 project: msf-wg-tool
 project_code: msf-wg-tool
 workstream: infrastructure-wg-map
-created_by: map-delivery-worker
+created_by: the maintainers
 requested_by: owner
 agent_task_id: cdd60b5d_1788736606
 privacy_scope: project-readable
