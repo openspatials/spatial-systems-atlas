@@ -244,19 +244,19 @@ test('the real published export still reports the figures the map claims', async
     await readFile(new URL('../public/territory.json', import.meta.url), 'utf8'),
   )
   const real = adapt(raw)
-  // 2026-10-20: 57 -> 59 subjects, SpatialDDS and the Model Context Protocol (wave 1, owner approval).
+  // 2026-10-20: 57 -> 59 subjects, SpatialDDS and the Model Context Protocol (wave 1).
   // 2026-10-20: 59 -> 66 subjects, wave 2 (STAC, WebAssembly, Arrival Space, OAuth, Vibe Jam,
-  // OMI glTF extensions, JSON-LD; owner approval).
+  // OMI glTF extensions, JSON-LD).
   assert.equal(real.subjects.length, 66)
   // These figures are a deliberate tripwire: they move only when capabilities are
   // added or removed, which is a decision somebody made and should have to record here.
   // 2026-09-18: 162 -> 164, the two approved composability rows.
   // 2026-10-20: 164 -> 168 and 14 -> 15 groups: payment, entitlement and receipt in the new
-  // commerce group, and the trust registry in identity (order 063, owner approval 2026-10-19).
+  // commerce group, and the trust registry in identity (approved 2026-10-19).
   // 2026-10-20: 168 -> 175: agent authoring, whole-world export, and the five rows contributed by
-  // the Virtual Dimension Center (wave 2, owner approval).
+  // the Virtual Dimension Center (wave 2).
   // 2026-11-01: 175 -> 176: non-visual sensory effects (render.sensory-effect, MPEG-V), the sixth
-  // Virtual Dimension Center row, on the owner's word.
+  // Virtual Dimension Center row.
   assert.equal(real.capabilities.length, 176)
   assert.equal(real.groups.length, 15)
   // The counts block the build writes must agree with what the model derives.

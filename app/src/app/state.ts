@@ -1,6 +1,6 @@
 // The whole interface state, and the address that carries it.
 //
-// Two owner decisions are structural here and must not be softened:
+// Two design decisions are structural here and must not be softened:
 //
 // 1. The sidebar scopes the view. It never switches which display you are in.
 //    Only the display switcher changes `view`, plus one explicit per-subject

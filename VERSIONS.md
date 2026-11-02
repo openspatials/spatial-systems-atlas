@@ -25,7 +25,7 @@ rather than a version of its own.
 (2026-09-18). Also one self-contained file from the same build.
 
 **1.2 — the first redesign.** `app/design-candidate/MSF Map - redesign.dc.html`.
-Frozen at the owner's instruction and kept as the record of what changed between
+Frozen at the maintainer's instruction and kept as the record of what changed between
 the two design rounds. Never deployed.
 
 **1.3 — the accepted redesign.** `app/design-candidate/MSF Map - redesign v3.dc.html`.

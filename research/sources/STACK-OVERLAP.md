@@ -1,21 +1,15 @@
 ---
-gas_schema: gas.doc.v1
 type: report
 title: "Engine parts and stack overlap: retained lab receipts and current Map questions"
 status: complete
 created: 2026-09-11T01:01:26Z
 project: msf-wg-tool
-project_code: msf-wg-tool
-workstream: infrastructure-wg-map
 created_by: the maintainers
-requested_by: owner
-agent_task_id: cdd60b5d_1788736606
-privacy_scope: project-readable
 ---
 
 # Engine parts and stack overlap
 
-Prepared 2026-09-11. The early engine-plane order's stop-early test is met: Open Spatial Lab retains a real combination attempt and its failure checks. This table extracts that evidence and relates it to the current Map. No old toggle interface is rebuilt.
+Prepared 2026-09-11. The early engine-plane request's stop-early test is met: Open Spatial Lab retains a real combination attempt and its failure checks. This table extracts that evidence and relates it to the current Map. No old toggle interface is rebuilt.
 
 **Evidence grades:** “Retained test” means a saved, bounded test result was inspected; it was not rerun today. “Documented” means a primary-source trace or implementation report, not a runtime test. “Unproven” means the inspected evidence does not establish the connection; it does not mean the capability is absent everywhere. Recorded Map levels are a separate data layer and must keep their confidence and source notes.
 
@@ -25,7 +19,7 @@ Prepared 2026-09-11. The early engine-plane order's stop-early test is met: Open
 |---|---|---|
 | Web of Worlds + Three.js + local world servers | **Retained test:** the crossing receipt (an unpublished Open Spatial Lab record) passes 81 checks. It constructs Three.js scenes from two WoW graphs, resolves the local `Portal.destination` extension, carries a newly minted continuity ID across the wire and observes it in destination state. | This is deterministic Node/backend proof, explicitly **no Chrome**. It does not prove pixels, generic WoW conformance or arbitrary third-party interoperability. The receipt has no top-level capture timestamp; no new date is assigned to the run. |
 | Continuity and portal claims | **Retained tests:** the same proof's continuity (an unpublished Open Spatial Lab record), claim (an unpublished Open Spatial Lab record), and route (an unpublished Open Spatial Lab record) negatives fail. The positive receipt records no IWPS parameters on the wire and keeps IWPS conformance false. | Matching the sequence or vocabulary of a portal protocol does not implement its wire contract. The broader standards-conformance and native-TeleportXR flags also remain false. |
-| Universal Manifest | **Retained tests:** the July 12, 2026 UM matrix receipt (an unpublished Open Spatial Lab record) has 72 fixtures passing each of its two axes. The July 12 HTTP proof (an unpublished Open Spatial Lab record) passes 15 manifest-origin checks. | Fixture coverage and a separately served manifest are bounded evidence. They do not certify every v0.4 implementation or every consent operation during a long-running session. The owner’s connection to this subject must remain disclosed when presenting it. |
+| Universal Manifest | **Retained tests:** the July 12, 2026 UM matrix receipt (an unpublished Open Spatial Lab record) has 72 fixtures passing each of its two axes. The July 12 HTTP proof (an unpublished Open Spatial Lab record) passes 15 manifest-origin checks. | Fixture coverage and a separately served manifest are bounded evidence. They do not certify every v0.4 implementation or every consent operation during a long-running session. The maintainer’s connection to this subject must remain disclosed when presenting it. |
 | RP1 spatial fabric + WoW + UM | **Documented:** the lab integration analysis (unpublished working notes) and RP1 layer (an unpublished Open Spatial Lab record) describe a signed `.msf` subtree and a UM pointer. Engine-signature trust and identity-signature trust stay separate. A named fail-closed verifier covers the lab's boundary model. | No new RP1 verifier run or native RP1 interoperability test occurred here. `SpatialFabricSubtree`, units, up-axis and placement are declared lab extension requirements; mid-session revocation is not proven by a traversal gate. |
 | GeoPose | **Retained test:** the July 12 HTTP proof passes ten opt-in Spatial-descriptor checks, including a `geoPose` field. **Documented:** GeoPose 1.0 scope (not published) specifies location/orientation exchange. | Field presence does not test coordinate conversion, Earth anchoring, all conformance classes or the lab's mapping to GeoPose. WoW's recorded `geo.pose` conflict remains visible in the Map. |
 | TeleportXR | **Documented:** the September 10 trace (not published) describes its server-owned streaming/session protocol and avatar signaling. | It was **not** embedded or called by the retained OSL attempt; OSL's claim boundary (an unpublished Open Spatial Lab record) is explicit. The current trace remains partial because the indexed avatar-manifest chapter returned 404. Signaling text cannot reconstruct it. |
@@ -38,7 +32,7 @@ Build/connect below follows the existing capability export. A `connect` label id
 
 | Original part | Current subquestions and choice time | Overlap and the remaining seam |
 |---|---|---|
-| 1. Renderer | `render.raster`, `render.gpu-api`, `render.material` — build; `render.lod` — connect | Three.js scope (not published) documents renderers and detail selection. The retained lab test builds a Three.js scene; it does not choose a new renderer on connection or test final pixels. Remote rendered views remain a held proposal. |
+| 1. Renderer | `render.raster`, `render.gpu-api`, `render.material` — build; `render.lod` — connect | Three.js scope (not published) documents renderers and detail selection. The retained lab test builds a Three.js scene; it does not choose a new renderer on connection or test final pixels. Remote rendered views remain a held proposal. (Superseded on 2026-10-20: `render.remote` is now a row, recorded descriptively.) |
 | 2. Scene/world model | `scene.graph`, `scene.transform`, `scene.compose`, `scene.units` — build; `geo.pose`, `geo.crs` — build | WoW records, Three.js objects and RP1 `.msf` subtrees meet through a declared adapter/extension. The nested-versus-flat-node divergence and explicit units/up-axis show where they do not simply match. GeoPose does not perform arbitrary frame resolution. |
 | 3. Asset pipeline | `scene.container`, `scene.geometry`, `scene.texture`, `scene.material-x`, `scene.animation` — build; `deliver.cdn` — connect | The retained HTTP proof checks content negotiation across 21 media types. It does not render all 21. Three.js (scope trace, not published), Unreal (scope trace, not published), glTF/VRM and the existing Map separate import, conversion and supported behavior. |
 | 4. Physics/simulation | `physics.rigid`, `physics.collision`, `physics.joint` — build; `physics.determinism` — connect | X3D scope (not published) and engine traces document concrete physics surfaces. No combined-physics runtime receipt was inspected in OSL; exchanging parameters does not ensure deterministic outcomes. |
@@ -87,6 +81,6 @@ The following small comparison is copied from the current local export, not newl
 | horizon | native / verified | out-of-scope / verified | conflicts / verified | partial / verified |
 | resonite | native / verified | out-of-scope / verified | partial / verified | partial / verified |
 
-**Stop-early disposition:** the overlap table is the delivered artifact for the original engine-plane request. Reuse the current matrix/atlas and accepted detailed source traces. Keep `render.remote`, `render.ui` and every other pending or owner-parked proposal outside the current row set until their existing acceptance process decides otherwise. No coverage, score, subject, capability, renderer or deployment changed in this work.
+**Stop-early disposition:** the overlap table is the delivered artifact for the original engine-plane request. Reuse the current matrix/atlas and accepted detailed source traces. Keep `render.remote`, `render.ui` and every other pending or parked proposal outside the current row set until their existing acceptance process decides otherwise. (Superseded on 2026-10-20: `render.remote` is now a row, recorded descriptively.) No coverage, score, subject, capability, renderer or deployment changed in this work.
 
-Next step: use the table with the current Map's evidence drawers; evaluate any remaining proposal in its existing lane.
+Next step: use the table with the current Map's evidence drawers; evaluate any remaining proposal through the existing proposal process.

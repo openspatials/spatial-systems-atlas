@@ -1,19 +1,16 @@
 ---
-gas_schema: gas.doc.v1
 legacy_document_type: design
 type: spec
 title: Certification lanes — four bundles of must-interoperate capabilities, with what conformance would mean and what would prove it
 status: draft for review
 created: 2026-09-06T14:02:41Z
 project: msf-wg-tool
-workstream: infrastructure-wg-map
 created_by: the maintainers
-depends_on: infrastructure-wg/model/INTEROPERABILITY-BOUNDARIES.md (approved by the owner 2026-09-06T13:51:17Z); infrastructure-wg/tests/PILOT-AVATAR-PORTABILITY.md
+depends_on: infrastructure-wg/model/INTEROPERABILITY-BOUNDARIES.md (approved by the maintainer 2026-09-06T13:51:17Z); infrastructure-wg/tests/PILOT-AVATAR-PORTABILITY.md
 updated: 2026-09-11T07:51:29Z
 data_basis: 164 capabilities in 14 groups and 57 subjects. Membership derives from accepted capabilities.csv metadata. Integrated coverage contains 6,996 accepted claims and 1,943 sources, including 1,693 accepted claims for the 47 additions; 986 new subject-capability pairs remain explicitly unscored.
-data_basis_2026_09_06: "infrastructure-wg/data/territory.db read 2026-09-06T19:27Z — 46 subjects, 117 capabilities, 4,016 claims, 1,507 sources; sha256 81dbf0dbec1a6f07653885d2a0d6134fc8955a0e07c0c362d3666ffa02522ca9, written by the rebuild that applied the owner's answer to question 5 of the boundaries page: 40 must, 62 should, 15 none, lanes U1 22, U2 19, U3 20, U4 12. Lane 1 gained five rows and no other lane moved. Every number in lane 1 was re-derived against that database. The earlier basis line follows."
+data_basis_2026_09_06: "infrastructure-wg/data/territory.db read 2026-09-06T19:27Z — 46 subjects, 117 capabilities, 4,016 claims, 1,507 sources; sha256 81dbf0dbec1a6f07653885d2a0d6134fc8955a0e07c0c362d3666ffa02522ca9, written by the rebuild that applied the maintainer's answer to question 5 of the boundaries page: 40 must, 62 should, 15 none, lanes U1 22, U2 19, U3 20, U4 12. Lane 1 gained five rows and no other lane moved. Every number in lane 1 was re-derived against that database. The earlier basis line follows."
 data_basis_previous: "infrastructure-wg/data/territory.db read 2026-09-06T18:19Z — 46 subjects, 117 capabilities, 4,016 claims, 1,507 sources; sha256 9f4dd1aaab7bdbb625cf9769b495c5a2f4d1b9b07f333a1a4f9637b9ce7fb096, written 2026-09-06T18:08Z by the reconcile rebuild of the 2026-09-06 scoring pass, whose 35 must, 67 should and 15 none match the boundaries table row for row. Every lane number on this page was re-derived against that database and none of them moved: the 28 capabilities added on 2026-09-06 are 21 shoulds and 7 nones, so no lane gained or lost a row. The page was first written against the database of 2026-09-06T14:10Z — 89 capabilities, 2,728 claims, 1,436 sources, sha256 25ab2eb7f0082bf0b0b6bf98d724d05c1122c48fcce54908f19667e093964143"
-project_code_note: Omitted because the project registry has no uppercase alias; the frontmatter standard directs omission rather than invention.
 ---
 
 # Certification lanes
@@ -28,7 +25,7 @@ what conformance would mean in one sentence, the test that would prove it, and t
 
 **This is a lane definition, not a certification programme.** There is no badge, no mark, no register
 of certified products, no body that issues anything, and no plan on this page for any of them. The
-owner's direction of 2026-09-04 is plain: no official certification; build the lanes slowly, tests to
+maintainer's direction of 2026-09-04 is plain: no official certification; build the lanes slowly, tests to
 follow. Alfred Tom and Don Brutzman asked for the same order of work from the other side of the
 meeting — build the tests, certification follows — and Don's line is the one to keep: if you cannot
 measure it, maybe you have not defined it.
@@ -71,7 +68,7 @@ second pass, and the boundaries page still holds them.
 | 3 World-to-world travel | U3 A person travels through a portal and stays themselves | 31 | `/msf/atlas/#lane=travel` |
 | 4 Agent participation | U4 An agent joins a world, acts, and pays | 19 | `/msf/atlas/#lane=agent` |
 
-The four lanes hold 106 places between them, filled by 54 distinct capabilities. Every must row belongs to at least one lane. The approved additions contribute 14 new must rows and 33 lane places. The five captured-content rows made must by the owner on 2026-09-06 remain in U1.
+The four lanes hold 106 places between them, filled by 54 distinct capabilities. Every must row belongs to at least one lane. The approved additions contribute 14 new must rows and 33 lane places. The five captured-content rows made must by the maintainer on 2026-09-06 remain in U1.
 
 All new test entries below are proposed tests. None was executed as part of this metadata preparation, and membership does not establish runtime conformance.
 
@@ -105,7 +102,7 @@ effort.
 The oldest ask in the working group, and the lane with the most systems already standing on it. Ten
 of its twenty-two rows are the file itself and the conventions inside it, four are about content
 pinned to a place on the Earth, three are behaviour, versions and the test suite itself, and five are
-the carriage formats for captured content, which joined the lane on 2026-09-06 when the owner
+the carriage formats for captured content, which joined the lane on 2026-09-06 when the maintainer
 answered that captured content is first-class. **Those five are the only rows in this lane that no
 other lane shares, and four of the five rest on one system.** The lane got wider and thinner on the
 same day.
@@ -588,7 +585,7 @@ nothing because the only system that has it, the Universal Manifest, is a draft.
 should be judged by is the next column along: how many of its rows have two or more systems with the
 capability built in, because that is the condition for a test between two implementations to be
 possible at all. **Read that way, the content lane fell from 16 of 17 to 17 of 22 in one day**, which
-is the truer account of what the owner's answer did. The avatar lane still clears it almost
+is the truer account of what the maintainer's answer did. The avatar lane still clears it almost
 everywhere; travel clears fifteen of its twenty rows, and the agent lane nine of its twelve.
 
 **Eighteen rows on the whole map rest on a single system. Ten of the eighteen are must rows, and
@@ -603,7 +600,7 @@ the row is open and simply unimplemented so far by anyone else. All ten are wher
 tested yet for want of a second implementation to test against, and they are the sharpest argument
 the map makes for what the Forum's standards work should do next.
 
-**The thin list doubled on 2026-09-06, and later the same day the owner's answer moved four of the
+**The thin list doubled on 2026-09-06, and later the same day the maintainer's answer moved four of the
 thin rows into a lane.** The map grew from 89 rows to 117, and ten of the 28 new rows have exactly
 one system with the capability built in. When those 28 were scored, every one of the ten was a should
 or a none, so the lanes did not move at all. Then question 5 of the boundaries page was answered yes
@@ -625,10 +622,10 @@ named.
 The sequence remains boundary, lane, test suite, then any separate badge decision. The progress descriptions below record the 2026-09-06 state; the 12 added must rows now have proposed test ideas above, with no execution claimed.
 
 1. **Decide the boundary.** Done: `infrastructure-wg/model/INTEROPERABILITY-BOUNDARIES.md`, approved
-   by the owner on 2026-09-06.
+   by the maintainer on 2026-09-06.
 2. **Define the lane.** This page.
 3. **Write one test suite at a time, starting where two implementations already exist.** The avatar
-   pilot is the first, by the owner's choice, and it covers nine of lane 2's nineteen rows.
+   pilot is the first, by the maintainer's choice, and it covers nine of lane 2's nineteen rows.
 4. **Run the tests in public and put the results in the map.** Nothing is built for this yet; the
    pilot's results shape is the first sketch of it.
 5. **Only then**, if the Forum wants one, a conversation about what a badge would say. Not before,
@@ -702,7 +699,7 @@ tables reproduced by the queries above.
 - **It does not create a certification of any kind.** No badge, no levels, no register, no body, no
   self-declaration form. If one is ever wanted, it is a separate decision after the tests exist.
 - **It does not rank the lanes against each other.** Lane 2 is the first to be measured because the
-  owner chose the pilot example, not because this page put it there.
+  maintainer chose the pilot example, not because this page put it there.
 - **It does not set tolerances.** Every number in a test — centimetres, degrees, frames — belongs to
   the test design, where it can be argued with measurements. The sentences here say what would be
   true, not how close is close enough.

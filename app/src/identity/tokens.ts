@@ -1,4 +1,4 @@
-// Three candidate visual identities for the Atlas, for the owner to choose from.
+// Three candidate visual identities for the Atlas, to choose from.
 //
 // Each one is a full replacement for the light and dark palettes in marks.ts
 // (THEMES), keyed by the same custom properties, plus a few detail tokens the

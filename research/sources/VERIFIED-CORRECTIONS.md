@@ -551,16 +551,12 @@ portal does not standardize the name inside it.
 
 # Merged 2026-08-24 — six re-verification passes
 
-Six independent passes re-read the primary sources behind this map. None of them was allowed to write this
-file, so their corrections sat in five result artifacts and four coverage records until now. This is
+Six independent passes re-read the primary sources behind this map. Their corrections were first
+recorded in five result notes and four coverage records, not in this file. This is
 the merge. Each entry gives the old claim, the new claim, and where it came from.
 
 Sources merged, from the maintainers' working notes (not published):
-`2026-08-24-wo-006a-identity-provenance-rows-result.md`,
-`2026-08-24-wo-006b-asset-geospatial-rows-result.md`,
-`2026-08-24-wo-006c-pose-and-mpeg-rows-result.md`,
-`2026-08-24-wo-010-two-pages-and-portaling-result.md`,
-`2026-08-24-wo-012-universal-manifest-claim-recheck-result.md`,
+the result notes of passes A to E (2026-08-24),
 and the platform coverage records `infrastructure-wg/data/coverage/{vrchat,resonite,roblox,recroom}.json`.
 
 ## 14. The asset and geospatial formats
@@ -1154,7 +1150,7 @@ This is the finding that makes the rest unavoidable.
   on maturity, not a defect in the text, and this project's own ecosystem note already recorded the
   restraint — nobody in this stack publishes a conformance suite, so it is not a criticism we are
   entitled to make loudly.
-- **Nothing has ever been sent to that consortium.** The decision is the owner's alone.
+- **Nothing has ever been sent to that consortium.** The decision is the maintainer's alone.
 - **Source:** pass D decision two.
 
 ### 17.10 Unreal Engine 6 has a named game — Rocket League — and still has not shipped
@@ -1212,7 +1208,7 @@ version 6 yet; early access is targeted for the end of 2027."*
 which matches Epic's forum announcement and the State of Unreal page of that date. Epic's own
 `unreal-engine-5-8-is-now-available` news post is stamped **June 23, 2026**, and the road-to-UE6
 post **June 22, 2026** — so the register's "the version 6 plan was announced the same day" is true
-of the show, not of the blog posts. Left as found; it was not this order's to change.
+of the show, not of the blog posts. Left as found; it was not this pass's to change.
 
 **The coverage file was checked and nothing in it changed.** In
 `infrastructure-wg/data/coverage/unreal.json`, two of the 79 rows touch this subject. `logic.script`
@@ -1275,8 +1271,8 @@ extension's status line as ratified while the two glTF subjects said it was not.
 
 ## 18. The platforms — nineteen recorded collisions
 
-Source: the platform scoring pass. That work order died on a transient server error before it could
-write a result artifact, so its findings were read directly out of the four coverage records it had
+Source: the platform scoring pass. That pass stopped on a server error before it could
+record a result, so its findings were read directly out of the four coverage records it had
 already written: `coverage/vrchat.json` (86 rows), `resonite.json` (89), `roblox.json` (89) and
 `recroom.json` (44). Every item below is a row scored **`conflicts`** — the level this project uses
 when a platform's own documented behaviour clashes head-on with a neutral standard. There are
@@ -1409,28 +1405,28 @@ live at the same two line numbers in the published draft, and on the public rend
 affected text is normative production-candidate content, not a preview section. The file has not
 changed by a single byte since 2026-07-09, which is why line numbers written in July still land.
 Nothing has reached upstream: zero pull requests, zero issues, zero forks, and no commit in the
-owner's private working repository has ever touched that file either.
+maintainer's private working repository has ever touched that file either.
 
-### 19.1 "Upstream" is the owner's own publication surface, not a third party's
+### 19.1 "Upstream" is the maintainer's own publication surface, not a third party's
 
 - **Old:** carried in the register with the weight of an **undisclosed third-party vulnerability**.
-- **New:** every commit in that repository was authored and committed by the owner, and the
+- **New:** every commit in that repository was authored and committed by the maintainer, and the
   authenticated account holds administrator permission on it. **There is no external gatekeeper to
   persuade and no vendor to notify. Structurally this is a self-fix.**
 - **This is the single most important correction to how the claim has been circulating.**
 - **Source:** pass E hypothesis 6.
 
-### 19.2 "The owner has not answered the disclosure question" is stale
+### 19.2 "The maintainer has not answered the disclosure question" is stale
 
-- **Old:** the maintainers' list of open constraints — "Owner has not answered."
+- **Old:** the maintainers' list of open constraints — "Maintainer has not answered."
 - **New:** **he answered on 2026-08-01 and it was re-recorded 2026-08-03:** quiet fix, ordinary
-  specification-improvement pull request rather than a security advisory, owner submits personally.
+  specification-improvement pull request rather than a security advisory, the maintainer submits personally.
   The maintainers' notes were never updated, and that one line set off a whole round of work.
 - **Source:** pass E.
 
 ### 19.3 "The claim has never been re-checked" is false
 
-- **Old:** asserted in the work order that commissioned the re-check.
+- **Old:** asserted in the brief that commissioned the re-check.
 - **New:** it had been re-checked **2026-08-23T22:49Z**, about five hours earlier, in a queue this
   project's maintainers were not reading — and again on 2026-08-24.
 - **Source:** pass E.
@@ -1474,7 +1470,7 @@ owner's private working repository has ever touched that file either.
   reactivation condition. Adoption is.**
 - **One limit on the finding, stated honestly:** a private message to the maintainers would leave no
   trace in any repository and cannot be seen from here. Everything above rules out delivery through
-  code, pull requests and issues. Only the owner can close that gap absolutely.
+  code, pull requests and issues. Only the maintainer can close that gap absolutely.
 - **Source:** pass E.
 
 ## 20. The subject register — what was changed on 2026-08-24
@@ -1503,7 +1499,7 @@ One row changed in `infrastructure-wg/data/subjects.csv`. Nothing else in that f
    "Document type: OGC Community Standard".
 
 The `kind` column stays `standard` and the `status` column stays `ratified`: the schema's closed
-lists have no value for a community standard, and the schema is not this work order's to change.
+lists have no value for a community standard, and the schema is not this pass's to change.
 The name is the only field that can carry the distinction today. **If the schema ever grows a field
 for the class of a standard, this is the row that needs it.**
 

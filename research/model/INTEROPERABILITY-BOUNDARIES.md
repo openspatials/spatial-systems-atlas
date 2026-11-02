@@ -1,20 +1,17 @@
 ---
-gas_schema: gas.doc.v1
 legacy_document_type: decision-input
 type: decision
 title: Interoperability boundaries — which of the 176 capabilities must interoperate at all
-status: draft for owner review
+status: draft for review
 created: 2026-09-04T21:42:57Z
-revised: "2026-09-06T19:27:08Z — applied the owner's answer to question 5: captured content is first-class, so Splat data interchange format, Volumetric video capture and playback, Point cloud encoding, Multi-view plus depth and Time-varying capture are must rows under U1, and every count on this page is re-derived at 40 must, 62 should and 15 none."
-revised_previous: 2026-09-06T18:20:00Z — the 2026-09-06 scoring pass scored the 28 capabilities added on 2026-09-06 and re-derived every count from 117 rows in 14 groups. The 89 rows the owner approved on 2026-09-06 are unchanged, word for word.
+revised: "2026-09-06T19:27:08Z — applied the maintainer's answer to question 5: captured content is first-class, so Splat data interchange format, Volumetric video capture and playback, Point cloud encoding, Multi-view plus depth and Time-varying capture are must rows under U1, and every count on this page is re-derived at 40 must, 62 should and 15 none."
+revised_previous: 2026-09-06T18:20:00Z — the 2026-09-06 scoring pass scored the 28 capabilities added on 2026-09-06 and re-derived every count from 117 rows in 14 groups. The 89 rows approved on 2026-09-06 are unchanged, word for word.
 project: msf-wg-tool
-workstream: infrastructure-wg-map
 created_by: the maintainers
 source: infrastructure-wg/meetings/2026-09-04-meeting-notes.md (F5) — Don Brutzman on tests 00:19:54–00:24:35 and 00:32:53; Grig Bilham 00:35:04–00:36:29 ("defining those boundaries would help define where the tests are")
 updated: 2026-09-11T07:51:29Z
 data_basis: 176 capabilities in 15 groups and 66 subjects (2026-11-01). Membership derives from accepted capabilities.csv metadata. Integrated coverage contains 11,539 claims and 3,061 sources; 11 subject-capability pairs remain unscored.
 data_basis_2026_09_06: infrastructure-wg/data/territory.db as of 2026-09-06 (46 subjects, 117 capabilities, 4,016 claims, 1,507 sources). The 89 rows were first scored against the database of 2026-09-04T10:03:30Z (35 subjects, 1,749 claims, 1,057 sources); the reach figures on this page have been re-derived against the current database and the two that moved are marked.
-project_code_note: Omitted because the project registry has no uppercase alias; the frontmatter standard directs omission rather than invention.
 ---
 
 # Interoperability boundaries
@@ -24,9 +21,9 @@ once, for all 176 capabilities, so that the test work has a target and the certi
 scope. It is the first step the meeting asked for, and nothing about tests is settled until it is
 agreed.
 
-**Historical decision — 2026-09-06.** The page was written for 89 capabilities and approved by the owner on 2026-09-06. On the same day
+**Historical decision — 2026-09-06.** The page was written for 89 capabilities and approved by the maintainer on 2026-09-06. On the same day
 the map gained 28 rows and two regions — Generation & capture, World sensing — and those 28 were put
-through the same rule, which put none of them on must. **The owner then answered question 5 below:
+through the same rule, which put none of them on must. **The maintainer then answered question 5 below:
 captured content is first-class.** Five capture rows move up on that answer — Splat data interchange
 format, Volumetric video capture and playback, Point cloud encoding, Multi-view plus depth and
 Time-varying capture — because each of them is the captured-content twin of a mesh-world row that is
@@ -243,7 +240,7 @@ The prior 117 rows retain their approved wording, including dated reach observat
 | Agent authoring and publishing interface `logic.agent-authoring` | Logic & behaviour | connect | should | U1, U4 | An agent can still build in each platform through that platform's own interface, but without a shared one every agent needs a separate integration for every platform. |
 | Taking a whole world out `persist.world-export` | Persistence & storage | build | should | U1 | Assets can still move one at a time, but a place that cannot leave its host as a whole has to be rebuilt by hand when the host changes or closes. |
 | Model-based object tracking `sense.object-track` | World sensing | build | should | U1 | The object model arrives from another system, so its format and units must be readable by the tracker, while the tracking itself stays on the device. |
-| Remote (split) rendering `render.remote` | Rendering & presentation | connect | none | — | Recorded descriptively by the owner's decision of 2026-09-18: the Atlas records which systems render remotely and does not define an agreement between client and renderer. |
+| Remote (split) rendering `render.remote` | Rendering & presentation | connect | none | — | Recorded descriptively: the Atlas lists which systems render remotely and does not propose a common format for the connection between client and renderer. |
 | Live data binding `net.live-data` | Networking & session | connect | should | U1 | A digital twin can still be shown without a shared binding, but each data source must be wired by hand; the Atlas's four use cases do not yet include digital twins, so the row is recorded against content that moves. |
 | Activity and learning records `persist.activity-record` | Persistence & storage | connect | should | U3 | Training still finishes without a portable record, but the result stays in one vendor's dashboard instead of travelling with the person. |
 | Physiological signals as input `input.physiological` | Input & devices | build | should | U3 | Sensors and experiences come from different vendors; without a shared signal description each adaptation is wired to one device, though the experience still runs without it. |
@@ -281,7 +278,7 @@ The subject table contains 66 subjects. Final reach, thin-row and lane-coverage 
 
 ## Historical counts and reach — 2026-09-06
 
-The following counts and interpretation retain the 117-capability, 46-subject snapshot and the owner decision made that day. They are not measurements of the current 175-capability scope.
+The following counts and interpretation retain the 117-capability, 46-subject snapshot and the decision made that day. They are not measurements of the current 175-capability scope.
 
 Of the 117 capabilities in 14 groups: **40 must**, **62 should**, **15 none**.
 
@@ -316,7 +313,7 @@ device's reading of the room never leaves the device.
 
 Which use cases the must rows serve: 22 must rows for content moving (U1), 19 for the travelling
 avatar (U2), 20 for the travelling person (U3) and 12 for the participating agent (U4). A row may
-serve more than one, so these do not sum to 40. **One of the four numbers moved on the owner's
+serve more than one, so these do not sum to 40. **One of the four numbers moved on the maintainer's
 answer**: all five new musts serve U1 and nothing else, because a splat capture and a room scan have
 no part in an avatar's journey, a portal crossing or an agent's session. So the content lane grows
 from 17 rows to 22 and the other three lanes are the bundles they were.
@@ -342,7 +339,7 @@ ARCore and Android XR, Niantic Lightship and Open AR Cloud — because the bread
 added the systems whose whole business that row is.
 
 **Rows on the whole map reached natively by exactly one subject: 18**, up from eight, because ten of
-the 28 new rows have a single native claimant. That total did not move on the owner's answer, but its
+the 28 new rows have a single native claimant. That total did not move on the maintainer's answer, but its
 shape did: **ten of the eighteen are now musts**, not six, because four of the thin rows have been
 moved into a certification lane. The other eight are shoulds and nones.
 
@@ -362,7 +359,7 @@ written, and the record of what happened to it is worth keeping.
 | Credential exchange protocol `identity.exchange` | Roblox | Again a platform's own sign-in, one direction only, not an exchange between peers. |
 | Capability and permission grant `identity.capability` | Universal Manifest | A draft standard is the only place permissions are written to be read by a party that did not issue them. |
 | Preference portability `persist.prefs` | Roblox | Accessibility settings follow the player inside one platform and stop at its edge. |
-| Volumetric video capture and playback `capture.volumetric-video` | MPEG-I V3C | A must since the owner's answer of 2026-09-06. One standard carries volumetric media with the calibration and mask metadata a second implementation needs; two engines reach it only in part. |
+| Volumetric video capture and playback `capture.volumetric-video` | MPEG-I V3C | A must since the maintainer's answer of 2026-09-06. One standard carries volumetric media with the calibration and mask metadata a second implementation needs; two engines reach it only in part. |
 | Point cloud encoding `capture.point-cloud` | MPEG-I V3C | The same standard, and here it has company at the next level down: three systems read point clouds through an extension and twelve in part, so this is the least thin of the four. |
 | Multi-view plus depth `capture.multiview-depth` | MPEG-I V3C | The thinnest of the four. One standard, no extension anywhere, two partials. A capture that arrives without its intrinsics and extrinsics has nowhere else to be read. |
 | Time-varying capture `capture.4d` | MPEG-I V3C | The one `connect` row of the five: what has to be agreed is the rate and the ordering, not a file, and one standard and one extension is the whole of it today. |
@@ -379,7 +376,7 @@ is not closed the way a platform's internal rule is closed; it is simply unimple
 `native` level, by anyone else. That is a better position to be in and it is still one system, and a
 test between two implementations cannot be written until there is a second one.
 
-**The owner's answer made the thin list matter more without making it longer.** The 28 rows added on
+**The maintainer's answer made the thin list matter more without making it longer.** The 28 rows added on
 2026-09-06 brought ten single-system rows onto the map, and at the time every one of them was a
 should or a none. Four are now musts. The map still has eighteen thin rows; ten of them are now in a
 certification lane rather than six. A thin should is a research finding, and a thin must is a hole in
@@ -432,7 +429,7 @@ SELECT count(*) FROM (
 - It does not touch the database, the pages or the coverage metric on its own. Those follow a
   decision, and the answer to question 5 has been carried through all three.
 
-## Historical owner review — 2026-09-06
+## Historical review — 2026-09-06
 
 These questions preserve the earlier scope discussion and the answered captured-content decision. They do not reopen the prior 117 classifications or the 45 approved additions.
 
@@ -454,10 +451,10 @@ it asks about has been overturned for the carriage rows and kept for the two ren
 4. **Splats and volumetric content are shoulds.** They fail outright when they fail, but only for
    content captured that way. If the Forum wants captured content to be first-class, both become
    must and the gap list grows.
-5. **Is captured content first-class? ANSWERED YES by the owner, 2026-09-06.** The question was
+5. **Is captured content first-class? ANSWERED YES by the maintainer, 2026-09-06.** The question was
    whether Generation & capture should stay a should-or-none region. It was scored on the reading
    that kept `render.splat` and `render.volumetric` at should: captured content is one class of
-   asset, so a receiver that cannot read it loses that class and keeps everything else. The owner's
+   asset, so a receiver that cannot read it loses that class and keeps everything else. The maintainer's
    answer overturns that reading for the five rows the question named — Splat data interchange
    format, Point cloud encoding, Volumetric video capture and playback, Multi-view plus depth and
    Time-varying capture. Each of them has a mesh-world neighbour that is already a must: an encoding
@@ -468,18 +465,18 @@ it asks about has been overturned for the carriage rows and kept for the two ren
    arrived rather than carrying it, and the twelve other Generation & capture rows are still shoulds
    and nones, because they are about making a place rather than moving one.
 
-Reply with the row ids to change, or with "as it stands", and the column, the filter, the mark and
-the third metric selector follow (task 3 of the work order). The five rows of question 5 have been
+Any row changed here carries through to the column, the filter, the mark and the third metric
+selector. The five rows of question 5 have been
 through that chain already: the column, the mark, the filter, the atlas route and the restricted
 metric all carry the answer.
 
 ## What the maintainers expected, and what the rule gave
 
-The order that scored these 28 rows carried an expectation, to be checked and not assumed. Three
+The pass that scored these 28 rows carried an expectation, to be checked and not assumed. Three
 parts of it did not survive the rule, and saying so is the point of writing the expectation down.
 
 - **"The sensing rows and the splat, volumetric, point cloud and time-varying rows are must or
-  should under U1 and U2."** The rule made them shoulds; the owner's answer of 2026-09-06 has since
+  should under U1 and U2."** The rule made them shoulds; the maintainer's answer of 2026-09-06 has since
   made four of them musts, so the "must or should" half of the expectation is now half right by
   decision rather than by rule. **U2 is still not their use case**, and that is the half the answer
   did not touch. U2 is an avatar travelling with its items and its expressions; a room scan and a
@@ -506,7 +503,7 @@ parts of it did not survive the rule, and saying so is the point of writing the 
 
 One expectation held: the splat and captured-media rows are shoulds under U1, which is what the
 approved page already said about `render.splat` and `render.volumetric`. Question 5 above was the
-place to overturn all of this at once, and the owner has now done so in part. **What survives the
+place to overturn all of this at once, and the maintainer has now done so in part. **What survives the
 answer:** the use cases. The five rows that moved to must serve U1 and only U1, so the maintainers'
 original expectation that they served U2 as well is still wrong, and the sensing rows, the streaming
 row and `sense.occlusion` are all where the rule put them. **What the answer overturned:** the value

@@ -1,16 +1,10 @@
 ---
-gas_schema: gas.doc.v1
 type: report
 title: "Standards register and disposition of the 2025 gap list"
 status: complete
 created: 2026-09-11T01:01:26Z
 project: msf-wg-tool
-project_code: msf-wg-tool
-workstream: infrastructure-wg-map
 created_by: the maintainers
-requested_by: owner
-agent_task_id: cdd60b5d_1788736606
-privacy_scope: project-readable
 ---
 
 # Standards register
@@ -69,6 +63,6 @@ The mapping below names questions, not support levels. Current scope reports (no
 | GAP-16 Biometric integration | `input.eye`, `input.face`, `identity.privacy` (adjacent) | Tracking and disclosure do not constitute physiological evaluation. Leave that residual scope to an explicit product decision. |
 | GAP-17 Sensory standards | `input.haptic`, `audio.spatial` (partial) | Existing haptic/audio questions do not cover every sense. Do not label the entire area empty or add a multisensory umbrella. |
 
-**Overlay decision:** use the current atlas/matrix questions and their evidence drawers; retain this table as the historical crosswalk. No separate 17-gap overlay, renderer rebuild, score change or automatic proposal acceptance is warranted. The seven owner-parked rows in [ROADMAP.md](../model/ROADMAP.md) stay parked. Recommendations in later source reviews remain recommendations until their existing acceptance process admits them.
+**Overlay decision:** use the current atlas/matrix questions and their evidence drawers; retain this table as the historical crosswalk. No separate 17-gap overlay, renderer rebuild, score change or automatic proposal acceptance is warranted. The seven parked rows in [ROADMAP.md](../model/ROADMAP.md) stay parked. Recommendations in later source reviews remain recommendations until their existing acceptance process admits them.
 
-Next step: cite the dated row and current capability evidence for a statement; send any genuinely different capability through the existing owner-controlled proposal process.
+Next step: cite the dated row and current capability evidence for a statement; send any genuinely different capability through the existing proposal process.

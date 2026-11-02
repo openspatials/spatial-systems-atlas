@@ -1,16 +1,10 @@
 ---
-gas_schema: gas.doc.v1
 type: report
 title: "Model A1: documented Pixel Streaming example and scope decision"
 status: complete
 created: 2026-09-11T01:01:26Z
 project: msf-wg-tool
-project_code: msf-wg-tool
-workstream: infrastructure-wg-map
 created_by: the maintainers
-requested_by: owner
-agent_task_id: cdd60b5d_1788736606
-privacy_scope: project-readable
 ---
 
 # Model A1: cloud-rendered video
@@ -31,15 +25,15 @@ The September 10 accepted Unreal scope trace (not published) covers Pixel Stream
 
 ## Current Map placement and the remaining decision
 
-Existing questions such as `net.media`, `net.transport`, `net.session`, `input.session` and `input.devcaps` can describe parts of a remote session. A complete remote-view contract would need more than those parts. The September 9 proposal review (not published) retains the proposed `render.remote` hold. The September 10 Unreal trace explicitly preserves that hold and records **no new owner decision**. `render.remote` is absent from the current 117-capability export; Pixel Streaming documentation does not authorize adding it.
+Existing questions such as `net.media`, `net.transport`, `net.session`, `input.session` and `input.devcaps` can describe parts of a remote session. A complete remote-view contract would need more than those parts. The September 9 proposal review (not published) retains the proposed `render.remote` hold. The September 10 Unreal trace explicitly preserves that hold and records **no new decision**. `render.remote` is absent from the current 117-capability export; Pixel Streaming documentation does not authorize adding it. (Superseded on 2026-10-20: `render.remote` is now a row, recorded descriptively.)
 
-The original order asked the working group whether remote rendering belongs in scope. No answer to that specific question was found in the exact order, current roadmap, accepted boundary result or accepted Unreal trace. The concrete choices remain:
+The original request asked the working group whether remote rendering belongs in scope. No answer to that specific question was found in the original request, current roadmap, accepted boundary result or accepted Unreal trace. The concrete choices remain:
 
 1. **Retain Model A1 as descriptive context.** Use this bounded fact sheet; keep work focused on the existing portability and boundary questions. No additional research or capability row follows.
-2. **Include a defined remote-rendering interoperability use case.** State the producer/receiver boundary and the required media, input/pose, timing and handoff properties, then reopen the existing `render.remote` proposal through its current owner process. The missing protocol and measurement evidence above defines the scope of that work.
+2. **Include a defined remote-rendering interoperability use case.** State the producer/receiver boundary and the required media, input/pose, timing and handoff properties, then reopen the existing `render.remote` proposal through its current review process. The missing protocol and measurement evidence above defines the scope of that work.
 
-This prepares the decision and finishes the authorized local research. It does not invent a group answer, upgrade a held proposal or claim that shared-corpus publication occurred.
+This prepares the decision and finishes the local research. It does not invent a group answer, upgrade a held proposal or claim that shared-corpus publication occurred.
 
 ## Decision recorded 2026-09-18
 
-Cloud rendering stays descriptive. Model A1 is retained as bounded context only. No new capability row, no `render.remote` proposal reopened, no interoperability contract defined. The map records what exists; it does not author an agreement the working group would then have to ratify.
+Cloud rendering stays descriptive. Model A1 is retained as bounded context only. No new capability row, no `render.remote` proposal reopened, no interoperability contract defined. The map records what exists; it does not author an agreement the working group would then have to ratify. (Superseded on 2026-10-20: `render.remote` is now a row, recorded descriptively.)

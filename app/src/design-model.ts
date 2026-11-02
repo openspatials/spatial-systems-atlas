@@ -2,7 +2,7 @@
 // `design-candidate/MSF Map - redesign v3.dc.html` and its handoff notes.
 //
 // This module supersedes the earlier `data.ts` and `select.ts` pair, which belong
-// to the interface the owner replaced. Both still drive the old shell and are left
+// to the interface that was replaced. Both still drive the old shell and are left
 // in place until the view port lands; nothing new should be built on them.
 //
 // Two rules from the design notes govern every line below.

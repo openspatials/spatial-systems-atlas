@@ -6,7 +6,7 @@
 // React, so the rules can be tested on their own.
 //
 // Both displays are candidates. They are reached only through the address flag
-// `?candidates`, so the live default is unchanged until the owner chooses.
+// `?candidates`, so the live default is unchanged until one is chosen.
 
 import type { Capability, LaneId, Level, Model, Subject } from '../design-model.ts'
 import { levelOf } from '../design-model.ts'
