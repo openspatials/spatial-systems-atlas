@@ -176,7 +176,7 @@ export function peers(model: Model, sid: string, others: string[], rows: Capabil
 }
 
 // ---------------------------------------------------------------------------
-// Map: the stops (overview and the four use-case lanes)
+// Map: the stops (overview and every use-case lane)
 // ---------------------------------------------------------------------------
 
 export interface StopSummary {
@@ -224,7 +224,7 @@ export function stopSummary(model: Model, on: string[], rows: Capability[]): Sto
   return { rows: rows.length, builtIn, nobody, unassessed, conflictRows, groups, leaders }
 }
 
-export const STOPS: Array<LaneId | null> = [null, 'U1', 'U2', 'U3', 'U4']
+export const STOPS: Array<LaneId | null> = [null, 'U1', 'U2', 'U3', 'U4', 'U6', 'U7', 'U10']
 
 // ---------------------------------------------------------------------------
 // Map: a fixed layout. Specifications on the left, capability groups in the

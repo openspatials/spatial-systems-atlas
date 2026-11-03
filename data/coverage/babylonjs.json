@@ -3157,6 +3157,28 @@
           "quote": "Babylon WebXR motion controllers use it to support both the standard advanced Gamepad haptics API and the legacy pulse() API."
         }
       ]
+    },
+    {
+      "capability_id": "render.renderer-swap",
+      "level": "native",
+      "note": "Babylon.js ships WebGL and WebGPU engines behind one scene interface, and its engine factory picks WebGPU, then WebGL, then a no-output engine according to what the hardware offers. The documentation warns that an existing WebGPU scene cannot be moved to WebGL after creation, so the choice is made before the scene is built.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/BabylonJS/Babylon.js/eeaab109b28fb4e90fc1db6788497d1edceaa3fd/packages/dev/core/src/Engines/engineFactory.ts",
+          "title": "Babylon.js engineFactory.ts, EngineFactory.CreateAsync (commit eeaab10)",
+          "retrieved": "2026-11-03",
+          "kind": "primary",
+          "quote": "Creates an engine based on the capabilities of the underlying hardware"
+        },
+        {
+          "url": "https://doc.babylonjs.com/setup/support/webGPU",
+          "title": "Babylon.js documentation, WebGPU Support",
+          "retrieved": "2026-11-03",
+          "kind": "primary",
+          "quote": "Because Babylon cannot swap an existing WebGPU scene to WebGL, choose the engine before creating the scene and its resources."
+        }
+      ]
     }
   ]
 }

@@ -22,7 +22,8 @@ export type Conf = 'v' | 'r' | 'u'
 /** Support level then confidence, e.g. "nv" = built in, verified. */
 export type Code = string
 
-export type LaneId = 'U1' | 'U2' | 'U3' | 'U4'
+/** A use-case lane: "U" and a number. The data names which lanes exist (counts.lanes). */
+export type LaneId = `U${number}`
 export type RowFilter = 'all' | 'overlap' | 'thin' | 'gap' | 'conflict' | 'connect' | 'interop'
 export type Basis = 'prod' | 'all' | 'must'
 
@@ -80,6 +81,8 @@ export interface Subject {
   conflicts: number
   unverified: number
   scored: number
+  /** Register ids of the OpenSpatials platforms this subject is. Absent when it is none. */
+  platform?: string[]
 }
 
 export interface GroupHealth {
@@ -106,6 +109,7 @@ export interface Model {
   /** Level counts per capability, across all subjects in the export. */
   agg: Record<string, Record<string, number>>
   health: Record<string, GroupHealth>
+  /** Every lane the data carries, in order (U1, U2, ... U10), with its label and must-row count. */
   lanes: Record<LaneId, { label: string; n: number }>
   byCapability: Map<string, Capability>
   bySubject: Map<string, Subject>
@@ -116,7 +120,19 @@ export const LANE_LABEL: Record<LaneId, string> = {
   U2: 'Avatar portability',
   U3: 'World-to-world travel',
   U4: 'Agent participation',
+  U6: 'Same place, same thing',
+  U7: 'Training results that travel',
+  U10: 'Shared presence',
 }
+
+/** A lane's label; a lane the data carries before it has a label here still gets a name. */
+export const laneLabel = (lane: LaneId): string => LANE_LABEL[lane] ?? `Use case ${lane}`
+
+/** Is this text a lane id? */
+export const isLaneId = (x: unknown): x is LaneId => typeof x === 'string' && /^U[0-9]+$/.test(x)
+
+/** The lanes the model carries, in number order. */
+export const laneIds = (model: Pick<Model, 'lanes'>): LaneId[] => Object.keys(model.lanes) as LaneId[]
 
 /** Compact tuples in, named fields out. Nothing is rewritten or recomputed later. */
 export function adapt(raw: any): Model {
@@ -174,6 +190,7 @@ export function adapt(raw: any): Model {
       conflicts: Number(s.conflicts ?? 0),
       unverified: Number(s.unverified ?? 0),
       scored: Number(s.scored ?? 0),
+      ...(Array.isArray(s.platform) && s.platform.length ? { platform: s.platform.map(String) } : {}),
     }
   })
 
@@ -203,12 +220,15 @@ export function adapt(raw: any): Model {
     }
   }
 
-  const laneCounts = raw.counts?.lanes ?? {}
-  const lanes = {
-    U1: { label: LANE_LABEL.U1, n: laneCounts.U1 },
-    U2: { label: LANE_LABEL.U2, n: laneCounts.U2 },
-    U3: { label: LANE_LABEL.U3, n: laneCounts.U3 },
-    U4: { label: LANE_LABEL.U4, n: laneCounts.U4 },
+  // Every lane the data counts, plus any lane a row names, in number order. The
+  // four original lanes are always present so an older export still reads.
+  const laneCounts: Record<string, number> = raw.counts?.lanes ?? {}
+  const named = new Set<LaneId>(['U1', 'U2', 'U3', 'U4'])
+  for (const k of Object.keys(laneCounts)) if (isLaneId(k)) named.add(k)
+  for (const c of capabilities) for (const u of c.uses) if (isLaneId(u)) named.add(u)
+  const lanes = {} as Model['lanes']
+  for (const id of [...named].sort((a, b) => Number(a.slice(1)) - Number(b.slice(1)))) {
+    lanes[id] = { label: laneLabel(id), n: laneCounts[id] }
   }
 
   return {
@@ -307,6 +327,37 @@ export function matchingRows(model: Model, query: Query): Capability[] {
   const picked = pickedRows(model, query)
   return model.capabilities.filter((c) => (!picked || picked.has(c.id)) && rowMatch(model, query, c))
 }
+
+/**
+ * The subject display's own filters, one per figure in its hero. They narrow the
+ * rows already shown to those the subject in focus reaches, has built in, has a
+ * claim for (or not), or has a recorded conflict on. Every active one must pass.
+ */
+export interface SubjectOnly {
+  reach: boolean
+  native: boolean
+  assessed: 'all' | 'assessed' | 'unassessed'
+  conflicts: boolean
+}
+
+export const NO_SUBJECT_ONLY: SubjectOnly = { reach: false, native: false, assessed: 'all', conflicts: false }
+
+export const subjectOnlyActive = (only: SubjectOnly): boolean =>
+  only.reach || only.native || only.assessed !== 'all' || only.conflicts
+
+/** Same definitions as the figures: reach is built in, extension or partial; a missing code is not assessed. */
+export function subjectRowMatch(model: Model, subjectId: string, only: SubjectOnly, c: Capability): boolean {
+  const level = levelOf(model.cov[subjectId]?.[c.id])
+  if (only.reach && !(level === 'n' || level === 'x' || level === 'p')) return false
+  if (only.native && level !== 'n') return false
+  if (only.assessed === 'assessed' && level === null) return false
+  if (only.assessed === 'unassessed' && level !== null) return false
+  if (only.conflicts && level !== 'c') return false
+  return true
+}
+
+export const subjectRows = (model: Model, subjectId: string, only: SubjectOnly, rows: Capability[]): Capability[] =>
+  rows.filter((c) => subjectRowMatch(model, subjectId, only, c))
 
 export const matchCount = (model: Model, query: Query, filter: RowFilter): number =>
   matchingRows(model, { ...query, filter }).length

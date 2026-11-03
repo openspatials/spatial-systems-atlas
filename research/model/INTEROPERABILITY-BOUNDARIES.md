@@ -47,6 +47,38 @@ member of the working group can disagree with a row without arguing about the wh
 - **U4 An agent participates.** A software agent joins a world, acts in it, and pays for what it
   uses.
 
+**Use cases beyond the first four — 2026-11-03.** By the maintainer's decision of 2026-11-03 the map
+takes use cases beyond its first four. Three are taken, numbered by their ids; U5, U8 and U9 were
+proposed at the same time from the Virtual Worlds Use Case Repository of the Virtual Dimension Center
+Fellbach and are not taken. The rule below is unchanged, and the rows each new use case raised or
+named are in the table with their reasons.
+
+- **U6 The same thing at the same real place.** People on different devices see the same virtual
+  content at the same real place, or registered to the same physical object, and find it there again
+  later. Must rows: `geo.vps` (raised from should), `geo.anchor-shared`, `geo.pose`. Named at should:
+  `geo.map-align`, `sense.object-track`, `sense.privacy`. Evidence: the repository's records, read on
+  2026-11-03; `geo.vps` rests on VW-UC-0311
+  (https://usecases.vdc-fellbach.de/use-cases/VW-UC-0311), where one map of a real place is shared
+  between AR services and a device finds its pose from the relocalisation information extracted from
+  it.
+- **U7 A training result leaves the simulator.** What a person did in a simulation, and how well,
+  reaches the employer, the assessor or the authority that has to act on it, in a form they can read
+  and trust. Must row: `persist.activity-record` (raised from should). Named at should:
+  `identity.privacy`, `sense.privacy`. Evidence: VW-UC-0247
+  (https://usecases.vdc-fellbach.de/use-cases/VW-UC-0247), where results flow into a learning
+  management system, and VW-UC-0344 (https://usecases.vdc-fellbach.de/use-cases/VW-UC-0344), where a
+  training application sends progress as xAPI or SCORM records to a learning record store.
+- **U10 Shared presence.** People in one space hear and see each other the same way. No source yet:
+  no row was rated for it. It names rows that were already must (`net.replication`, `net.transport`,
+  `net.session`) or should (`audio.source`, `audio.voice`, `net.media`, `net.presence`, `input.hand`,
+  `input.face`).
+
+A row has one rating for the whole map. Where a row was raised to must on U6 or U7 evidence
+(`geo.vps`, `persist.activity-record`), the use case it served before (U3) only degrades without it,
+so U3 was taken off the row rather than put into the travel lane without evidence; the reason says
+so. Must-row memberships of the new use cases: **U6 3**, **U7 1**, **U10 3**. The certification lanes
+for them are on `CERTIFICATION-LANES.md`.
+
 ## The rule
 
 - **must** — at least one use case fails outright unless two independent systems agree on this
@@ -109,21 +141,21 @@ The prior 117 rows retain their approved wording, including dated reach observat
 | Deterministic simulation `physics.determinism` | Physics & simulation | connect | should | U1, U3 | Two engines producing the same trajectory would let one object be simulated in two places at once, and nothing does that today. |
 | Soft bodies and cloth `physics.soft` | Physics & simulation | build | should | U1, U2 | Cloth and hair are the visible part, so a moved avatar arrives stiff rather than absent. |
 | Trigger volumes `physics.trigger` | Physics & simulation | build | should | U1 | Regions that fire events are part of how content behaves, and their loss makes the content inert rather than unreadable. |
-| Positioned audio sources `audio.source` | Audio | build | should | U1 | Positioned sounds are authored into a scene, and losing them leaves a silent room. |
+| Positioned audio sources `audio.source` | Audio | build | should | U1, U10 | Positioned sounds are authored into a scene, and losing them leaves a silent room. |
 | Spatialization model `audio.spatial` | Audio | build | none | — | How direction is turned into sound at the ears is the receiving system's method, like a rendering method. |
 | Room acoustics and reverb `audio.room` | Audio | build | should | U1 | A space's acoustic description is authored with it, and without agreement the room sounds wrong rather than silent. |
 | Occlusion and obstruction `audio.occlusion` | Audio | build | none | — | The receiving runtime works this out from its own geometry, frame by frame. |
 | Audio streaming `audio.stream` | Audio | connect | should | U3 | A visitor can be given audio by other means, so disagreement costs quality and scale. |
-| Voice transport `audio.voice` | Audio | connect | should | U3, U4 | A visitor who cannot be heard is diminished but still present, and text remains a fallback. |
-| State replication `net.replication` | Networking & session | connect | must | U3, U4 | A client or agent that cannot read the destination's state stream arrives blind, which ends both use cases on the spot. |
+| Voice transport `audio.voice` | Audio | connect | should | U3, U4, U10 | A visitor who cannot be heard is diminished but still present, and text remains a fallback. |
+| State replication `net.replication` | Networking & session | connect | must | U3, U4, U10 | A client or agent that cannot read the destination's state stream arrives blind, which ends both use cases on the spot. |
 | Authority and ownership `net.authority` | Networking & session | connect | should | U3, U4 | Disagreement about who owns an arriving object shows up as rubber-banding and contested edits rather than as a failed arrival. |
 | Interest management `net.interest` | Networking & session | connect | should | U3 | Without agreement the destination sends everything or too little, which costs scale. |
 | Prediction and reconciliation `net.prediction` | Networking & session | connect | should | U3 | Latency hiding is local repair work, so its absence is felt as lag. |
-| Transport protocol `net.transport` | Networking & session | connect | must | U3, U4 | With no shared wire protocol there is no session to join at all. |
-| Media transport `net.media` | Networking & session | connect | should | U3 | Live audio and video degrade or drop out while the visit continues. |
-| Session establishment `net.session` | Networking & session | connect | must | U3, U4 | Joining a running world, authentication included, is the door: no agreement, no entry. |
+| Transport protocol `net.transport` | Networking & session | connect | must | U3, U4, U10 | With no shared wire protocol there is no session to join at all. |
+| Media transport `net.media` | Networking & session | connect | should | U3, U10 | Live audio and video degrade or drop out while the visit continues. |
+| Session establishment `net.session` | Networking & session | connect | must | U3, U4, U10 | Joining a running world, authentication included, is the door: no agreement, no entry. |
 | Session handoff and portals `net.handoff` | Networking & session | connect | must | U2, U3 | This row is the portal itself, and the travel use case is nothing but the handoff. |
-| Presence and roster `net.presence` | Networking & session | connect | should | U2, U3 | A roster that does not cross operators means you cannot see who is where, but you can still be there. |
+| Presence and roster `net.presence` | Networking & session | connect | should | U2, U3, U10 | A roster that does not cross operators means you cannot see who is where, but you can still be there. |
 | World addressing and naming `net.address` | Networking & session | connect | must | U3, U4 | A destination name that does not resolve cannot be travelled to, so naming and resolution are the first agreement. |
 | Discovery `net.discovery` | Networking & session | connect | should | U3, U4 | Worlds can be reached by a known address, so discovery adds reach rather than making it possible. |
 | Clock and time model `net.time` | Networking & session | connect | should | U3, U4 | A shared clock keeps events in order; without one the ordering drifts and coarse clocks still hold the session together. |
@@ -131,17 +163,17 @@ The prior 117 rows retain their approved wording, including dated reach observat
 | Credential format `identity.credential` | Identity, trust & rights | connect | must | U3, U4 | Claims about age, membership or ownership are worthless if the receiving world cannot read them. |
 | Credential exchange protocol `identity.exchange` | Identity, trust & rights | connect | must | U3, U4 | A credential nobody can ask for or present is not a credential, and one subject reaches this row natively today. |
 | Capability and permission grant `identity.capability` | Identity, trust & rights | connect | must | U3, U4 | A world that cannot read what an arriving person or agent is allowed to do must either refuse it or trust it blindly. |
-| Selective disclosure `identity.privacy` | Identity, trust & rights | connect | should | U3, U4 | Without selective disclosure the traveller over-shares, which is a harm rather than a stop. |
+| Selective disclosure `identity.privacy` | Identity, trust & rights | connect | should | U3, U4, U7 | Without selective disclosure a traveller or a training record over-shares, which is a harm rather than a stop. |
 | Reputation and social graph `identity.social` | Identity, trust & rights | connect | should | U3 | Relationships and standing that do not travel leave the person present but unknown. |
 | Rights enforcement `identity.rights` | Identity, trust & rights | connect | should | U1, U3, U4 | The terms themselves must cross, and that row is a must; acting on them is the receiver's own behaviour, and no agreed mechanism exists yet. |
-| Geospatial pose `geo.pose` | Spatial & geospatial | build | must | U1, U3 | Content pinned to the Earth must land in the same place in the other system, and a pose that cannot be read puts it somewhere else. |
+| Geospatial pose `geo.pose` | Spatial & geospatial | build | must | U1, U3, U6 | Content pinned to the Earth must land in the same place in the other system, and a pose that cannot be read puts it somewhere else. |
 | Coordinate reference systems `geo.crs` | Spatial & geospatial | build | must | U1, U3 | A frame disagreement is measured in metres or kilometres, not in taste. |
 | Local anchors `geo.anchor-local` | Spatial & geospatial | connect | none | — | An anchor made on one device never leaves it; the sharing case is the next row. |
-| Shared and persistent anchors `geo.anchor-shared` | Spatial & geospatial | connect | must | U1, U3 | Two people in two systems must see the same thing in the same spot, and today one subject reaches this row, through an extension. |
-| Visual positioning `geo.vps` | Spatial & geospatial | connect | should | U3 | Recovering pose from imagery can fall back to satellite position and manual alignment, at worse accuracy. |
+| Shared and persistent anchors `geo.anchor-shared` | Spatial & geospatial | connect | must | U1, U3, U6 | Two people in two systems must see the same thing in the same spot, and today one subject reaches this row, through an extension. |
+| Visual positioning `geo.vps` | Spatial & geospatial | connect | must | U6 | Where AR services share one map of a real place, a device that cannot read the relocalisation information the map gives out cannot find its own pose in it, so it cannot find what another person placed there; a traveller can still fall back to satellite position at worse accuracy, so this row is not in the travel lane. |
 | Tiled terrain and city streaming `geo.tiles` | Spatial & geospatial | connect | must | U1 | City-scale data is streamed by tile, and a tileset the receiving client cannot stream has to be converted before it is usable. |
 | Indoor mapping `geo.indoor` | Spatial & geospatial | build | should | U1, U3 | A structured description of an interior makes placement and routing better; without one both are cruder, and nothing reaches this row today. |
-| Map lifecycle and alignment `geo.map-align` | Spatial & geospatial | connect | should | U3 | Two maps of one place with no published transform between them put the same content in two positions, so a person arrives beside where they meant to be. |
+| Map lifecycle and alignment `geo.map-align` | Spatial & geospatial | connect | should | U3, U6 | A shared map that cannot take in the partial maps other devices send falls behind the place as things move, and a person arriving against a second map with no published transform lands beside where they meant to be, so finding things again gets worse rather than impossible. |
 | Coverage declaration `geo.coverage` | Spatial & geospatial | connect | should | U3 | A service that never declares where it applies still answers, so a client has to call it and find out instead of testing whether it is relevant. |
 | Real-world reconstruction `sense.mesh` | World sensing | connect | should | U1, U3 | A reconstruction that cannot leave the device that made it keeps the room private to one session, so anything placed against it has to be fitted again elsewhere. |
 | Semantic labelling of the real world `sense.semantics` | World sensing | connect | should | U1 | Labels each vendor names differently still serve one application, but a second one cannot act on floor or sky without being rewritten for that vendor. |
@@ -149,11 +181,11 @@ The prior 117 rows retain their approved wording, including dated reach observat
 | Real-world occlusion `sense.occlusion` | World sensing | connect | none | — | Whether real surfaces hide virtual content is drawn on the device that sees them, and none of that decision crosses to a second system. |
 | Immersive session lifecycle `input.session` | Input & devices | connect | must | U3 | The visitor's app and the device runtime are two independent systems, and if they cannot start an immersive session the visit does not happen. |
 | Controller input `input.controller` | Input & devices | connect | should | U3, U4 | A world that reads controllers differently is harder to use, and pointer and text paths remain. |
-| Hand tracking `input.hand` | Input & devices | connect | should | U3 | Hand tracking adds a way in, and its absence falls back to controllers. |
+| Hand tracking `input.hand` | Input & devices | connect | should | U3, U10 | Hand tracking adds a way in, and its absence falls back to controllers. |
 | Eye tracking `input.eye` | Input & devices | connect | should | U3 | Gaze is an aid with privacy limits, and everything works without it. |
 | Haptics `input.haptic` | Input & devices | connect | should | U3 | Touch feedback is felt when it is missing, and nothing stops. |
 | Device capability discovery `input.devcaps` | Input & devices | connect | should | U1, U3 | A world that cannot ask what the arriving device can do will guess, and guessing wrong costs quality rather than entry. |
-| Face and body tracking as input `input.face` | Input & devices | connect | should | U2 | A face and body stream in a shape the receiver does not read leaves the avatar still rather than absent, and its privacy terms have to be agreed with it. |
+| Face and body tracking as input `input.face` | Input & devices | connect | should | U2, U10 | A face and body stream in a shape the receiver does not read leaves the avatar still rather than absent, and its privacy terms have to be agreed with it. |
 | Scripting runtime `logic.script` | Logic & behaviour | build | none | — | The language a world writes its rules in is its own business and never has to cross. |
 | Behaviour graphs and interactivity `logic.behaviour` | Logic & behaviour | build | must | U1, U2 | The use case says the asset must behave, so a door that will not open in the second system is the failure this row names. |
 | Sandboxing and isolation `logic.sandbox` | Logic & behaviour | build | should | U1, U4 | A host can sandbox guest content on its own; agreement only makes the limits predictable for the guest. |
@@ -227,7 +259,7 @@ The prior 117 rows retain their approved wording, including dated reach observat
 | Selectable variants of an asset `scene.variant` | Scene & assets | build | should | U1, U2 | A default asset can arrive when variant selection is lost, but the chosen configuration of the asset or avatar changes. |
 | Voxel volumes `scene.voxel` | Scene & assets | build | must | U1 | A receiver that cannot decode the exchanged cells and their properties cannot reconstruct content represented as a voxel volume. |
 | Hit test against the real world `sense.hit-test` | World sensing | connect | should | U1, U3 | A disagreement about sensing hit results makes placement and interaction worse, while manual placement can keep the experience usable. |
-| Privacy terms on sensed data `sense.privacy` | World sensing | connect | should | U1, U2, U3, U4 | Without shared sensed-data disclosure terms, content, avatars, travellers and agents can still operate but may expose more data than intended. |
+| Privacy terms on sensed data `sense.privacy` | World sensing | connect | should | U1, U2, U3, U4, U6, U7 | Without shared terms on sensed data, content, avatars, travellers, agents, shared maps of real places and training records can still work, but they may expose more than intended, such as camera maps of a site or recorded motion that identifies a trainee. |
 | Musical event-device input `input.event-device` | Input & devices | connect | should | U1, U3 | Without an agreed musical-event interface, an arriving performance or interactive experience loses instrument input while other interaction paths remain. |
 | Radiance-field reconstruction `capture.radiance-training` | Generation & capture | build | none | — | The fitting method stays inside the capture tool, while the resulting field crosses through the separate representation and format capabilities. |
 | Generation of individual 3D objects `capture.objectgen` | Generation & capture | build | none | — | The generation method stays inside one tool, while its placeable output travels through the ordinary asset and representation capabilities. |
@@ -239,10 +271,10 @@ The prior 117 rows retain their approved wording, including dated reach observat
 | Governed trust registries `identity.trust-registry` | Identity, trust & rights | connect | should | U3, U4 | Credentials still verify without a shared registry, but each receiver must decide alone whom to trust, so acceptance differs from world to world. |
 | Agent authoring and publishing interface `logic.agent-authoring` | Logic & behaviour | connect | should | U1, U4 | An agent can still build in each platform through that platform's own interface, but without a shared one every agent needs a separate integration for every platform. |
 | Taking a whole world out `persist.world-export` | Persistence & storage | build | should | U1 | Assets can still move one at a time, but a place that cannot leave its host as a whole has to be rebuilt by hand when the host changes or closes. |
-| Model-based object tracking `sense.object-track` | World sensing | build | should | U1 | The object model arrives from another system, so its format and units must be readable by the tracker, while the tracking itself stays on the device. |
+| Model-based object tracking `sense.object-track` | World sensing | build | should | U1, U6 | The tracking runs on the device that sees the object, so two systems only have to agree on the object model it tracks from, whose format and units come from another system; without that agreement each model is prepared by hand for each tracker. |
 | Remote (split) rendering `render.remote` | Rendering & presentation | connect | none | — | Recorded descriptively: the Atlas lists which systems render remotely and does not propose a common format for the connection between client and renderer. |
 | Live data binding `net.live-data` | Networking & session | connect | should | U1 | A digital twin can still be shown without a shared binding, but each data source must be wired by hand; the Atlas's four use cases do not yet include digital twins, so the row is recorded against content that moves. |
-| Activity and learning records `persist.activity-record` | Persistence & storage | connect | should | U3 | Training still finishes without a portable record, but the result stays in one vendor's dashboard instead of travelling with the person. |
+| Activity and learning records `persist.activity-record` | Persistence & storage | connect | must | U7 | When a training or assessment result leaves the simulator, the learning record store, employer or assessor that receives it is a different system, and one that cannot read the record gets no result at all; a travelling person still arrives without it, so this row is not in the travel lane. |
 | Physiological signals as input `input.physiological` | Input & devices | build | should | U3 | Sensors and experiences come from different vendors; without a shared signal description each adaptation is wired to one device, though the experience still runs without it. |
 | Non-visual sensory effects `render.sensory-effect` | Rendering & presentation | connect | should | U1 | Content still plays without a shared effect description, but its wind, scent, light and motion cues are lost or wired to one installation (ISO/IEC 23005, MPEG-V). |
 

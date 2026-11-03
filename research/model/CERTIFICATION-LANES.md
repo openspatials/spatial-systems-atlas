@@ -17,6 +17,8 @@ data_basis_previous: "infrastructure-wg/data/territory.db read 2026-09-06T18:19Z
 
 Since 2026-10-20 the four lanes hold 30, 27, 32 and 21 must rows: `commerce.payment` joined U4, and `commerce.entitlement` joined U2, U3 and U4. The support tables below are as of 2026-09-11.
 
+Since 2026-11-03, by the maintainer's decision of that day, the map takes use cases beyond its first four: lanes U6 (3 must rows), U7 (1) and U10 (3) are described after lane 4, under "Use cases beyond the first four". The first four lanes did not change.
+
 ## What this is, and what it is not
 
 Four lanes, one for each use case the boundaries page was built from. A lane is a named bundle of the
@@ -67,6 +69,9 @@ second pass, and the boundaries page still holds them.
 | 2 Avatar portability | U2 An avatar, its items and its expressions travel | 26 | `/msf/atlas/#lane=avatar` |
 | 3 World-to-world travel | U3 A person travels through a portal and stays themselves | 31 | `/msf/atlas/#lane=travel` |
 | 4 Agent participation | U4 An agent joins a world, acts, and pays | 19 | `/msf/atlas/#lane=agent` |
+| 6 The same thing at the same real place | U6 People on different devices find the same content at the same real place | 3 | none yet |
+| 7 A training result leaves the simulator | U7 A training result reaches whoever has to act on it, readable and trusted | 1 | none yet |
+| 10 Shared presence | U10 People in one space hear and see each other the same way (no source yet) | 3 | none yet |
 
 The four lanes hold 106 places between them, filled by 54 distinct capabilities. Every must row belongs to at least one lane. The approved additions contribute 14 new must rows and 33 lane places. The five captured-content rows made must by the maintainer on 2026-09-06 remain in U1.
 
@@ -549,6 +554,58 @@ metadata, credential exchange and permission grant. No row in this lane has a te
 also incomplete by construction. The use case says the agent pays for what it uses, and the map has no
 payment row to put that on until the commerce rows are added
 (held until after the Forum's X402 session).
+
+## Use cases beyond the first four — 2026-11-03
+
+**By the maintainer's decision of 2026-11-03 the map takes use cases beyond its first four.** Three lanes join: U6 and U7 come from use case lanes proposed from the Virtual Worlds Use Case Repository of the Virtual Dimension Center Fellbach, and U10 is new. They are numbered by their use case ids; U5, U8 and U9 were proposed at the same time and are not taken. A lane is still the must rows of one use case, and a row was raised to must only where a public record shows the use case stopping unless two independent systems agree (the rule on `INTEROPERABILITY-BOUNDARIES.md`). Rows the evidence shows only degrading stay should and name the use case in `interop_uses`, which puts them in the second pass, not in the lane. No atlas route exists for these lanes yet, and their recorded support tables follow the next rebuild of the data. Every test below is proposed; none has run.
+
+Evidence counts on this page are from the repository's public pages, read on 2026-11-03: the demand table at https://usecases.vdc-fellbach.de/territory-atlas/demand and each use case page under https://usecases.vdc-fellbach.de/use-cases/ . A "record" is a use case or a record that specialises it; an "implementation" is any implementation the repository files under those records, of any evidence kind.
+
+## Lane 6 — The same thing at the same real place (U6)
+
+**The use case.** People on different devices see the same virtual content at the same real place, or registered to the same physical object, and find it there again later.
+
+**The bundle.** 3 must-interoperate capabilities. **The route.** None yet.
+
+**The evidence.** The repository files 8 use cases under this lane, 20 records with their specialisations, and 56 implementations (27 of them of evidence kind "deployment"). The row raised for it is Visual positioning `geo.vps`: in VW-UC-0311 (https://usecases.vdc-fellbach.de/use-cases/VW-UC-0311) a world storage service holds one map of a real place and "shares it between AR services", and a device finds its pose "using relocalisation information extracted from the shared map" (its requirements R-0311-01 and R-0311-03, cited there to ETSI GS ARF 003 V2.1.1). A device that cannot read that information cannot find its pose in the shared map, so it cannot find what another person placed. Shared anchors and geospatial pose were already must rows; they now name U6 as well. Three rows the lane was proposed to raise stay should on the evidence and name U6: Map lifecycle and alignment `geo.map-align` (a shared map that cannot take in other devices' partial maps goes stale, VW-UC-0311), Model-based object tracking `sense.object-track` (the tracking stays on one device, VW-UC-0216) and Privacy terms on sensed data `sense.privacy`. Coordinate reference systems `geo.crs` is a must row the repository links to no use case of this lane, so it is not in it.
+
+### What conformance would mean, and what would prove it
+
+| Capability | What conformance would mean | The test that would prove it |
+|---|---|---|
+| Visual positioning `geo.vps` | A device of one AR service finds its own pose in a map of a real place held by another party's service, from the relocalisation information that service gives out, without knowing where it started. | Proposed test: map one room into a shared map service with one system's devices, then start a device of a second system at an unknown pose and ask it to relocalise from the service's relocalisation information; report its pose error against a surveyed reference and the time to its first pose. |
+| Shared and persistent anchors `geo.anchor-shared` | Two people on two systems see the same virtual thing in the same real place, and it is still there the next day. | Proposed test (as in lane 1): create an anchor on one system, resolve it on the other in the same room, measure the offset, and measure it again 24 hours later. |
+| Geospatial pose `geo.pose` | Content pinned to a place on the Earth lands within a stated distance of the same place in the other system. | Proposed test (as in lane 1): place one GeoPose fixture in two systems and report the distance between the two placements in metres and the difference in heading in degrees. |
+
+## Lane 7 — A training result leaves the simulator (U7)
+
+**The use case.** What a person did in a simulation, and how well, reaches the employer, the assessor or the authority that has to act on it, in a form they can read and trust.
+
+**The bundle.** 1 must-interoperate capability. **The route.** None yet.
+
+**The evidence.** The repository files 12 use cases under this lane, 39 records with their specialisations, and 184 implementations (58 of them of evidence kind "deployment"); Activity and learning records `persist.activity-record` alone sits under 12 linked use cases and 167 implementations. It is raised to must: in VW-UC-0247 (https://usecases.vdc-fellbach.de/use-cases/VW-UC-0247) the cabin crew's "results flow into the LMS", and in VW-UC-0344 (https://usecases.vdc-fellbach.de/use-cases/VW-UC-0344) a training application sends a learner's progress "as standard e-learning records, such as xAPI statements or SCORM data" to the organisation's learning record store or learning management system (its requirement R-0344-01, cited there to ETSI GR CIM 052 V1.1.1). The simulator and the record store are different systems, and a store that cannot read the record receives no result. Two rows stay should and name U7, because the record still arrives without them, carrying more than the receiver needs: Selective disclosure `identity.privacy` and Privacy terms on sensed data `sense.privacy` (VW-UC-0344 asks that recorded head, hand and controller motion be handled as personal data because it identifies the person; VW-UC-0280 records vital signs for the debriefing). The credential rows are not in this lane: the repository links none of them to a use case of this lane, and a result can still be checked by asking whoever issued it.
+
+### What conformance would mean, and what would prove it
+
+| Capability | What conformance would mean | The test that would prove it |
+|---|---|---|
+| Activity and learning records `persist.activity-record` | A record of what a trainee did and with what result, written by one training system, is read by a learning record store or an assessor's system built by another party, with the same person, activity, result and time. | Proposed test: send one fixed training attempt (steps, score, pass or fail, duration) as records from two independent training applications to two independent record stores; compare what each store reports with the fixture, and require each store to refuse a record for a learner it does not know. |
+
+## Lane 10 — Shared presence (U10)
+
+**The use case.** People in one space hear and see each other the same way.
+
+**The bundle.** 3 must-interoperate capabilities. **The route.** None yet.
+
+**The evidence.** No source yet. No evidence has been gathered for this use case, so no row was rated for it: the rows it needs are tagged with U10 only where they were already must or should. The three must rows below make the lane. The should rows tagged U10 are Positioned audio sources `audio.source`, Voice transport `audio.voice`, Media transport `net.media`, Presence and roster `net.presence`, Hand tracking `input.hand` and Face and body tracking as input `input.face`. Spatialization model `audio.spatial` is rated none and is not tagged. Audio and input still have no must row.
+
+### What conformance would mean, and what would prove it
+
+| Capability | What conformance would mean | The test that would prove it |
+|---|---|---|
+| State replication `net.replication` | A client written by one party reads and writes the other's state stream and sees the same world as everybody else in it. | Proposed test (as in lane 3): an independent client joins a reference server, and a third observer compares the two views of one moving object over sixty seconds. |
+| Transport protocol `net.transport` | Two independent implementations open a session over the same wire protocol and exchange messages with no bridge between them. | Proposed test (as in lane 3): one conformance client completes a handshake, an echo and a clean close against two servers written by different parties. |
+| Session establishment `net.session` | A visitor's client joins a running world it was not built for, authentication included, and is placed in it. | Proposed test (as in lane 3): join twice, once with a valid credential and once with an expired one; entry then refusal, and any other pair of outcomes is a fail. |
 
 ## What the four lanes say together
 

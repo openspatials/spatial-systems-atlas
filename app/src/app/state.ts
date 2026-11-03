@@ -10,8 +10,9 @@
 //    second list, the two drifted, and that produced a bug. Do not reintroduce
 //    a second list and do not "synchronise" one.
 
-import type { Basis, LaneId, Model, Query, RowFilter } from '../design-model.ts'
-import { shareUrl } from '../design-model.ts'
+import type { Basis, LaneId, Model, Query, RowFilter, SubjectOnly } from '../design-model.ts'
+import { laneIds } from '../design-model.ts'
+import { NO_SUBJECT_ONLY, shareUrl, subjectOnlyActive } from '../design-model.ts'
 
 export type ViewId = 'subject' | 'compare' | 'groups' | 'relations'
 export type Theme = 'light' | 'dark'
@@ -51,6 +52,11 @@ export interface AppState {
   presetName: string
   /** Rows picked by a preset or a link (`sel`). Empty means every row. */
   sel: string[]
+  /**
+   * The subject display's figure filters. They belong to the subject in focus,
+   * so they clear when the focus changes, a preset is chosen or the display is left.
+   */
+  only: SubjectOnly
 
   // Preferences. Not analysis, so they never travel in the address.
   theme: Theme
@@ -81,6 +87,8 @@ export type Action =
   | { type: 'preset'; state: Partial<AppState>; name: string }
   | { type: 'theme'; theme: Theme }
   | { type: 'clear-picked' }
+  | { type: 'subject-only'; key: keyof SubjectOnly }
+  | { type: 'subject-only-clear' }
   | { type: 'replace'; state: AppState }
 
 /** The view has departed from its preset, so no preset is selected any more. Preferences never do this. */
@@ -94,7 +102,11 @@ export function reducer(state: AppState, action: Action): AppState {
   switch (action.type) {
     // The display switcher is the only control that changes the display.
     case 'view':
-      return edited(state, { view: action.view, detail: null })
+      return edited(state, {
+        view: action.view,
+        detail: null,
+        only: action.view === 'subject' ? state.only : NO_SUBJECT_ONLY,
+      })
 
     // The one labelled exception: putting a subject in focus is navigation, so
     // it sets the display and guarantees the subject is in the comparison.
@@ -104,6 +116,7 @@ export function reducer(state: AppState, action: Action): AppState {
         focus: action.id,
         on: state.on.includes(action.id) ? state.on : [...state.on, action.id],
         detail: null,
+        only: action.id === state.focus ? state.only : NO_SUBJECT_ONLY,
       })
 
     case 'toggle-subject': {
@@ -113,12 +126,12 @@ export function reducer(state: AppState, action: Action): AppState {
       // Focus must stay inside the comparison, or the foreground shows a
       // subject the reader just switched off.
       const focus = on.includes(state.focus ?? '') ? state.focus : (on[0] ?? null)
-      return edited(state, { on, focus })
+      return edited(state, { on, focus, only: focus === state.focus ? state.only : NO_SUBJECT_ONLY })
     }
 
     case 'set-on': {
       const focus = action.on.includes(state.focus ?? '') ? state.focus : (action.on[0] ?? null)
-      return edited(state, { on: action.on, focus })
+      return edited(state, { on: action.on, focus, only: focus === state.focus ? state.only : NO_SUBJECT_ONLY })
     }
 
     case 'filter':
@@ -140,7 +153,7 @@ export function reducer(state: AppState, action: Action): AppState {
     // A preset writes the whole view at once, and is the only control besides
     // the switcher permitted to move between displays.
     case 'preset':
-      return { ...state, ...action.state, presetName: action.name, detail: null }
+      return { ...state, ...action.state, presetName: action.name, detail: null, only: NO_SUBJECT_ONLY }
 
     // Preferences. They change nothing about what is counted.
     case 'theme':
@@ -149,9 +162,25 @@ export function reducer(state: AppState, action: Action): AppState {
     case 'clear-picked':
       return edited(state, { sel: [] })
 
+    // Reach, built in and conflicts switch on and off. Assessed turns three
+    // ways: every row, then assessed rows, then rows not assessed.
+    case 'subject-only': {
+      const o = state.only
+      const only = action.key === 'assessed'
+        ? { ...o, assessed: ASSESSED_NEXT[o.assessed] }
+        : { ...o, [action.key]: !o[action.key] }
+      return edited(state, { only })
+    }
+    case 'subject-only-clear':
+      return edited(state, { only: NO_SUBJECT_ONLY })
+
     case 'replace':
       return action.state
   }
+}
+
+const ASSESSED_NEXT: Record<SubjectOnly['assessed'], SubjectOnly['assessed']> = {
+  all: 'assessed', assessed: 'unassessed', unassessed: 'all',
 }
 
 // ---------------------------------------------------------------------------
@@ -162,7 +191,7 @@ export function reducer(state: AppState, action: Action): AppState {
 // ---------------------------------------------------------------------------
 
 /** The keys the address carries. A link may put them after `?` or after `#`; the app writes `#`. */
-export const ADDRESS_KEYS = ['view', 's', 'of', 'rows', 'basis', 'lane', 'group', 'open', 'sel']
+export const ADDRESS_KEYS = ['view', 's', 'of', 'rows', 'basis', 'lane', 'group', 'open', 'sel', 'only']
 
 /** The part of the address that holds the view: the fragment when it has one, otherwise the query. */
 export const addressOf = (hash: string, search: string): string => (hash.length > 1 ? hash : search)
@@ -178,7 +207,6 @@ export function queryWithoutAddress(search: string): string {
 const VIEWS: ViewId[] = ['subject', 'compare', 'groups', 'relations']
 const FILTERS: RowFilter[] = ['all', 'overlap', 'thin', 'gap', 'conflict', 'connect', 'interop']
 const BASES: Basis[] = ['prod', 'all', 'must']
-const LANES: LaneId[] = ['U1', 'U2', 'U3', 'U4']
 
 /**
  * The opening view is the whole map: every subject, the Groups display, every
@@ -200,6 +228,7 @@ export function initialState(model: Model): AppState {
     detail: null,
     presetName: '',
     sel: [],
+    only: NO_SUBJECT_ONLY,
     theme: 'light',
   }
 }
@@ -248,6 +277,7 @@ export function rememberTheme(theme: Theme): void {
 const PANELS_KEY = 'spatial-systems-atlas.panels'
 const PANEL_WIDTH_KEY = 'spatial-systems-atlas.panel-width'
 const LEGEND_KEY = 'spatial-systems-atlas.legend-open'
+const PANEL_DOCK_KEY = 'spatial-systems-atlas.panel-dock'
 
 export const PANEL_WIDTH = { min: 240, max: 560, initial: 300, step: 16 } as const
 
@@ -298,9 +328,28 @@ export function storedPanelWidth(): number {
 }
 export const rememberPanelWidth = (w: number): void => writePref(PANEL_WIDTH_KEY, String(clampPanelWidth(w)))
 
-/** The query half of the address, in the shape shareUrl writes. */
+/** The tool rail's own width, and the least the display keeps beside a docked panel column by default. */
+export const RAIL_WIDTH = 64
+export const DOCK_MIN_DISPLAY = 360
+
+/**
+ * Below 1100px the panel column either docks beside the display (pinned) or
+ * floats over it. Docked is the default wherever the display would still keep
+ * about 360px beside the rail and the column; on a phone it floats.
+ */
+export const defaultPanelsDocked = (viewport: number, panelWidth: number): boolean =>
+  viewport - RAIL_WIDTH - panelWidth >= DOCK_MIN_DISPLAY
+
+/** The reader's pin/float choice, or null until they make one. */
+export function storedPanelsDocked(): boolean | null {
+  const raw = readPref(PANEL_DOCK_KEY)
+  return raw === 'docked' ? true : raw === 'floating' ? false : null
+}
+export const rememberPanelsDocked = (docked: boolean): void => writePref(PANEL_DOCK_KEY, docked ? 'docked' : 'floating')
+
+/** The query half of the address, in the shape shareUrl writes, plus the subject figure filters. */
 export function encode(state: AppState, total: number): string {
-  return shareUrl(
+  const query = shareUrl(
     queryOf(state),
     state.view,
     state.focus,
@@ -308,6 +357,30 @@ export function encode(state: AppState, total: number): string {
     state.detail,
     total,
   ).replace(/^[^?]*\?/, '')
+  const only = state.view === 'subject' && state.focus ? onlyWords(state.only) : []
+  return only.length ? `${query}&only=${only.join(',')}` : query
+}
+
+/** The figure filters as address words: reach, native, assessed or unassessed, conflicts. */
+function onlyWords(o: SubjectOnly): string[] {
+  return [
+    o.reach ? 'reach' : null,
+    o.native ? 'native' : null,
+    o.assessed !== 'all' ? o.assessed : null,
+    o.conflicts ? 'conflicts' : null,
+  ].filter((w): w is string => w !== null)
+}
+
+/** Unknown words are dropped. If both assessed and unassessed are named, the first wins. */
+function readOnly(raw: string | null): SubjectOnly {
+  const words = (raw ?? '').split(',')
+  const assessed = words.find((w) => w === 'assessed' || w === 'unassessed') as SubjectOnly['assessed'] | undefined
+  return {
+    reach: words.includes('reach'),
+    native: words.includes('native'),
+    assessed: assessed ?? 'all',
+    conflicts: words.includes('conflicts'),
+  }
 }
 
 /**
@@ -348,7 +421,10 @@ export function decode(search: string, model: Model, base: AppState): AppState {
 
   const view = pick(p.get('view'), VIEWS, 'subject')
   const basis = pick(p.get('basis'), BASES, 'prod')
-  const lane = pick(p.get('lane'), LANES, null as LaneId | null)
+  // Any lane the data carries; an unknown lane id is dropped.
+  const lane = pick(p.get('lane'), laneIds(model), null as LaneId | null)
+  // The figure filters belong to the subject display; elsewhere they are ignored.
+  const only = view === 'subject' && focus ? readOnly(p.get('only')) : NO_SUBJECT_ONLY
 
   // An address names a preset only when it is exactly what that preset writes.
   // Anything the reader changed afterwards (focus, basis, the assessed-only
@@ -362,6 +438,7 @@ export function decode(search: string, model: Model, base: AppState): AppState {
       && (preset.lane ?? null) === lane
       && basis === 'prod'
       && !hasEntry
+      && !subjectOnlyActive(only)
       && (view !== 'subject' || focus === (preset.focus ?? pOn[0]))
       && pOn.length === on.length
       && [...pOn].sort().every((id, i) => id === [...on].sort()[i])
@@ -379,6 +456,7 @@ export function decode(search: string, model: Model, base: AppState): AppState {
     relGroup: p.get('group') ?? base.relGroup,
     detail,
     sel,
+    only,
     presetName: matched?.name ?? '',
   }
 }
@@ -406,8 +484,8 @@ export interface Preset {
    * the record changes.
    */
   mostConflicts?: number
-  /** Shown only behind the "More" disclosure. */
-  more?: boolean
+  /** Pick the subjects from the data instead: every subject the OpenSpatials platform register names. */
+  platforms?: boolean
   /** Capability ids the preset picks; only those rows show. Carried in the address as `sel`. */
   sel?: string[]
 }
@@ -447,39 +525,61 @@ export const PRESETS: Preset[] = [
     scope: 'Agent and identity standards beside platforms · agent participation lane',
     on: ['mcp', 'oauth', 'did', 'vc', 'roblox', 'unity', 'unreal', 'arrival'],
     view: 'compare', filter: 'interop', lane: 'U4' },
-  { name: 'The open web stack', more: true,
+  { name: 'The open web stack',
     question: 'What can a browser do with no app store and no install?',
     scope: 'Browser standards and web engines · every row',
     on: ['webxr', 'webgpu', 'wasm', 'threejs', 'babylonjs', 'playcanvas', 'gltf', 'jsonld'],
     view: 'compare', filter: 'all' },
-  { name: 'Real places and maps', more: true,
+  { name: 'Real places and maps',
     question: 'What does it take to anchor content to a real place?',
     scope: 'Location standards, map engines and phone AR · every row',
     on: ['geopose', '3dtiles', 'spatialdds', 'oarc', 'stac', 'cesiumjs', 'arcore', 'arkit'],
     view: 'compare', filter: 'all' },
-  { name: 'Capturing the real world', more: true,
+  { name: 'Capturing the real world',
     question: 'How do photos and video become worlds?',
     scope: 'Capture methods, tools and world models · every row',
     on: ['4dgs', 'dynsplat', 'nurec', 'nerfstudio', 'polycam', 'scaniverse', 'hyperscape', 'marble'],
     view: 'compare', filter: 'all' },
-  { name: 'Identity, trust and who made what', more: true,
+  { name: 'Identity, trust and who made what',
     question: 'Who are you, and who made what, across worlds?',
     scope: 'Identity, credential and provenance standards · every row',
     on: ['did', 'vc', 'c2pa', 'oauth', 'um'], view: 'compare', filter: 'all' },
-  { name: 'Closed platforms against open formats', more: true,
+  { name: 'Closed platforms against open formats',
     question: 'Where do walled platforms meet open standards, and where do they not?',
     scope: 'Five platforms beside three open standards · must-interoperate rows',
     on: ['roblox', 'vrchat', 'horizon', 'fortnite', 'recroom', 'gltf', 'vrm', 'webxr'],
     view: 'compare', filter: 'interop' },
-  { name: 'Engines against the formats', more: true,
+  { name: 'Engines against the formats',
     question: 'Which formats do the engines support, and how far?',
     scope: 'Unity, Unreal, Godot, Three.js beside glTF and OpenUSD · every row',
     on: ['unity', 'unreal', 'godot', 'threejs', 'gltf', 'usd'], view: 'compare', filter: 'all' },
-  { name: "The Forum's own projects", more: true,
+  { name: "The Forum's own projects",
     question: "What do the Forum's own standards and projects cover, and where are they thin?",
     scope: '6 Forum standards and projects · every row',
     on: ['omb', 'rp1', 'teleportxr', 'wow', 'iwps', 'um'], view: 'compare', filter: 'all' },
+  { name: 'Platforms OpenSpatials supports',
+    question: 'How do the platforms OpenSpatials supports compare, row by row?',
+    scope: 'Every subject that is an OpenSpatials platform · every row',
+    on: [], platforms: true, view: 'compare', filter: 'all' },
 ]
+
+/**
+ * The Presets section lists the first three; "More" opens a box six cards tall
+ * that scrolls through every preset, and "Fewer" returns to three.
+ */
+export const PRESETS_SHOWN = 3
+export const PRESETS_BOX = 6
+
+export const listedPresets = (expanded: boolean): Preset[] =>
+  expanded ? PRESETS : PRESETS.slice(0, PRESETS_SHOWN)
+
+/** Whether a preset sits behind "More", so selecting it must open the box. */
+export const presetBehindMore = (presetName: string): boolean =>
+  PRESETS.findIndex((p) => p.name === presetName) >= PRESETS_SHOWN
+
+/** Subjects that are OpenSpatials platforms, in map order. */
+export const platformSubjects = (model: Model): string[] =>
+  model.subjects.filter((s) => s.platform?.length).map((s) => s.id)
 
 /** Recorded conflict cells per subject, most first; ties keep map order. */
 function mostConflicted(model: Model, n: number): string[] {
@@ -496,6 +596,7 @@ function mostConflicted(model: Model, n: number): string[] {
 /** The subjects a preset switches on. An empty list means every subject. */
 export const presetSubjects = (preset: Preset, model: Model): string[] =>
   preset.mostConflicts ? mostConflicted(model, preset.mostConflicts)
+    : preset.platforms ? platformSubjects(model)
     : preset.on.length ? preset.on : model.subjects.map((s) => s.id)
 
 /** The heading: the selected preset's question, or the generic heading. */

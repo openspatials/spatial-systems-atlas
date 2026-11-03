@@ -4,18 +4,34 @@
 // The comparison IS the selection. There is no separate comparison list, and
 // removing a chip here removes the subject from the selection.
 
-import type { Capability, Model } from '../design-model.ts'
-import { inLane, levelOf, scopeNote } from '../design-model.ts'
+import type { Capability, Model, SubjectOnly } from '../design-model.ts'
+import { inLane, levelOf, scopeNote, subjectOnlyActive, subjectRows } from '../design-model.ts'
 import { cellStyle, describe, read } from './marks.ts'
 import type { Action, AppState } from './state.ts'
 
-/** Reach, built in, not assessed and conflicts, each with one definition. */
+/**
+ * Reach, built in, assessed and conflicts, each with one definition. Each figure
+ * is also a filter on the rows listed below; a line under the value marks it on.
+ */
 const HERO_STATS = [
   { key: 'reach', label: 'rows reached', colour: 'var(--ac)' },
   { key: 'native', label: 'built in', colour: 'var(--ink)' },
-  { key: 'never', label: 'not assessed', colour: 'var(--faint)' },
+  { key: 'assessed', label: 'assessed', colour: 'var(--faint)' },
   { key: 'conflicts', label: 'conflicts', colour: 'var(--bad)' },
-] as const
+] as const satisfies ReadonlyArray<{ key: keyof SubjectOnly; label: string; colour: string }>
+
+/** What a click on each figure does next, for the tip. */
+function nextStep(key: keyof SubjectOnly, only: SubjectOnly): string {
+  if (key === 'assessed') {
+    return only.assessed === 'all' ? 'Show only the rows assessed for this subject'
+      : only.assessed === 'assessed' ? 'Show only the rows not assessed for this subject'
+      : 'Show every row again'
+  }
+  if (only[key]) return 'Show every row again'
+  return key === 'reach' ? 'Show only the rows this subject reaches'
+    : key === 'native' ? 'Show only the rows this subject has built in'
+    : 'Show only the rows with a recorded conflict for this subject'
+}
 
 export function SubjectView({ model, state, dispatch, rows }: {
   model: Model
@@ -31,7 +47,16 @@ export function SubjectView({ model, state, dispatch, rows }: {
   const peers = state.on.filter((id) => id !== focus.id)
   const columns = [focus.id, ...peers.slice(0, 7)]
 
-  const readouts = buildReadouts(model, state, rows)
+  // The figure filters narrow the rows already shown; the figures themselves count every row.
+  const filtering = subjectOnlyActive(state.only)
+  const shown = filtering ? subjectRows(model, focus.id, state.only, rows) : rows
+  const total = model.capabilities.length
+  const value = (key: keyof SubjectOnly): string =>
+    key === 'assessed' ? `${total - focus.never}/${total}` : String(focus[key])
+  const isOn = (key: keyof SubjectOnly): boolean =>
+    key === 'assessed' ? state.only.assessed !== 'all' : state.only[key]
+
+  const readouts = buildReadouts(model, state, shown)
 
   return (
     <div>
@@ -52,13 +77,22 @@ export function SubjectView({ model, state, dispatch, rows }: {
             </p>
           )}
         </div>
-        <div style={{ display: 'flex', gap: 22 }}>
-          {HERO_STATS.map((stat) => (
-            <div key={stat.key} style={{ display: 'flex', flexDirection: 'column', gap: 1, minWidth: 72 }}>
-              <span style={{ ...s.statNumber, color: stat.colour }}>{focus[stat.key]}</span>
-              <span style={s.statLabel}>{stat.label}</span>
-            </div>
-          ))}
+        <div style={{ display: 'flex', gap: 22, flexWrap: 'wrap' }} role="group" aria-label="Filter the rows by this subject's figures">
+          {HERO_STATS.map((stat) => {
+            const on = isOn(stat.key)
+            const label = stat.key === 'assessed' && state.only.assessed === 'unassessed' ? 'not assessed' : stat.label
+            return (
+              <button key={stat.key} type="button" style={s.stat} aria-pressed={on}
+                title={nextStep(stat.key, state.only)} data-stat={stat.key}
+                onClick={() => dispatch({ type: 'subject-only', key: stat.key })}>
+                <span style={{ ...s.statNumber, color: stat.colour, borderBottomColor: on ? stat.colour : 'transparent' }}
+                  data-underline={on ? 'on' : 'off'}>
+                  {value(stat.key)}
+                </span>
+                <span style={s.statLabel}>{label}</span>
+              </button>
+            )
+          })}
         </div>
       </section>
 
@@ -81,9 +115,20 @@ export function SubjectView({ model, state, dispatch, rows }: {
         <div style={s.panelHead}>
           <span style={s.eyebrow}>Coverage by group</span>
           <span style={s.hint}>breadth first · open a group for the rows</span>
+          {filtering && (
+            <span style={{ ...s.hint, marginLeft: 'auto', fontStyle: 'normal' }} data-shown-rows={shown.length}>
+              {shown.length} of {rows.length} rows ·{' '}
+              <button type="button" style={s.clear} onClick={() => dispatch({ type: 'subject-only-clear' })}>
+                show every row
+              </button>
+            </span>
+          )}
         </div>
+        {filtering && shown.length === 0 && (
+          <p style={{ ...s.hint, padding: '6px 0' }}>No row passes these filters for {focus.name}.</p>
+        )}
         {model.groups.map((group) => {
-          const groupRows = rows.filter((c) => c.g === group.id)
+          const groupRows = shown.filter((c) => c.g === group.id)
           const allRows = model.capabilities.filter((c) => c.g === group.id)
           if (groupRows.length === 0) return null
           const open = !!state.openGroups[group.id]
@@ -238,7 +283,9 @@ const s = {
   facts: { fontFamily: 'var(--fm)', fontSize: 11.5, color: 'var(--soft)' } as const,
   summary: { margin: '8px 0 0', maxWidth: '70ch', color: 'var(--soft)' } as const,
   scope: { margin: '8px 0 0', maxWidth: '70ch', paddingLeft: 10, borderLeft: '2px solid var(--rule)', fontFamily: 'var(--fm)', fontSize: 11.5, lineHeight: 1.5, color: 'var(--faint)' } as const,
-  statNumber: { fontFamily: 'var(--fl)', fontWeight: 700, fontSize: 26, lineHeight: 1 } as const,
+  stat: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 1, minWidth: 72, padding: 0, background: 'transparent', border: 0, cursor: 'pointer', textAlign: 'left' } as const,
+  statNumber: { fontFamily: 'var(--fl)', fontWeight: 700, fontSize: 26, lineHeight: 1, paddingBottom: 2, borderBottom: '2px solid transparent' } as const,
+  clear: { fontFamily: 'var(--fl)', fontSize: 11.5, background: 'transparent', border: 0, color: 'var(--ac)', cursor: 'pointer', textDecoration: 'underline', padding: 0 } as const,
   statLabel: { fontFamily: 'var(--fm)', fontSize: 9.5, letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--faint)' } as const,
   comparedWith: { display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 12 } as const,
   chip: { fontFamily: 'var(--fl)', fontWeight: 600, fontSize: 11.5, background: 'var(--acF)', border: '1px solid var(--ac)', borderRadius: 'var(--r)', padding: '3px 8px', cursor: 'pointer', color: 'var(--ac)' } as const,

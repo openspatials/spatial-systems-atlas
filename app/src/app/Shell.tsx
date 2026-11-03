@@ -5,17 +5,19 @@
 // not decoration: the old tool's percentages were unreadable because the basis
 // was invisible.
 
-import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react'
 import type { Basis, LaneId, Model, RowFilter } from '../design-model.ts'
-import { LANE_LABEL, coverage, countedIds, matchCount, matchingRows, measuredCaps, pickedRows } from '../design-model.ts'
+import { coverage, laneIds, laneLabel, countedIds, matchCount, matchingRows, measuredCaps, pickedRows } from '../design-model.ts'
 import { LEGEND, THEMES, cellStyle, read } from './marks.ts'
 import { exportOptions } from './exports.ts'
 import {
-  PANEL_IDS, PANEL_WIDTH, PRESETS, addressOf, clampPanelWidth, decode, encode, initialState, preferredTheme,
-  presetQuestion, presetSubjects, queryOf, queryWithoutAddress, reducer, rememberLegendOpen, storedLegendOpen, rememberPanelWidth, rememberPanels, rememberTheme, storedPanelWidth,
-  storedPanels, storedTheme,
+  DOCK_MIN_DISPLAY, PANEL_IDS, PANEL_WIDTH, PRESETS_BOX, RAIL_WIDTH, addressOf, clampPanelWidth, decode, defaultPanelsDocked, encode, initialState, preferredTheme,
+  listedPresets, presetBehindMore, presetQuestion, presetSubjects, queryOf, queryWithoutAddress, reducer, rememberLegendOpen, storedLegendOpen, rememberPanelWidth, rememberPanels, rememberPanelsDocked, rememberTheme, storedPanelWidth,
+  storedPanels, storedPanelsDocked, storedTheme,
 } from './state.ts'
 import type { AppState, PanelId, Preset, ViewId } from './state.ts'
+import { historyStep, restoreFromAddress } from './history.ts'
+import type { Written } from './history.ts'
 import { SubjectView } from './SubjectView.tsx'
 import { CompareView } from './CompareView.tsx'
 import { GroupsView } from './GroupsView.tsx'
@@ -30,6 +32,7 @@ import type { CandidateId } from './explore-model.ts'
 import { MapView } from './MapView.tsx'
 import { LineupView } from './LineupView.tsx'
 import { HoverTip } from './HoverTip.tsx'
+import { WIDE_WIDTH, frame, pageLocked, panelMode } from './layout.ts'
 
 const VIEWS: Array<{ id: ViewId; label: string }> = [
   { id: 'subject', label: 'Subject' },
@@ -64,26 +67,48 @@ export function Shell({ model }: { model: Model }) {
     return decode(addressOf(window.location.hash, window.location.search), m, base)
   })
   // A link to a preset behind "More" opens the list, so the selected preset shows.
-  const [morePresets, setMorePresets] = useState(() =>
-    PRESETS.some((p) => p.more && p.name === state.presetName))
-  const [narrow, setNarrow] = useState(() => window.innerWidth < 1100)
+  const [morePresets, setMorePresets] = useState(() => presetBehindMore(state.presetName))
+  const [viewport, setViewport] = useState(() => window.innerWidth)
+  const narrow = viewport < WIDE_WIDTH
   const [legendOpen, setLegendOpen] = useState(storedLegendOpen)
   const toggleLegend = () => {
     rememberLegendOpen(!legendOpen)
     setLegendOpen(!legendOpen)
   }
-  // The tool rail's sections. On a narrow screen the panel floats over the
-  // display, so it opens closed there and its changes are not kept as the
-  // reader's wide-screen choice.
-  const [panels, setPanels] = useState<PanelId[]>(() =>
-    window.innerWidth < 1100 ? [] : (storedPanels() ?? PANEL_IDS))
+  // Below 1100px the panel column is pinned beside the display or floats over
+  // it, by the reader's choice; until they choose, it docks wherever the display
+  // keeps about 360px (defaultPanelsDocked). At 1100px and up it always docks.
+  // On a phone an open panel is a sheet over the display, and there is no pin.
   const [panelWidth, setPanelWidth] = useState(storedPanelWidth)
+  const [dockChoice, setDockChoice] = useState(storedPanelsDocked)
+  const mode = panelMode(viewport, dockChoice, defaultPanelsDocked(viewport, panelWidth))
+  const floating = mode === 'floating'
+  const sheet = mode === 'sheet'
+  const toggleDock = () => {
+    rememberPanelsDocked(floating)
+    setDockChoice(floating)
+  }
+  // Docked, the page holds still and the column and the display scroll on their own.
+  const F = frame(pageLocked(floating))
+  // The tool rail's sections. A floating column or a sheet covers the display,
+  // so it opens closed and its changes are not kept as the reader's docked choice.
+  // A sheet shows one section at a time.
+  const [panels, setPanels] = useState<PanelId[]>(() => mode !== 'docked' ? [] : (storedPanels() ?? PANEL_IDS))
+  const modeRef = useRef(mode)
+  modeRef.current = mode
   const togglePanel = useCallback((id: PanelId) => {
     setPanels((prev) => {
+      if (modeRef.current === 'sheet') return prev.includes(id) ? [] : [id]
       const next = PANEL_IDS.filter((p) => (p === id ? !prev.includes(p) : prev.includes(p)))
-      if (window.innerWidth >= 1100) rememberPanels(next)
+      if (modeRef.current === 'docked') rememberPanels(next)
       return next
     })
+  }, [])
+  // Closing the sheet returns to the display at its top.
+  const mainRef = useRef<HTMLElement>(null)
+  const closeSheet = useCallback(() => {
+    setPanels([])
+    if (mainRef.current) mainRef.current.scrollTop = 0
   }, [])
   const [exportOpen, setExportOpen] = useState(false)
   const [exportNote, setExportNote] = useState<string | null>(null)
@@ -116,6 +141,9 @@ export function Shell({ model }: { model: Model }) {
   // Keep incoming fragment bytes (including subject order and unknown fields)
   // until the reader changes the analysis. Preferences do not rewrite a link.
   const encodedState = useRef(encode(state, total))
+  // The last write, for merging a burst of changes into one history entry.
+  // Cleared on load and on back/forward, so the next change always pushes.
+  const lastWrite = useRef<Written | null>(null)
 
   useEffect(() => {
     const encoded = encode(state, total)
@@ -124,26 +152,38 @@ export function Shell({ model }: { model: Model }) {
     const next = `#${encoded}`
     if (next !== window.location.hash) {
       selfWritten.current = next
-      window.history.replaceState(null, '', window.location.pathname + queryWithoutAddress(window.location.search) + next)
+      const at = performance.now()
+      const url = window.location.pathname + queryWithoutAddress(window.location.search) + next
+      if (historyStep(lastWrite.current, encoded, at) === 'push') window.history.pushState(null, '', url)
+      else window.history.replaceState(null, '', url)
+      lastWrite.current = { encoded, at }
     }
   }, [state, total])
 
+  // Back and forward fire popstate, and also hashchange when the fragment
+  // differs; a typed fragment fires hashchange alone. Whichever comes first
+  // restores; the other then matches selfWritten and is ignored.
   useEffect(() => {
-    const onHash = () => {
+    const onAddress = () => {
       if (window.location.hash === selfWritten.current) return
-      selfWritten.current = null
-      const restored = decode(window.location.hash, model, state)
+      selfWritten.current = window.location.hash
+      lastWrite.current = null
+      const restored = restoreFromAddress(window.location.hash, window.location.search, model, state)
       encodedState.current = encode(restored, total)
       dispatch({ type: 'replace', state: restored })
     }
-    window.addEventListener('hashchange', onHash)
-    return () => window.removeEventListener('hashchange', onHash)
-  }, [model, state])
+    window.addEventListener('popstate', onAddress)
+    window.addEventListener('hashchange', onAddress)
+    return () => {
+      window.removeEventListener('popstate', onAddress)
+      window.removeEventListener('hashchange', onAddress)
+    }
+  }, [model, state, total])
 
-  // Below 1100px the layout reflows: the sidebar stops holding a column and the
-  // legend becomes a strip above the data rather than a column beside it.
+  // Below 1100px the layout reflows: the legend becomes a strip above the data
+  // rather than a column beside it, and the panel column may float.
   useEffect(() => {
-    const onResize = () => setNarrow(window.innerWidth < 1100)
+    const onResize = () => setViewport(window.innerWidth)
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
   }, [])
@@ -175,11 +215,12 @@ export function Shell({ model }: { model: Model }) {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
       if (state.detail) dispatch({ type: 'detail', detail: null })
-      else if (narrow && panels.length) setPanels([])
+      else if (sheet && panels.length) closeSheet()
+      else if (floating && panels.length) setPanels([])
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [state.detail, narrow, panels.length])
+  }, [state.detail, floating, sheet, panels.length, closeSheet])
 
   const query = queryOf(state)
   const rows = useMemo(() => matchingRows(model, query), [model, query])
@@ -187,6 +228,11 @@ export function Shell({ model }: { model: Model }) {
   const cover = useMemo(() => coverage(model, query), [model, query])
   const counted = useMemo(() => countedIds(model, query), [model, query])
   const measured = useMemo(() => measuredCaps(model, query), [model, query])
+
+  // A preset behind "More", selected by a changed address, opens the list too.
+  useEffect(() => {
+    if (presetBehindMore(state.presetName)) setMorePresets(true)
+  }, [state.presetName])
 
   const applyPreset = useCallback((p: Preset) => {
     const on = presetSubjects(p, model)
@@ -215,7 +261,7 @@ export function Shell({ model }: { model: Model }) {
     `${rows.length} of ${model.capabilities.length} rows shown`,
     `${cover.native}% built in · ${cover.extension}% with extensions · ${cover.partial}% with partial`,
     `counting ${plural(counted.length, `${state.basis === 'all' ? 'selected' : 'production'} subject`)}` +
-      (state.lane ? ` · lane ${LANE_LABEL[state.lane]}` : ''),
+      (state.lane ? ` · lane ${laneLabel(state.lane)}` : ''),
   ]
 
   // While a preset is selected the heading is its question. The moment the
@@ -232,7 +278,7 @@ export function Shell({ model }: { model: Model }) {
   }[state.view]
 
   return (
-    <div style={S.root}>
+    <div style={{ ...S.root, ...F.root }}>
       <header style={S.header}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
           <span style={S.wordmark}>Spatial Systems Atlas</span>
@@ -281,16 +327,18 @@ export function Shell({ model }: { model: Model }) {
         </p>
       )}
 
-      <div style={{ display: 'flex', alignItems: 'flex-start', minHeight: 0, flex: 1, maxWidth: '100%' }}>
-        <Sidebar
+      <div style={F.body}>
+        <Sidebar style={F.side}
           model={model} state={state} dispatch={dispatch}
-          panels={panels} togglePanel={togglePanel} floating={narrow}
+          panels={panels} togglePanel={togglePanel} floating={floating}
+          sheet={sheet} closeSheet={closeSheet}
+          toggleDock={narrow && !sheet ? toggleDock : null}
           width={panelWidth} setWidth={setPanelWidth}
           morePresets={morePresets} setMorePresets={setMorePresets}
           applyPreset={applyPreset} rowsShown={rows.length}
         />
 
-        <main style={S.main}>
+        <main ref={mainRef} style={F.main}>
           <div style={S.questionBar}>
             <h1 style={S.question}>{question}</h1>
             <div style={S.segmented} role="group" aria-label="Display">
@@ -360,7 +408,7 @@ export function Shell({ model }: { model: Model }) {
                 <Empty title="No capability matches this filter"
                   why={[
                     'The row filter is narrowing the list',
-                    state.lane ? `the ${LANE_LABEL[state.lane]} lane is narrowing it further` : null,
+                    state.lane ? `the ${laneLabel(state.lane)} lane is narrowing it further` : null,
                     state.hasEntry ? 'and rows nobody has assessed are switched off' : null,
                   ].filter(Boolean).join(', ') + '. Nothing is hidden by the subjects you picked.'}
                   fixLabel="Show every capability again"
@@ -474,18 +522,24 @@ const RAIL: Array<{ id: PanelId; label: string; section: string }> = [
  * The tool rail and the column of sections it shows. Each rail button shows or
  * hides one section; several may be on at once and they stack in rail order.
  * With none on, the column is gone and the display takes the width. Below
- * 1100px the column floats over the display instead of taking a column.
+ * 1100px the pin button at the column's top right docks it beside the display
+ * or floats it over the display. On a phone the section is a sheet over the
+ * whole display, closed by its Done button or by its rail button again.
  */
 function Sidebar({
-  model, state, dispatch, panels, togglePanel, floating, width, setWidth,
+  style, model, state, dispatch, panels, togglePanel, floating, sheet, closeSheet, toggleDock, width, setWidth,
   morePresets, setMorePresets, applyPreset, rowsShown,
 }: {
+  style: React.CSSProperties
   model: Model
   state: AppState
   dispatch: React.Dispatch<import('./state.ts').Action>
   panels: PanelId[]
   togglePanel: (id: PanelId) => void
   floating: boolean
+  sheet: boolean
+  closeSheet: () => void
+  toggleDock: (() => void) | null
   width: number
   setWidth: (w: number) => void
   morePresets: boolean
@@ -495,7 +549,35 @@ function Sidebar({
 }) {
   const [find, setFind] = useState('')
 
-  const presets = PRESETS.filter((p) => morePresets || !p.more)
+  const presets = listedPresets(morePresets)
+  const presetBox = useRef<HTMLDivElement>(null)
+  const presetsOn = panels.includes('presets')
+
+  // Opened, the list is a box exactly six cards tall, measured from the cards
+  // themselves because a long scope line wraps to two lines in a narrow column.
+  // The selected card is scrolled into view inside the box, not the page.
+  useLayoutEffect(() => {
+    const box = presetBox.current
+    if (!box) return
+    if (!morePresets) { box.style.maxHeight = ''; return }
+    const fit = () => {
+      const cards = box.children as HTMLCollectionOf<HTMLElement>
+      const last = cards[Math.min(PRESETS_BOX, cards.length) - 1]
+      if (last) box.style.maxHeight = `${last.offsetTop + last.offsetHeight - cards[0].offsetTop}px`
+    }
+    fit()
+    const watch = new ResizeObserver(fit)
+    watch.observe(box)
+    const on = box.querySelector<HTMLElement>('[aria-pressed="true"]')
+    if (on) {
+      // The box is the cards' offset parent, so offsetTop is already inside it.
+      const top = on.offsetTop
+      if (top < box.scrollTop || top + on.offsetHeight > box.scrollTop + box.clientHeight) {
+        box.scrollTop = top - (box.clientHeight - on.offsetHeight) / 2
+      }
+    }
+    return () => watch.disconnect()
+  }, [morePresets, presetsOn, state.presetName])
   const query = queryOf(state)
   const q = find.trim().toLowerCase()
 
@@ -510,13 +592,15 @@ function Sidebar({
   const sections: Record<PanelId, React.ReactNode> = {
     presets: (
       <>
-        {presets.map((p) => (
-          <button key={p.name} type="button" style={S.presetRow(p.name === state.presetName)}
-            aria-pressed={p.name === state.presetName} onClick={() => applyPreset(p)}>
-            <strong style={{ fontFamily: 'var(--fl)', fontSize: 12 }}>{p.name}</strong>
-            <span style={{ fontSize: 11, color: 'var(--faint)' }}>{p.scope}</span>
-          </button>
-        ))}
+        <div ref={presetBox} style={morePresets ? S.presetBox : undefined}>
+          {presets.map((p) => (
+            <button key={p.name} type="button" style={S.presetRow(p.name === state.presetName)}
+              aria-pressed={p.name === state.presetName} onClick={() => applyPreset(p)}>
+              <strong style={{ fontFamily: 'var(--fl)', fontSize: 12 }}>{p.name}</strong>
+              <span style={{ fontSize: 11, color: 'var(--faint)' }}>{p.scope}</span>
+            </button>
+          ))}
+        </div>
         <button type="button" style={S.disclosure} onClick={() => setMorePresets(!morePresets)}>
           {morePresets ? 'Fewer' : 'More'}
         </button>
@@ -610,11 +694,11 @@ function Sidebar({
     ),
     lane: (
       <>
-        {([null, 'U1', 'U2', 'U3', 'U4'] as Array<LaneId | null>).map((lane) => (
+        {([null, ...laneIds(model)] as Array<LaneId | null>).map((lane) => (
           <button key={lane ?? 'none'} type="button" style={S.choiceRow(state.lane === lane)}
             onClick={() => dispatch({ type: 'lane', lane })}>
             <span>{state.lane === lane ? '●' : '○'}</span>
-            <span style={{ flex: 1, textAlign: 'left' }}>{lane ? LANE_LABEL[lane] : 'No lane'}</span>
+            <span style={{ flex: 1, textAlign: 'left' }}>{lane ? laneLabel(lane) : 'No lane'}</span>
             <span style={{ color: 'var(--faint)' }}>{lane ? matchCount(model, { ...query, lane }, state.filter) : ''}</span>
           </button>
         ))}
@@ -622,12 +706,15 @@ function Sidebar({
     ),
   }
 
-  // A floating panel must leave the rail and a sliver of the display visible.
-  const maxWidth = floating ? Math.max(PANEL_WIDTH.min, window.innerWidth - 64 - 24) : PANEL_WIDTH.max
+  // A floating panel must leave the rail and a sliver of the display visible; a
+  // docked one below 1100px leaves the display its 360px where the screen allows.
+  const maxWidth = floating ? Math.max(PANEL_WIDTH.min, window.innerWidth - RAIL_WIDTH - 24)
+    : toggleDock ? Math.min(PANEL_WIDTH.max, Math.max(PANEL_WIDTH.min, window.innerWidth - RAIL_WIDTH - DOCK_MIN_DISPLAY))
+    : PANEL_WIDTH.max
   const shown = Math.min(width, maxWidth)
 
   return (
-    <div style={S.sideWrap}>
+    <div style={style}>
       <nav style={S.rail} aria-label="Panels">
         {RAIL.map((r) => {
           const on = panels.includes(r.id)
@@ -645,7 +732,19 @@ function Sidebar({
       </nav>
 
       {panels.length > 0 && (
-        <div style={S.panel(shown, floating)} aria-label="Controls" role="region">
+        <div style={sheet ? S.sheet : S.panel(shown, floating)} aria-label="Controls" role="region">
+          {sheet && (
+            <div style={S.sheetBar}>
+              <button type="button" style={S.primary} onClick={closeSheet}>Done</button>
+            </div>
+          )}
+          {toggleDock && (
+            <button type="button" className="panel-pin" style={S.pin(!floating)} onClick={toggleDock}
+              aria-pressed={!floating} aria-label="Pin the panels beside the display"
+              title={floating ? 'Floating over the display · click to pin beside it' : 'Pinned beside the display · click to float over it'}>
+              <PinIcon pinned={!floating} />
+            </button>
+          )}
           <div style={S.panelBody}>
             {RAIL.filter((r) => panels.includes(r.id)).map((r) => (
               <Section key={r.id} id={`panel-${r.id}`}
@@ -654,7 +753,7 @@ function Sidebar({
               </Section>
             ))}
           </div>
-          <ResizeHandle width={shown} max={maxWidth} setWidth={setWidth} />
+          {!sheet && <ResizeHandle width={shown} max={maxWidth} setWidth={setWidth} />}
         </div>
       )}
     </div>
@@ -711,6 +810,18 @@ function ResizeHandle({ width, max, setWidth }: { width: number; max: number; se
   )
 }
 
+/** A pin: upright and filled when pinned, tilted and hollow when the column floats. */
+function PinIcon({ pinned }: { pinned: boolean }) {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill={pinned ? 'currentColor' : 'none'} stroke="currentColor"
+      strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"
+      style={{ transform: pinned ? 'none' : 'rotate(45deg)' }}>
+      <path d="M9 3h6l-1 6 4 4H6l4-4z" />
+      <path d="M12 13v8" fill="none" />
+    </svg>
+  )
+}
+
 /** Simple line icons for the rail. */
 function RailIcon({ id }: { id: PanelId }) {
   return (
@@ -748,8 +859,8 @@ const Section = ({ id, label, children }: { id?: string; label: string; children
 // --- styles ---------------------------------------------------------------
 
 const S = {
-  // The bottom padding is the fixed footer's height, which the footer writes to --footer-h.
-  root: { minHeight: '100vh', paddingBottom: 'var(--footer-h, 0px)', overflowX: 'hidden', maxWidth: '100vw', background: 'var(--bg)', color: 'var(--ink)', fontFamily: 'var(--fb)', fontSize: 14, lineHeight: 1.5, display: 'flex', flexDirection: 'column' } as const,
+  // The frame (height, scrolling, the footer's room) is in layout.ts.
+  root: { background: 'var(--bg)', color: 'var(--ink)', fontFamily: 'var(--fb)', fontSize: 14, lineHeight: 1.5 } as const,
   header: { display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap', padding: '9px 16px', background: 'var(--panel)', borderBottom: '1px solid var(--ruleS)' } as const,
   wordmark: { fontFamily: 'var(--fl)', fontWeight: 700, fontSize: 13, letterSpacing: '.14em', textTransform: 'uppercase' } as const,
   eyebrow: { fontFamily: 'var(--fm)', fontSize: 9, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--faint)' } as const,
@@ -762,15 +873,15 @@ const S = {
   // resort a label wraps to a second line of the control rather than being cut off.
   segmented: { display: 'inline-flex', flexWrap: 'wrap', maxWidth: '100%', alignItems: 'stretch', border: '1px solid var(--ruleS)', borderRadius: 6, overflow: 'hidden', background: 'var(--panel)' } as const,
   segment: (on: boolean, divider: boolean) => ({ fontFamily: 'var(--fl)', fontWeight: 600, fontSize: 12, lineHeight: '18px', background: on ? 'var(--ink)' : 'transparent', color: on ? 'var(--bg)' : 'var(--ink)', borderStyle: 'solid', borderColor: 'var(--ruleS)', borderWidth: divider ? '0 0 0 1px' : 0, borderRadius: 0, margin: 0, padding: '6px clamp(7px, 2vw, 14px)', flex: '1 0 auto', cursor: 'pointer' } as const),
-  main: { flex: 1, minWidth: 0, maxWidth: '100%', display: 'flex', flexDirection: 'column', overflowX: 'hidden' } as const,
   questionBar: { display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap', padding: '14px 16px 8px' } as const,
   question: { margin: 0, fontFamily: 'var(--fl)', fontWeight: 700, fontSize: 21, letterSpacing: '-.01em', flex: 1, minWidth: 260 } as const,
   // Fixed to the foot of the window, above the page and the side rail, below tips, the row panel and dialogs.
   footer: { position: 'fixed', left: 0, right: 0, bottom: 0, zIndex: 30, padding: '4px 16px', background: 'var(--panel)', borderTop: '1px solid var(--rule)', fontFamily: 'var(--fm)', fontSize: 10, lineHeight: 1.5, letterSpacing: '.04em', color: 'var(--faint)' } as const,
   disclosure: { fontFamily: 'var(--fl)', fontSize: 11.5, background: 'transparent', border: 0, color: 'var(--ac)', cursor: 'pointer', textDecoration: 'underline', padding: 0 } as const,
-  legendStrip: { width: '100%', display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '9px 16px', padding: '9px 12px', background: 'var(--panel)', border: '1px solid var(--rule)', borderRadius: 'var(--r)', marginBottom: 10 } as const,
+  // Open above the display: equal columns, so each mark box lines up under the one above it.
+  legendStrip: { width: '100%', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(120px, 100%), 1fr))', gap: '9px 16px', padding: '9px 12px', background: 'var(--panel)', border: '1px solid var(--rule)', borderRadius: 'var(--r)', marginBottom: 10 } as const,
   legend: { flex: '0 0 186px', width: 186, display: 'flex', flexDirection: 'column', gap: 9, position: 'sticky', top: 12, padding: '11px 12px', background: 'var(--panel)', border: '1px solid var(--rule)', borderRadius: 'var(--r)' } as const,
-  legendToggle: { display: 'flex', alignItems: 'center', gap: 6, flexBasis: '100%', padding: 0, margin: 0, border: 0, background: 'none', color: 'var(--faint)', cursor: 'pointer', textAlign: 'left' } as const,
+  legendToggle: { display: 'flex', alignItems: 'center', gap: 6, flexBasis: '100%', gridColumn: '1 / -1', padding: 0, margin: 0, border: 0, background: 'none', color: 'var(--faint)', cursor: 'pointer', textAlign: 'left' } as const,
   // The closed legend: a slim column of marks beside the display, or one row above it.
   // Only the toggle and the marks, on the page background: no box, line or fill.
   legendBar: { flex: '0 0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, position: 'sticky', top: 12, padding: 0 } as const,
@@ -778,14 +889,20 @@ const S = {
   legendToggleShut: { display: 'flex', alignItems: 'center', justifyContent: 'center', width: 18, height: 18, padding: 0, margin: 0, border: 0, background: 'none', color: 'var(--faint)', cursor: 'pointer' } as const,
   srOnly: { position: 'absolute', width: 1, height: 1, margin: -1, padding: 0, overflow: 'hidden', clip: 'rect(0 0 0 0)', whiteSpace: 'nowrap', border: 0 } as const,
   legendHead: { fontFamily: 'var(--fl)', fontWeight: 700, fontSize: 9.5, letterSpacing: '.15em', textTransform: 'uppercase', color: 'var(--faint)' } as const,
-  sideWrap: { display: 'flex', position: 'sticky', top: 0, alignSelf: 'flex-start', height: 'calc(100vh - var(--footer-h, 0px))', zIndex: 20, flex: '0 0 auto' } as const,
   rail: { flex: '0 0 64px', width: 64, height: '100%', borderRight: '1px solid var(--ruleS)', background: 'var(--panel)', display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'center', padding: '8px 0', overflowY: 'auto', overflowX: 'hidden' } as const,
   railButton: (on: boolean) => ({ position: 'relative', width: 58, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, padding: '8px 2px 6px', margin: 0, background: on ? 'var(--acF)' : 'transparent', color: on ? 'var(--ac)' : 'var(--soft)', borderStyle: 'solid', borderWidth: 1, borderColor: on ? 'var(--ac)' : 'transparent', borderRadius: 6, cursor: 'pointer' } as const),
   railLabel: { fontFamily: 'var(--fl)', fontWeight: 600, fontSize: 9, letterSpacing: '.03em', textTransform: 'uppercase', lineHeight: 1.1, maxWidth: '100%' } as const,
   railBadge: { position: 'absolute', top: 3, right: 3, minWidth: 15, padding: '0 3px', fontFamily: 'var(--fm)', fontSize: 8.5, lineHeight: '13px', textAlign: 'center', color: 'var(--soft)', background: 'var(--bg)', border: '1px solid var(--rule)', borderRadius: 7 } as const,
   panel: (width: number, floating: boolean) => ({ position: floating ? 'absolute' : 'relative', left: floating ? 64 : undefined, top: 0, flex: `0 0 ${width}px`, width, height: '100%', background: floating ? 'var(--panel)' : 'var(--bg)', borderRight: '1px solid var(--ruleS)', boxShadow: floating ? '6px 0 18px rgba(0,0,0,.18)' : 'none', display: 'flex', flexDirection: 'column', minHeight: 0 } as const),
+  // On a phone: the whole display, from the rail to the screen's right edge, with Done above its own scroll.
+  sheet: { position: 'absolute', left: 64, top: 0, width: 'calc(100vw - 64px)', height: '100%', background: 'var(--panel)', display: 'flex', flexDirection: 'column', minHeight: 0 } as const,
+  sheetBar: { flex: '0 0 auto', display: 'flex', justifyContent: 'flex-end', padding: '8px 12px', borderBottom: '1px solid var(--ruleS)' } as const,
   panelBody: { overflowY: 'auto', minHeight: 0, flex: 1 } as const,
+  // Overlaid on the first section's header line (the section's 10px top padding, 12px right padding), so it takes no room of its own.
+  pin: (on: boolean) => ({ position: 'absolute', top: 10, right: 14, zIndex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 21, height: 21, boxSizing: 'border-box', padding: 0, margin: 0, background: on ? 'var(--acF)' : 'transparent', color: on ? 'var(--ac)' : 'var(--soft)', border: `1px solid ${on ? 'var(--ac)' : 'var(--rule)'}`, borderRadius: 6, cursor: 'pointer' } as const),
   resize: { position: 'absolute', top: 0, right: -5, width: 9, height: '100%', cursor: 'col-resize', zIndex: 2, touchAction: 'none' } as const,
+  // The opened preset list; its height is set from the first six cards. The section header stays above it.
+  presetBox: { position: 'relative', overflowY: 'auto', overscrollBehavior: 'contain', marginBottom: 4 } as const,
   presetRow: (on: boolean) => ({ display: 'flex', flexDirection: 'column', gap: 1, textAlign: 'left', width: '100%', background: on ? 'var(--acF)' : 'transparent', border: `1px solid ${on ? 'var(--ac)' : 'var(--rule)'}`, borderRadius: 'var(--r)', padding: '5px 8px', cursor: 'pointer', marginBottom: 4, color: 'var(--ink)' } as const),
   choiceRow: (on: boolean) => ({ display: 'flex', alignItems: 'baseline', gap: 6, width: '100%', textAlign: 'left', background: on ? 'var(--acF)' : 'transparent', border: `1px solid ${on ? 'var(--ac)' : 'transparent'}`, borderRadius: 'var(--r)', padding: '4px 6px', cursor: 'pointer', fontFamily: 'var(--fl)', fontSize: 12 } as const),
   groupHead: { display: 'flex', gap: 6, width: '100%', alignItems: 'center', background: 'transparent', border: 0, cursor: 'pointer', fontFamily: 'var(--fl)', fontWeight: 700, fontSize: 10.5, letterSpacing: '.1em', textTransform: 'uppercase', padding: '2px 0' } as const,

@@ -4,7 +4,7 @@ import { test } from 'node:test'
 import { adapt, matchingRows } from './design-model.ts'
 import type { Action, AppState } from './app/state.ts'
 import {
-  PANEL_WIDTH, PRESETS, clampPanelWidth, decode, encode, initialState, parsePanels, presetQuestion,
+  PANEL_WIDTH, PRESETS, clampPanelWidth, presetBehindMore, defaultPanelsDocked, decode, encode, initialState, parsePanels, presetQuestion,
   presetSubjects, queryOf, reducer,
 } from './app/state.ts'
 
@@ -36,27 +36,28 @@ test('the opening view is the whole map in Groups, with no preset, focus or lane
   assert.equal(decode('#' + encode(s, model.subjects.length), model, s).presetName, '')
 })
 
-test("the 14 presets, in order, 7 shown and 7 behind More", () => {
+test("the 15 presets, in order, 3 shown and 12 behind More", () => {
   assert.deepEqual(PRESETS.map((p) => p.name), [
     'What has to be agreed', 'Where nobody has built it yet', 'Where the sources disagree',
     'Moving 3D content between tools and worlds', 'Carrying your avatar with you',
     'Travelling between worlds', 'AI agents inside worlds',
     'The open web stack', 'Real places and maps', 'Capturing the real world',
     'Identity, trust and who made what', 'Closed platforms against open formats',
-    'Engines against the formats', "The Forum's own projects",
+    'Engines against the formats', "The Forum's own projects", 'Platforms OpenSpatials supports',
   ])
-  assert.deepEqual(PRESETS.map((p) => !!p.more), [...Array(7).fill(false), ...Array(7).fill(true)])
+  assert.deepEqual(PRESETS.map((p) => presetBehindMore(p.name)), [...Array(3).fill(false), ...Array(12).fill(true)])
   assert.ok(!PRESETS.some((p) => p.name.includes('glTF')), 'glTF beside its neighbours is dropped')
   assert.equal(new Set(PRESETS.map((p) => p.question)).size, PRESETS.length, 'every preset asks its own question')
 })
 
-test('every preset names real subjects, keeps Compare to 8, shows rows, and its address round-trips', () => {
+test('every preset names real subjects, keeps Compare to 8 (the platforms preset excepted), shows rows, and its address round-trips', () => {
   const known = new Set(model.subjects.map((s) => s.id))
   const total = model.subjects.length
   for (const [i, p] of PRESETS.entries()) {
     for (const id of p.on) assert.ok(known.has(id), `${p.name}: unknown subject ${id}`)
     const on = presetSubjects(p, model)
-    if (p.view === 'compare') assert.ok(on.length > 0 && on.length <= 8, `${p.name}: ${on.length} subjects in Compare`)
+    // The platforms preset shows every platform the register names, however many there are.
+    if (p.view === 'compare') assert.ok(on.length > 0 && (p.platforms || on.length <= 8), `${p.name}: ${on.length} subjects in Compare`)
     const applied = withPreset(i)
     assert.equal(applied.presetName, p.name)
     assert.equal(presetQuestion(applied.presetName), p.question)
@@ -79,6 +80,31 @@ test('the disagreement preset picks the subjects with the most recorded conflict
   const floor = Math.min(...on.map(conflicts))
   assert.ok(floor > 0)
   for (const s of model.subjects) if (!on.includes(s.id)) assert.ok(conflicts(s.id) <= floor, `${s.id} has more conflicts than a chosen subject`)
+})
+
+test('the platforms preset shows every subject with a platform field, in Compare, every row', () => {
+  const p = PRESETS.find((x) => x.name === 'Platforms OpenSpatials supports')!
+  assert.ok(p.platforms && p.view === 'compare' && p.filter === 'all' && !p.lane && !p.sel)
+  const withField = model.subjects.filter((s) => (s.platform ?? []).length > 0).map((s) => s.id)
+  assert.ok(withField.length > 0, 'the export carries the platform field')
+  assert.deepEqual(presetSubjects(p, model), withField)
+  const applied = withPreset(PRESETS.indexOf(p))
+  assert.equal(matchingRows(model, queryOf(applied)).length, model.capabilities.length, 'every row')
+  // The register ids come through as lists of plain ids; ARCore is two register platforms.
+  assert.deepEqual(model.bySubject.get('arcore')!.platform, ['android', 'google-geospatial'])
+  assert.deepEqual(model.bySubject.get('threejs')!.platform, ['threejs'])
+  assert.equal(model.bySubject.get('gltf')!.platform, undefined)
+})
+
+test('the address accepts every lane the data carries and drops an unknown one', () => {
+  const base = initialState(model)
+  for (const lane of ['U1', 'U4', 'U6', 'U7', 'U10']) {
+    assert.equal(decode(`#view=compare&s=all&rows=all&basis=prod&lane=${lane}`, model, base).lane, lane)
+  }
+  assert.equal(decode('#view=compare&s=all&rows=all&basis=prod&lane=U5', model, base).lane, null)
+  assert.equal(decode('#view=compare&s=all&rows=all&basis=prod&lane=U99', model, base).lane, null)
+  const s = reducer(base, { type: 'lane', lane: 'U10' })
+  assert.equal(decode('#' + encode(s, model.subjects.length), model, base).lane, 'U10')
 })
 
 test('a preset is selected until the reader changes subjects, focus, rows, basis or lane', () => {
@@ -140,4 +166,13 @@ test('stored rail sections and panel width are read defensively', () => {
   assert.equal(clampPanelWidth(9999), PANEL_WIDTH.max)
   assert.equal(clampPanelWidth(450), 450)
   assert.equal(clampPanelWidth(Number('junk')), PANEL_WIDTH.initial)
+})
+
+test('the panel column docks beside the display by default unless the display would keep under 360px', () => {
+  assert.equal(defaultPanelsDocked(900, PANEL_WIDTH.initial), true)
+  assert.equal(defaultPanelsDocked(768, PANEL_WIDTH.initial), true)
+  assert.equal(defaultPanelsDocked(390, PANEL_WIDTH.initial), false, 'a phone floats')
+  assert.equal(defaultPanelsDocked(724, 300), true, '724 - 64 rail - 300 column leaves exactly 360')
+  assert.equal(defaultPanelsDocked(723, 300), false)
+  assert.equal(defaultPanelsDocked(768, PANEL_WIDTH.max), false, 'a wide column on a tablet floats')
 })

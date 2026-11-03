@@ -3821,6 +3821,50 @@
           "quote": "The content author has no knowledge of which hardware or operating system the user runs, and cannot design for a specific device."
         }
       ]
+    },
+    {
+      "capability_id": "render.renderer-swap",
+      "level": "partial",
+      "note": "The engine behind this browser draws through ANARI, a Khronos rendering interface that hands the scene to whichever rendering engine is loaded, so the scene description does not change when the engine does. The architecture document says the browser ships with at least one engine and names no declared substitute when an engine cannot draw a scene.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeDoc/blob/8e26da5637e77cd1f400a9885414968a63291e28/docs/architecture/sneeze-architecture.md",
+          "title": "Sneeze architecture document (SneezeDoc commit 8e26da5), overview",
+          "retrieved": "2026-11-03",
+          "kind": "primary",
+          "quote": "ANARI abstracts rendering, providing a uniform scene-description API that delegates to interchangeable rendering engines."
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/SneezeDoc/blob/8e26da5637e77cd1f400a9885414968a63291e28/docs/architecture/sneeze-architecture.md",
+          "title": "Sneeze architecture document (SneezeDoc commit 8e26da5), shipped engine",
+          "retrieved": "2026-11-03",
+          "kind": "primary",
+          "quote": "The browser ships with at least one rendering engine (ANARI backend) that targets the platform's GPU API."
+        }
+      ]
+    },
+    {
+      "capability_id": "net.portal-preview",
+      "level": "partial",
+      "note": "A node with subtype 255 is an attachment point that starts the fetch of another fabric from a URL, and a node's position, scale and bounding volume are held on its map object. Missing: anything saying what of the destination is shown before entry, any way for the destination to limit it, and any declared trigger or one-way setting.",
+      "confidence": "verified",
+      "sources": [
+        {
+          "url": "https://github.com/MetaversalCorp/Sneeze/blob/986fc4cb3da83871c76e06f8b2b307b3933f6956/src/context/scene/Scene.md",
+          "title": "Sneeze Scene.md (commit 986fc4c), Fabric Loading Flow",
+          "retrieved": "2026-11-03",
+          "kind": "primary",
+          "quote": "1. A NODE recognizes it's an attachment point (bSubtype == 255) and calls `SCENE::Fabric_Spawn(pNode, sUrl)`, which starts the async MSF fetch."
+        },
+        {
+          "url": "https://github.com/MetaversalCorp/Sneeze/blob/986fc4cb3da83871c76e06f8b2b307b3933f6956/src/context/scene/Scene.md",
+          "title": "Sneeze Scene.md (commit 986fc4c), node properties",
+          "retrieved": "2026-11-03",
+          "kind": "primary",
+          "quote": "NODEs are structural — all 3D properties (position, scale, color, bounding volume) live on the referenced MAP_OBJECT."
+        }
+      ]
     }
   ]
 }

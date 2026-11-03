@@ -12,7 +12,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { Capability, LaneId, Model } from '../design-model.ts'
-import { LANE_LABEL } from '../design-model.ts'
+import { laneLabel } from '../design-model.ts'
 import type { Action, AppState } from './state.ts'
 import { PRESETS } from './state.ts'
 import {
@@ -274,7 +274,7 @@ export function MapView({ model, state, dispatch, rows, onFocusSubject, onOpenGr
         {STOPS.map((lane, i) => (
           <button key={lane ?? 'overview'} type="button" className="cv-stop" aria-pressed={state.lane === lane}
             onClick={() => setStop(lane)}>
-            <strong>{lane ? `${i} · ${LANE_LABEL[lane]}` : 'Overview'}</strong>
+            <strong>{lane ? `${i} · ${laneLabel(lane)}` : 'Overview'}</strong>
             <span>{lane ? laneLine(model, lane) : 'every lane'}</span>
           </button>
         ))}
@@ -496,17 +496,17 @@ function StopCard({ model, lane, index, rows, on, famCount, onPick, onStep }: {
   const sum = stopSummary(model, on, rows)
   const laneRows = lane ? model.capabilities.filter((c) => c.uses.includes(lane)).length : 0
   const laneMust = lane ? model.capabilities.filter((c) => c.uses.includes(lane) && c.interop === 'must').length : 0
-  const question = lane ? (PRESETS.find((p) => p.lane === lane)?.question ?? LANE_LABEL[lane]) : 'Overview'
+  const question = lane ? (PRESETS.find((p) => p.lane === lane)?.question ?? laneLabel(lane)) : 'Overview'
   const top = sum.groups[0]
   return (
     <aside className="cv-card" aria-label="About this stop">
       <span className="cv-eyebrow">
-        {lane ? `Stop ${index} of ${STOPS.length - 1} · ${LANE_LABEL[lane]}` : 'Overview · select any node'}
+        {lane ? `Stop ${index} of ${STOPS.length - 1} · ${laneLabel(lane)}` : 'Overview · select any node'}
       </span>
       <h2>{question}</h2>
       <p>
         {lane
-          ? <>{plural(laneRows, 'row')} serve the {LANE_LABEL[lane].toLowerCase()} use case, {laneMust} of them rows that must
+          ? <>{plural(laneRows, 'row')} serve the {laneLabel(lane).toLowerCase()} use case, {laneMust} of them rows that must
             {' '}interoperate. {rows.length === laneRows ? 'All' : rows.length} of the {laneRows} are on screen, across
             {' '}{plural(sum.groups.length, 'group')}{top ? <>; most sit in {top.name} ({top.rows})</> : null}.</>
           : <>{plural(on.length, 'subject')} in {plural(famCount, 'family', 'families')}, against {plural(rows.length, 'row')} in
