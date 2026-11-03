@@ -49,6 +49,8 @@ export interface AppState {
    * view that no longer matches it.
    */
   presetName: string
+  /** Rows picked by a preset or a link (`sel`). Empty means every row. */
+  sel: string[]
 
   // Preferences. Not analysis, so they never travel in the address.
   theme: Theme
@@ -61,6 +63,7 @@ export const queryOf = (s: AppState): Query => ({
   hasEntry: s.hasEntry,
   basis: s.basis,
   lane: s.lane,
+  sel: s.sel,
 })
 
 export type Action =
@@ -77,6 +80,7 @@ export type Action =
   | { type: 'detail'; detail: DetailTarget | null }
   | { type: 'preset'; state: Partial<AppState>; name: string }
   | { type: 'theme'; theme: Theme }
+  | { type: 'clear-picked' }
   | { type: 'replace'; state: AppState }
 
 /** The view has departed from its preset, so no preset is selected any more. Preferences never do this. */
@@ -142,6 +146,9 @@ export function reducer(state: AppState, action: Action): AppState {
     case 'theme':
       return { ...state, theme: action.theme }
 
+    case 'clear-picked':
+      return edited(state, { sel: [] })
+
     case 'replace':
       return action.state
   }
@@ -153,6 +160,20 @@ export function reducer(state: AppState, action: Action): AppState {
 // The prototype only displayed a plausible link; it never read or wrote the
 // real address, so a shared link restored nothing. This does both.
 // ---------------------------------------------------------------------------
+
+/** The keys the address carries. A link may put them after `?` or after `#`; the app writes `#`. */
+export const ADDRESS_KEYS = ['view', 's', 'of', 'rows', 'basis', 'lane', 'group', 'open', 'sel']
+
+/** The part of the address that holds the view: the fragment when it has one, otherwise the query. */
+export const addressOf = (hash: string, search: string): string => (hash.length > 1 ? hash : search)
+
+/** The query with the Atlas's keys removed, so a link opened with `?` is not left beside the `#` the app writes. */
+export function queryWithoutAddress(search: string): string {
+  const p = new URLSearchParams(search.replace(/^\?/, ''))
+  for (const k of ADDRESS_KEYS) p.delete(k)
+  const rest = p.toString()
+  return rest ? `?${rest}` : ''
+}
 
 const VIEWS: ViewId[] = ['subject', 'compare', 'groups', 'relations']
 const FILTERS: RowFilter[] = ['all', 'overlap', 'thin', 'gap', 'conflict', 'connect', 'interop']
@@ -178,6 +199,7 @@ export function initialState(model: Model): AppState {
     openGroups: {},
     detail: null,
     presetName: '',
+    sel: [],
     theme: 'light',
   }
 }
@@ -225,6 +247,7 @@ export function rememberTheme(theme: Theme): void {
 
 const PANELS_KEY = 'spatial-systems-atlas.panels'
 const PANEL_WIDTH_KEY = 'spatial-systems-atlas.panel-width'
+const LEGEND_KEY = 'spatial-systems-atlas.legend-open'
 
 export const PANEL_WIDTH = { min: 240, max: 560, initial: 300, step: 16 } as const
 
@@ -265,6 +288,10 @@ function writePref(key: string, value: string): void {
 export const storedPanels = (): PanelId[] | null => parsePanels(readPref(PANELS_KEY))
 export const rememberPanels = (panels: PanelId[]): void => writePref(PANELS_KEY, JSON.stringify(panels))
 
+/** Whether the "Reading the marks" key is open. Open until the reader closes it. */
+export const storedLegendOpen = (): boolean => readPref(LEGEND_KEY) !== 'closed'
+export const rememberLegendOpen = (open: boolean): void => writePref(LEGEND_KEY, open ? 'open' : 'closed')
+
 export function storedPanelWidth(): number {
   const raw = readPref(PANEL_WIDTH_KEY)
   return raw === null ? PANEL_WIDTH.initial : clampPanelWidth(Number(raw))
@@ -290,7 +317,8 @@ export function encode(state: AppState, total: number): string {
  */
 export function decode(search: string, model: Model, base: AppState): AppState {
   const p = new URLSearchParams(search.replace(/^[?#]/, ''))
-  if ([...p.keys()].length === 0) return base
+  // Only the Atlas's own keys count, so a tracking tag a mail client adds does not reset the view.
+  if (![...p.keys()].some((k) => ADDRESS_KEYS.includes(k))) return base
 
   const all = model.subjects.map((s) => s.id)
   const pick = <T,>(value: string | null, allowed: readonly T[], fallback: T): T =>
@@ -315,6 +343,9 @@ export function decode(search: string, model: Model, base: AppState): AppState {
   const focusParam = p.get('of')
   const focus = focusParam && on.includes(focusParam) ? focusParam : (on[0] ?? null)
 
+  // Unknown row ids are dropped, so a stale link shows the rows it still names, or every row.
+  const sel = (p.get('sel') ?? '').split(',').filter((id) => model.byCapability.has(id))
+
   const view = pick(p.get('view'), VIEWS, 'subject')
   const basis = pick(p.get('basis'), BASES, 'prod')
   const lane = pick(p.get('lane'), LANES, null as LaneId | null)
@@ -322,9 +353,11 @@ export function decode(search: string, model: Model, base: AppState): AppState {
   // An address names a preset only when it is exactly what that preset writes.
   // Anything the reader changed afterwards (focus, basis, the assessed-only
   // switch) means it is no longer that preset.
+  const sameSel = (a: string[], b: string[]) => a.length === b.length && [...a].sort().every((id, i) => id === [...b].sort()[i])
   const matched = PRESETS.find((preset) => {
     const pOn = presetSubjects(preset, model)
     return preset.view === view
+      && sameSel(preset.sel ?? [], sel)
       && preset.filter === filter
       && (preset.lane ?? null) === lane
       && basis === 'prod'
@@ -345,6 +378,7 @@ export function decode(search: string, model: Model, base: AppState): AppState {
     lane,
     relGroup: p.get('group') ?? base.relGroup,
     detail,
+    sel,
     presetName: matched?.name ?? '',
   }
 }
@@ -374,6 +408,8 @@ export interface Preset {
   mostConflicts?: number
   /** Shown only behind the "More" disclosure. */
   more?: boolean
+  /** Capability ids the preset picks; only those rows show. Carried in the address as `sel`. */
+  sel?: string[]
 }
 
 // The presets (2026-11-01). Each preset answers a question a real

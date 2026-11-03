@@ -44,8 +44,8 @@ const RAW = {
   capabilities: [
     cap('c.shared'), // two subjects reach it
     cap('c.lonely'), // exactly one has it built in
-    cap('c.gap', { interop: 'must' }), // scored, nobody reaches it
-    cap('c.wire', { binding: 'connect', uses: ['U2'] }), // a conflict lives here
+    cap('c.gap', { interop: 'must', uses: ['U2'] }), // scored, nobody reaches it; the one must row of lane U2
+    cap('c.wire', { binding: 'connect', uses: ['U2'] }), // a conflict lives here; tagged U2 but not must, so not in the lane
   ],
   subjects: [
     { id: 'ship', name: 'Shipping one', kind: 'standard', status: 'shipping', summary: 'One. Two.', conflicts: 0, unverified: 0, source_ids: 0, scored: 0 },
@@ -189,8 +189,8 @@ test('production basis counts only shipping, ratified, board-approved or mixed s
   assert.deepEqual(countedIds(M, q({ basis: 'all' })), ALL, 'every selected subject counts')
 })
 
-test('a lane narrows the rows measured, not the subjects counted', () => {
-  assert.deepEqual(measuredCaps(M, q({ lane: 'U2' })).map((c) => c.id), ['c.wire'])
+test('a lane narrows the rows measured to its must rows, not the subjects counted', () => {
+  assert.deepEqual(measuredCaps(M, q({ lane: 'U2' })).map((c) => c.id), ['c.gap'])
   assert.equal(countedIds(M, q({ lane: 'U2' })).length, 4, 'a lane must not change who is counted')
 })
 

@@ -7,12 +7,12 @@
 
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
 import type { Basis, LaneId, Model, RowFilter } from '../design-model.ts'
-import { LANE_LABEL, coverage, countedIds, matchCount, matchingRows, measuredCaps } from '../design-model.ts'
+import { LANE_LABEL, coverage, countedIds, matchCount, matchingRows, measuredCaps, pickedRows } from '../design-model.ts'
 import { LEGEND, THEMES, cellStyle, read } from './marks.ts'
 import { exportOptions } from './exports.ts'
 import {
-  PANEL_IDS, PANEL_WIDTH, PRESETS, clampPanelWidth, decode, encode, initialState, preferredTheme,
-  presetQuestion, presetSubjects, queryOf, reducer, rememberPanelWidth, rememberPanels, rememberTheme, storedPanelWidth,
+  PANEL_IDS, PANEL_WIDTH, PRESETS, addressOf, clampPanelWidth, decode, encode, initialState, preferredTheme,
+  presetQuestion, presetSubjects, queryOf, queryWithoutAddress, reducer, rememberLegendOpen, storedLegendOpen, rememberPanelWidth, rememberPanels, rememberTheme, storedPanelWidth,
   storedPanels, storedTheme,
 } from './state.ts'
 import type { AppState, PanelId, Preset, ViewId } from './state.ts'
@@ -29,6 +29,7 @@ import { CANDIDATES, readCandidateFlag, writeCandidateFlag } from './explore-mod
 import type { CandidateId } from './explore-model.ts'
 import { MapView } from './MapView.tsx'
 import { LineupView } from './LineupView.tsx'
+import { HoverTip } from './HoverTip.tsx'
 
 const VIEWS: Array<{ id: ViewId; label: string }> = [
   { id: 'subject', label: 'Subject' },
@@ -60,13 +61,17 @@ export function Shell({ model }: { model: Model }) {
   const total = model.subjects.length
   const [state, dispatch] = useReducer(reducer, model, (m) => {
     const base = { ...initialState(m), theme: preferredTheme() }
-    return decode(window.location.hash, m, base)
+    return decode(addressOf(window.location.hash, window.location.search), m, base)
   })
   // A link to a preset behind "More" opens the list, so the selected preset shows.
   const [morePresets, setMorePresets] = useState(() =>
     PRESETS.some((p) => p.more && p.name === state.presetName))
-  const [countingOpen, setCountingOpen] = useState(false)
   const [narrow, setNarrow] = useState(() => window.innerWidth < 1100)
+  const [legendOpen, setLegendOpen] = useState(storedLegendOpen)
+  const toggleLegend = () => {
+    rememberLegendOpen(!legendOpen)
+    setLegendOpen(!legendOpen)
+  }
   // The tool rail's sections. On a narrow screen the panel floats over the
   // display, so it opens closed there and its changes are not kept as the
   // reader's wide-screen choice.
@@ -119,7 +124,7 @@ export function Shell({ model }: { model: Model }) {
     const next = `#${encoded}`
     if (next !== window.location.hash) {
       selfWritten.current = next
-      window.history.replaceState(null, '', next)
+      window.history.replaceState(null, '', window.location.pathname + queryWithoutAddress(window.location.search) + next)
     }
   }, [state, total])
 
@@ -178,6 +183,7 @@ export function Shell({ model }: { model: Model }) {
 
   const query = queryOf(state)
   const rows = useMemo(() => matchingRows(model, query), [model, query])
+  const picked = useMemo(() => pickedRows(model, query), [model, query])
   const cover = useMemo(() => coverage(model, query), [model, query])
   const counted = useMemo(() => countedIds(model, query), [model, query])
   const measured = useMemo(() => measuredCaps(model, query), [model, query])
@@ -193,7 +199,7 @@ export function Shell({ model }: { model: Model }) {
       // switch return to their defaults too.
       state: {
         on, view: p.view, filter: p.filter, lane: p.lane ?? null, focus: p.focus ?? on[0],
-        basis: 'prod', hasEntry: false,
+        basis: 'prod', hasEntry: false, sel: p.sel ?? [],
       },
     })
   }, [model, openCandidate])
@@ -307,27 +313,39 @@ export function Shell({ model }: { model: Model }) {
                 </button>
               ))}
             </div>
+            <HoverTip label="What is shown and counted" triggerStyle={S.metricsButton}
+              openStyle={{ background: 'var(--ink)', color: 'var(--bg)' }}
+              trigger={
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+                  <path d="M4 20h16M7 16v-5M12 16V6M17 16v-8" />
+                </svg>
+              }>
+              <ul style={S.tipList}>
+                {scope.map((line) => <li key={line}>{line}</li>)}
+              </ul>
+              {picked && (
+                <p style={S.tipNote}>
+                  Showing {picked.size === 1 ? 'one picked row' : `${picked.size} picked rows`}.
+                  {rows.length < picked.size ? ` ${rows.length} pass the current row filter.` : ''}{' '}
+                  <button type="button" style={S.disclosure} onClick={() => dispatch({ type: 'clear-picked' })}>
+                    Show every row
+                  </button>
+                </p>
+              )}
+              <p style={{ ...S.tipNote, color: 'var(--soft)' }}>
+                A capability counts as covered when at least one of the {counted.length} counted
+                subjects reaches it. {measured.length} rows are measured
+                {state.lane ? ' because a lane is active'
+                  : state.basis === 'must' ? ' because the basis is must-agree rows' : ''}.
+                It says somebody has built the thing once, not that any two systems work together.
+              </p>
+            </HoverTip>
           </div>
 
-          <div style={S.scopeLine} className="scope">
-            {scope.map((chip) => <span key={chip} style={S.scopeChip}>{chip}</span>)}
-            <button type="button" style={S.disclosure} onClick={() => setCountingOpen(!countingOpen)}
-              aria-expanded={countingOpen}>
-              What is being counted?
-            </button>
-          </div>
-          {countingOpen && (
-            <p style={S.counting}>
-              A capability counts as covered when at least one of the {counted.length} counted
-              subjects reaches it. {measured.length} rows are measured
-              {state.lane ? ' because a lane is active'
-                : state.basis === 'must' ? ' because the basis is must-agree rows' : ''}.
-              It says somebody has built the thing once, not that any two systems work together.
-            </p>
-          )}
-
+          {/* Closed above the display, the bar of marks sits a few pixels over it. */}
           <div style={{
-            display: 'flex', gap: 14, padding: '0 16px 28px',
+            display: 'flex', gap: narrow && !legendOpen && !candidate ? 4 : 14, padding: '0 16px 28px',
             alignItems: 'flex-start',
             flexWrap: narrow ? 'wrap' : 'nowrap',
             flexDirection: narrow ? 'column-reverse' : 'row',
@@ -365,10 +383,33 @@ export function Shell({ model }: { model: Model }) {
             </div>
 
             {/* A candidate display carries its own key and card in this column. */}
-            {!candidate && <aside style={narrow ? S.legendStrip : S.legend} aria-label="Reading the marks">
-              <span style={S.legendHead}>Reading the marks</span>
-              {LEGEND.map((entry) => (
-                <div key={entry.label} style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+            {/* Closed, the legend is a bar of the toggle and the nine marks, each
+                with its two lines in a tip: a slim column beside the display, a row above it. */}
+            {!candidate && <aside aria-label="Reading the marks"
+              style={legendOpen ? (narrow ? S.legendStrip : S.legend) : (narrow ? S.legendBarRow : S.legendBar)}>
+              <button type="button" style={legendOpen ? S.legendToggle : S.legendToggleShut} onClick={toggleLegend}
+                aria-expanded={legendOpen} aria-controls="legend-entries">
+                <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true" focusable="false"
+                  style={{ transform: legendOpen ? 'rotate(90deg)' : 'none', transition: 'transform .15s ease' }}>
+                  <path d="M3 1.5L7 5L3 8.5z" fill="currentColor" />
+                </svg>
+                <span style={legendOpen ? S.legendHead : S.srOnly}>Reading the marks</span>
+              </button>
+              {!legendOpen && (
+                <div id="legend-entries" style={{ display: 'flex', flexDirection: narrow ? 'row' : 'column', flexWrap: 'wrap', gap: 6, alignItems: 'center' }}>
+                  {LEGEND.map((entry) => (
+                    <HoverTip key={entry.label} label={entry.label} beside={!narrow} width={220}
+                      triggerStyle={{ ...cellStyle(entry.code, 18), margin: 0, cursor: 'help' }}
+                      openStyle={{ outline: '2px solid var(--ac)', outlineOffset: 1 }}
+                      trigger={read(entry.code).glyph}>
+                      <strong style={{ fontFamily: 'var(--fl)', fontSize: 11.5, display: 'block' }}>{entry.label}</strong>
+                      <span style={{ fontSize: 11, color: 'var(--faint)' }}>{entry.note}</span>
+                    </HoverTip>
+                  ))}
+                </div>
+              )}
+              {legendOpen && LEGEND.map((entry) => (
+                <div key={entry.label} id={entry === LEGEND[0] ? 'legend-entries' : undefined} style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
                   <span style={{ ...cellStyle(entry.code, 18), flex: '0 0 18px', cursor: 'default' }}>
                     {read(entry.code).glyph}
                   </span>
@@ -545,6 +586,14 @@ function Sidebar({
           <span>{state.hasEntry ? '■' : '□'}</span>
           <span style={{ flex: 1, textAlign: 'left' }}>Only rows somebody has assessed</span>
         </button>
+        {state.sel.length > 0 && (
+          <p style={S.note}>
+            {state.sel.length} picked rows.{' '}
+            <button type="button" style={S.disclosure} onClick={() => dispatch({ type: 'clear-picked' })}>
+              Show every row
+            </button>
+          </p>
+        )}
       </>
     ),
     counting: (
@@ -566,7 +615,7 @@ function Sidebar({
             onClick={() => dispatch({ type: 'lane', lane })}>
             <span>{state.lane === lane ? '●' : '○'}</span>
             <span style={{ flex: 1, textAlign: 'left' }}>{lane ? LANE_LABEL[lane] : 'No lane'}</span>
-            <span style={{ color: 'var(--faint)' }}>{lane ? model.lanes[lane].n : ''}</span>
+            <span style={{ color: 'var(--faint)' }}>{lane ? matchCount(model, { ...query, lane }, state.filter) : ''}</span>
           </button>
         ))}
       </>
@@ -699,7 +748,8 @@ const Section = ({ id, label, children }: { id?: string; label: string; children
 // --- styles ---------------------------------------------------------------
 
 const S = {
-  root: { minHeight: '100vh', overflowX: 'hidden', maxWidth: '100vw', background: 'var(--bg)', color: 'var(--ink)', fontFamily: 'var(--fb)', fontSize: 14, lineHeight: 1.5, display: 'flex', flexDirection: 'column' } as const,
+  // The bottom padding is the fixed footer's height, which the footer writes to --footer-h.
+  root: { minHeight: '100vh', paddingBottom: 'var(--footer-h, 0px)', overflowX: 'hidden', maxWidth: '100vw', background: 'var(--bg)', color: 'var(--ink)', fontFamily: 'var(--fb)', fontSize: 14, lineHeight: 1.5, display: 'flex', flexDirection: 'column' } as const,
   header: { display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap', padding: '9px 16px', background: 'var(--panel)', borderBottom: '1px solid var(--ruleS)' } as const,
   wordmark: { fontFamily: 'var(--fl)', fontWeight: 700, fontSize: 13, letterSpacing: '.14em', textTransform: 'uppercase' } as const,
   eyebrow: { fontFamily: 'var(--fm)', fontSize: 9, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--faint)' } as const,
@@ -708,20 +758,27 @@ const S = {
   // One container owns the only outer border and the rounded corners. Segments
   // carry no border of their own, only a 1px divider on their left, written as
   // longhands so React never mixes a shorthand with a side on re-render.
-  segmented: { display: 'inline-flex', alignItems: 'stretch', border: '1px solid var(--ruleS)', borderRadius: 6, overflow: 'hidden', background: 'var(--panel)' } as const,
-  segment: (on: boolean, divider: boolean) => ({ fontFamily: 'var(--fl)', fontWeight: 600, fontSize: 12, lineHeight: '18px', background: on ? 'var(--ink)' : 'transparent', color: on ? 'var(--bg)' : 'var(--ink)', borderStyle: 'solid', borderColor: 'var(--ruleS)', borderWidth: divider ? '0 0 0 1px' : 0, borderRadius: 0, margin: 0, padding: '6px 14px', cursor: 'pointer' } as const),
+  // On a phone the four labels can be wider than the column; the padding narrows first, and as a last
+  // resort a label wraps to a second line of the control rather than being cut off.
+  segmented: { display: 'inline-flex', flexWrap: 'wrap', maxWidth: '100%', alignItems: 'stretch', border: '1px solid var(--ruleS)', borderRadius: 6, overflow: 'hidden', background: 'var(--panel)' } as const,
+  segment: (on: boolean, divider: boolean) => ({ fontFamily: 'var(--fl)', fontWeight: 600, fontSize: 12, lineHeight: '18px', background: on ? 'var(--ink)' : 'transparent', color: on ? 'var(--bg)' : 'var(--ink)', borderStyle: 'solid', borderColor: 'var(--ruleS)', borderWidth: divider ? '0 0 0 1px' : 0, borderRadius: 0, margin: 0, padding: '6px clamp(7px, 2vw, 14px)', flex: '1 0 auto', cursor: 'pointer' } as const),
   main: { flex: 1, minWidth: 0, maxWidth: '100%', display: 'flex', flexDirection: 'column', overflowX: 'hidden' } as const,
   questionBar: { display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap', padding: '14px 16px 8px' } as const,
   question: { margin: 0, fontFamily: 'var(--fl)', fontWeight: 700, fontSize: 21, letterSpacing: '-.01em', flex: 1, minWidth: 260 } as const,
-  footer: { padding: '18px 16px 22px', borderTop: '1px solid var(--rule)', fontFamily: 'var(--fm)', fontSize: 10.5, letterSpacing: '.04em', color: 'var(--faint)' } as const,
-  scopeLine: { display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center', padding: '0 16px 10px', color: 'var(--soft)' } as const,
-  scopeChip: { fontFamily: 'var(--fl)', fontSize: 11.5, border: '1px solid var(--rule)', borderRadius: 'var(--r)', padding: '3px 9px', background: 'var(--panel)' } as const,
+  // Fixed to the foot of the window, above the page and the side rail, below tips, the row panel and dialogs.
+  footer: { position: 'fixed', left: 0, right: 0, bottom: 0, zIndex: 30, padding: '4px 16px', background: 'var(--panel)', borderTop: '1px solid var(--rule)', fontFamily: 'var(--fm)', fontSize: 10, lineHeight: 1.5, letterSpacing: '.04em', color: 'var(--faint)' } as const,
   disclosure: { fontFamily: 'var(--fl)', fontSize: 11.5, background: 'transparent', border: 0, color: 'var(--ac)', cursor: 'pointer', textDecoration: 'underline', padding: 0 } as const,
-  counting: { margin: '0 16px 10px', maxWidth: '78ch', fontSize: 13, color: 'var(--soft)', fontStyle: 'italic' } as const,
   legendStrip: { width: '100%', display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '9px 16px', padding: '9px 12px', background: 'var(--panel)', border: '1px solid var(--rule)', borderRadius: 'var(--r)', marginBottom: 10 } as const,
   legend: { flex: '0 0 186px', width: 186, display: 'flex', flexDirection: 'column', gap: 9, position: 'sticky', top: 12, padding: '11px 12px', background: 'var(--panel)', border: '1px solid var(--rule)', borderRadius: 'var(--r)' } as const,
+  legendToggle: { display: 'flex', alignItems: 'center', gap: 6, flexBasis: '100%', padding: 0, margin: 0, border: 0, background: 'none', color: 'var(--faint)', cursor: 'pointer', textAlign: 'left' } as const,
+  // The closed legend: a slim column of marks beside the display, or one row above it.
+  // Only the toggle and the marks, on the page background: no box, line or fill.
+  legendBar: { flex: '0 0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, position: 'sticky', top: 12, padding: 0 } as const,
+  legendBarRow: { width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 8, padding: 0, marginTop: 4 } as const,
+  legendToggleShut: { display: 'flex', alignItems: 'center', justifyContent: 'center', width: 18, height: 18, padding: 0, margin: 0, border: 0, background: 'none', color: 'var(--faint)', cursor: 'pointer' } as const,
+  srOnly: { position: 'absolute', width: 1, height: 1, margin: -1, padding: 0, overflow: 'hidden', clip: 'rect(0 0 0 0)', whiteSpace: 'nowrap', border: 0 } as const,
   legendHead: { fontFamily: 'var(--fl)', fontWeight: 700, fontSize: 9.5, letterSpacing: '.15em', textTransform: 'uppercase', color: 'var(--faint)' } as const,
-  sideWrap: { display: 'flex', position: 'sticky', top: 0, alignSelf: 'flex-start', height: '100vh', zIndex: 20, flex: '0 0 auto' } as const,
+  sideWrap: { display: 'flex', position: 'sticky', top: 0, alignSelf: 'flex-start', height: 'calc(100vh - var(--footer-h, 0px))', zIndex: 20, flex: '0 0 auto' } as const,
   rail: { flex: '0 0 64px', width: 64, height: '100%', borderRight: '1px solid var(--ruleS)', background: 'var(--panel)', display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'center', padding: '8px 0', overflowY: 'auto', overflowX: 'hidden' } as const,
   railButton: (on: boolean) => ({ position: 'relative', width: 58, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, padding: '8px 2px 6px', margin: 0, background: on ? 'var(--acF)' : 'transparent', color: on ? 'var(--ac)' : 'var(--soft)', borderStyle: 'solid', borderWidth: 1, borderColor: on ? 'var(--ac)' : 'transparent', borderRadius: 6, cursor: 'pointer' } as const),
   railLabel: { fontFamily: 'var(--fl)', fontWeight: 600, fontSize: 9, letterSpacing: '.03em', textTransform: 'uppercase', lineHeight: 1.1, maxWidth: '100%' } as const,
@@ -736,6 +793,9 @@ const S = {
   focusArrow: { fontFamily: 'var(--fm)', fontSize: 10, background: 'transparent', color: 'var(--faint)', border: '1px solid var(--rule)', borderRadius: '0 var(--r) var(--r) 0', padding: '3px 5px', cursor: 'pointer' } as const,
   input: { width: '100%', fontFamily: 'var(--fl)', fontSize: 12, background: 'var(--bg)', border: '1px solid var(--ruleS)', borderRadius: 'var(--r)', padding: '5px 8px', color: 'var(--ink)' } as const,
   small: (on: boolean) => ({ fontFamily: 'var(--fl)', fontWeight: 600, fontSize: 10.5, background: on ? 'var(--ink)' : 'transparent', color: on ? 'var(--bg)' : 'var(--ink)', border: `1px solid ${on ? 'var(--ink)' : 'var(--rule)'}`, borderRadius: 'var(--r)', padding: '3px 8px', cursor: 'pointer' } as const),
+  metricsButton: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 32, height: 32, padding: 0, border: '1px solid var(--ruleS)', borderRadius: 6, cursor: 'pointer', background: 'var(--panel)', color: 'var(--ink)' } as const,
+  tipList: { margin: 0, padding: 0, listStyle: 'none', display: 'grid', gap: 3 } as const,
+  tipNote: { margin: '8px 0 0', maxWidth: '62ch', fontSize: 12.5 } as const,
   note: { margin: '4px 0 0', fontSize: 11, color: 'var(--faint)', fontStyle: 'italic' } as const,
   exportMenu: { position: 'absolute', top: '100%', right: 0, marginTop: 6, zIndex: 40, width: 340, display: 'flex', flexDirection: 'column', gap: 2, background: 'var(--panel)', border: '1px solid var(--ruleS)', borderRadius: 'var(--r)', boxShadow: '0 8px 22px rgba(0,0,0,.16)', padding: 6 } as const,
   exportItem: { display: 'flex', flexDirection: 'column', gap: 2, textAlign: 'left', background: 'transparent', border: 0, borderRadius: 'var(--r)', padding: '7px 9px', cursor: 'pointer', color: 'var(--ink)' } as const,

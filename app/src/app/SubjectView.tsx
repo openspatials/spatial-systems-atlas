@@ -5,7 +5,7 @@
 // removing a chip here removes the subject from the selection.
 
 import type { Capability, Model } from '../design-model.ts'
-import { levelOf, scopeNote } from '../design-model.ts'
+import { inLane, levelOf, scopeNote } from '../design-model.ts'
 import { cellStyle, describe, read } from './marks.ts'
 import type { Action, AppState } from './state.ts'
 
@@ -108,7 +108,7 @@ export function SubjectView({ model, state, dispatch, rows }: {
                     onClick={() => dispatch({ type: 'detail', detail: { cid: c.id, sid: focus.id } })}>
                     {c.name}
                     {c.interop === 'must' && <span style={s.must}>must</span>}
-                    {state.lane && c.uses.includes(state.lane) && <span style={s.lane}>lane</span>}
+                    {state.lane && inLane(c, state.lane) && <span style={s.lane}>lane</span>}
                   </button>
                   <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
                     {columns.map((sid) => {

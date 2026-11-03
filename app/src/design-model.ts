@@ -253,17 +253,30 @@ export interface Query {
   hasEntry: boolean
   basis: Basis
   lane: LaneId | null
+  /** Capability ids picked by a preset or a link (`sel`). When any are picked, only those rows show. */
+  sel?: string[]
 }
+
+/** The picked rows, or null when none are picked. */
+export const pickedRows = (model: Model, query: Query): Set<string> | null =>
+  query.sel?.length ? new Set(query.sel.filter((id) => model.byCapability.has(id))) : null
 
 export const levelOf = (code: Code | undefined): Level | null => (code ? (code[0] as Level) : null)
 export const confOf = (code: Code | undefined): Conf | null => (code ? (code[1] as Conf) : null)
+
+/**
+ * A lane holds the must rows of one use case (tool/model/CERTIFICATION-LANES.md).
+ * Rows that only degrade the use case ("should") are tagged with it but are not in
+ * the lane, so the Lane panel's count and the rows a lane shows are the same set.
+ */
+export const inLane = (c: Capability, lane: LaneId): boolean => c.interop === 'must' && c.uses.includes(lane)
 
 /** Does this capability pass the current row filter? */
 export function rowMatch(model: Model, query: Query, c: Capability): boolean {
   const codes = query.on.map((id) => model.cov[id]?.[c.id]).filter(Boolean) as Code[]
   const scored = codes.filter((x) => x[0] !== 'o')
   if (query.hasEntry && scored.length === 0) return false
-  if (query.lane && !c.uses.includes(query.lane)) return false
+  if (query.lane && !inLane(c, query.lane)) return false
 
   const ne = codes.filter((x) => x[0] === 'n' || x[0] === 'x').length
   const nat = codes.filter((x) => x[0] === 'n').length
@@ -290,8 +303,10 @@ export function rowMatch(model: Model, query: Query, c: Capability): boolean {
   }
 }
 
-export const matchingRows = (model: Model, query: Query): Capability[] =>
-  model.capabilities.filter((c) => rowMatch(model, query, c))
+export function matchingRows(model: Model, query: Query): Capability[] {
+  const picked = pickedRows(model, query)
+  return model.capabilities.filter((c) => (!picked || picked.has(c.id)) && rowMatch(model, query, c))
+}
 
 export const matchCount = (model: Model, query: Query, filter: RowFilter): number =>
   matchingRows(model, { ...query, filter }).length
@@ -305,7 +320,7 @@ export const countedIds = (model: Model, query: Query): string[] =>
 
 /** Which capability rows a percentage is measured over. */
 export function measuredCaps(model: Model, query: Query): Capability[] {
-  if (query.lane) return model.capabilities.filter((c) => c.uses.includes(query.lane!))
+  if (query.lane) return model.capabilities.filter((c) => inLane(c, query.lane!))
   return query.basis === 'must'
     ? model.capabilities.filter((c) => c.interop === 'must')
     : model.capabilities
@@ -402,6 +417,7 @@ export function shareUrl(
   p.push(`basis=${query.basis}`)
   if (query.lane) p.push(`lane=${query.lane}`)
   if (view === 'relations' && relGroup) p.push(`group=${relGroup}`)
+  if (query.sel?.length) p.push(`sel=${query.sel.join(',')}`)
   if (detail) p.push(`open=${detail.cid}${detail.sid ? `:${detail.sid}` : ''}`)
   return `/msf/atlas/?${p.join('&')}`
 }
