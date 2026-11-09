@@ -63,3 +63,48 @@ export function frame(locked: boolean): Frame {
     main,
   }
 }
+
+/** An item laid out in a wrapping row, measured from the row container's top left. */
+export interface FlowBox {
+  top: number
+  bottom: number
+  right: number
+}
+
+/** The collapsed list: how many chips show, and whether the last one is narrowed to fit the button. */
+export interface Collapse {
+  shown: number
+  /** The last shown chip is the only one on the last row and is narrowed, so the button fits beside it. */
+  squeeze: boolean
+}
+
+/**
+ * The collapsed "Compared with" list: how many chips fit on its first two rows
+ * with the Show more button after them. `items` is the label first, then every
+ * chip, as one wrapping row lays them out. Null when every item already sits on
+ * two rows, so the list needs no button. Otherwise chips are dropped from the end
+ * of the second row until the button fits there; a dropped chip never moves the
+ * ones before it, because the row fills left to right. A chip alone on the second
+ * row is kept and narrowed instead, so a long name on a phone never leaves the
+ * list showing no chip at all.
+ */
+export function collapsedCount(items: FlowBox[], toggleWidth: number, gap: number, width: number, rows = 2): Collapse | null {
+  // Items share a row when they overlap vertically (the row centres them, so tops differ by height).
+  const row: number[] = []
+  let current = -1
+  let bottom = -Infinity
+  for (const it of items) {
+    if (it.top >= bottom - 0.5) { current++; bottom = it.bottom } else bottom = Math.max(bottom, it.bottom)
+    row.push(current)
+  }
+  if (row.every((r) => r < rows)) return null
+  // Chips are items 1..n; the label is item 0, so chip k (1-based) is items[k].
+  let shown = row.filter((r, i) => i > 0 && r < rows).length
+  while (shown > 0) {
+    if (row[shown] < rows - 1) break // no chip left on the last row; the button starts it
+    if (items[shown].right + gap + toggleWidth <= width + 0.5) break
+    if (row[shown - 1] < rows - 1) return { shown, squeeze: true } // the only chip on the last row
+    shown--
+  }
+  return { shown, squeeze: false }
+}

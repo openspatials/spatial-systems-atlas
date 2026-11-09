@@ -1,18 +1,19 @@
-// The subject display's figure filters, against the published index.
+// The subject display's four figures, against the published index, and the
+// retired figure filters: the figures are plain
+// figures, and an old link's `only=` is ignored and dropped from the address.
 
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { test } from 'node:test'
 import type { SubjectOnly } from './design-model.ts'
 import { adapt, levelOf, NO_SUBJECT_ONLY, subjectRows } from './design-model.ts'
-import { decode, encode, initialState, PRESETS, reducer } from './app/state.ts'
+import { decode, encode, initialState, queryWithoutAddress, reducer, withoutLegacyKeys } from './app/state.ts'
 
 const model = adapt(JSON.parse(readFileSync(new URL('../public/territory-index.json', import.meta.url), 'utf8')))
 const total = model.subjects.length
 const rows = model.capabilities
 const only = (o: Partial<SubjectOnly>): SubjectOnly => ({ ...NO_SUBJECT_ONLY, ...o })
 const count = (id: string, o: Partial<SubjectOnly>) => subjectRows(model, id, only(o), rows).length
-const subjectState = (id: string) => reducer(initialState(model), { type: 'focus', id })
 
 // A subject with something under every figure, so no filter is tested against an empty set.
 const busy = model.subjects.find((s) => s.conflicts > 0 && s.never > 0 && s.native > 0)!
@@ -21,7 +22,7 @@ test('with no filter on, every row passes', () => {
   assert.equal(count(busy.id, {}), rows.length)
 })
 
-test('each filter gives the number its figure shows', () => {
+test('each figure counts the rows its definition names', () => {
   for (const s of model.subjects) {
     assert.equal(count(s.id, { reach: true }), s.reach, `${s.id} reach`)
     assert.equal(count(s.id, { native: true }), s.native, `${s.id} built in`)
@@ -48,57 +49,37 @@ test('filters combine: a row must pass every active one', () => {
   assert.ok(mustNative.every((c) => c.interop === 'must' && levelOf(model.cov[busy.id]?.[c.id]) === 'n'))
 })
 
-test('Assessed turns three ways and back', () => {
-  let s = subjectState(busy.id)
-  const seen = [s.only.assessed]
-  for (let i = 0; i < 3; i++) {
-    s = reducer(s, { type: 'subject-only', key: 'assessed' })
-    seen.push(s.only.assessed)
-  }
-  assert.deepEqual(seen, ['all', 'assessed', 'unassessed', 'all'])
-})
-
-test('reach, built in and conflicts switch on and off', () => {
-  for (const key of ['reach', 'native', 'conflicts'] as const) {
-    const on = reducer(subjectState(busy.id), { type: 'subject-only', key })
-    assert.equal(on.only[key], true)
-    assert.equal(reducer(on, { type: 'subject-only', key }).only[key], false)
+test('a legacy only= link opens with no figure filter and keeps every other row filter', () => {
+  const plain = `#view=subject&s=all&of=${busy.id}&rows=gap+assessed&basis=all&lane=U1`
+  for (const words of ['native', 'reach,unassessed,conflicts', 'assessed', 'bogus']) {
+    const legacy = decode(`${plain}&only=${words}`, model, initialState(model))
+    assert.equal('only' in legacy, false, 'the state has no figure filter at all')
+    assert.deepEqual(legacy, decode(plain, model, initialState(model)), `only=${words} changes nothing`)
+    assert.equal(legacy.view, 'subject')
+    assert.equal(legacy.focus, busy.id)
+    assert.equal(legacy.filter, 'gap', 'the row filter is kept')
+    assert.equal(legacy.hasEntry, true, 'the assessed-only switch is kept')
+    assert.equal(legacy.basis, 'all')
+    assert.equal(legacy.lane, 'U1')
+    assert.doesNotMatch(encode(legacy, total), /only=/, 'the app never writes it back')
   }
 })
 
-test('the filters clear when the focus changes, a preset is chosen or the display is left', () => {
-  const other = model.subjects.find((x) => x.id !== busy.id)!.id
-  const on = reducer(subjectState(busy.id), { type: 'subject-only', key: 'reach' })
-  assert.deepEqual(reducer(on, { type: 'focus', id: busy.id }).only, on.only)
-  assert.deepEqual(reducer(on, { type: 'focus', id: other }).only, NO_SUBJECT_ONLY)
-  assert.deepEqual(reducer(on, { type: 'preset', state: { view: 'groups' }, name: PRESETS[0].name }).only, NO_SUBJECT_ONLY)
-  assert.deepEqual(reducer(on, { type: 'view', view: 'compare' }).only, NO_SUBJECT_ONLY)
-  assert.deepEqual(reducer(on, { type: 'toggle-subject', id: busy.id }).only, NO_SUBJECT_ONLY)
-  assert.deepEqual(reducer(on, { type: 'subject-only-clear' }).only, NO_SUBJECT_ONLY)
+test('the app never writes a figure filter into the address', () => {
+  let s = reducer(initialState(model), { type: 'focus', id: busy.id })
+  s = reducer(s, { type: 'filter', filter: 'conflict' })
+  s = reducer(s, { type: 'has-entry', value: true })
+  assert.doesNotMatch(encode(s, total), /only=/)
 })
 
-test('the address carries the filters and reads them back', () => {
-  let s = subjectState(busy.id)
-  s = reducer(s, { type: 'subject-only', key: 'reach' })
-  s = reducer(s, { type: 'subject-only', key: 'assessed' })
-  s = reducer(s, { type: 'subject-only', key: 'assessed' })
-  s = reducer(s, { type: 'subject-only', key: 'conflicts' })
-  const address = encode(s, total)
-  assert.match(address, /(^|&)only=reach,unassessed,conflicts$/)
-  const back = decode('#' + address, model, initialState(model))
-  assert.deepEqual(back.only, s.only)
-  assert.equal(encode(back, total), address)
-})
-
-test('no filter writes no key, and other displays ignore it', () => {
-  assert.doesNotMatch(encode(subjectState(busy.id), total), /only=/)
-  const groups = decode(`#view=groups&s=all&rows=all&basis=prod&only=reach`, model, initialState(model))
-  assert.deepEqual(groups.only, NO_SUBJECT_ONLY)
-  const junk = decode(`#view=subject&s=all&of=${busy.id}&rows=all&basis=prod&only=bogus,native`, model, initialState(model))
-  assert.deepEqual(junk.only, only({ native: true }))
-})
-
-test('an address with a figure filter is not a preset', () => {
-  const unity = decode('#view=subject&s=all&of=unity&rows=all&basis=prod&only=native', model, initialState(model))
-  assert.equal(unity.presetName, '')
+test('a retired key is dropped from the address, every other byte kept', () => {
+  assert.equal(withoutLegacyKeys('#view=subject&s=usd,gltf&of=usd&rows=all&basis=prod&only=native&x=1'),
+    '#view=subject&s=usd,gltf&of=usd&rows=all&basis=prod&x=1', 'subject order and unknown fields survive')
+  assert.equal(withoutLegacyKeys('#only=reach&view=groups'), '#view=groups')
+  assert.equal(withoutLegacyKeys('?only=reach'), '')
+  assert.equal(withoutLegacyKeys('?utm_source=mail&only=reach'), '?utm_source=mail')
+  assert.equal(withoutLegacyKeys('#view=groups&s=all'), '#view=groups&s=all', 'an address without it is untouched')
+  assert.equal(withoutLegacyKeys(''), '')
+  assert.equal(withoutLegacyKeys('#onlyish=1&lonely=2'), '#onlyish=1&lonely=2', 'only the exact key is retired')
+  assert.equal(queryWithoutAddress('?only=native&utm_source=mail'), '?utm_source=mail', 'a ? link loses it too')
 })

@@ -7,7 +7,7 @@ Every mark below is one claim held in a database and tied to a source. This file
 - Capabilities: 178 in 15 groups
 - Sources: 3,323
 - Recorded conflicts: 62
-- Built from the territory database as it stood at 2026-11-03T08:33:13Z
+- Built from the territory database as it stood at 2026-11-03T22:58:40Z
 
 ## Legend
 

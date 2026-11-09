@@ -4,34 +4,25 @@
 // The comparison IS the selection. There is no separate comparison list, and
 // removing a chip here removes the subject from the selection.
 
-import type { Capability, Model, SubjectOnly } from '../design-model.ts'
-import { inLane, levelOf, scopeNote, subjectOnlyActive, subjectRows } from '../design-model.ts'
+import { useLayoutEffect, useRef, useState } from 'react'
+import type { Capability, Model } from '../design-model.ts'
+import { inLane, levelOf, scopeNote } from '../design-model.ts'
+import { collapsedCount } from './layout.ts'
+import type { Collapse } from './layout.ts'
 import { cellStyle, describe, read } from './marks.ts'
 import type { Action, AppState } from './state.ts'
 
 /**
- * Reach, built in, assessed and conflicts, each with one definition. Each figure
- * is also a filter on the rows listed below; a line under the value marks it on.
+ * Reach, built in, assessed and conflicts, each with one definition. They are
+ * figures to read, not controls: the click-to-filter behaviour was withdrawn in
+ * November 2026 because readers found it confusing.
  */
 const HERO_STATS = [
   { key: 'reach', label: 'rows reached', colour: 'var(--ac)' },
   { key: 'native', label: 'built in', colour: 'var(--ink)' },
-  { key: 'assessed', label: 'assessed', colour: 'var(--faint)' },
+  { key: 'assessed', label: 'assessed', colour: 'var(--soft)' },
   { key: 'conflicts', label: 'conflicts', colour: 'var(--bad)' },
-] as const satisfies ReadonlyArray<{ key: keyof SubjectOnly; label: string; colour: string }>
-
-/** What a click on each figure does next, for the tip. */
-function nextStep(key: keyof SubjectOnly, only: SubjectOnly): string {
-  if (key === 'assessed') {
-    return only.assessed === 'all' ? 'Show only the rows assessed for this subject'
-      : only.assessed === 'assessed' ? 'Show only the rows not assessed for this subject'
-      : 'Show every row again'
-  }
-  if (only[key]) return 'Show every row again'
-  return key === 'reach' ? 'Show only the rows this subject reaches'
-    : key === 'native' ? 'Show only the rows this subject has built in'
-    : 'Show only the rows with a recorded conflict for this subject'
-}
+] as const
 
 export function SubjectView({ model, state, dispatch, rows }: {
   model: Model
@@ -47,16 +38,12 @@ export function SubjectView({ model, state, dispatch, rows }: {
   const peers = state.on.filter((id) => id !== focus.id)
   const columns = [focus.id, ...peers.slice(0, 7)]
 
-  // The figure filters narrow the rows already shown; the figures themselves count every row.
-  const filtering = subjectOnlyActive(state.only)
-  const shown = filtering ? subjectRows(model, focus.id, state.only, rows) : rows
+  // The figures count every row, whatever the row filters show below them.
   const total = model.capabilities.length
-  const value = (key: keyof SubjectOnly): string =>
+  const value = (key: (typeof HERO_STATS)[number]['key']): string =>
     key === 'assessed' ? `${total - focus.never}/${total}` : String(focus[key])
-  const isOn = (key: keyof SubjectOnly): boolean =>
-    key === 'assessed' ? state.only.assessed !== 'all' : state.only[key]
 
-  const readouts = buildReadouts(model, state, shown)
+  const readouts = buildReadouts(model, state, rows)
 
   return (
     <div>
@@ -77,58 +64,25 @@ export function SubjectView({ model, state, dispatch, rows }: {
             </p>
           )}
         </div>
-        <div style={{ display: 'flex', gap: 22, flexWrap: 'wrap' }} role="group" aria-label="Filter the rows by this subject's figures">
-          {HERO_STATS.map((stat) => {
-            const on = isOn(stat.key)
-            const label = stat.key === 'assessed' && state.only.assessed === 'unassessed' ? 'not assessed' : stat.label
-            return (
-              <button key={stat.key} type="button" style={s.stat} aria-pressed={on}
-                title={nextStep(stat.key, state.only)} data-stat={stat.key}
-                onClick={() => dispatch({ type: 'subject-only', key: stat.key })}>
-                <span style={{ ...s.statNumber, color: stat.colour, borderBottomColor: on ? stat.colour : 'transparent' }}
-                  data-underline={on ? 'on' : 'off'}>
-                  {value(stat.key)}
-                </span>
-                <span style={s.statLabel}>{label}</span>
-              </button>
-            )
-          })}
+        <div style={{ display: 'flex', gap: 22, flexWrap: 'wrap' }} role="group" aria-label={`${focus.name} in figures`}>
+          {HERO_STATS.map((stat) => (
+            <div key={stat.key} style={s.stat} data-stat={stat.key}>
+              <span style={{ ...s.statNumber, color: stat.colour }}>{value(stat.key)}</span>
+              <span style={s.statLabel}>{stat.label}</span>
+            </div>
+          ))}
         </div>
       </section>
 
-      <div style={s.comparedWith}>
-        <span style={s.eyebrow}>Compared with</span>
-        {peers.length === 0 ? (
-          <span style={{ color: 'var(--faint)', fontStyle: 'italic', fontSize: 12 }}>
-            Nothing else is selected, so there is nothing to compare against.
-          </span>
-        ) : peers.map((id) => (
-          <button key={id} type="button" style={s.chip}
-            title="Remove from the comparison"
-            onClick={() => dispatch({ type: 'toggle-subject', id })}>
-            {model.bySubject.get(id)?.name ?? id} ×
-          </button>
-        ))}
-      </div>
+      <ComparedWith model={model} peers={peers} dispatch={dispatch} />
 
       <section style={s.panel}>
         <div style={s.panelHead}>
           <span style={s.eyebrow}>Coverage by group</span>
           <span style={s.hint}>breadth first · open a group for the rows</span>
-          {filtering && (
-            <span style={{ ...s.hint, marginLeft: 'auto', fontStyle: 'normal' }} data-shown-rows={shown.length}>
-              {shown.length} of {rows.length} rows ·{' '}
-              <button type="button" style={s.clear} onClick={() => dispatch({ type: 'subject-only-clear' })}>
-                show every row
-              </button>
-            </span>
-          )}
         </div>
-        {filtering && shown.length === 0 && (
-          <p style={{ ...s.hint, padding: '6px 0' }}>No row passes these filters for {focus.name}.</p>
-        )}
         {model.groups.map((group) => {
-          const groupRows = shown.filter((c) => c.g === group.id)
+          const groupRows = rows.filter((c) => c.g === group.id)
           const allRows = model.capabilities.filter((c) => c.g === group.id)
           if (groupRows.length === 0) return null
           const open = !!state.openGroups[group.id]
@@ -206,6 +160,92 @@ export function SubjectView({ model, state, dispatch, rows }: {
   )
 }
 
+/**
+ * The subjects beside the one in focus, as chips that remove themselves from the
+ * comparison. A long list shows its first two rows and a Show more / Hide more
+ * button; a list that fits on two rows has no button. Collapsing only hides
+ * chips: the selection is untouched.
+ *
+ * The rows are measured from an invisible copy of the whole list, laid out at the
+ * same width, so the visible list never has to render everything to decide.
+ */
+function ComparedWith({ model, peers, dispatch }: {
+  model: Model
+  peers: string[]
+  dispatch: React.Dispatch<Action>
+}) {
+  const [expanded, setExpanded] = useState(false)
+  // How many chips the collapsed list shows; null when every chip fits on two rows.
+  const [limit, setLimit] = useState<Collapse | null>(null)
+  const [toggleWidth, setToggleWidth] = useState(0)
+  const box = useRef<HTMLDivElement>(null)
+  const ruler = useRef<HTMLDivElement>(null)
+  const names = peers.map((id) => model.bySubject.get(id)?.name ?? id)
+
+  useLayoutEffect(() => {
+    const outer = box.current
+    const layer = ruler.current
+    if (!outer || !layer) return
+    const measure = () => {
+      const origin = layer.getBoundingClientRect()
+      const boxes = [...layer.children].map((el) => {
+        const r = el.getBoundingClientRect()
+        return { top: r.top - origin.top, bottom: r.bottom - origin.top, right: r.right - origin.left, width: r.width }
+      })
+      const toggle = boxes.pop()
+      if (!toggle) return
+      const gap = parseFloat(getComputedStyle(layer).columnGap) || 0
+      const next = collapsedCount(boxes, toggle.width, gap, origin.width)
+      setLimit((prev) => prev?.shown === next?.shown && prev?.squeeze === next?.squeeze ? prev : next)
+      setToggleWidth(Math.ceil(toggle.width + gap))
+    }
+    measure()
+    const watch = new ResizeObserver(measure)
+    watch.observe(outer)
+    document.fonts?.ready.then(measure).catch(() => {})
+    return () => watch.disconnect()
+  }, [names.join('\u0000')])
+
+  // The name may end in an ellipsis on a narrow screen; the cross that removes it always shows.
+  const label = (id: string, i: number) => <><span style={s.chipName}>{names[i] ?? id}</span> ×</>
+  const collapsed = limit !== null && !expanded
+  const shown = collapsed ? peers.slice(0, limit.shown) : peers
+  // A long name alone on the second row is narrowed so the button still fits beside it.
+  const squeezed = collapsed && limit.squeeze ? shown.length - 1 : -1
+
+  return (
+    <div ref={box} style={s.comparedWith} id="compared-with">
+      {peers.length > 0 && (
+        <div ref={ruler} style={s.ruler} aria-hidden="true" inert>
+          <span style={s.eyebrow}>Compared with</span>
+          {peers.map((id, i) => <span key={id} style={s.chip}>{label(id, i)}</span>)}
+          <span style={s.more}>Show more</span>
+        </div>
+      )}
+      <span style={s.eyebrow}>Compared with</span>
+      {peers.length === 0 ? (
+        <span style={{ color: 'var(--faint)', fontStyle: 'italic', fontSize: 12 }}>
+          Nothing else is selected, so there is nothing to compare against.
+        </span>
+      ) : shown.map((id, i) => (
+        <button key={id} type="button"
+          style={i === squeezed ? { ...s.chip, maxWidth: `calc(100% - ${toggleWidth}px)` } : s.chip}
+          title="Remove from the comparison"
+          onClick={() => dispatch({ type: 'toggle-subject', id })}>
+          {label(id, i)}
+        </button>
+      ))}
+      {limit !== null && (
+        <button type="button" style={s.more} aria-expanded={expanded} aria-controls="compared-with"
+          data-compared-toggle={expanded ? 'hide' : 'show'}
+          onClick={() => setExpanded(!expanded)}>
+          {expanded ? 'Hide more' : 'Show more'}
+        </button>
+      )}
+    </div>
+  )
+}
+
 /** A breadth bar: one segment per meaning, in the order the legend lists them. */
 function Breadth({ model, subjectId, capabilities }: { model: Model; subjectId: string; capabilities: Capability[] }) {
   const cov = model.cov[subjectId] ?? {}
@@ -279,16 +319,22 @@ function buildReadouts(model: Model, state: AppState, rows: Capability[]) {
 const s = {
   hero: { display: 'flex', gap: 20, maxWidth: '100%', flexWrap: 'wrap', alignItems: 'flex-start', border: '1px solid var(--rule)', background: 'var(--panel)', borderRadius: 'var(--r)', padding: '14px 16px', marginBottom: 12 } as const,
   eyebrow: { fontFamily: 'var(--fl)', fontWeight: 700, fontSize: 9.5, letterSpacing: '.15em', textTransform: 'uppercase', color: 'var(--faint)' } as const,
-  name: { margin: '2px 0 4px', fontFamily: 'var(--fl)', fontWeight: 700, fontSize: 28, letterSpacing: '-.01em' } as const,
+  // The subject's name is a heading too: its own line spacing, not the body's 1.5.
+  name: { margin: '2px 0 4px', fontFamily: 'var(--fl)', fontWeight: 700, fontSize: 28, lineHeight: 1.15, letterSpacing: '-.01em' } as const,
   facts: { fontFamily: 'var(--fm)', fontSize: 11.5, color: 'var(--soft)' } as const,
   summary: { margin: '8px 0 0', maxWidth: '70ch', color: 'var(--soft)' } as const,
   scope: { margin: '8px 0 0', maxWidth: '70ch', paddingLeft: 10, borderLeft: '2px solid var(--rule)', fontFamily: 'var(--fm)', fontSize: 11.5, lineHeight: 1.5, color: 'var(--faint)' } as const,
-  stat: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 1, minWidth: 72, padding: 0, background: 'transparent', border: 0, cursor: 'pointer', textAlign: 'left' } as const,
-  statNumber: { fontFamily: 'var(--fl)', fontWeight: 700, fontSize: 26, lineHeight: 1, paddingBottom: 2, borderBottom: '2px solid transparent' } as const,
-  clear: { fontFamily: 'var(--fl)', fontSize: 11.5, background: 'transparent', border: 0, color: 'var(--ac)', cursor: 'pointer', textDecoration: 'underline', padding: 0 } as const,
+  // Plain figures: no pointer, no underline, nothing that reads as a control.
+  stat: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 1, minWidth: 72, textAlign: 'left' } as const,
+  statNumber: { fontFamily: 'var(--fl)', fontWeight: 700, fontSize: 26, lineHeight: 1, paddingBottom: 4 } as const,
   statLabel: { fontFamily: 'var(--fm)', fontSize: 9.5, letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--faint)' } as const,
-  comparedWith: { display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 12 } as const,
-  chip: { fontFamily: 'var(--fl)', fontWeight: 600, fontSize: 11.5, background: 'var(--acF)', border: '1px solid var(--ac)', borderRadius: 'var(--r)', padding: '3px 8px', cursor: 'pointer', color: 'var(--ac)' } as const,
+  comparedWith: { position: 'relative', display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 12 } as const,
+  // The invisible copy the rows are measured from: same width and flow, no height, never seen or reached.
+  ruler: { position: 'absolute', left: 0, right: 0, top: 0, height: 0, overflow: 'hidden', visibility: 'hidden', pointerEvents: 'none', display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' } as const,
+  // One line per chip; a name longer than the column ends in an ellipsis rather than wrapping inside the chip.
+  chip: { display: 'inline-flex', alignItems: 'baseline', maxWidth: '100%', whiteSpace: 'pre', boxSizing: 'border-box', fontFamily: 'var(--fl)', fontWeight: 600, fontSize: 11.5, lineHeight: 1.5, background: 'var(--acF)', border: '1px solid var(--ac)', borderRadius: 'var(--r)', padding: '3px 8px', cursor: 'pointer', color: 'var(--ac)' } as const,
+  chipName: { minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } as const,
+  more: { display: 'inline-block', whiteSpace: 'nowrap', fontFamily: 'var(--fl)', fontSize: 11.5, lineHeight: 1.5, background: 'transparent', border: 0, borderRadius: 'var(--r)', color: 'var(--ac)', cursor: 'pointer', textDecoration: 'underline', padding: '3px 4px' } as const,
   panel: { border: '1px solid var(--rule)', background: 'var(--panel)', borderRadius: 'var(--r)', padding: '10px 14px 14px', marginBottom: 12 } as const,
   panelHead: { display: 'flex', alignItems: 'baseline', gap: 10, borderBottom: '1px solid var(--rule)', paddingBottom: 6, marginBottom: 8 } as const,
   hint: { margin: 0, fontSize: 11.5, color: 'var(--faint)', fontStyle: 'italic' } as const,

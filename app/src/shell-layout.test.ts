@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { PHONE_WIDTH, frame, pageLocked, panelMode } from './app/layout.ts'
-import { PRESETS, PRESETS_BOX, PRESETS_SHOWN, listedPresets, presetBehindMore } from './app/state.ts'
+import { PRESETS, PRESETS_BOX, PRESETS_SHOWN, listedPresets, nextPanels, presetBehindMore } from './app/state.ts'
+import type { PanelId } from './app/state.ts'
 
 test('wide and docked layouts hold the page still; the floating (phone) layout scrolls as one', () => {
   assert.equal(pageLocked(false), true, 'docked, at any width')
@@ -55,4 +56,18 @@ test('presets: three, then More opens a box six cards tall that holds every pres
   assert.equal(presetBehindMore(PRESETS[3].name), true, 'the fourth preset opens the box')
   assert.equal(presetBehindMore(PRESETS[PRESETS.length - 1].name), true)
   assert.equal(presetBehindMore(''), false, 'no preset selected')
+})
+
+test('the panel column closes and reopens with the sections that were on', () => {
+  const on: PanelId[] = ['presets', 'rows', 'lane']
+  // Open: a rail button turns its own section on or off, the others stay.
+  assert.deepEqual(nextPanels(on, 'rows', 'docked', false), ['presets', 'lane'])
+  assert.deepEqual(nextPanels(on, 'subjects', 'floating', false), ['presets', 'subjects', 'rows', 'lane'])
+  // Closed: any rail button reopens with everything that was on, and turns nothing off.
+  assert.deepEqual(nextPanels(on, 'rows', 'docked', true), on, 'pressing a kept section only reopens')
+  assert.deepEqual(nextPanels(on, 'counting', 'docked', true), ['presets', 'rows', 'counting', 'lane'], 'a new section joins the kept ones')
+  assert.deepEqual(nextPanels(on, 'presets', 'floating', true), on)
+  // The phone sheet is unchanged: one section at a time, whatever a wider screen closed.
+  assert.deepEqual(nextPanels(on, 'counting', 'sheet', true), ['counting'])
+  assert.deepEqual(nextPanels(['counting'], 'counting', 'sheet', false), [])
 })

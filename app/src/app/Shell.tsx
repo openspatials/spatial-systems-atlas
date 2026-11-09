@@ -12,8 +12,8 @@ import { LEGEND, THEMES, cellStyle, read } from './marks.ts'
 import { exportOptions } from './exports.ts'
 import {
   DOCK_MIN_DISPLAY, PANEL_IDS, PANEL_WIDTH, PRESETS_BOX, RAIL_WIDTH, addressOf, clampPanelWidth, decode, defaultPanelsDocked, encode, initialState, preferredTheme,
-  listedPresets, presetBehindMore, presetQuestion, presetSubjects, queryOf, queryWithoutAddress, reducer, rememberLegendOpen, storedLegendOpen, rememberPanelWidth, rememberPanels, rememberPanelsDocked, rememberTheme, storedPanelWidth,
-  storedPanels, storedPanelsDocked, storedTheme,
+  listedPresets, nextPanels, presetBehindMore, presetQuestion, presetSubjects, queryOf, queryWithoutAddress, reducer, rememberLegendOpen, storedLegendOpen, rememberPanelWidth, rememberPanels, rememberPanelsDocked, rememberTheme, storedPanelWidth,
+  storedPanels, storedPanelsDocked, storedTheme, withoutLegacyKeys,
 } from './state.ts'
 import type { AppState, PanelId, Preset, ViewId } from './state.ts'
 import { historyStep, restoreFromAddress } from './history.ts'
@@ -33,6 +33,7 @@ import { MapView } from './MapView.tsx'
 import { LineupView } from './LineupView.tsx'
 import { HoverTip } from './HoverTip.tsx'
 import { WIDE_WIDTH, frame, pageLocked, panelMode } from './layout.ts'
+import { CustomPreset } from './CustomPreset.tsx'
 
 const VIEWS: Array<{ id: ViewId; label: string }> = [
   { id: 'subject', label: 'Subject' },
@@ -94,16 +95,23 @@ export function Shell({ model }: { model: Model }) {
   // so it opens closed and its changes are not kept as the reader's docked choice.
   // A sheet shows one section at a time.
   const [panels, setPanels] = useState<PanelId[]>(() => mode !== 'docked' ? [] : (storedPanels() ?? PANEL_IDS))
+  // The column's close button hides the column and keeps its sections, so
+  // reopening brings back exactly what was on. A sheet ignores it; it has Done.
+  const [panelsClosed, setPanelsClosed] = useState(false)
+  const closedRef = useRef(panelsClosed)
+  closedRef.current = panelsClosed
   const modeRef = useRef(mode)
   modeRef.current = mode
   const togglePanel = useCallback((id: PanelId) => {
     setPanels((prev) => {
-      if (modeRef.current === 'sheet') return prev.includes(id) ? [] : [id]
-      const next = PANEL_IDS.filter((p) => (p === id ? !prev.includes(p) : prev.includes(p)))
+      const next = nextPanels(prev, id, modeRef.current, closedRef.current)
       if (modeRef.current === 'docked') rememberPanels(next)
       return next
     })
+    setPanelsClosed(false)
   }, [])
+  const closePanels = useCallback(() => setPanelsClosed(true), [])
+  const reopenPanels = useCallback(() => setPanelsClosed(false), [])
   // Closing the sheet returns to the display at its top.
   const mainRef = useRef<HTMLElement>(null)
   const closeSheet = useCallback(() => {
@@ -160,6 +168,13 @@ export function Shell({ model }: { model: Model }) {
     }
   }, [state, total])
 
+  // An old link may carry a retired key (the withdrawn figure filters). The
+  // state already ignores it; this drops it from the address too, in place,
+  // with no history entry, leaving every other byte as it was.
+  useEffect(() => {
+    dropLegacyKeys()
+  }, [])
+
   // Back and forward fire popstate, and also hashchange when the fragment
   // differs; a typed fragment fires hashchange alone. Whichever comes first
   // restores; the other then matches selfWritten and is ignored.
@@ -171,6 +186,7 @@ export function Shell({ model }: { model: Model }) {
       const restored = restoreFromAddress(window.location.hash, window.location.search, model, state)
       encodedState.current = encode(restored, total)
       dispatch({ type: 'replace', state: restored })
+      if (dropLegacyKeys()) selfWritten.current = window.location.hash
     }
     window.addEventListener('popstate', onAddress)
     window.addEventListener('hashchange', onAddress)
@@ -216,11 +232,11 @@ export function Shell({ model }: { model: Model }) {
       if (e.key !== 'Escape') return
       if (state.detail) dispatch({ type: 'detail', detail: null })
       else if (sheet && panels.length) closeSheet()
-      else if (floating && panels.length) setPanels([])
+      else if (floating && panels.length) closePanels()
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [state.detail, floating, sheet, panels.length, closeSheet])
+  }, [state.detail, floating, sheet, panels.length, closeSheet, closePanels])
 
   const query = queryOf(state)
   const rows = useMemo(() => matchingRows(model, query), [model, query])
@@ -266,7 +282,7 @@ export function Shell({ model }: { model: Model }) {
 
   // While a preset is selected the heading is its question. The moment the
   // reader changes the selection the preset is gone and the heading is generic.
-  const question = (candidate && CANDIDATES.find((c) => c.id === candidate)?.question) || presetQuestion(state.presetName) || {
+  const question = (candidate && CANDIDATES.find((c) => c.id === candidate)?.question) || state.customPreset?.title || presetQuestion(state.presetName) || {
     subject: !state.focus
       ? 'Pick a subject to start'
       : 'What does the subject in focus cover — and who covers what it does not?',
@@ -332,6 +348,7 @@ export function Shell({ model }: { model: Model }) {
           model={model} state={state} dispatch={dispatch}
           panels={panels} togglePanel={togglePanel} floating={floating}
           sheet={sheet} closeSheet={closeSheet}
+          closed={panelsClosed && !sheet} closePanels={closePanels} reopenPanels={reopenPanels}
           toggleDock={narrow && !sheet ? toggleDock : null}
           width={panelWidth} setWidth={setPanelWidth}
           morePresets={morePresets} setMorePresets={setMorePresets}
@@ -340,7 +357,10 @@ export function Shell({ model }: { model: Model }) {
 
         <main ref={mainRef} style={F.main}>
           <div style={S.questionBar}>
-            <h1 style={S.question}>{question}</h1>
+            <div style={{ flex: 1, minWidth: 'min(260px, 100%)', overflowWrap: 'anywhere' }}>
+              <h1 style={S.question}>{question}</h1>
+              {!candidate && state.customPreset?.details && <p style={{ margin: '4px 0 0', fontSize: 13, color: 'var(--soft)' }}>{state.customPreset.details}</p>}
+            </div>
             <div style={S.segmented} role="group" aria-label="Display">
               {VIEWS.map((v, i) => (
                 <button key={v.id} type="button" aria-pressed={!candidate && state.view === v.id}
@@ -482,6 +502,15 @@ export function Shell({ model }: { model: Model }) {
   )
 }
 
+/** Removes retired keys from the address in place. True when it changed anything. */
+function dropLegacyKeys(): boolean {
+  const { pathname, search, hash } = window.location
+  const clean = withoutLegacyKeys(search) + withoutLegacyKeys(hash)
+  if (clean === search + hash) return false
+  window.history.replaceState(window.history.state, '', pathname + clean)
+  return true
+}
+
 /** Shows the theme in use: a sun in light, a moon in dark. */
 function ThemeIcon({ theme }: { theme: 'light' | 'dark' }) {
   return (
@@ -521,14 +550,16 @@ const RAIL: Array<{ id: PanelId; label: string; section: string }> = [
 /**
  * The tool rail and the column of sections it shows. Each rail button shows or
  * hides one section; several may be on at once and they stack in rail order.
- * With none on, the column is gone and the display takes the width. Below
- * 1100px the pin button at the column's top right docks it beside the display
- * or floats it over the display. On a phone the section is a sheet over the
- * whole display, closed by its Done button or by its rail button again.
+ * With none on, the column is gone and the display takes the width. The close
+ * button at the column's top right hides the column but keeps its sections; the
+ * rail's Open button, or any section's rail button, brings it back with them.
+ * Below 1100px the pin beside the close button docks the column beside the
+ * display or floats it over the display. On a phone the section is a sheet over
+ * the whole display, closed by its Done button or by its rail button again.
  */
 function Sidebar({
-  style, model, state, dispatch, panels, togglePanel, floating, sheet, closeSheet, toggleDock, width, setWidth,
-  morePresets, setMorePresets, applyPreset, rowsShown,
+  style, model, state, dispatch, panels, togglePanel, floating, sheet, closeSheet, closed, closePanels, reopenPanels,
+  toggleDock, width, setWidth, morePresets, setMorePresets, applyPreset, rowsShown,
 }: {
   style: React.CSSProperties
   model: Model
@@ -539,6 +570,10 @@ function Sidebar({
   floating: boolean
   sheet: boolean
   closeSheet: () => void
+  /** The column is closed by its close button; its sections are kept for reopening. */
+  closed: boolean
+  closePanels: () => void
+  reopenPanels: () => void
   toggleDock: (() => void) | null
   width: number
   setWidth: (w: number) => void
@@ -604,6 +639,7 @@ function Sidebar({
         <button type="button" style={S.disclosure} onClick={() => setMorePresets(!morePresets)}>
           {morePresets ? 'Fewer' : 'More'}
         </button>
+        <CustomPreset model={model} state={state} dispatch={dispatch} />
       </>
     ),
     subjects: (
@@ -716,12 +752,21 @@ function Sidebar({
   return (
     <div style={style}>
       <nav style={S.rail} aria-label="Panels">
+        {closed && panels.length > 0 && (
+          <button type="button" className="rail-button" style={S.railButton(false)}
+            aria-label="Open the panel column" title="Open the panel column, with the sections that were on"
+            data-panels-reopen onClick={reopenPanels}>
+            <ColumnIcon />
+            <span style={S.railLabel}>Open</span>
+          </button>
+        )}
         {RAIL.map((r) => {
-          const on = panels.includes(r.id)
+          const kept = panels.includes(r.id)
+          const on = kept && !closed
           return (
-            <button key={r.id} type="button" className="rail-button" style={S.railButton(on)}
+            <button key={r.id} type="button" className="rail-button" style={S.railButton(on, kept && closed)}
               aria-pressed={on} aria-controls={on ? `panel-${r.id}` : undefined}
-              title={`${on ? 'Hide' : 'Show'} ${r.section}`}
+              title={closed ? `Open the panel column with ${r.section}` : `${on ? 'Hide' : 'Show'} ${r.section}`}
               onClick={() => togglePanel(r.id)}>
               <RailIcon id={r.id} />
               <span style={S.railLabel}>{r.label}</span>
@@ -731,23 +776,31 @@ function Sidebar({
         })}
       </nav>
 
-      {panels.length > 0 && (
-        <div style={sheet ? S.sheet : S.panel(shown, floating)} aria-label="Controls" role="region">
+      {panels.length > 0 && !closed && (
+        <div style={sheet ? S.sheet : S.panel(shown, floating)} aria-label="Controls" role="region" id="panel-column">
           {sheet && (
             <div style={S.sheetBar}>
               <button type="button" style={S.primary} onClick={closeSheet}>Done</button>
             </div>
           )}
-          {toggleDock && (
-            <button type="button" className="panel-pin" style={S.pin(!floating)} onClick={toggleDock}
-              aria-pressed={!floating} aria-label="Pin the panels beside the display"
-              title={floating ? 'Floating over the display · click to pin beside it' : 'Pinned beside the display · click to float over it'}>
-              <PinIcon pinned={!floating} />
-            </button>
+          {!sheet && (
+            <div style={S.panelControls}>
+              {toggleDock && (
+                <button type="button" className="panel-control panel-pin" style={S.panelControl(!floating)} onClick={toggleDock}
+                  aria-pressed={!floating} aria-label="Pin the panels beside the display"
+                  title={floating ? 'Floating over the display · click to pin beside it' : 'Pinned beside the display · click to float over it'}>
+                  <PinIcon pinned={!floating} />
+                </button>
+              )}
+              <button type="button" className="panel-control panel-close" style={S.panelControl(false)} onClick={closePanels}
+                aria-label="Close the panel column" title="Close the panel column · the rail's Open button brings it back">
+                <CloseIcon />
+              </button>
+            </div>
           )}
           <div style={S.panelBody}>
-            {RAIL.filter((r) => panels.includes(r.id)).map((r) => (
-              <Section key={r.id} id={`panel-${r.id}`}
+            {RAIL.filter((r) => panels.includes(r.id)).map((r, i) => (
+              <Section key={r.id} id={`panel-${r.id}`} reserve={i === 0 && !sheet ? (toggleDock ? 56 : 30) : 0}
                 label={r.id === 'subjects' ? `${r.section} — ${state.on.length}/${model.subjects.length}` : r.section}>
                 {sections[r.id]}
               </Section>
@@ -813,11 +866,32 @@ function ResizeHandle({ width, max, setWidth }: { width: number; max: number; se
 /** A pin: upright and filled when pinned, tilted and hollow when the column floats. */
 function PinIcon({ pinned }: { pinned: boolean }) {
   return (
-    <svg width="12" height="12" viewBox="0 0 24 24" fill={pinned ? 'currentColor' : 'none'} stroke="currentColor"
+    <svg width="11" height="11" viewBox="0 0 24 24" fill={pinned ? 'currentColor' : 'none'} stroke="currentColor"
       strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"
       style={{ transform: pinned ? 'none' : 'rotate(45deg)' }}>
       <path d="M9 3h6l-1 6 4 4H6l4-4z" />
       <path d="M12 13v8" fill="none" />
+    </svg>
+  )
+}
+
+/** The close cross beside the pin. */
+function CloseIcon() {
+  return (
+    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="2.6" strokeLinecap="round" aria-hidden="true" focusable="false">
+      <path d="M5 5l14 14M19 5L5 19" />
+    </svg>
+  )
+}
+
+/** The rail's Open button: a column with an arrow out of it. */
+function ColumnIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+      <rect x="3.5" y="4" width="17" height="16" rx="1.5" />
+      <path d="M9 4v16M13 9.5l2.5 2.5L13 14.5" />
     </svg>
   )
 }
@@ -849,9 +923,10 @@ function RailIcon({ id }: { id: PanelId }) {
   )
 }
 
-const Section = ({ id, label, children }: { id?: string; label: string; children: React.ReactNode }) => (
+/** One rail section. `reserve` keeps the first label clear of the pin and close buttons laid over it. */
+const Section = ({ id, label, reserve = 0, children }: { id?: string; label: string; reserve?: number; children: React.ReactNode }) => (
   <section id={id} aria-label={label} style={{ padding: '10px 12px', borderBottom: '1px solid var(--rule)' }}>
-    <span style={S.tinyLabel}>{label}</span>
+    <span style={reserve ? { ...S.tinyLabel, display: 'inline-block', maxWidth: '100%', boxSizing: 'border-box', paddingRight: reserve } : S.tinyLabel}>{label}</span>
     <div style={{ marginTop: 6 }}>{children}</div>
   </section>
 )
@@ -874,7 +949,9 @@ const S = {
   segmented: { display: 'inline-flex', flexWrap: 'wrap', maxWidth: '100%', alignItems: 'stretch', border: '1px solid var(--ruleS)', borderRadius: 6, overflow: 'hidden', background: 'var(--panel)' } as const,
   segment: (on: boolean, divider: boolean) => ({ fontFamily: 'var(--fl)', fontWeight: 600, fontSize: 12, lineHeight: '18px', background: on ? 'var(--ink)' : 'transparent', color: on ? 'var(--bg)' : 'var(--ink)', borderStyle: 'solid', borderColor: 'var(--ruleS)', borderWidth: divider ? '0 0 0 1px' : 0, borderRadius: 0, margin: 0, padding: '6px clamp(7px, 2vw, 14px)', flex: '1 0 auto', cursor: 'pointer' } as const),
   questionBar: { display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap', padding: '14px 16px 8px' } as const,
-  question: { margin: 0, fontFamily: 'var(--fl)', fontWeight: 700, fontSize: 21, letterSpacing: '-.01em', flex: 1, minWidth: 260 } as const,
+  // A heading's own line spacing, not the body's 1.5. Its column keeps 260px, so the
+  // display switcher wraps below a long question rather than sitting over it.
+  question: { margin: 0, fontFamily: 'var(--fl)', fontWeight: 700, fontSize: 21, lineHeight: 1.15, letterSpacing: '-.01em' } as const,
   // Fixed to the foot of the window, above the page and the side rail, below tips, the row panel and dialogs.
   footer: { position: 'fixed', left: 0, right: 0, bottom: 0, zIndex: 30, padding: '4px 16px', background: 'var(--panel)', borderTop: '1px solid var(--rule)', fontFamily: 'var(--fm)', fontSize: 10, lineHeight: 1.5, letterSpacing: '.04em', color: 'var(--faint)' } as const,
   disclosure: { fontFamily: 'var(--fl)', fontSize: 11.5, background: 'transparent', border: 0, color: 'var(--ac)', cursor: 'pointer', textDecoration: 'underline', padding: 0 } as const,
@@ -890,7 +967,8 @@ const S = {
   srOnly: { position: 'absolute', width: 1, height: 1, margin: -1, padding: 0, overflow: 'hidden', clip: 'rect(0 0 0 0)', whiteSpace: 'nowrap', border: 0 } as const,
   legendHead: { fontFamily: 'var(--fl)', fontWeight: 700, fontSize: 9.5, letterSpacing: '.15em', textTransform: 'uppercase', color: 'var(--faint)' } as const,
   rail: { flex: '0 0 64px', width: 64, height: '100%', borderRight: '1px solid var(--ruleS)', background: 'var(--panel)', display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'center', padding: '8px 0', overflowY: 'auto', overflowX: 'hidden' } as const,
-  railButton: (on: boolean) => ({ position: 'relative', width: 58, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, padding: '8px 2px 6px', margin: 0, background: on ? 'var(--acF)' : 'transparent', color: on ? 'var(--ac)' : 'var(--soft)', borderStyle: 'solid', borderWidth: 1, borderColor: on ? 'var(--ac)' : 'transparent', borderRadius: 6, cursor: 'pointer' } as const),
+  // `kept`: the section is on but the column is closed, so it shows again on reopening (a dashed outline).
+  railButton: (on: boolean, kept = false) => ({ position: 'relative', width: 58, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, padding: '8px 2px 6px', margin: 0, background: on ? 'var(--acF)' : 'transparent', color: on ? 'var(--ac)' : 'var(--soft)', borderStyle: kept ? 'dashed' : 'solid', borderWidth: 1, borderColor: on || kept ? 'var(--ac)' : 'transparent', borderRadius: 6, cursor: 'pointer' } as const),
   railLabel: { fontFamily: 'var(--fl)', fontWeight: 600, fontSize: 9, letterSpacing: '.03em', textTransform: 'uppercase', lineHeight: 1.1, maxWidth: '100%' } as const,
   railBadge: { position: 'absolute', top: 3, right: 3, minWidth: 15, padding: '0 3px', fontFamily: 'var(--fm)', fontSize: 8.5, lineHeight: '13px', textAlign: 'center', color: 'var(--soft)', background: 'var(--bg)', border: '1px solid var(--rule)', borderRadius: 7 } as const,
   panel: (width: number, floating: boolean) => ({ position: floating ? 'absolute' : 'relative', left: floating ? 64 : undefined, top: 0, flex: `0 0 ${width}px`, width, height: '100%', background: floating ? 'var(--panel)' : 'var(--bg)', borderRight: '1px solid var(--ruleS)', boxShadow: floating ? '6px 0 18px rgba(0,0,0,.18)' : 'none', display: 'flex', flexDirection: 'column', minHeight: 0 } as const),
@@ -898,8 +976,10 @@ const S = {
   sheet: { position: 'absolute', left: 64, top: 0, width: 'calc(100vw - 64px)', height: '100%', background: 'var(--panel)', display: 'flex', flexDirection: 'column', minHeight: 0 } as const,
   sheetBar: { flex: '0 0 auto', display: 'flex', justifyContent: 'flex-end', padding: '8px 12px', borderBottom: '1px solid var(--ruleS)' } as const,
   panelBody: { overflowY: 'auto', minHeight: 0, flex: 1 } as const,
-  // Overlaid on the first section's header line (the section's 10px top padding, 12px right padding), so it takes no room of its own.
-  pin: (on: boolean) => ({ position: 'absolute', top: 10, right: 14, zIndex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 21, height: 21, boxSizing: 'border-box', padding: 0, margin: 0, background: on ? 'var(--acF)' : 'transparent', color: on ? 'var(--ac)' : 'var(--soft)', border: `1px solid ${on ? 'var(--ac)' : 'var(--rule)'}`, borderRadius: 6, cursor: 'pointer' } as const),
+  // The pin and the close button, overlaid on the first section's header line, so they take no room of their own;
+  // that section's label keeps clear of them. Each is a 24px target around a small glyph.
+  panelControls: { position: 'absolute', top: 9, right: 8, zIndex: 1, display: 'flex', gap: 2 } as const,
+  panelControl: (on: boolean) => ({ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 24, height: 24, boxSizing: 'border-box', padding: 0, margin: 0, background: 'transparent', color: on ? 'var(--ac)' : 'var(--soft)', border: '1px solid transparent', borderRadius: 6, cursor: 'pointer' } as const),
   resize: { position: 'absolute', top: 0, right: -5, width: 9, height: '100%', cursor: 'col-resize', zIndex: 2, touchAction: 'none' } as const,
   // The opened preset list; its height is set from the first six cards. The section header stays above it.
   presetBox: { position: 'relative', overflowY: 'auto', overscrollBehavior: 'contain', marginBottom: 4 } as const,
