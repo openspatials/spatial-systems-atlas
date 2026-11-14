@@ -15,6 +15,8 @@ type Update = {
 }
 
 const UPDATES: Update[] = [
+  { date: '14 November 2026', text: 'Two new platform subjects, Spawn and Project 0, where games and worlds are built by instructing an AI. Platforms are now grouped into social worlds, game platforms, and AI-built game and world platforms, in the subject list, the family chips and on each platform\'s own page.',
+    subjects: 84, capabilities: 178, claims: 14619, sources: 3352 },
   { date: '3 November 2026', text: 'Sixteen new subjects: the X3D web players X_ITE and X3DOM, H-Anim, Hyperfy, and twelve web and data standards (IMDF, DDS, W3C Geolocation, WebXR Anchors, WebXR Hand Input, WebGL 2.0, MPEG-V, JSON Pointer, HTTP, WebSocket, the URL Standard and OpenAPI). Two new rows, renderer swap and fallback, and portal preview. Three new lanes: same place, same thing; training results that travel; and shared presence. A new starting view shows the platforms OpenSpatials supports.',
     subjects: 82, capabilities: 178, claims: 14386, sources: 3323 },
   { date: '3 November 2026', text: "A subject's four figures now filter its rows when clicked, and links and starting views can pick the rows to show. The counts sit under one button, a lane shows only its must rows with a number that matches, the key folds away, a footer gives how to cite, the licence and a link to OpenSpatials, and search engines can now find the Atlas.",

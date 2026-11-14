@@ -15,6 +15,9 @@ TMP_FILES = (TMP, TMP + "-journal", TMP + "-wal", TMP + "-shm")
 # decision of 2026-11-03 three more (U6 the same thing at the same real place, U7 a training
 # result leaves the simulator, U10 shared presence). Each is a certification lane.
 USE_CASES = ("U1", "U2", "U3", "U4", "U6", "U7", "U10")
+# The kinds of platform, in the order the pages group them. Only a subject whose kind is
+# platform carries one.
+PLATFORM_SUBCATEGORIES = ("social-world", "game-platform", "ai-built-world")
 
 def clear_temp():
     for p in TMP_FILES:
@@ -66,9 +69,21 @@ def build(con):
                     (r["id"], r["group_id"], r["name"], r["definition"], r["binding"],
                      interop, reason, ",".join(uses), int(r["sort"])))
     for r in rows("subjects.csv"):
-        con.execute("INSERT INTO subject (id,name,kind,org,licence,url,status,version,status_date) VALUES (?,?,?,?,?,?,?,?,?)",
+        # Every platform names its kind of platform, so the pages can group platforms, and no
+        # other subject names one. A missing or wrong word stops the load rather than loading a
+        # platform the pages would show in no group.
+        sub = (r.get("subcategory") or "").strip()
+        if r["kind"] == "platform" and sub not in PLATFORM_SUBCATEGORIES:
+            sys.exit(f"subjects.csv: platform {r['id']} has subcategory '{sub}'; "
+                     f"use one of {', '.join(PLATFORM_SUBCATEGORIES)}")
+        if r["kind"] != "platform" and sub:
+            sys.exit(f"subjects.csv: {r['id']} is a {r['kind']}, not a platform, "
+                     f"yet names subcategory '{sub}'")
+        con.execute("INSERT INTO subject (id,name,kind,org,licence,url,status,version,status_date,subcategory) "
+                    "VALUES (?,?,?,?,?,?,?,?,?,?)",
                     (r["id"], r["name"], r["kind"], r["org"] or None, r["licence"] or None,
-                     r["url"] or None, r["status"] or None, r["version"] or None, r["status_date"] or None))
+                     r["url"] or None, r["status"] or None, r["version"] or None, r["status_date"] or None,
+                     sub or None))
 
     # Keep canonical metadata for shared URLs stable when new claims occur earlier in the
     # coverage order. These records come from existing claims; each claim retains its own

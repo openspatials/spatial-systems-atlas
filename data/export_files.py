@@ -41,7 +41,7 @@ LEGEND = [
     ("\u2013", "out of scope"),
     ("(blank)", "no claim recorded for that pair"),
 ]
-COLUMNS = ["subject_id", "subject", "kind", "status", "group", "capability_id",
+COLUMNS = ["subject_id", "subject", "kind", "subcategory", "status", "group", "capability_id",
            "capability", "binding", "interop", "interop_reason", "level", "confidence",
            "note", "sources"]
 
@@ -74,7 +74,7 @@ def read(con):
         "SELECT id, group_id, name, definition, binding, interop, interop_reason, sort "
         "FROM capability ORDER BY sort, id")]
     subs = [dict(r) for r in con.execute(
-        "SELECT id, name, kind, status FROM subject ORDER BY kind, name, id")]
+        "SELECT id, name, kind, subcategory, status FROM subject ORDER BY kind, name, id")]
 
     claims = {}
     for r in con.execute(
@@ -113,7 +113,7 @@ def build_csv(caps, subs, claims):
             claim = claims.get((s["id"], c["id"]))
             if claim is None:
                 continue
-            w.writerow([s["id"], s["name"], s["kind"], s["status"] or "",
+            w.writerow([s["id"], s["name"], s["kind"], s["subcategory"] or "", s["status"] or "",
                         c["group_name"], c["id"], c["name"], bind_word(c["binding"]),
                         c["interop"], c["interop_reason"],
                         claim["level"], claim["confidence"], claim["note"],

@@ -40,7 +40,12 @@ CREATE TABLE IF NOT EXISTS subject (
   status      TEXT,                -- ratified | candidate | draft | proprietary | shipping
   version     TEXT,
   status_date TEXT,
-  summary     TEXT                 -- synthesized, cited
+  summary     TEXT,                -- synthesized, cited
+  -- A platform's kind of platform, so the pages can group platforms: social-world (people meet
+  -- and build in shared worlds), game-platform (creators publish games that players play) or
+  -- ai-built-world (games and worlds are made by instructing an AI). Empty for every other kind.
+  subcategory TEXT CHECK (subcategory IS NULL OR
+                          (kind = 'platform' AND subcategory IN ('social-world','game-platform','ai-built-world')))
 );
 
 CREATE TABLE IF NOT EXISTS coverage (

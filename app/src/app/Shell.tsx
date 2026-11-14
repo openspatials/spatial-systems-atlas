@@ -7,7 +7,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react'
 import type { Basis, LaneId, Model, RowFilter } from '../design-model.ts'
-import { coverage, laneIds, laneLabel, countedIds, matchCount, matchingRows, measuredCaps, pickedRows } from '../design-model.ts'
+import { coverage, laneIds, laneLabel, countedIds, matchCount, matchingRows, measuredCaps, pickedRows, setState, toggleSet } from '../design-model.ts'
 import { LEGEND, THEMES, cellStyle, read } from './marks.ts'
 import { exportOptions } from './exports.ts'
 import {
@@ -653,39 +653,51 @@ function Sidebar({
             onClick={() => dispatch({ type: 'set-on', on: [] })}>None</button>
         </div>
         {model.displayGroups.map((g) => {
-          const members = g.subjects
+          const shown = (ids: string[]) => ids
             .map((id) => model.bySubject.get(id))
-            .filter((s) => s && (!q || s.name.toLowerCase().includes(q)))
-          if (members.length === 0) return null
-          const onCount = g.subjects.filter((id) => state.on.includes(id)).length
-          const allOn = onCount === g.subjects.length
+            .filter((s): s is NonNullable<typeof s> => Boolean(s) && (!q || s!.name.toLowerCase().includes(q)))
+          if (shown(g.subjects).length === 0) return null
+          // A heading switches its whole set on or off; the platform group also has one
+          // heading per kind of platform, each over its own chips.
+          const head = (ids: string[], name: string, sub: boolean) => {
+            const { n, all } = setState(state.on, ids)
+            return (
+              <button type="button" style={sub ? S.subgroupHead : S.groupHead}
+                className={sub ? 'subject-subgroup-head' : 'subject-group-head'}
+                onClick={() => dispatch({ type: 'set-on', on: toggleSet(state.on, ids) })}>
+                <span>{all ? '■' : n ? '▣' : '□'}</span>
+                <span style={{ flex: 1, textAlign: 'left' }}>{name}</span>
+                <span style={{ color: 'var(--faint)' }}>{n}/{ids.length}</span>
+              </button>
+            )
+          }
+          const chips = (ids: string[]) => (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 4 }}>
+              {shown(ids).map((s) => (
+                <span key={s.id} style={{ display: 'inline-flex' }}>
+                  <button type="button" style={S.subjectChip(state.on.includes(s.id))}
+                    title={state.on.includes(s.id) ? 'Remove from the comparison' : 'Add to the comparison'}
+                    onClick={() => dispatch({ type: 'toggle-subject', id: s.id })}>
+                    {s.name}
+                  </button>
+                  <button type="button" style={S.focusArrow}
+                    title={`Put ${s.name} in focus — everything else selected becomes its comparison`}
+                    onClick={() => dispatch({ type: 'focus', id: s.id })}>→</button>
+                </span>
+              ))}
+            </div>
+          )
           return (
             <div key={g.id} style={{ marginBottom: 8 }}>
-              <button type="button" style={S.groupHead} className="subject-group-head"
-                onClick={() => dispatch({
-                  type: 'set-on',
-                  on: allOn
-                    ? state.on.filter((id) => !g.subjects.includes(id))
-                    : [...new Set([...state.on, ...g.subjects])],
-                })}>
-                <span>{allOn ? '■' : onCount ? '▣' : '□'}</span>
-                <span style={{ flex: 1, textAlign: 'left' }}>{g.name}</span>
-                <span style={{ color: 'var(--faint)' }}>{onCount}/{g.subjects.length}</span>
-              </button>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 4 }}>
-                {members.map((s) => (
-                  <span key={s!.id} style={{ display: 'inline-flex' }}>
-                    <button type="button" style={S.subjectChip(state.on.includes(s!.id))}
-                      title={state.on.includes(s!.id) ? 'Remove from the comparison' : 'Add to the comparison'}
-                      onClick={() => dispatch({ type: 'toggle-subject', id: s!.id })}>
-                      {s!.name}
-                    </button>
-                    <button type="button" style={S.focusArrow}
-                      title={`Put ${s!.name} in focus — everything else selected becomes its comparison`}
-                      onClick={() => dispatch({ type: 'focus', id: s!.id })}>→</button>
-                  </span>
-                ))}
-              </div>
+              {head(g.subjects, g.name, false)}
+              {g.subgroups
+                ? g.subgroups.filter((sub) => shown(sub.subjects).length > 0).map((sub) => (
+                  <div key={sub.id} style={{ margin: '4px 0 6px 10px' }} data-subgroup={sub.id}>
+                    {head(sub.subjects, sub.name, true)}
+                    {chips(sub.subjects)}
+                  </div>
+                ))
+                : chips(g.subjects)}
             </div>
           )
         })}
@@ -986,6 +998,7 @@ const S = {
   presetRow: (on: boolean) => ({ display: 'flex', flexDirection: 'column', gap: 1, textAlign: 'left', width: '100%', background: on ? 'var(--acF)' : 'transparent', border: `1px solid ${on ? 'var(--ac)' : 'var(--rule)'}`, borderRadius: 'var(--r)', padding: '5px 8px', cursor: 'pointer', marginBottom: 4, color: 'var(--ink)' } as const),
   choiceRow: (on: boolean) => ({ display: 'flex', alignItems: 'baseline', gap: 6, width: '100%', textAlign: 'left', background: on ? 'var(--acF)' : 'transparent', border: `1px solid ${on ? 'var(--ac)' : 'transparent'}`, borderRadius: 'var(--r)', padding: '4px 6px', cursor: 'pointer', fontFamily: 'var(--fl)', fontSize: 12 } as const),
   groupHead: { display: 'flex', gap: 6, width: '100%', alignItems: 'center', background: 'transparent', border: 0, cursor: 'pointer', fontFamily: 'var(--fl)', fontWeight: 700, fontSize: 10.5, letterSpacing: '.1em', textTransform: 'uppercase', padding: '2px 0' } as const,
+  subgroupHead: { display: 'flex', gap: 6, width: '100%', alignItems: 'center', background: 'transparent', border: 0, cursor: 'pointer', fontFamily: 'var(--fl)', fontWeight: 600, fontSize: 11, color: 'var(--soft)', padding: '1px 0' } as const,
   subjectChip: (on: boolean) => ({ fontFamily: 'var(--fl)', fontWeight: 600, fontSize: 11, background: on ? 'var(--ink)' : 'transparent', color: on ? 'var(--bg)' : 'var(--soft)', border: '1px solid var(--rule)', borderRight: 0, borderRadius: 'var(--r) 0 0 var(--r)', padding: '3px 7px', cursor: 'pointer', maxWidth: '17ch', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } as const),
   focusArrow: { fontFamily: 'var(--fm)', fontSize: 10, background: 'transparent', color: 'var(--faint)', border: '1px solid var(--rule)', borderRadius: '0 var(--r) var(--r) 0', padding: '3px 5px', cursor: 'pointer' } as const,
   input: { width: '100%', fontFamily: 'var(--fl)', fontSize: 12, background: 'var(--bg)', border: '1px solid var(--ruleS)', borderRadius: 'var(--r)', padding: '5px 8px', color: 'var(--ink)' } as const,

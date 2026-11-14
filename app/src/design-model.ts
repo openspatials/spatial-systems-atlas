@@ -83,6 +83,24 @@ export interface Subject {
   scored: number
   /** Register ids of the OpenSpatials platforms this subject is. Absent when it is none. */
   platform?: string[]
+  /**
+   * A platform's kind of platform: social-world, game-platform or ai-built-world. Absent on
+   * every other kind of subject. Its plain label is the name of the display subgroup.
+   */
+  subcategory?: string
+}
+
+/**
+ * One display group of subjects, as the sidebar shows it. The platform group also carries
+ * subgroups, one per kind of platform, in display order; its flat `subjects` list holds the
+ * same subjects in the same order, so a page that shows the group as one family needs nothing
+ * more.
+ */
+export interface DisplayGroup {
+  id: string
+  name: string
+  subjects: string[]
+  subgroups?: Array<{ id: string; name: string; subjects: string[] }>
 }
 
 export interface GroupHealth {
@@ -98,7 +116,7 @@ export interface Model {
   groups: Array<{ id: string; name: string; plane: string; sort: number }>
   capabilities: Capability[]
   subjects: Subject[]
-  displayGroups: Array<{ id: string; name: string; subjects: string[] }>
+  displayGroups: DisplayGroup[]
   counts: Record<string, unknown>
   /** cov[subjectId][capabilityId] = 2-char code. A missing key means never assessed. */
   cov: Record<string, Record<string, Code>>
@@ -130,6 +148,42 @@ export const laneLabel = (lane: LaneId): string => LANE_LABEL[lane] ?? `Use case
 
 /** Is this text a lane id? */
 export const isLaneId = (x: unknown): x is LaneId => typeof x === 'string' && /^U[0-9]+$/.test(x)
+
+/**
+ * The plain label of a subject's subcategory, read from the display subgroup that holds it, so
+ * the page names it in one wording everywhere. Null for a subject with no subcategory.
+ */
+export function subcategoryName(model: Pick<Model, 'displayGroups'>, subjectId: string): string | null {
+  for (const g of model.displayGroups) {
+    for (const sub of g.subgroups ?? []) if (sub.subjects.includes(subjectId)) return sub.name
+  }
+  return null
+}
+
+/**
+ * The kind as the subject header prints it, with a platform's subcategory label beside it:
+ * "platform · Social worlds". Any other subject prints its kind alone.
+ */
+export function subjectKindLine(model: Pick<Model, 'displayGroups'>, subject: Pick<Subject, 'id' | 'kind'>): string {
+  const kind = subject.kind.replace('-', ' ')
+  const sub = subcategoryName(model, subject.id)
+  return sub ? `${kind} · ${sub}` : kind
+}
+
+/** How many of a set of subjects are switched on, and whether all of them are. */
+export function setState(on: readonly string[], ids: readonly string[]): { n: number; all: boolean } {
+  const n = ids.filter((id) => on.includes(id)).length
+  return { n, all: ids.length > 0 && n === ids.length }
+}
+
+/**
+ * What one click on a group or subgroup heading does: when every subject in it is on, it
+ * switches them all off; otherwise it switches them all on, keeping every other subject as it
+ * was.
+ */
+export function toggleSet(on: readonly string[], ids: readonly string[]): string[] {
+  return setState(on, ids).all ? on.filter((id) => !ids.includes(id)) : [...new Set([...on, ...ids])]
+}
 
 /** The lanes the model carries, in number order. */
 export const laneIds = (model: Pick<Model, 'lanes'>): LaneId[] => Object.keys(model.lanes) as LaneId[]
@@ -191,6 +245,7 @@ export function adapt(raw: any): Model {
       unverified: Number(s.unverified ?? 0),
       scored: Number(s.scored ?? 0),
       ...(Array.isArray(s.platform) && s.platform.length ? { platform: s.platform.map(String) } : {}),
+      ...(s.subcategory ? { subcategory: String(s.subcategory) } : {}),
     }
   })
 

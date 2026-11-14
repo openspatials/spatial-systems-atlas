@@ -145,6 +145,12 @@ KIND_LABEL = [("standard", "Standards"), ("device-platform", "Device platforms")
               ("world-model", "World models & capture"),
               ("technique", "World models & capture"),
               ("tool", "Capture & generation tools")]
+# The platform group is split by the subject's subcategory, in this order and under these plain
+# labels. The group keeps one flat subject list, ordered subcategory by subcategory, so every
+# page that reads the group as one family still works; a page that can show the split reads
+# "subgroups". The loader has already refused a platform with no subcategory.
+SUBCATEGORY_LABEL = [("social-world", "Social worlds"), ("game-platform", "Game platforms"),
+                     ("ai-built-world", "AI-built game and world platforms")]
 display_groups = [{"id": "msf", "name": "MSF standards & projects",
                    "subjects": [s["id"] for s in subs if s["id"] in MSF_IDS]}]
 by_label = {}
@@ -156,6 +162,17 @@ for kind, label in KIND_LABEL:
         by_label[label]["subjects"].extend(ids)
         continue
     group = {"id": kind, "name": label, "subjects": ids}
+    if kind == "platform":
+        sub_of = {s["id"]: s.get("subcategory") for s in subs}
+        unsorted = [sid for sid in ids if sub_of[sid] not in dict(SUBCATEGORY_LABEL)]
+        if unsorted:
+            raise SystemExit("platform(s) with no known subcategory: " + ", ".join(unsorted) +
+                             " - set it in subjects.csv and reload")
+        group["subgroups"] = [{"id": sub, "name": sub_label,
+                               "subjects": [sid for sid in ids if sub_of[sid] == sub]}
+                              for sub, sub_label in SUBCATEGORY_LABEL
+                              if any(sub_of[sid] == sub for sid in ids)]
+        group["subjects"] = [sid for g in group["subgroups"] for sid in g["subjects"]]
     by_label[label] = group
     display_groups.append(group)
 
